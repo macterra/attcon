@@ -156,6 +156,53 @@ def cue_sensitivity_metrics(
     }
 
 
+def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
+    baseline = report["baseline"]
+    recurrent = report["recurrent"]
+    ablations = report["ablations"]
+    freeze = ablations.get("freeze_recurrence", {})
+    feedforward = ablations.get("feedforward_summary", {})
+
+    dissociation = {
+        "recurrent_vs_baseline_accuracy_gain": recurrent["accuracy"] - baseline["accuracy"],
+        "recurrent_vs_feedforward_accuracy_gain": recurrent["accuracy"] - feedforward.get("accuracy", 0.0),
+        "recurrent_vs_freeze_accuracy_gain": recurrent["accuracy"] - freeze.get("accuracy", 0.0),
+        "supported": (
+            recurrent["accuracy"] > baseline["accuracy"]
+            and recurrent["accuracy"] > feedforward.get("accuracy", float("-inf"))
+            and recurrent["accuracy"] > freeze.get("accuracy", float("-inf"))
+        ),
+    }
+
+    closed_loop = {
+        "recurrent_temporal_reallocation": recurrent["temporal_reallocation"],
+        "freeze_temporal_reallocation": freeze.get("temporal_reallocation", 0.0),
+        "recurrent_target_attention_gain": recurrent["target_attention_gain"],
+        "feedforward_target_attention_gain": feedforward.get("target_attention_gain", 0.0),
+        "supported": (
+            recurrent["temporal_reallocation"] > freeze.get("temporal_reallocation", 0.0)
+            and recurrent["target_attention_gain"] > feedforward.get("target_attention_gain", float("-inf"))
+        ),
+    }
+
+    cue_dependence = {
+        "baseline_cue_accuracy_delta": baseline["cue_accuracy_delta"],
+        "recurrent_cue_accuracy_delta": recurrent["cue_accuracy_delta"],
+        "baseline_cue_target_attention_delta": baseline["cue_target_attention_delta"],
+        "recurrent_cue_target_attention_delta": recurrent["cue_target_attention_delta"],
+        "supported": (
+            recurrent["cue_accuracy_delta"] > baseline["cue_accuracy_delta"]
+            and recurrent["cue_target_attention_delta"] > baseline["cue_target_attention_delta"]
+        ),
+    }
+
+    return {
+        "dissociation": dissociation,
+        "closed_loop_adaptation": closed_loop,
+        "cue_dependence": cue_dependence,
+    }
+
+
 def save_probe_plots(
     model,
     output_dir: Path,
@@ -310,6 +357,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9600,
     )
+    report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
