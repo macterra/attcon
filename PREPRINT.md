@@ -147,6 +147,20 @@ The main result is not that recurrence is generally useful. The more specific re
 
 In the language of the Good Regulator Theorem, the controller appears to embody a task-relevant model of its own attentional process. In this implementation, that model is not a separate symbolic object; it is the recurrent internal representation that combines previous attention, previous cue-conditioned observation, and detached feedback into the next allocation policy. What counts as the model of attention here is therefore the controller state that summarizes prior allocation and its consequences well enough to guide future allocation.
 
+### 6.1 Relation to Modeler Schema Theory
+
+This benchmark also admits a natural interpretation in the language of the Modeler Schema Theory of Consciousness. On that view, consciousness is associated not with raw sensory content alone, but with the contents of a regulatory schema that monitors and constrains internal modeling. If that framing is applied here, then the most plausible candidate for consciousness-like content is not the raw scene encoding or the raw attention mask by itself. It is the controller's recurrent internal representation of attention and its consequences.
+
+More concretely, the relevant content would be the state that carries forward:
+
+- previous attention allocation,
+- previous cue-conditioned observation,
+- previous loss proxy,
+- previous confidence,
+- task cue.
+
+Under that interpretation, the benchmark does not merely instantiate a toy control loop. It instantiates a minimal system in which a regulatory model of attention has explicit computational content and measurable behavioral consequences. This does not show that the system is conscious. It does, however, provide a concrete toy case in which one can ask what the contents of an attention-model are and how those contents alter behavior.
+
 ## 7. Limitations
 
 This benchmark is intentionally minimal.
