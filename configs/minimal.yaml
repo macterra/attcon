@@ -1,0 +1,38 @@
+seed: 7
+output_dir: outputs/minimal
+device: cpu
+
+task:
+  grid_size: 5
+  num_types: 4
+  digit_vocab_size: 10
+  min_type_count: 4
+  num_steps: 4
+
+model:
+  hidden_size: 32
+  cue_embedding_dim: 8
+  scene_embedding_dim: 16
+  temperature: 0.6
+
+training:
+  batch_size: 128
+  train_steps: 300
+  val_batches: 20
+  val_interval: 50
+  log_interval: 25
+  learning_rate: 0.001
+  weight_decay: 0.0
+  aux_loss_weight: 0.15
+  attention_target_weight: 1.0
+  attention_entropy_weight: 0.01
+
+evaluation:
+  test_batches: 40
+  probe_scenes: 4
+  ablations:
+    - freeze_recurrence
+    - zero_prev_loss
+    - zero_prev_confidence
+    - zero_prev_attention
+    - shuffle_cue
