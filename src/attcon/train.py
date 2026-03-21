@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Training entrypoint and optimization utilities for the benchmark."""
+
 import argparse
 from copy import deepcopy
 from pathlib import Path
@@ -53,6 +55,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
 
 
 def deep_update(base: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]:
+    """Recursively merge a partial config onto the default config."""
+
     merged = deepcopy(base)
     for key, value in updates.items():
         if isinstance(value, dict) and isinstance(merged.get(key), dict):
@@ -63,6 +67,8 @@ def deep_update(base: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]
 
 
 def load_config(path: str | Path | None = None) -> dict[str, Any]:
+    """Load a YAML config and merge it with defaults."""
+
     config = deepcopy(DEFAULT_CONFIG)
     if path is None:
         return config
@@ -85,6 +91,8 @@ def make_generator(seed: int, device: torch.device) -> torch.Generator:
 
 
 def compute_batch_metrics(outputs: dict[str, torch.Tensor], batch) -> dict[str, float]:
+    """Compute the headline metrics used during train/validation logging."""
+
     logits = outputs["logits"]
     prediction = logits.argmax(dim=-1)
     accuracy = (prediction == batch.target).float().mean().item()
@@ -106,6 +114,8 @@ def compute_attention_target_loss(
     attention_seq: torch.Tensor,
     target_pos: torch.Tensor,
 ) -> torch.Tensor:
+    """Encourage the final timestep to place mass on the true target cell."""
+
     final_attention = attention_seq[:, -1:]
     target_attention = final_attention.gather(
         2,
@@ -124,6 +134,8 @@ def evaluate_model(
     seed: int,
     ablation: dict[str, bool] | None = None,
 ) -> dict[str, float]:
+    """Evaluate one model over freshly generated held-out batches."""
+
     model.eval()
     generator = make_generator(seed, device)
     total_loss = 0.0
@@ -171,6 +183,8 @@ def train_single_model(
     device: torch.device,
     output_dir: Path,
 ) -> tuple[dict[str, float], dict[str, Any]]:
+    """Train one model variant and keep the best validation checkpoint in memory."""
+
     train_cfg = cfg["training"]
     optimizer = torch.optim.Adam(
         model.parameters(),
@@ -199,6 +213,8 @@ def train_single_model(
         attention = outputs["attention_seq"]
         attention_target_loss = compute_attention_target_loss(attention, batch.target_pos)
         attention_entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean()
+        # The main task loss is paired with a small final-fixation objective so the
+        # controller gets a direct signal about where useful evidence should end up.
         loss = (
             final_loss
             + train_cfg["aux_loss_weight"] * aux_loss
@@ -245,6 +261,8 @@ def train_single_model(
 
 
 def train_experiment(config: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Train both baseline and recurrent models and save a joint experiment checkpoint."""
+
     cfg = deep_update(DEFAULT_CONFIG, config or {})
     set_seed(cfg["seed"])
     device = torch.device(cfg["device"])

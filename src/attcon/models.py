@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Model definitions for static attention and recurrent attention control."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -20,6 +22,8 @@ def _mlp(input_dim: int, hidden_dim: int, output_dim: int) -> nn.Sequential:
 
 @dataclass
 class ModelConfig:
+    """Architecture hyperparameters shared by both models."""
+
     hidden_size: int = 32
     cue_embedding_dim: int = 8
     scene_embedding_dim: int = 16
@@ -31,6 +35,13 @@ class ModelConfig:
 
 
 class BaseAttentionModel(nn.Module):
+    """Shared scene encoding and cue-conditioned observation logic.
+
+    Both models see the same scene encoding. The key difference is whether future
+    attention depends only on the current scene summary or on recurrent state that
+    carries forward previous observations and feedback.
+    """
+
     def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
         super().__init__()
         self.task_config = task_config
@@ -59,11 +70,15 @@ class BaseAttentionModel(nn.Module):
         )
 
     def split_scene(self, scene: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Split visible cell-type features from hidden task-relevant features."""
+
         visible = scene[..., : self.visible_dim]
         hidden = scene[..., self.visible_dim :]
         return visible, hidden
 
     def initial_state(self, scene: torch.Tensor, cue: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Encode the visible scene and cue into the initial controller state."""
+
         visible, hidden = self.split_scene(scene)
         cue_emb = self.cue_embedding(cue)
         visible_emb = self.visible_encoder(visible)
@@ -72,6 +87,8 @@ class BaseAttentionModel(nn.Module):
         return init_state, hidden
 
     def observe_glimpse(self, hidden_glimpse: torch.Tensor, cue: torch.Tensor) -> torch.Tensor:
+        """Collapse the hidden glimpse into cue-relevant target evidence plus digit features."""
+
         cue_one_hot = F.one_hot(cue, num_classes=self.num_types).float()
         target_flags = hidden_glimpse[..., : self.num_types]
         digit_features = hidden_glimpse[..., self.num_types :]
@@ -93,6 +110,8 @@ class BaseAttentionModel(nn.Module):
 
 
 class StaticAttentionBaseline(BaseAttentionModel):
+    """Cue-conditioned attention baseline with no recurrent control loop."""
+
     def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
         super().__init__(task_config, model_config)
         self.attention_head = nn.Linear(model_config.hidden_size, self.num_cells)
@@ -131,6 +150,8 @@ class StaticAttentionBaseline(BaseAttentionModel):
 
 
 class RecurrentAttentionController(BaseAttentionModel):
+    """Recurrent controller that reallocates attention from prior internal summaries."""
+
     def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
         super().__init__(task_config, model_config)
         self.controller = nn.GRUCell(self.summary_dim, model_config.hidden_size)
@@ -154,6 +175,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         *,
         ablation: dict[str, bool] | None = None,
     ) -> torch.Tensor:
+        """Assemble the feedback vector used to choose the next attention allocation."""
+
         if ablation is None:
             ablation = {}
         if ablation.get("zero_prev_attention"):
@@ -209,6 +232,8 @@ class RecurrentAttentionController(BaseAttentionModel):
 
         for step_idx in range(steps):
             if step_idx > 0:
+                # The next fixation is chosen from the previous fixation, what it observed,
+                # and detached task feedback rather than from the raw scene alone.
                 summary = self._build_summary(
                     previous_attention,
                     previous_observation,

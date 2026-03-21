@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Evaluation, ablation, and reporting utilities for the attention-control demo."""
+
 import argparse
 import json
 from pathlib import Path
@@ -18,6 +20,8 @@ def load_models_from_checkpoint(
     device: torch.device,
     config: dict[str, Any] | None = None,
 ):
+    """Rebuild trained model instances from a saved experiment checkpoint."""
+
     payload = torch.load(checkpoint_path, map_location=device, weights_only=False)
     cfg = deep_update(payload["config"], config or {})
     task_cfg = TaskConfig.from_dict(cfg["task"])
@@ -47,6 +51,8 @@ def _probe_outputs(
     device: torch.device,
     seed: int,
 ) -> tuple[dict[str, torch.Tensor], Any]:
+    """Run one probe batch that reuses the same scenes across every cue."""
+
     generator = make_generator(seed, device)
     base_batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
     probe_batch = expand_cues_for_probe(base_batch, task_cfg.num_types)
@@ -85,6 +91,8 @@ def trajectory_metrics(
     device: torch.device,
     seed: int,
 ) -> dict[str, float]:
+    """Measure cue-conditioned attention divergence and within-episode reallocation."""
+
     outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed)
     attention = outputs["attention_seq"].view(batch_size, task_cfg.num_types, task_cfg.num_steps, -1)
     target_pos = probe_batch.target_pos.view(batch_size, task_cfg.num_types)
@@ -127,6 +135,8 @@ def cue_sensitivity_metrics(
     device: torch.device,
     seed: int,
 ) -> dict[str, float]:
+    """Compare correct-cue and wrong-cue behavior on the exact same probe scenes."""
+
     generator = make_generator(seed, device)
     base_batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
     probe_batch = expand_cues_for_probe(base_batch, task_cfg.num_types)
@@ -157,6 +167,8 @@ def cue_sensitivity_metrics(
 
 
 def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
+    """Condense raw metrics into the three core claims from the README."""
+
     baseline = report["baseline"]
     recurrent = report["recurrent"]
     ablations = report["ablations"]
@@ -210,6 +222,8 @@ def save_probe_plots(
     device: torch.device,
     seed: int,
 ) -> list[str]:
+    """Render one qualitative attention heatmap sequence per cue."""
+
     output_dir.mkdir(parents=True, exist_ok=True)
     generator = make_generator(seed, device)
     base_batch = generate_batch(1, task_cfg.num_steps, task_cfg, generator=generator, device=device)
@@ -245,6 +259,8 @@ def save_probe_plots(
 
 
 def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[str, Any]:
+    """Run the full evaluation suite and write a JSON report plus plot artifacts."""
+
     device = torch.device(config["device"])
     cfg, task_cfg, models = load_models_from_checkpoint(checkpoint_path, device, config)
     output_dir = Path(cfg["output_dir"])

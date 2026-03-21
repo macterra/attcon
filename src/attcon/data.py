@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Synthetic task generation for the minimal attention-control benchmark."""
+
 from dataclasses import asdict, dataclass
 from typing import Any
 
@@ -9,6 +11,8 @@ import torch.nn.functional as F
 
 @dataclass
 class TaskConfig:
+    """Configuration for the grid-world selective-search task."""
+
     grid_size: int = 5
     num_types: int = 4
     digit_vocab_size: int = 10
@@ -41,6 +45,8 @@ class TaskConfig:
 
 @dataclass
 class Batch:
+    """One batch of synthetic scenes plus the metadata needed for evaluation."""
+
     scene: torch.Tensor
     cue: torch.Tensor
     target: torch.Tensor
@@ -78,6 +84,13 @@ def generate_batch(
     generator: torch.Generator | None = None,
     device: str | torch.device = "cpu",
 ) -> Batch:
+    """Generate scenes where exactly one cell of each type is marked as that cue's target.
+
+    The visible channels tell the model which type each cell has. The hidden channels
+    contain a per-cue target flag and a digit identity. The model therefore has to
+    use attention plus the cue to recover the correct digit.
+    """
+
     del num_steps
     cfg = task_config if isinstance(task_config, TaskConfig) else TaskConfig.from_dict(task_config)
     device = torch.device(device)
@@ -113,6 +126,7 @@ def generate_batch(
         cue_targets = torch.full((cfg.num_types,), -1, dtype=torch.long, device=device)
         for type_idx in range(cfg.num_types):
             type_positions = torch.nonzero(cell_types == type_idx, as_tuple=False).flatten()
+            # Each cue points to exactly one cell among the cells of that visible type.
             target_index = type_positions[
                 _randint(type_positions.numel(), (1,), generator, device).item()
             ]
@@ -142,6 +156,8 @@ def generate_batch(
 
 
 def expand_cues_for_probe(batch: Batch, num_types: int) -> Batch:
+    """Repeat the same scenes under every possible cue for probe-style evaluation."""
+
     batch_size, num_cells, feature_dim = batch.scene.shape
     expanded_scene = batch.scene.repeat_interleave(num_types, dim=0)
     expanded_visible_types = batch.visible_types.repeat_interleave(num_types, dim=0)
