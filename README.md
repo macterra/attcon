@@ -16,7 +16,8 @@ The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each 
 - [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml): default experiment config
 - [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py): training entrypoint
 - [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py): evaluation, ablations, and reporting
-- [outputs/minimal/evaluation_report.json](/home/david/dev/attcon/outputs/minimal/evaluation_report.json): latest saved evaluation report
+
+The latest local evaluation report is written to `outputs/minimal/evaluation_report.json` after running eval.
 
 ## Quickstart
 
