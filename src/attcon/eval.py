@@ -61,6 +61,23 @@ def _probe_outputs(
     return outputs, probe_batch
 
 
+def _evaluate_probe_batch(
+    model,
+    probe_batch,
+    task_cfg: TaskConfig,
+    *,
+    cue_override: torch.Tensor | None = None,
+) -> dict[str, torch.Tensor]:
+    cue = probe_batch.cue if cue_override is None else cue_override
+    with torch.no_grad():
+        return model(
+            probe_batch.scene,
+            cue,
+            target=probe_batch.target,
+            num_steps=task_cfg.num_steps,
+        )
+
+
 def trajectory_metrics(
     model,
     task_cfg: TaskConfig,
@@ -100,6 +117,42 @@ def trajectory_metrics(
         "target_attention_gain": final_step_target - first_step_target,
         "probe_target_attention_first": first_step_target,
         "probe_target_attention_final": final_step_target,
+    }
+
+
+def cue_sensitivity_metrics(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, float]:
+    generator = make_generator(seed, device)
+    base_batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    probe_batch = expand_cues_for_probe(base_batch, task_cfg.num_types)
+    wrong_cue = (probe_batch.cue + 1) % task_cfg.num_types
+
+    correct_outputs = _evaluate_probe_batch(model, probe_batch, task_cfg)
+    wrong_outputs = _evaluate_probe_batch(model, probe_batch, task_cfg, cue_override=wrong_cue)
+
+    target_pos = probe_batch.target_pos.unsqueeze(-1)
+    correct_attention = correct_outputs["attention_seq"][:, -1]
+    wrong_attention = wrong_outputs["attention_seq"][:, -1]
+    correct_target_attention = correct_attention.gather(1, target_pos).mean().item()
+    wrong_target_attention = wrong_attention.gather(1, target_pos).mean().item()
+
+    correct_accuracy = (
+        correct_outputs["logits"].argmax(dim=-1) == probe_batch.target
+    ).float().mean().item()
+    wrong_accuracy = (
+        wrong_outputs["logits"].argmax(dim=-1) == probe_batch.target
+    ).float().mean().item()
+
+    return {
+        "wrong_cue_accuracy": wrong_accuracy,
+        "wrong_cue_target_attention": wrong_target_attention,
+        "cue_accuracy_delta": correct_accuracy - wrong_accuracy,
+        "cue_target_attention_delta": correct_target_attention - wrong_target_attention,
     }
 
 
@@ -180,6 +233,15 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
             cfg["seed"] + 9200,
         )
     )
+    report["baseline"].update(
+        cue_sensitivity_metrics(
+            models["static"],
+            task_cfg,
+            eval_cfg["probe_scenes"],
+            device,
+            cfg["seed"] + 9250,
+        )
+    )
     report["recurrent"].update(
         trajectory_metrics(
             models["recurrent"],
@@ -187,6 +249,15 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
             eval_cfg["probe_scenes"],
             device,
             cfg["seed"] + 9300,
+        )
+    )
+    report["recurrent"].update(
+        cue_sensitivity_metrics(
+            models["recurrent"],
+            task_cfg,
+            eval_cfg["probe_scenes"],
+            device,
+            cfg["seed"] + 9350,
         )
     )
 
@@ -214,6 +285,21 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
                 eval_cfg["probe_scenes"],
                 device,
                 cfg["seed"] + 9500 + len(report["ablations"]),
+            )
+        )
+        report["ablations"][name].update(
+            cue_sensitivity_metrics(
+                lambda scene, cue, target=None, num_steps=None: models["recurrent"](
+                    scene,
+                    cue,
+                    target=target,
+                    num_steps=num_steps,
+                    ablation=ablation,
+                ),
+                task_cfg,
+                eval_cfg["probe_scenes"],
+                device,
+                cfg["seed"] + 9550 + len(report["ablations"]),
             )
         )
 
