@@ -6,32 +6,33 @@ task:
   grid_size: 5
   num_types: 4
   digit_vocab_size: 10
-  min_type_count: 4
-  num_steps: 4
+  min_type_count: 6
+  num_steps: 6
 
 model:
   hidden_size: 32
   cue_embedding_dim: 8
   scene_embedding_dim: 16
-  temperature: 0.6
+  temperature: 0.25
 
 training:
   batch_size: 128
-  train_steps: 300
+  train_steps: 500
   val_batches: 20
-  val_interval: 50
+  val_interval: 100
   log_interval: 25
   learning_rate: 0.001
   weight_decay: 0.0
   aux_loss_weight: 0.15
   attention_target_weight: 1.0
-  attention_entropy_weight: 0.01
+  attention_entropy_weight: 0.0
 
 evaluation:
   test_batches: 40
   probe_scenes: 4
   ablations:
     - freeze_recurrence
+    - zero_prev_glimpse
     - zero_prev_loss
     - zero_prev_confidence
     - zero_prev_attention

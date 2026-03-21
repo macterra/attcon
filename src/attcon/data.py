@@ -12,8 +12,8 @@ class TaskConfig:
     grid_size: int = 5
     num_types: int = 4
     digit_vocab_size: int = 10
-    min_type_count: int = 4
-    num_steps: int = 4
+    min_type_count: int = 6
+    num_steps: int = 6
 
     @property
     def num_cells(self) -> int:

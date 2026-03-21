@@ -131,11 +131,12 @@ class RecurrentAttentionController(BaseAttentionModel):
 
     @property
     def summary_dim(self) -> int:
-        return self.num_cells + 2 + self.model_config.cue_embedding_dim
+        return self.num_cells + self.hidden_dim + 2 + self.model_config.cue_embedding_dim
 
     def _build_summary(
         self,
         previous_attention: torch.Tensor,
+        previous_glimpse: torch.Tensor,
         previous_loss: torch.Tensor,
         previous_confidence: torch.Tensor,
         cue_embedding: torch.Tensor,
@@ -146,12 +147,20 @@ class RecurrentAttentionController(BaseAttentionModel):
             ablation = {}
         if ablation.get("zero_prev_attention"):
             previous_attention = torch.zeros_like(previous_attention)
+        if ablation.get("zero_prev_glimpse"):
+            previous_glimpse = torch.zeros_like(previous_glimpse)
         if ablation.get("zero_prev_loss"):
             previous_loss = torch.zeros_like(previous_loss)
         if ablation.get("zero_prev_confidence"):
             previous_confidence = torch.zeros_like(previous_confidence)
         return torch.cat(
-            [previous_attention, previous_loss, previous_confidence, cue_embedding],
+            [
+                previous_attention,
+                previous_glimpse,
+                previous_loss,
+                previous_confidence,
+                cue_embedding,
+            ],
             dim=-1,
         )
 
@@ -177,6 +186,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         hidden_state, hidden_features = self.initial_state(scene, cue_for_policy)
         cue_emb = self.cue_embedding(cue_for_policy)
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
+        previous_glimpse = torch.zeros(scene.shape[0], self.hidden_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_confidence = torch.zeros(scene.shape[0], 1, device=scene.device)
 
@@ -190,6 +200,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             if step_idx > 0:
                 summary = self._build_summary(
                     previous_attention,
+                    previous_glimpse,
                     previous_loss,
                     previous_confidence,
                     cue_emb,
@@ -215,6 +226,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             controller_state_seq.append(hidden_state)
 
             previous_attention = attention.detach()
+            previous_glimpse = glimpse
             previous_loss = step_loss
             previous_confidence = step_confidence
 

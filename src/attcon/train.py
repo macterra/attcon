@@ -22,25 +22,26 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "hidden_size": 32,
         "cue_embedding_dim": 8,
         "scene_embedding_dim": 16,
-        "temperature": 0.6,
+        "temperature": 0.25,
     },
     "training": {
         "batch_size": 128,
-        "train_steps": 300,
+        "train_steps": 500,
         "val_batches": 20,
-        "val_interval": 50,
+        "val_interval": 100,
         "log_interval": 25,
         "learning_rate": 1e-3,
         "weight_decay": 0.0,
         "aux_loss_weight": 0.15,
         "attention_target_weight": 1.0,
-        "attention_entropy_weight": 0.01,
+        "attention_entropy_weight": 0.0,
     },
     "evaluation": {
         "test_batches": 40,
         "probe_scenes": 4,
         "ablations": [
             "freeze_recurrence",
+            "zero_prev_glimpse",
             "zero_prev_loss",
             "zero_prev_confidence",
             "zero_prev_attention",
@@ -104,9 +105,10 @@ def compute_attention_target_loss(
     attention_seq: torch.Tensor,
     target_pos: torch.Tensor,
 ) -> torch.Tensor:
-    target_attention = attention_seq.gather(
+    final_attention = attention_seq[:, -1:]
+    target_attention = final_attention.gather(
         2,
-        target_pos[:, None, None].expand(-1, attention_seq.shape[1], 1),
+        target_pos[:, None, None].expand(-1, 1, 1),
     ).squeeze(-1)
     return -target_attention.clamp_min(1e-8).log().mean()
 
