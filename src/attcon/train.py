@@ -41,6 +41,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "probe_scenes": 4,
         "ablations": [
             "freeze_recurrence",
+            "feedforward_summary",
             "zero_prev_glimpse",
             "zero_prev_loss",
             "zero_prev_confidence",
