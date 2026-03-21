@@ -40,13 +40,13 @@ def symmetric_kl(attn_a: torch.Tensor, attn_b: torch.Tensor) -> torch.Tensor:
     return 0.5 * (kl_ab + kl_ba)
 
 
-def trajectory_divergence(
+def _probe_outputs(
     model,
     task_cfg: TaskConfig,
     batch_size: int,
     device: torch.device,
     seed: int,
-) -> float:
+) -> tuple[dict[str, torch.Tensor], Any]:
     generator = make_generator(seed, device)
     base_batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
     probe_batch = expand_cues_for_probe(base_batch, task_cfg.num_types)
@@ -58,15 +58,49 @@ def trajectory_divergence(
             target=probe_batch.target,
             num_steps=task_cfg.num_steps,
         )
+    return outputs, probe_batch
 
+
+def trajectory_metrics(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, float]:
+    outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed)
     attention = outputs["attention_seq"].view(batch_size, task_cfg.num_types, task_cfg.num_steps, -1)
-    divergences = []
+    target_pos = probe_batch.target_pos.view(batch_size, task_cfg.num_types)
+
+    cue_divergences = []
+    reallocation_divergences = []
     for cue_a in range(task_cfg.num_types):
         for cue_b in range(cue_a + 1, task_cfg.num_types):
-            divergences.append(
+            cue_divergences.append(
                 symmetric_kl(attention[:, cue_a], attention[:, cue_b]).mean().item()
             )
-    return sum(divergences) / max(len(divergences), 1)
+            reallocation_divergences.append(
+                (
+                    attention[:, cue_a, 1:] - attention[:, cue_a, :-1]
+                    - attention[:, cue_b, 1:] + attention[:, cue_b, :-1]
+                )
+                .abs()
+                .mean()
+                .item()
+            )
+
+    temporal_reallocation = symmetric_kl(attention[:, :, 1:], attention[:, :, :-1]).mean().item()
+    first_step_target = attention[:, :, 0].gather(2, target_pos.unsqueeze(-1)).mean().item()
+    final_step_target = attention[:, :, -1].gather(2, target_pos.unsqueeze(-1)).mean().item()
+
+    return {
+        "trajectory_divergence": sum(cue_divergences) / max(len(cue_divergences), 1),
+        "reallocation_divergence": sum(reallocation_divergences) / max(len(reallocation_divergences), 1),
+        "temporal_reallocation": temporal_reallocation,
+        "target_attention_gain": final_step_target - first_step_target,
+        "probe_target_attention_first": first_step_target,
+        "probe_target_attention_final": final_step_target,
+    }
 
 
 def save_probe_plots(
@@ -137,19 +171,23 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         "artifacts": {},
     }
 
-    report["baseline"]["trajectory_divergence"] = trajectory_divergence(
-        models["static"],
-        task_cfg,
-        eval_cfg["probe_scenes"],
-        device,
-        cfg["seed"] + 9200,
+    report["baseline"].update(
+        trajectory_metrics(
+            models["static"],
+            task_cfg,
+            eval_cfg["probe_scenes"],
+            device,
+            cfg["seed"] + 9200,
+        )
     )
-    report["recurrent"]["trajectory_divergence"] = trajectory_divergence(
-        models["recurrent"],
-        task_cfg,
-        eval_cfg["probe_scenes"],
-        device,
-        cfg["seed"] + 9300,
+    report["recurrent"].update(
+        trajectory_metrics(
+            models["recurrent"],
+            task_cfg,
+            eval_cfg["probe_scenes"],
+            device,
+            cfg["seed"] + 9300,
+        )
     )
 
     for name in eval_cfg["ablations"]:
@@ -163,18 +201,20 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
             seed=cfg["seed"] + 9400 + len(report["ablations"]),
             ablation=ablation,
         )
-        report["ablations"][name]["trajectory_divergence"] = trajectory_divergence(
-            lambda scene, cue, target=None, num_steps=None: models["recurrent"](
-                scene,
-                cue,
-                target=target,
-                num_steps=num_steps,
-                ablation=ablation,
-            ),
-            task_cfg,
-            eval_cfg["probe_scenes"],
-            device,
-            cfg["seed"] + 9500 + len(report["ablations"]),
+        report["ablations"][name].update(
+            trajectory_metrics(
+                lambda scene, cue, target=None, num_steps=None: models["recurrent"](
+                    scene,
+                    cue,
+                    target=target,
+                    num_steps=num_steps,
+                    ablation=ablation,
+                ),
+                task_cfg,
+                eval_cfg["probe_scenes"],
+                device,
+                cfg["seed"] + 9500 + len(report["ablations"]),
+            )
         )
 
     plot_paths = save_probe_plots(
