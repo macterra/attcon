@@ -36,8 +36,11 @@ class BaseAttentionModel(nn.Module):
         self.task_config = task_config
         self.model_config = model_config
         self.num_cells = task_config.num_cells
+        self.num_types = task_config.num_types
+        self.digit_vocab_size = task_config.digit_vocab_size
         self.visible_dim = task_config.visible_feature_dim
         self.hidden_dim = task_config.hidden_feature_dim
+        self.observation_dim = 1 + self.digit_vocab_size
         self.cue_embedding = nn.Embedding(task_config.num_types, model_config.cue_embedding_dim)
         self.visible_encoder = _mlp(
             self.visible_dim,
@@ -50,7 +53,7 @@ class BaseAttentionModel(nn.Module):
             model_config.hidden_size,
         )
         self.task_head = _mlp(
-            self.hidden_dim + model_config.hidden_size,
+            self.observation_dim + model_config.hidden_size,
             max(model_config.hidden_size, 64),
             task_config.digit_vocab_size,
         )
@@ -67,6 +70,13 @@ class BaseAttentionModel(nn.Module):
         flat_scene = visible_emb.reshape(scene.shape[0], -1)
         init_state = self.scene_summary(torch.cat([flat_scene, cue_emb], dim=-1))
         return init_state, hidden
+
+    def observe_glimpse(self, hidden_glimpse: torch.Tensor, cue: torch.Tensor) -> torch.Tensor:
+        cue_one_hot = F.one_hot(cue, num_classes=self.num_types).float()
+        target_flags = hidden_glimpse[..., : self.num_types]
+        digit_features = hidden_glimpse[..., self.num_types :]
+        matched_target = (target_flags * cue_one_hot).sum(dim=-1, keepdim=True)
+        return torch.cat([matched_target, digit_features], dim=-1)
 
     def _compute_loss_proxy(
         self,
@@ -99,8 +109,9 @@ class StaticAttentionBaseline(BaseAttentionModel):
         static_state, hidden_features = self.initial_state(scene, cue)
         attention_logits = self.attention_head(static_state) / self.model_config.temperature
         attention = torch.softmax(attention_logits, dim=-1)
-        glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
-        logits = self.task_head(torch.cat([glimpse, static_state], dim=-1))
+        hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+        observed_glimpse = self.observe_glimpse(hidden_glimpse, cue)
+        logits = self.task_head(torch.cat([observed_glimpse, static_state], dim=-1))
         loss_proxy, confidence = self._compute_loss_proxy(logits, target)
 
         repeated_attention = attention.unsqueeze(1).repeat(1, steps, 1)
@@ -131,12 +142,12 @@ class RecurrentAttentionController(BaseAttentionModel):
 
     @property
     def summary_dim(self) -> int:
-        return self.num_cells + self.hidden_dim + 2 + self.model_config.cue_embedding_dim
+        return self.num_cells + self.observation_dim + 2 + self.model_config.cue_embedding_dim
 
     def _build_summary(
         self,
         previous_attention: torch.Tensor,
-        previous_glimpse: torch.Tensor,
+        previous_observation: torch.Tensor,
         previous_loss: torch.Tensor,
         previous_confidence: torch.Tensor,
         cue_embedding: torch.Tensor,
@@ -148,7 +159,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         if ablation.get("zero_prev_attention"):
             previous_attention = torch.zeros_like(previous_attention)
         if ablation.get("zero_prev_glimpse"):
-            previous_glimpse = torch.zeros_like(previous_glimpse)
+            previous_observation = torch.zeros_like(previous_observation)
         if ablation.get("zero_prev_loss"):
             previous_loss = torch.zeros_like(previous_loss)
         if ablation.get("zero_prev_confidence"):
@@ -156,7 +167,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         return torch.cat(
             [
                 previous_attention,
-                previous_glimpse,
+                previous_observation,
                 previous_loss,
                 previous_confidence,
                 cue_embedding,
@@ -186,7 +197,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         hidden_state, hidden_features = self.initial_state(scene, cue_for_policy)
         cue_emb = self.cue_embedding(cue_for_policy)
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
-        previous_glimpse = torch.zeros(scene.shape[0], self.hidden_dim, device=scene.device)
+        previous_observation = torch.zeros(scene.shape[0], self.observation_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_confidence = torch.zeros(scene.shape[0], 1, device=scene.device)
 
@@ -200,7 +211,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             if step_idx > 0:
                 summary = self._build_summary(
                     previous_attention,
-                    previous_glimpse,
+                    previous_observation,
                     previous_loss,
                     previous_confidence,
                     cue_emb,
@@ -215,8 +226,9 @@ class RecurrentAttentionController(BaseAttentionModel):
 
             attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
-            glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
-            step_logits = self.task_head(torch.cat([glimpse, hidden_state], dim=-1))
+            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            observed_glimpse = self.observe_glimpse(hidden_glimpse, cue_for_policy)
+            step_logits = self.task_head(torch.cat([observed_glimpse, hidden_state], dim=-1))
             step_loss, step_confidence = self._compute_loss_proxy(step_logits, target)
 
             attention_seq.append(attention)
@@ -226,7 +238,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             controller_state_seq.append(hidden_state)
 
             previous_attention = attention.detach()
-            previous_glimpse = glimpse
+            previous_observation = observed_glimpse
             previous_loss = step_loss
             previous_confidence = step_confidence
 

@@ -58,7 +58,7 @@ class AttentionControlTests(unittest.TestCase):
         with torch.no_grad():
             for param in model.parameters():
                 param.zero_()
-            prev_loss_index = self.task_cfg.num_cells + self.task_cfg.hidden_feature_dim
+            prev_loss_index = self.task_cfg.num_cells + (1 + self.task_cfg.digit_vocab_size)
             model.summary_adapter[0].weight[0, prev_loss_index] = 5.0
             model.policy_head.weight[0, 0] = 1.0
             model.policy_head.bias.zero_()
