@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We introduce a minimal PyTorch benchmark for this distinction. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity and digit information become useful only through attention. We compare a static cue-conditioned attention baseline to a recurrent attention controller that updates future attention from previous attention, previous observation, and detached task feedback. On the current benchmark, the recurrent controller outperforms the static baseline in held-out accuracy (`0.367` vs. `0.223`) and target attention (`0.108` vs. `0.062`). Ablations show that removing recurrence or replacing it with a feedforward summary policy substantially reduces performance. Probe metrics further show temporal reallocation, positive target-attention gain, and stronger wrong-cue sensitivity for the recurrent controller. These results support the claim that even a very small recurrent architecture can instantiate a meaningful form of attention control.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We introduce a minimal PyTorch benchmark for this distinction. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity and digit information become useful only through attention. We compare a static cue-conditioned attention baseline to a recurrent attention controller that updates future attention from previous attention, previous observation, and detached task feedback. On the current benchmark, the recurrent controller outperforms the static baseline in held-out accuracy (`0.367` vs. `0.223`) and target attention (`0.108` vs. `0.062`). Ablations show that removing recurrence or replacing it with a feedforward summary policy substantially reduces performance. Probe metrics further show temporal reallocation, positive target-attention gain, and stronger wrong-cue sensitivity for the recurrent controller. These results support the claim that even a very small recurrent architecture can instantiate a meaningful form of **closed-loop attention control**. They do not yet establish that the controller state contains an explicit attention schema or predictive model of attentional dynamics.
 
 ## 1. Introduction
 
@@ -62,7 +62,7 @@ The recurrent model augments the same scene encoding and task head with a recurr
 
 This summary is passed through a `GRUCell` and a learned summary adapter to produce the next hidden state, which in turn produces the next attention logits. In that sense, future allocation is explicitly conditioned on a representation of previous allocation and its task-level consequences.
 
-Under a Good Regulator interpretation, this recurrent summary plus hidden state is the model's internal **model of attention**. It is the representation through which the controller tracks what it previously attended to, what that attention revealed, and how useful that allocation was for the task. The raw attention mask alone is not yet the model; the model is the internal state that makes the previous allocation available for regulation of the next one.
+Under a Good Regulator interpretation, this recurrent summary plus hidden state is the strongest candidate for the model's internal **model of attention**. It is the representation through which the controller tracks what it previously attended to, what that attention revealed, and how useful that allocation was for the task. The raw attention mask alone is not yet the model; the model would be the internal state that makes the previous allocation available for regulation of the next one. The present benchmark, however, shows only that this state supports recurrent control. It does not yet prove that the state explicitly predicts attentional dynamics as such.
 
 ## 4. Training and Evaluation
 
@@ -145,7 +145,15 @@ The recurrent controller is therefore not only more accurate; it is more strongl
 
 The main result is not that recurrence is generally useful. The more specific result is that a small recurrent controller, given access to previous attention and its consequences, can produce behavior that is better described as **regulation of attention** than mere computation of attention.
 
-In the language of the Good Regulator Theorem, the controller appears to embody a task-relevant model of its own attentional process. In this implementation, that model is not a separate symbolic object; it is the recurrent internal representation that combines previous attention, previous cue-conditioned observation, and detached feedback into the next allocation policy. What counts as the model of attention here is therefore the controller state that summarizes prior allocation and its consequences well enough to guide future allocation.
+In the language of the Good Regulator Theorem, the controller appears to use a task-relevant internal representation of its own attentional process. In this implementation, that representation is not a separate symbolic object; it is the recurrent internal state that combines previous attention, previous cue-conditioned observation, and detached feedback into the next allocation policy. What counts as the candidate model of attention here is therefore the controller state that summarizes prior allocation and its consequences well enough to guide future allocation.
+
+The stronger claim, however, should be stated carefully. The present evidence shows:
+
+- recurrence improves attention regulation,
+- the recurrent state carries information about prior allocation and outcomes,
+- that information affects future allocation.
+
+It does **not yet show** that the controller state contains an explicit predictive model of attentional dynamics rather than a generic recurrent memory that improves policy quality. For that stronger claim, predictive probes and intervention tests are still needed.
 
 ### 6.1 Relation to Modeler Schema Theory
 
@@ -160,6 +168,8 @@ More concretely, the relevant content would be the state that carries forward:
 - task cue.
 
 Under that interpretation, the benchmark does not merely instantiate a toy control loop. It instantiates a minimal system in which a regulatory model of attention has explicit computational content and measurable behavioral consequences. This does not show that the system is conscious. It does, however, provide a concrete toy case in which one can ask what the contents of an attention-model are and how those contents alter behavior.
+
+This framing should be treated as secondary to the main empirical contribution. The primary result of the present work is a benchmark and proof-of-principle demonstration of closed-loop attention regulation. The consciousness-theoretic interpretation is best understood as a possible lens on that result, not as a conclusion established by the benchmark itself.
 
 ## 7. Limitations
 
@@ -182,6 +192,17 @@ The next natural extensions are:
 4. measure robustness over multiple seeds,
 5. refine qualitative visualizations into paper-ready figures.
 
+### 8.1 Experimental Checklist
+
+The most important next experiments are the ones that would distinguish closed-loop attention control from a stronger claim about explicit attention modeling:
+
+- Add a predictive probe from controller state at time `t` to next attention map or target-attention gain at `t+1`.
+- Add intervention tests that perturb controller state while holding scene and cue fixed, and measure systematic changes in subsequent attention.
+- Move task switching earlier in the benchmark suite, since changed priorities are a sharper test of control than stationary cueing alone.
+- Reduce or remove the direct final-step target-attention loss in at least one condition to test whether useful reallocation emerges from task success alone.
+
+These should be understood as the main checklist for upgrading the paper from a demonstration of recurrent attention control to a stronger claim about an explicit attention schema.
+
 ## 9. Reproducibility
 
 The implementation lives in this repository:
@@ -191,7 +212,8 @@ The implementation lives in this repository:
 - training: [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py)
 - evaluation: [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py)
 - default config: [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml)
-- latest report: [outputs/minimal/evaluation_report.json](/home/david/dev/attcon/outputs/minimal/evaluation_report.json)
+
+The latest local evaluation report is written to `outputs/minimal/evaluation_report.json` after running eval.
 
 Default commands:
 
@@ -202,4 +224,6 @@ Default commands:
 
 ## 10. Conclusion
 
-We introduced a minimal benchmark designed to separate attention from attention control. In this setting, a recurrent controller that conditions future allocation on previous attention outcomes outperforms both static and stronger non-recurrent alternatives, shows positive temporal reallocation, and is more strongly cue-sensitive. These results support the claim that even a small recurrent system can instantiate a minimal but defensible form of attention control.
+We introduced a minimal benchmark designed to separate attention from attention control. In this setting, a recurrent controller that conditions future allocation on previous attention outcomes outperforms both static and stronger non-recurrent alternatives, shows positive temporal reallocation, and is more strongly cue-sensitive. These results support the claim that even a small recurrent system can instantiate a minimal but defensible form of closed-loop attention control.
+
+The stronger interpretation, that the controller contains an explicit model or schema of attention, remains open. The current work points toward that possibility, but the relevant predictive and intervention evidence is still to be done. That distinction is not a weakness of the benchmark. It is precisely what makes the benchmark useful.
