@@ -779,6 +779,81 @@ def self_model_metrics(
     }
 
 
+def _select_diverse_nl_examples(
+    examples,
+    *,
+    grid_size: int,
+    calibration_count: int,
+    evaluation_count: int,
+):
+    """Greedily pick calibration/eval examples that cover more token-state variation."""
+
+    if len(examples) < calibration_count + evaluation_count:
+        raise ValueError("not enough NL examples for requested calibration/evaluation counts")
+
+    def features(example):
+        row, col = divmod(example.attended_cell, grid_size)
+        unresolved_rows = tuple(sorted({cell // grid_size for cell in example.unresolved_cells}))
+        unresolved_cols = tuple(sorted({cell % grid_size for cell in example.unresolved_cells}))
+        return {
+            ("cue", example.cue),
+            ("row", row),
+            ("col", col),
+            ("visible_type", example.attended_visible_type),
+            ("attended_digit", example.attended_digit),
+            ("glimpse_digit", example.glimpse_digit),
+            ("glimpse_match", int(example.glimpse_target_match)),
+            ("found_target", int(example.found_target)),
+            ("unresolved_rows", unresolved_rows),
+            ("unresolved_cols", unresolved_cols),
+        }
+
+    remaining = list(range(len(examples)))
+    covered = set()
+    calibration = []
+
+    while remaining and len(calibration) < calibration_count:
+        best_idx = None
+        best_score = None
+        for idx in remaining:
+            feat = features(examples[idx])
+            new_score = len(feat - covered)
+            tie_break = len(feat)
+            score = (new_score, tie_break, -idx)
+            if best_score is None or score > best_score:
+                best_idx = idx
+                best_score = score
+        calibration.append(examples[best_idx])
+        covered |= features(examples[best_idx])
+        remaining.remove(best_idx)
+
+    evaluation = []
+    while remaining and len(evaluation) < evaluation_count:
+        best_idx = None
+        best_score = None
+        for idx in remaining:
+            feat = features(examples[idx])
+            new_score = len(feat - covered)
+            row, col = divmod(examples[idx].attended_cell, grid_size)
+            score = (
+                new_score,
+                int(examples[idx].glimpse_target_match),
+                int(examples[idx].found_target),
+                row + col,
+                -idx,
+            )
+            if best_score is None or score > best_score:
+                best_idx = idx
+                best_score = score
+        evaluation.append(examples[best_idx])
+        covered |= features(examples[best_idx])
+        remaining.remove(best_idx)
+
+    if len(calibration) < calibration_count or len(evaluation) < evaluation_count:
+        raise ValueError("unable to select enough diverse NL examples")
+    return calibration, evaluation
+
+
 def nl_report_metrics(
     model,
     cfg: dict[str, Any],
@@ -841,8 +916,12 @@ def nl_report_metrics(
             ),
         }
 
-    calibration_examples = examples[:calibration_count]
-    evaluation_examples = examples[calibration_count:required_examples]
+    calibration_examples, evaluation_examples = _select_diverse_nl_examples(
+        examples,
+        grid_size=task_cfg.grid_size,
+        calibration_count=calibration_count,
+        evaluation_count=evaluation_count,
+    )
     model_name = nl_cfg.get("model", "gpt-5-mini")
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
     modes = ("tokenized_state", "symbolic_state", "observation_only")

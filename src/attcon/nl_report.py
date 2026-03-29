@@ -72,6 +72,7 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
 
 
 def _render_tokenized_state(
+    grid_size: int,
     cue: int,
     attended_cell: int,
     attended_visible_type: int,
@@ -81,16 +82,21 @@ def _render_tokenized_state(
     found_target: bool,
     unresolved_cells: list[int],
 ) -> str:
+    attended_row, attended_col = divmod(attended_cell, grid_size)
     tokens = [
         f"x{100 + cue}",
-        f"x{200 + attended_cell}",
-        f"x{300 + attended_visible_type}",
-        f"x{400 + attended_digit}",
-        f"x{500 + glimpse_digit}",
-        f"x{600 + int(glimpse_target_match)}",
-        f"x{700 + int(found_target)}",
+        f"x{200 + attended_row}",
+        f"x{210 + attended_col}",
+        f"x{220 + attended_visible_type}",
+        f"x{230 + attended_digit}",
+        f"x{240 + glimpse_digit}",
+        f"x{250 + int(glimpse_target_match)}",
+        f"x{260 + int(found_target)}",
     ]
-    tokens.extend(f"x{800 + cell}" for cell in unresolved_cells)
+    for cell in unresolved_cells:
+        row, col = divmod(cell, grid_size)
+        tokens.append(f"x{300 + row}")
+        tokens.append(f"x{310 + col}")
     return " ".join(tokens)
 
 
@@ -162,6 +168,7 @@ def collect_nl_examples(
             )
             example.symbolic_state = _render_symbolic_state(example, task_cfg.grid_size)
             example.tokenized_state = _render_tokenized_state(
+                task_cfg.grid_size,
                 example.cue,
                 example.attended_cell,
                 example.attended_visible_type,
