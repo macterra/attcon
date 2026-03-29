@@ -37,6 +37,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "aux_loss_weight": 0.15,
         "attention_target_weight": 1.0,
         "attention_entropy_weight": 0.0,
+        "self_model_weight": 0.1,
         "cue_switch_probability": 0.0,
         "cue_switch_step": 3,
     },
@@ -305,6 +306,12 @@ def train_single_model(
         attention = outputs["attention_seq"]
         attention_target_loss = compute_attention_target_loss(attention, episode["final_target_pos"])
         attention_entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean()
+        self_model_loss = torch.tensor(0.0, device=device)
+        if "self_model_logits_seq" in outputs and "inspection_seq" in outputs:
+            self_model_loss = F.binary_cross_entropy_with_logits(
+                outputs["self_model_logits_seq"],
+                outputs["inspection_seq"].detach(),
+            )
         # The main task loss is paired with a small final-fixation objective so the
         # controller gets a direct signal about where useful evidence should end up.
         loss = (
@@ -312,6 +319,7 @@ def train_single_model(
             + train_cfg["aux_loss_weight"] * aux_loss
             + train_cfg["attention_target_weight"] * attention_target_loss
             + train_cfg["attention_entropy_weight"] * attention_entropy
+            + train_cfg.get("self_model_weight", 0.0) * self_model_loss
         )
 
         optimizer.zero_grad()

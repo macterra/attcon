@@ -175,14 +175,16 @@ class RecurrentAttentionController(BaseAttentionModel):
             nn.Tanh(),
         )
         self.policy_head = nn.Linear(model_config.hidden_size, self.num_cells)
+        self.self_model_head = nn.Linear(model_config.hidden_size, self.num_cells)
 
     @property
     def summary_dim(self) -> int:
-        return self.num_cells + self.observation_dim + 2 + self.model_config.cue_embedding_dim
+        return 2 * self.num_cells + self.observation_dim + 2 + self.model_config.cue_embedding_dim
 
     def _build_summary(
         self,
         previous_attention: torch.Tensor,
+        inspection_state: torch.Tensor,
         previous_observation: torch.Tensor,
         previous_loss: torch.Tensor,
         previous_confidence: torch.Tensor,
@@ -205,6 +207,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         return torch.cat(
             [
                 previous_attention,
+                inspection_state,
                 previous_observation,
                 previous_loss,
                 previous_confidence,
@@ -239,6 +242,7 @@ class RecurrentAttentionController(BaseAttentionModel):
 
         hidden_state, hidden_features = self.initial_state(scene, cue_seq_for_policy[:, 0])
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
+        inspection_state = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
         previous_observation = torch.zeros(scene.shape[0], self.observation_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_confidence = torch.zeros(scene.shape[0], 1, device=scene.device)
@@ -249,6 +253,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         confidence_seq = []
         loss_seq = []
         controller_state_seq = [hidden_state]
+        inspection_seq = []
+        self_model_logits_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -258,6 +264,7 @@ class RecurrentAttentionController(BaseAttentionModel):
                 # and detached task feedback rather than from the raw scene alone.
                 summary = self._build_summary(
                     previous_attention,
+                    inspection_state,
                     previous_observation,
                     previous_loss,
                     previous_confidence,
@@ -277,6 +284,7 @@ class RecurrentAttentionController(BaseAttentionModel):
                 if "delta" in intervention:
                     hidden_state = hidden_state + intervention["delta"]
 
+            self_model_logits = self.self_model_head(hidden_state)
             attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
             hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
@@ -290,8 +298,13 @@ class RecurrentAttentionController(BaseAttentionModel):
             confidence_seq.append(step_confidence)
             loss_seq.append(step_loss)
             controller_state_seq.append(hidden_state)
+            inspection_seq.append(inspection_state)
+            self_model_logits_seq.append(self_model_logits)
 
             previous_attention = attention.detach()
+            attended_cell = attention.argmax(dim=-1)
+            attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
+            inspection_state = torch.maximum(inspection_state, attended_one_hot)
             previous_observation = observed_glimpse
             previous_loss = step_loss
             previous_confidence = step_confidence
@@ -305,4 +318,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             "confidence_seq": torch.stack(confidence_seq, dim=1),
             "loss_seq": torch.stack(loss_seq, dim=1),
             "controller_state_seq": torch.stack(controller_state_seq[:-1], dim=1),
+            "inspection_seq": torch.stack(inspection_seq, dim=1),
+            "self_model_logits_seq": torch.stack(self_model_logits_seq, dim=1),
+            "self_model_seq": torch.sigmoid(torch.stack(self_model_logits_seq, dim=1)),
         }

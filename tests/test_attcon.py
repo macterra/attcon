@@ -48,6 +48,20 @@ class AttentionControlTests(unittest.TestCase):
             )
             self.assertEqual(outputs["confidence_seq"].shape, (4, self.task_cfg.num_steps, 1))
             self.assertEqual(outputs["loss_seq"].shape, (4, self.task_cfg.num_steps, 1))
+        recurrent_outputs = recurrent_model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            num_steps=self.task_cfg.num_steps,
+        )
+        self.assertEqual(
+            recurrent_outputs["inspection_seq"].shape,
+            (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
+        )
+        self.assertEqual(
+            recurrent_outputs["self_model_seq"].shape,
+            (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
+        )
 
     def test_attention_is_normalized(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
@@ -79,7 +93,7 @@ class AttentionControlTests(unittest.TestCase):
         with torch.no_grad():
             for param in model.parameters():
                 param.zero_()
-            prev_loss_index = self.task_cfg.num_cells + (1 + self.task_cfg.digit_vocab_size)
+            prev_loss_index = 2 * self.task_cfg.num_cells + (1 + self.task_cfg.digit_vocab_size)
             model.summary_adapter[0].weight[0, prev_loss_index] = 5.0
             model.policy_head.weight[0, 0] = 1.0
             model.policy_head.bias.zero_()
@@ -136,6 +150,14 @@ class AttentionControlTests(unittest.TestCase):
                 atol=1e-6,
             )
         )
+
+    def test_inspection_state_tracks_visited_cells(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+        inspection = outputs["inspection_seq"]
+        self.assertTrue(torch.all(inspection[:, 1:] >= inspection[:, :-1]))
+        self.assertTrue(torch.all((inspection == 0.0) | (inspection == 1.0)))
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
