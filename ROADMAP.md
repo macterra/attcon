@@ -266,13 +266,30 @@ Good implementation constraint:
 
 Current status in this repo:
 
-- not yet implemented
+- a natural-language reporting harness is now implemented
+- the harness compares three conditions:
+  - symbolic internal-state serialization as a weak baseline
+  - tokenized internal-state reporting as the real Stage 7 target
+  - observation-only reporting as a weaker external baseline
+- the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
+- the tokenized internal-state condition is partially successful:
+  - it can often recover search type, attended cell, target-match status, and some attended-content variables
+  - it does not yet reliably outperform the observation-only baseline on the full report bundle
+- the current blocker is representational rather than infrastructural:
+  - the tokenized interface is still not faithful enough on attended semantic content and unresolved-region reporting to count as a Stage 7 success
 
 Interpretation:
 
 This would be a stronger and more legible form of reportability than the current structured probes, but it should only count if the language output is demonstrably faithful to the real internal state.
 
 In particular, handing a language model a clean symbolic state dump would be too weak to count as the main result. The stronger test is whether language can latch onto tokenized internal state and learn stable labels for the model's own regulatory variables.
+
+Current interpretation:
+
+- Stage 7 is now implemented
+- symbolic-state reportability is positive
+- tokenized-state reportability is still not strong enough to count as supported
+- therefore Stage 7 remains open
 
 ## Stage 8: Minimal Consciousness Interpretation
 
@@ -331,9 +348,9 @@ In other words, Stage 4 and Stage 5 should be read as parallel branches after St
 
 The highest-priority next experiments are:
 
-- extend Stage 4 from explicit inspected-state reporting to stronger allocation-error and unresolved-region tasks
 - add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
-- add a natural-language reporting layer grounded in explicit controller and self-model state
+- improve the tokenized internal-state interface for Stage 7 so attended content and unresolved-region reports become more faithful than observation-only baselines
+- evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - add plots or diagnostics for switched-cue and self-model trajectories
 
 ## Current Status
@@ -349,7 +366,7 @@ What is already supported:
 
 What is not yet established:
 
-- natural-language reportability grounded in internal state
+- natural-language reportability grounded in tokenized internal state
 - minimal consciousness-like content
 
 What is currently unstable or tradeoff-limited:

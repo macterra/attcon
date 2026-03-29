@@ -1,8 +1,8 @@
-# A Minimal Benchmark for Recurrent Attention Control
+# A Minimal Benchmark and Staged Program for Recurrent Attention Control
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We introduce a minimal PyTorch benchmark for this distinction. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity and digit information become useful only through attention. We compare a static cue-conditioned attention baseline to a recurrent attention controller that updates future attention from previous attention, previous observation, and detached task feedback. On the current benchmark, the recurrent controller outperforms the static baseline in held-out accuracy (`0.367` vs. `0.223`) and target attention (`0.108` vs. `0.062`). Ablations show that removing recurrence or replacing it with a feedforward summary policy substantially reduces performance. Probe metrics further show temporal reallocation, positive target-attention gain, and stronger wrong-cue sensitivity for the recurrent controller. These results support the claim that even a very small recurrent architecture can instantiate a meaningful form of **closed-loop attention control**. They do not yet establish that the controller state contains an explicit attention schema or predictive model of attentional dynamics.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current default checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.312` vs. `0.229`), shows strong temporal reallocation (`0.751` vs. `0.000`), and achieves positive target-attention gain (`0.125` vs. `0.000`). Additional evaluations now support stronger claims than closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions on controller state shift later attention, explicit inspected-state variables support bounded self-modeling of attention history, cue-switch training yields positive changed-priority reallocation, and structured internal-content probes support reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now natural-language reportability from tokenized internal state: symbolic state dumps are reported faithfully, but tokenized-state reports do not yet reliably outperform observation-only baselines. The current repository therefore supports Stages 1 through 6 of the roadmap and an implemented but not yet successful Stage 7.
 
 ## 1. Introduction
 
@@ -14,7 +14,7 @@ We use a stricter criterion. A system exhibits attention control only if:
 2. it has a distinct controller with access to a representation of that allocation or its consequences, and
 3. it can modify future allocation on the basis of task demands, performance, or internal state.
 
-The goal of this project is not to solve a large-scale perceptual problem. The goal is to build the smallest credible experimental setting in which the difference between **attending** and **controlling attention** can be measured directly.
+The goal of this project is not to solve a large-scale perceptual problem. The goal is to build the smallest credible setting in which the difference between **attending** and **controlling attention** can be measured directly, then extend that benchmark into a staged program about explicit attention modeling, self-modeling, reportability, and eventually natural-language access to internal state.
 
 ## 2. Benchmark Setup
 
@@ -23,12 +23,12 @@ The goal of this project is not to solve a large-scale perceptual problem. The g
 The benchmark uses a cue-guided selective-search task on a `5x5` grid. Each cell has:
 
 - a visible type identity,
-- a hidden cue-specific target flag, and
-- a hidden digit identity.
+- a hidden cue-specific target flag,
+- and a hidden digit identity.
 
 For each cue type, exactly one cell of that visible type is designated as the target for that cue. The model must report the digit associated with the target cell for the current cue.
 
-This design matters because the scene contains structure that is globally available, but task-relevant evidence only becomes useful after an attention allocation and cue-conditioned interpretation.
+This matters because the scene contains structure that is globally available, but task-relevant evidence only becomes useful after an attention allocation and cue-conditioned interpretation.
 
 ### 2.2 Sequence Structure
 
@@ -37,22 +37,22 @@ An episode lasts multiple timesteps. At each step the model:
 1. produces an attention distribution over cells,
 2. extracts a glimpse,
 3. converts that glimpse into a cue-conditioned observation,
-4. predicts the target digit, and
-5. optionally uses the previous attention outcome to determine the next allocation.
+4. predicts the target digit,
+5. optionally updates future allocation from previous attention outcomes and feedback.
 
-The static baseline uses the same scene and cue information, but it does not carry state across steps. Its attention distribution is fixed within the episode. The recurrent controller instead updates attention from a recurrent summary of previous attention, previous observation, previous loss proxy, and previous confidence.
+The static baseline uses the same scene and cue information, but it does not carry state across steps. Its attention distribution is fixed within the episode. The recurrent controller instead updates attention from a recurrent summary of previous attention, previous observation, previous loss proxy, previous confidence, and cue.
 
-## 3. Model
+## 3. Models
 
 ### 3.1 Static Baseline
 
 The static baseline is a cue-conditioned attention model without recurrence. It encodes the visible scene and cue into a scene summary, produces one attention distribution over grid cells, extracts a hidden glimpse, maps that glimpse into a cue-conditioned observation, and predicts the target digit.
 
-This baseline answers an important question: how far can one get with attention *without* attention control?
+This baseline answers the question: how far can one get with attention *without* attention control?
 
 ### 3.2 Recurrent Attention Controller
 
-The recurrent model augments the same scene encoding and task head with a recurrent controller. Its summary state includes:
+The recurrent model augments the same scene encoding and task head with a recurrent controller. Its recurrent summary includes:
 
 - previous attention,
 - previous cue-conditioned observation,
@@ -60,9 +60,16 @@ The recurrent model augments the same scene encoding and task head with a recurr
 - previous detached confidence,
 - cue embedding.
 
-This summary is passed through a `GRUCell` and a learned summary adapter to produce the next hidden state, which in turn produces the next attention logits. In that sense, future allocation is explicitly conditioned on a representation of previous allocation and its task-level consequences.
+That summary is passed through a `GRUCell` and learned summary adapter to produce the next hidden state, which in turn produces the next attention logits. Future allocation is therefore explicitly conditioned on a representation of previous allocation and its task-level consequences.
 
-Under a Good Regulator interpretation, this recurrent summary plus hidden state is the strongest candidate for the model's internal **model of attention**. It is the representation through which the controller tracks what it previously attended to, what that attention revealed, and how useful that allocation was for the task. The raw attention mask alone is not yet the model; the model would be the internal state that makes the previous allocation available for regulation of the next one. The present benchmark, however, shows only that this state supports recurrent control. It does not yet prove that the state explicitly predicts attentional dynamics as such.
+The current repository extends this controller with additional internal state used in later stages:
+
+- an explicit inspected-cell state,
+- a native self-model head over inspected history,
+- a cumulative found-state variable,
+- a target-found report head.
+
+Those additions matter because the project now evaluates not only whether the controller improves attention regulation, but also whether it maintains bounded internal models of its own attentional history and supports report-like access to that state.
 
 ## 4. Training and Evaluation
 
@@ -72,136 +79,206 @@ Training uses:
 
 - final-step cross-entropy on digit prediction,
 - a small auxiliary loss on intermediate predictions,
-- a final-step target-attention loss that rewards placing mass on the true target cell.
+- a final-step target-attention loss that rewards placing mass on the true target cell,
+- auxiliary self-model and target-found reporting losses for the recurrent controller.
 
-The attention-target loss is important because it gives the controller a direct signal about where useful evidence should end up by the end of the episode.
+The direct target-attention term makes the benchmark easier to interpret, but the repository now also includes reduced-shaping evaluations to test whether useful reallocation survives when that term is weakened or removed.
 
-### 4.2 Evidence Criteria
+### 4.2 Evaluation Axes
 
-We evaluate three claims.
+The original benchmark emphasized three claims:
 
-#### Dissociation
+- dissociation from static and weaker non-recurrent controls,
+- closed-loop adaptation,
+- cue dependence.
 
-If the controller matters, the recurrent model should outperform:
+The current repository now evaluates a broader staged set of claims:
 
-- a static attention baseline,
-- a frozen-recurrence ablation,
-- a feedforward summary ablation that uses the current summary but no recurrent state.
+- closed-loop attention control,
+- explicit attention modeling via predictive probes and intervention,
+- self-modeling of attention history,
+- flexible cue-switch reallocation under changed priorities,
+- structured reportable internal content,
+- natural-language reportability.
 
-#### Closed-Loop Adaptation
+## 5. Current Results
 
-If the controller is genuinely regulating attention, the model should show:
-
-- nonzero temporal reallocation,
-- positive target-attention gain across timesteps,
-- degradation when recurrent control is removed.
-
-#### Cue Dependence
-
-If attention is task-sensitive, behavior should change under the wrong cue. We therefore measure:
-
-- wrong-cue accuracy,
-- wrong-cue target attention,
-- cue-accuracy delta,
-- cue-target-attention delta.
-
-## 5. Results
-
-On the current saved checkpoint:
+The current default report in `outputs/minimal/evaluation_report.json` supports a richer picture than the original benchmark alone.
 
 ### 5.1 Main Comparison
 
-- Static baseline accuracy: `0.223`
-- Recurrent controller accuracy: `0.367`
-- Static baseline target attention: `0.062`
-- Recurrent controller target attention: `0.108`
+On the current default checkpoint:
 
-### 5.2 Stronger Ablations
+- Static baseline accuracy: `0.229`
+- Recurrent controller accuracy: `0.312`
+- Static baseline target attention: `0.065`
+- Recurrent controller target attention: `0.070`
 
-- Freeze recurrence accuracy: `0.135`
-- Feedforward summary accuracy: `0.188`
+The absolute target-attention gap on this checkpoint is smaller than in some earlier runs, but the recurrent controller still produces meaningfully better final task performance.
 
-These ablations are important because they show the result is not merely due to a richer policy head or stepwise access to a summary. The recurrent state itself matters.
+### 5.2 Closed-Loop Dynamics
 
-### 5.3 Dynamic Attention Metrics
+- Static temporal reallocation: `0.000`
+- Recurrent temporal reallocation: `0.751`
+- Static target-attention gain: `0.000`
+- Recurrent target-attention gain: `0.125`
 
-- Recurrent temporal reallocation: `0.741`
-- Freeze temporal reallocation: `0.000`
-- Recurrent target-attention gain: `0.129`
-- Feedforward target-attention gain: `0.005`
+These are the clearest Stage 2 signals in the current run. The recurrent controller does not merely learn a better static map; it changes its attention over time in a task-relevant way.
 
-The recurrent model does not merely maintain a better fixed attention map. It changes its attention over time in a way that improves concentration on the target.
+### 5.3 Explicit Attention Modeling
 
-### 5.4 Cue Sensitivity
+The repository now includes predictive-probe and intervention tests.
 
-- Baseline cue-accuracy delta: `0.000`
-- Recurrent cue-accuracy delta: `0.250`
-- Baseline cue-target-attention delta: `0.027`
-- Recurrent cue-target-attention delta: `0.155`
+Predictive probe:
 
-The recurrent controller is therefore not only more accurate; it is more strongly governed by task cue in the specific sense expected of attention control.
+- controller-state test cross-entropy: `1.752`
+- observation-only test cross-entropy: `2.269`
+- controller top-1 advantage: `0.276`
+
+Causal intervention:
+
+- attention-change KL: `0.0181`
+- original-target attention drop: `0.00241`
+- alternate-target attention gain: `0.0174`
+
+Reduced-shaping condition:
+
+- at `attention_target_weight = 0.0`, accuracy remains `0.184`
+- temporal reallocation remains `0.484`
+- target-attention gain remains `0.0255`
+
+Together, these results support a bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation.
+
+### 5.4 Self-Modeling of Attention
+
+The recurrent controller now maintains an explicit inspected-cell state and a native self-model head.
+
+Current default results:
+
+- native inspected-map cell accuracy: `0.990`
+- observation-only inspected-map accuracy: `0.973`
+- native target-inspected accuracy: `0.988`
+- native target-inspected positive recall: `0.721`
+
+This supports a bounded Stage 4 claim: the model contains an explicit internal variable about where it has already attended, and that variable supports more faithful reporting than observation-only baselines.
+
+### 5.5 Flexible Reallocation Under Changed Priorities
+
+The current default training mixes stationary and switched-cue episodes, and the repository now evaluates mid-episode cue switching directly.
+
+Current default results:
+
+- baseline switch-target gain: `0.0233`
+- recurrent switch-target gain: `0.1169`
+- baseline switch accuracy: `0.000`
+- recurrent switch accuracy: `0.500`
+
+This supports Stage 5 in the current benchmark: the recurrent controller can redirect attention under changed priorities better than the static baseline.
+
+### 5.6 Structured Reportable Internal Content
+
+The current report probes test whether controller state supports explicit readouts of its own regulatory state.
+
+Current default results:
+
+- search-type accuracy advantage over observation-only: `0.308`
+- attended-cell accuracy advantage: `0.287`
+- target-found accuracy advantage: `0.0124`
+- unresolved-region advantage from native self-model: `0.0172`
+
+This supports Stage 6 in a bounded sense: the same controller state that guides attention also supports structured reports about current search type, attended cell, target-found state, and unresolved regions.
+
+### 5.7 Natural-Language Reportability
+
+The repository now includes a Stage 7 natural-language reporting harness using `gpt-5-mini`. It evaluates three reporting conditions:
+
+- symbolic internal-state serialization as a weak baseline,
+- tokenized internal-state reporting as the real Stage 7 target,
+- observation-only reporting as the weaker external baseline.
+
+The current picture is mixed:
+
+- symbolic reporting is strong and can achieve exact structured reports on held-out slices,
+- tokenized-state reporting is partially successful,
+- tokenized-state reporting does not yet beat observation-only on the full report bundle.
+
+In a stable recent Stage 7 slice:
+
+- tokenized search-type accuracy: `1.0`
+- tokenized attended-cell accuracy: `1.0`
+- tokenized visible-type accuracy: `0.5`
+- tokenized attended-digit accuracy: `0.5`
+- tokenized glimpse-digit accuracy: `0.5`
+- tokenized unresolved-cells accuracy: `0.25`
+- tokenized joint accuracy: `0.0`
+
+Against the same slice:
+
+- observation-only joint accuracy: `0.0`
+- observation-only visible-type accuracy: `1.0`
+- observation-only attended-digit accuracy: `0.75`
+- observation-only unresolved-cells accuracy: `0.25`
+
+So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. It does recover some structural control variables reliably, but it still underperforms observation-only on some semantic attended-content fields and remains weak on unresolved-region reporting.
 
 ## 6. Interpretation
 
-The main result is not that recurrence is generally useful. The more specific result is that a small recurrent controller, given access to previous attention and its consequences, can produce behavior that is better described as **regulation of attention** than mere computation of attention.
+The main result is no longer just that recurrence is generally useful. The more specific repo-level result is that a small recurrent controller, given access to previous attention and its consequences, can support:
 
-In the language of the Good Regulator Theorem, the controller appears to use a task-relevant internal representation of its own attentional process. In this implementation, that representation is not a separate symbolic object; it is the recurrent internal state that combines previous attention, previous cue-conditioned observation, and detached feedback into the next allocation policy. What counts as the candidate model of attention here is therefore the controller state that summarizes prior allocation and its consequences well enough to guide future allocation.
+- closed-loop attention regulation,
+- explicit attention-dynamics probes,
+- bounded self-modeling of attentional history,
+- flexible reallocation under changed priorities,
+- structured internal report variables.
 
-The stronger claim, however, should be stated carefully. The present evidence shows:
+That is already stronger than the original attention-control benchmark framing.
+
+The stronger claim should still be stated carefully. The current evidence supports:
 
 - recurrence improves attention regulation,
-- the recurrent state carries information about prior allocation and outcomes,
-- that information affects future allocation.
+- controller state predicts and causally influences future allocation,
+- the model tracks inspected history explicitly,
+- structured internal contents are available for bounded report,
+- changed-priority reallocation can be trained successfully.
 
-It does **not yet show** that the controller state contains an explicit predictive model of attentional dynamics rather than a generic recurrent memory that improves policy quality. For that stronger claim, predictive probes and intervention tests are still needed.
+It does **not yet** support:
 
-### 6.1 Relation to Modeler Schema Theory
+- faithful natural-language report from tokenized internal state,
+- a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
 
-This benchmark also admits a natural interpretation in the language of the Modeler Schema Theory of Consciousness. On that view, consciousness is associated not with raw sensory content alone, but with the contents of a regulatory schema that monitors and constrains internal modeling. If that framing is applied here, then the most plausible candidate for consciousness-like content is not the raw scene encoding or the raw attention mask by itself. It is the controller's recurrent internal representation of attention and its consequences.
+### 6.1 Relation to Good Regulator and Modeler Schema Framing
 
-More concretely, the relevant content would be the state that carries forward:
+The benchmark still admits a natural interpretation in the language of the Good Regulator Theorem and modeler-schema ideas. On that framing, the most plausible candidate for consciousness-like content is not the raw scene representation or the raw attention mask. It is the controller state that carries forward:
 
 - previous attention allocation,
 - previous cue-conditioned observation,
-- previous loss proxy,
-- previous confidence,
-- task cue.
+- previous task feedback,
+- explicit inspected-state variables,
+- and later report-oriented self-model variables.
 
-Under that interpretation, the benchmark does not merely instantiate a toy control loop. It instantiates a minimal system in which a regulatory model of attention has explicit computational content and measurable behavioral consequences. This does not show that the system is conscious. It does, however, provide a concrete toy case in which one can ask what the contents of an attention-model are and how those contents alter behavior.
-
-This framing should be treated as secondary to the main empirical contribution. The primary result of the present work is a benchmark and proof-of-principle demonstration of closed-loop attention regulation. The consciousness-theoretic interpretation is best understood as a possible lens on that result, not as a conclusion established by the benchmark itself.
+What the current repository adds is a sharper boundary around that interpretation. Structured reportability is now supported, but natural-language reportability from tokenized internal state is not yet. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
 
 ## 7. Limitations
 
-This benchmark is intentionally minimal.
+This system is still intentionally minimal.
 
 - The environment is synthetic and low-dimensional.
 - Attention is soft rather than hard fixation.
-- The wrong-cue and shuffle-cue probes are useful diagnostics, but not the only possible tests of cue dependence.
-- Some ablations remain noisy and may require repeated runs or confidence intervals for publication-quality claims.
+- Some checkpoint-level metrics vary across training recipes.
+- Stage 7 natural-language reporting still depends on an external language model and remains unstable enough that small evaluation slices are more reliable than large aggregate runs.
+- Tokenized internal-state reporting remains the current bottleneck.
 
-The benchmark should therefore be seen as a proof-of-principle environment, not a comprehensive account of attentional control in larger systems.
+So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
 
-## 8. Future Work
+## 8. Immediate Next Work
 
-The next natural extensions are:
+The next highest-value experiments are now concentrated in Stage 7 and beyond:
 
-1. add explicit task switching within episodes,
-2. add explicit error-corrective reallocation tasks,
-3. test hard attention variants,
-4. measure robustness over multiple seeds,
-5. refine qualitative visualizations into paper-ready figures.
-
-### 8.1 Experimental Checklist
-
-The most important next experiments are the ones that would distinguish closed-loop attention control from a stronger claim about explicit attention modeling:
-
-- Add a predictive probe from controller state at time `t` to next attention map or target-attention gain at `t+1`.
-- Add intervention tests that perturb controller state while holding scene and cue fixed, and measure systematic changes in subsequent attention.
-- Move task switching earlier in the benchmark suite, since changed priorities are a sharper test of control than stationary cueing alone.
-- Reduce or remove the direct final-step target-attention loss in at least one condition to test whether useful reallocation emerges from task success alone.
-
-These should be understood as the main checklist for upgrading the paper from a demonstration of recurrent attention control to a stronger claim about an explicit attention schema.
+1. improve the tokenized internal-state interface so attended semantic content is easier to recover than from observation-only input,
+2. compress unresolved-region reporting into a more learnable target than long exact cell lists,
+3. test natural-language reporting under cue switches and controller interventions,
+4. add uncertainty and allocation-error report targets that distinguish “not yet inspected” from “inspected but failed,”
+5. continue measuring robustness over repeated seeds and checkpoints.
 
 ## 9. Reproducibility
 
@@ -211,9 +288,8 @@ The implementation lives in this repository:
 - models: [src/attcon/models.py](/home/david/dev/attcon/src/attcon/models.py)
 - training: [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py)
 - evaluation: [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py)
+- Stage 7 NL reporting helpers: [src/attcon/nl_report.py](/home/david/dev/attcon/src/attcon/nl_report.py)
 - default config: [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml)
-
-The latest local evaluation report is written to `outputs/minimal/evaluation_report.json` after running eval.
 
 Default commands:
 
@@ -224,6 +300,6 @@ Default commands:
 
 ## 10. Conclusion
 
-We introduced a minimal benchmark designed to separate attention from attention control. In this setting, a recurrent controller that conditions future allocation on previous attention outcomes outperforms both static and stronger non-recurrent alternatives, shows positive temporal reallocation, and is more strongly cue-sensitive. These results support the claim that even a small recurrent system can instantiate a minimal but defensible form of closed-loop attention control.
+The repository now goes well beyond a minimal Stage 2 benchmark. In the current default setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports predictive and intervention evidence for explicit attention modeling, maintains an explicit self-model of inspected history, handles cue switching better than the baseline, and supports structured internal report variables. Those results are enough to support Stages 1 through 6 of the roadmap in a bounded benchmark sense.
 
-The stronger interpretation, that the controller contains an explicit model or schema of attention, remains open. The current work points toward that possibility, but the relevant predictive and intervention evidence is still to be done. That distinction is not a weakness of the benchmark. It is precisely what makes the benchmark useful.
+The strongest remaining open problem is Stage 7: faithful natural-language access to tokenized internal state. Symbolic state dumps are easy for the language model to report faithfully. Tokenized internal-state reporting is not yet good enough. That gap is now the clearest frontier in the project, and it is precisely what makes the benchmark useful as a disciplined stepping stone rather than a vague consciousness metaphor.
