@@ -232,7 +232,45 @@ This is now positive evidence for **reportable internal content** in a bounded s
 
 The current result supports structured reports about search type, attended cell, target-found status, and unresolved regions. It is still limited and benchmark-specific, but it now goes beyond the earlier partial decoder-only story.
 
-## Stage 7: Minimal Consciousness Interpretation
+## Stage 7: Natural-Language Reportability
+
+Question:
+
+Can the system express its internal attentional and self-model state in flexible natural language, grounded in the actual controller state rather than post-hoc guessing?
+
+Why this matters:
+
+Structured report variables are useful, but they are still narrow and benchmark-specific. Natural-language reporting would test whether the same internal contents can support more flexible, compositional, human-legible reports.
+
+Candidate report prompts:
+
+- what are you currently searching for?
+- which regions have you already inspected?
+- which regions remain unresolved?
+- have you found the target yet?
+- why are you reallocating attention right now?
+
+Success criterion:
+
+- natural-language reports track the true internal state
+- reports change appropriately after cue switches or causal interventions
+- reports outperform baselines that only see the current scene or glimpse
+- reports remain faithful when observation and internal state are put under tension
+
+Good implementation constraint:
+
+- the language model should be conditioned on explicit controller and self-model state
+- evaluation should compare that against text generation from observation alone
+
+Current status in this repo:
+
+- not yet implemented
+
+Interpretation:
+
+This would be a stronger and more legible form of reportability than the current structured probes, but it should only count if the language output is demonstrably faithful to the real internal state.
+
+## Stage 8: Minimal Consciousness Interpretation
 
 Question:
 
@@ -280,7 +318,8 @@ The intended dependency structure is:
 4. Branch A, Stage 4: self-modeling of attention
 5. Branch B, Stage 5: flexible reallocation under changed priorities
 6. Stage 6: reportable internal content
-7. Stage 7: minimal consciousness interpretation
+7. Stage 7: natural-language reportability
+8. Stage 8: minimal consciousness interpretation
 
 In other words, Stage 4 and Stage 5 should be read as parallel branches after Stage 3, not as a strict ordered ladder where Stage 4 must be completed before Stage 5 begins.
 
@@ -290,6 +329,7 @@ The highest-priority next experiments are:
 
 - extend Stage 4 from explicit inspected-state reporting to stronger allocation-error and unresolved-region tasks
 - add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
+- add a natural-language reporting layer grounded in explicit controller and self-model state
 - add plots or diagnostics for switched-cue and self-model trajectories
 
 ## Current Status
@@ -305,6 +345,7 @@ What is already supported:
 
 What is not yet established:
 
+- natural-language reportability grounded in internal state
 - minimal consciousness-like content
 
 What is currently unstable or tradeoff-limited:

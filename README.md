@@ -2,7 +2,7 @@
 
 `attcon` is a minimal PyTorch benchmark for testing whether a model is merely computing attention or actually controlling it over time.
 
-The current roadmap treats Stages 1 through 3 as the sequential foundation, then splits into two parallel lines of work: self-modeling of attention and flexible reallocation under changed priorities.
+The current roadmap treats Stages 1 through 3 as the sequential foundation, then splits into two parallel lines of work: self-modeling of attention and flexible reallocation under changed priorities. After structured reportability, the next planned step is a natural-language reporting layer grounded in the model's internal state.
 
 The current implementation trains and compares:
 
