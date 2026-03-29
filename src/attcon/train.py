@@ -57,6 +57,13 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "probe_scenes": 4,
             "switch_step": 3,
         },
+        "report_probes": {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
         "reduced_shaping": {
             "enabled": True,
             "weights": [0.25, 0.0],

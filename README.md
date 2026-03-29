@@ -40,21 +40,24 @@ The evaluation report includes:
 - a predictive probe comparing controller-state vs observation-only prediction of the next attention map
 - a causal intervention test that perturbs controller state and measures the next-step attention shift
 - a mid-episode cue-switch evaluation that tests whether attention reallocates after priorities change
+- report probes that test whether controller state can support simple readouts of current regulatory content
 - reduced-shaping retraining runs that test whether reallocation survives weaker or zero target-attention supervision
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the three core claims:
   `dissociation`, `closed_loop_adaptation`, `cue_dependence`, plus Stage 3-style
-  `explicit_attention_modeling`, `causal_attention_intervention`, and
+  `explicit_attention_modeling`, `reportable_internal_content`,
+  `causal_attention_intervention`, and
   `reduced_shaping_resilience` results
 
 ## Current Result Shape
 
 On the current default run, the recurrent controller outperforms the static baseline and stronger non-recurrent ablations, while also showing positive temporal reallocation and cue sensitivity.
 
-The current evaluation also adds three positive Stage 3-style signals:
+The current evaluation also adds several positive later-stage signals:
 
 - a predictive probe where controller state predicts the next attention map better than the current observation summary alone
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
+- report probes where controller state supports simple readouts of current search type, current attended cell, and whether target evidence is currently in view
 - reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping, but does not disappear entirely when that shaping term is removed
 
 It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is not yet passed: the controller is stronger on fixed-cue control than on rapid redirection after a mid-episode cue change.
@@ -65,7 +68,7 @@ The exact numbers depend on the saved checkpoint in `outputs/minimal`, but the i
 
 1. train both baseline and recurrent models
 2. run ablations
-3. inspect the JSON report, predictive-probe results, intervention results, cue-switch results, reduced-shaping results, and attention plots
+3. inspect the JSON report, predictive-probe results, report-probe results, intervention results, cue-switch results, reduced-shaping results, and attention plots
 
 ## Tests
 

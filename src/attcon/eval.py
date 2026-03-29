@@ -198,6 +198,44 @@ def _collect_probe_dataset(
     )
 
 
+def _collect_report_probe_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, torch.Tensor]:
+    """Collect controller-state report labels for simple internal-content probes."""
+
+    state_features = []
+    observation_features = []
+    cue_labels = []
+    attended_cell_labels = []
+    found_target_labels = []
+
+    for batch_idx in range(num_batches):
+        outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
+        attention = outputs["attention_seq"]
+        observation = outputs["observation_seq"]
+        cue_seq = probe_batch.cue.unsqueeze(1).repeat(1, task_cfg.num_steps)
+        found_target = (observation[..., 0] > 0.5).float()
+
+        state_features.append(outputs["controller_state_seq"].reshape(-1, outputs["controller_state_seq"].shape[-1]))
+        observation_features.append(observation.reshape(-1, observation.shape[-1]))
+        cue_labels.append(cue_seq.reshape(-1))
+        attended_cell_labels.append(attention.argmax(dim=-1).reshape(-1))
+        found_target_labels.append(found_target.reshape(-1))
+
+    return {
+        "state_features": torch.cat(state_features, dim=0),
+        "observation_features": torch.cat(observation_features, dim=0),
+        "cue_labels": torch.cat(cue_labels, dim=0),
+        "attended_cell_labels": torch.cat(attended_cell_labels, dim=0),
+        "found_target_labels": torch.cat(found_target_labels, dim=0),
+    }
+
+
 def _train_attention_probe(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
@@ -244,6 +282,77 @@ def _train_attention_probe(
         "train_top1_match": train_top1,
         "test_top1_match": test_top1,
     }
+
+
+def _train_classification_probe(
+    train_features: torch.Tensor,
+    train_labels: torch.Tensor,
+    test_features: torch.Tensor,
+    test_labels: torch.Tensor,
+    *,
+    num_classes: int,
+    epochs: int,
+    learning_rate: float,
+) -> dict[str, float]:
+    """Fit a linear classifier probe."""
+
+    probe = nn.Linear(train_features.shape[-1], num_classes).to(train_features.device)
+    optimizer = torch.optim.Adam(probe.parameters(), lr=learning_rate)
+    train_labels = train_labels.long()
+    test_labels = test_labels.long()
+
+    for _ in range(epochs):
+        logits = probe(train_features)
+        loss = torch.nn.functional.cross_entropy(logits, train_labels)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        train_logits = probe(train_features)
+        test_logits = probe(test_features)
+        return {
+            "train_cross_entropy": torch.nn.functional.cross_entropy(train_logits, train_labels).item(),
+            "test_cross_entropy": torch.nn.functional.cross_entropy(test_logits, test_labels).item(),
+            "train_accuracy": (train_logits.argmax(dim=-1) == train_labels).float().mean().item(),
+            "test_accuracy": (test_logits.argmax(dim=-1) == test_labels).float().mean().item(),
+        }
+
+
+def _train_binary_probe(
+    train_features: torch.Tensor,
+    train_labels: torch.Tensor,
+    test_features: torch.Tensor,
+    test_labels: torch.Tensor,
+    *,
+    epochs: int,
+    learning_rate: float,
+) -> dict[str, float]:
+    """Fit a linear binary probe."""
+
+    probe = nn.Linear(train_features.shape[-1], 1).to(train_features.device)
+    optimizer = torch.optim.Adam(probe.parameters(), lr=learning_rate)
+    train_labels = train_labels.float().unsqueeze(-1)
+    test_labels = test_labels.float().unsqueeze(-1)
+
+    for _ in range(epochs):
+        logits = probe(train_features)
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(logits, train_labels)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        train_logits = probe(train_features)
+        test_logits = probe(test_features)
+        train_pred = (torch.sigmoid(train_logits) >= 0.5).float()
+        test_pred = (torch.sigmoid(test_logits) >= 0.5).float()
+        return {
+            "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_labels).item(),
+            "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_labels).item(),
+            "train_accuracy": (train_pred == train_labels).float().mean().item(),
+            "test_accuracy": (test_pred == test_labels).float().mean().item(),
+        }
 
 
 def predictive_probe_metrics(
@@ -312,6 +421,115 @@ def predictive_probe_metrics(
         "supported": (
             controller_probe["test_cross_entropy"] < observation_probe["test_cross_entropy"]
             and controller_probe["test_mse"] < observation_probe["test_mse"]
+        ),
+    }
+
+
+def report_probe_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Test whether controller state can support simple report-like readouts."""
+
+    probe_cfg = cfg["evaluation"].get(
+        "report_probes",
+        {
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
+    )
+    if not probe_cfg.get("enabled", False):
+        return {}
+
+    batch_size = cfg["training"]["batch_size"]
+    train = _collect_report_probe_dataset(
+        model, task_cfg, batch_size, probe_cfg["train_batches"], device, seed
+    )
+    test = _collect_report_probe_dataset(
+        model, task_cfg, batch_size, probe_cfg["test_batches"], device, seed + 1000
+    )
+
+    epochs = probe_cfg["epochs"]
+    learning_rate = probe_cfg["learning_rate"]
+
+    cue_state = _train_classification_probe(
+        train["state_features"],
+        train["cue_labels"],
+        test["state_features"],
+        test["cue_labels"],
+        num_classes=task_cfg.num_types,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    cue_obs = _train_classification_probe(
+        train["observation_features"],
+        train["cue_labels"],
+        test["observation_features"],
+        test["cue_labels"],
+        num_classes=task_cfg.num_types,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    attended_state = _train_classification_probe(
+        train["state_features"],
+        train["attended_cell_labels"],
+        test["state_features"],
+        test["attended_cell_labels"],
+        num_classes=task_cfg.num_cells,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    attended_obs = _train_classification_probe(
+        train["observation_features"],
+        train["attended_cell_labels"],
+        test["observation_features"],
+        test["attended_cell_labels"],
+        num_classes=task_cfg.num_cells,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    found_state = _train_binary_probe(
+        train["state_features"],
+        train["found_target_labels"],
+        test["state_features"],
+        test["found_target_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    found_obs = _train_binary_probe(
+        train["observation_features"],
+        train["found_target_labels"],
+        test["observation_features"],
+        test["found_target_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+
+    return {
+        "current_search_type": {
+            "controller_state_probe": cue_state,
+            "observation_only_probe": cue_obs,
+            "controller_accuracy_advantage": cue_state["test_accuracy"] - cue_obs["test_accuracy"],
+        },
+        "current_attended_cell": {
+            "controller_state_probe": attended_state,
+            "observation_only_probe": attended_obs,
+            "controller_accuracy_advantage": attended_state["test_accuracy"] - attended_obs["test_accuracy"],
+        },
+        "target_found_in_glimpse": {
+            "controller_state_probe": found_state,
+            "observation_only_probe": found_obs,
+            "controller_accuracy_advantage": found_state["test_accuracy"] - found_obs["test_accuracy"],
+        },
+        "supported": (
+            cue_state["test_accuracy"] > cue_obs["test_accuracy"]
+            and attended_state["test_accuracy"] > attended_obs["test_accuracy"]
+            and found_state["test_accuracy"] > found_obs["test_accuracy"]
         ),
     }
 
@@ -700,6 +918,20 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": predictive_probe.get("supported", False),
     }
 
+    report_probes = report.get("report_probes", {})
+    reportable_internal_content = {
+        "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
+            "controller_accuracy_advantage", 0.0
+        ),
+        "current_attended_cell_advantage": report_probes.get("current_attended_cell", {}).get(
+            "controller_accuracy_advantage", 0.0
+        ),
+        "target_found_advantage": report_probes.get("target_found_in_glimpse", {}).get(
+            "controller_accuracy_advantage", 0.0
+        ),
+        "supported": report_probes.get("supported", False),
+    }
+
     reduced_shaping = report.get("reduced_shaping", {})
     reduced_shaping_summary = reduced_shaping.get("summary", {})
     shaping_resilience = {
@@ -733,6 +965,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "cue_dependence": cue_dependence,
         "cue_switch_adaptation": cue_switch_adaptation,
         "explicit_attention_modeling": explicit_attention_modeling,
+        "reportable_internal_content": reportable_internal_content,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
     }
@@ -865,6 +1098,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9700,
+    )
+    report["report_probes"] = report_probe_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9725,
     )
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
     if cue_switch_cfg.get("enabled", False):

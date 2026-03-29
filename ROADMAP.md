@@ -194,6 +194,18 @@ Success criterion:
 
 The same internal state that guides attention can also support explicit report about attentional status.
 
+Current status in this repo:
+
+- report probes are now implemented
+- on the default run, controller state supports stronger readouts than observation alone for current search type and current attended cell
+- controller state also shows a small positive advantage for reporting whether target evidence is currently present in the glimpse
+
+Interpretation:
+
+This is preliminary evidence for **reportable internal content** in a limited sense.
+
+The current result supports simple decoder-based reports from controller state, but not yet flexible, native report behavior from the model itself.
+
 ## Stage 7: Minimal Consciousness Interpretation
 
 Question:
@@ -247,6 +259,7 @@ What is already supported:
 - attention
 - closed-loop attention control
 - preliminary evidence for explicit attention modeling
+- preliminary evidence for reportable internal content
 
 What is not yet established:
 
