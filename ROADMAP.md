@@ -223,13 +223,14 @@ Current status in this repo:
 
 - report probes are now implemented
 - on the default run, controller state supports stronger readouts than observation alone for current search type and current attended cell
-- controller state also shows a small positive advantage for reporting whether target evidence is currently present in the glimpse
+- the current report suite also now supports cumulative target-found reporting and unresolved-region reporting
+- the latest default report marks `reportable_internal_content` as supported
 
 Interpretation:
 
-This is preliminary evidence for **reportable internal content** in a limited sense.
+This is now positive evidence for **reportable internal content** in a bounded sense.
 
-The current result supports simple decoder-based reports from controller state, but not yet flexible, native report behavior from the model itself.
+The current result supports structured reports about search type, attended cell, target-found status, and unresolved regions. It is still limited and benchmark-specific, but it now goes beyond the earlier partial decoder-only story.
 
 ## Stage 7: Minimal Consciousness Interpretation
 
@@ -288,7 +289,7 @@ In other words, Stage 4 and Stage 5 should be read as parallel branches after St
 The highest-priority next experiments are:
 
 - extend Stage 4 from explicit inspected-state reporting to stronger allocation-error and unresolved-region tasks
-- improve Stage 6 so native report behavior covers more than search type and attended cell
+- add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
 - add plots or diagnostics for switched-cue and self-model trajectories
 
 ## Current Status
@@ -300,7 +301,7 @@ What is already supported:
 - explicit attention modeling
 - self-modeling of attention
 - flexible reallocation under changed priorities, after mixed switched-cue training
-- preliminary evidence for reportable internal content
+- reportable internal content
 
 What is not yet established:
 
@@ -309,6 +310,6 @@ What is not yet established:
 What is currently unstable or tradeoff-limited:
 
 - stronger native report behavior beyond the current explicit inspected-state scaffold
-- a broader Stage 6 story that includes target-found and unresolved-region reporting
+- richer uncertainty and allocation-error reporting beyond the current target-found and unresolved-region variables
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined and experimentally grounded.

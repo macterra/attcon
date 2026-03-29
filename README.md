@@ -42,7 +42,7 @@ The evaluation report includes:
 - a predictive probe comparing controller-state vs observation-only prediction of the next attention map
 - a causal intervention test that perturbs controller state and measures the next-step attention shift
 - a mid-episode cue-switch evaluation that tests whether attention reallocates after priorities change
-- report probes that test whether controller state can support simple readouts of current regulatory content
+- report probes that test whether controller state can support simple readouts of current regulatory content, including cumulative target-found status and unresolved regions
 - reduced-shaping retraining runs that test whether reallocation survives weaker or zero target-attention supervision
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the three core claims:
@@ -60,7 +60,7 @@ The current evaluation also adds several positive later-stage signals:
 - a predictive probe where controller state predicts the next attention map better than the current observation summary alone
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
 - a native self-modeling evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
-- report probes where controller state supports simple readouts of current search type, current attended cell, and whether target evidence is currently in view
+- report probes where controller state supports simple readouts of current search type, current attended cell, cumulative target-found status, and unresolved regions
 - reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping
 
 It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is now passed after training on a mix of stationary and switched-cue episodes: the recurrent controller redirects attention better than the baseline after a mid-episode cue change.
@@ -68,6 +68,8 @@ It also includes a Stage 5-style cue-switch test. On the current default checkpo
 The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
 
 The current Stage 4 result is stronger than the earlier decoder-only report probes. The recurrent model now exposes an explicit inspected-cell memory and a native self-model report head, and the full evaluation report shows `self_modeling_of_attention.supported = true` on the default checkpoint.
+
+The current Stage 6 result is also now positive. The latest report shows `reportable_internal_content.supported = true`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting.
 
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 

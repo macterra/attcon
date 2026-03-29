@@ -176,6 +176,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         )
         self.policy_head = nn.Linear(model_config.hidden_size, self.num_cells)
         self.self_model_head = nn.Linear(model_config.hidden_size + self.num_cells, self.num_cells)
+        self.target_found_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
 
     @property
     def summary_dim(self) -> int:
@@ -243,6 +244,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         hidden_state, hidden_features = self.initial_state(scene, cue_seq_for_policy[:, 0])
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
         inspection_state = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
+        found_state = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_observation = torch.zeros(scene.shape[0], self.observation_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_confidence = torch.zeros(scene.shape[0], 1, device=scene.device)
@@ -255,6 +257,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         controller_state_seq = [hidden_state]
         inspection_seq = []
         self_model_logits_seq = []
+        target_found_logits_seq = []
+        found_state_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -291,6 +295,13 @@ class RecurrentAttentionController(BaseAttentionModel):
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             step_logits = self.task_head(torch.cat([observed_glimpse, hidden_state], dim=-1))
             step_loss, step_confidence = self._compute_loss_proxy(step_logits, target)
+            attended_cell = attention.argmax(dim=-1)
+            attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
+            inspection_state_post = torch.maximum(inspection_state, attended_one_hot)
+            found_state_post = torch.maximum(found_state, observed_glimpse[:, :1].detach())
+            target_found_logits = self.target_found_head(
+                torch.cat([hidden_state, inspection_state_post, found_state_post], dim=-1)
+            )
 
             attention_seq.append(attention)
             logits_seq.append(step_logits)
@@ -300,11 +311,12 @@ class RecurrentAttentionController(BaseAttentionModel):
             controller_state_seq.append(hidden_state)
             inspection_seq.append(inspection_state)
             self_model_logits_seq.append(self_model_logits)
+            target_found_logits_seq.append(target_found_logits)
+            found_state_seq.append(found_state_post)
 
             previous_attention = attention.detach()
-            attended_cell = attention.argmax(dim=-1)
-            attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
-            inspection_state = torch.maximum(inspection_state, attended_one_hot)
+            inspection_state = inspection_state_post
+            found_state = found_state_post
             previous_observation = observed_glimpse
             previous_loss = step_loss
             previous_confidence = step_confidence
@@ -321,4 +333,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             "inspection_seq": torch.stack(inspection_seq, dim=1),
             "self_model_logits_seq": torch.stack(self_model_logits_seq, dim=1),
             "self_model_seq": torch.sigmoid(torch.stack(self_model_logits_seq, dim=1)),
+            "found_state_seq": torch.stack(found_state_seq, dim=1),
+            "target_found_logits_seq": torch.stack(target_found_logits_seq, dim=1),
+            "target_found_seq": torch.sigmoid(torch.stack(target_found_logits_seq, dim=1)),
         }

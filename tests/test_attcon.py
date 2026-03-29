@@ -62,6 +62,14 @@ class AttentionControlTests(unittest.TestCase):
             recurrent_outputs["self_model_seq"].shape,
             (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
         )
+        self.assertEqual(
+            recurrent_outputs["found_state_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
+        self.assertEqual(
+            recurrent_outputs["target_found_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
 
     def test_attention_is_normalized(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)

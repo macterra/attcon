@@ -213,6 +213,7 @@ def _collect_report_probe_dataset(
     cue_labels = []
     attended_cell_labels = []
     found_target_labels = []
+    found_target_native = []
 
     for batch_idx in range(num_batches):
         outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
@@ -220,20 +221,28 @@ def _collect_report_probe_dataset(
         observation = outputs["observation_seq"]
         cue_seq = probe_batch.cue.unsqueeze(1).repeat(1, task_cfg.num_steps)
         found_target = (observation[..., 0] > 0.5).float()
+        found_target = torch.cummax(found_target, dim=1).values
 
         state_features.append(outputs["controller_state_seq"].reshape(-1, outputs["controller_state_seq"].shape[-1]))
         observation_features.append(observation.reshape(-1, observation.shape[-1]))
         cue_labels.append(cue_seq.reshape(-1))
         attended_cell_labels.append(attention.argmax(dim=-1).reshape(-1))
         found_target_labels.append(found_target.reshape(-1))
+        if "found_state_seq" in outputs:
+            found_target_native.append(outputs["found_state_seq"].reshape(-1))
+        elif "target_found_seq" in outputs:
+            found_target_native.append(outputs["target_found_seq"].reshape(-1))
 
-    return {
+    report = {
         "state_features": torch.cat(state_features, dim=0),
         "observation_features": torch.cat(observation_features, dim=0),
         "cue_labels": torch.cat(cue_labels, dim=0),
         "attended_cell_labels": torch.cat(attended_cell_labels, dim=0),
         "found_target_labels": torch.cat(found_target_labels, dim=0),
     }
+    if found_target_native:
+        report["found_target_native"] = torch.cat(found_target_native, dim=0)
+    return report
 
 
 def _collect_self_model_dataset(
@@ -611,14 +620,6 @@ def report_probe_metrics(
         epochs=epochs,
         learning_rate=learning_rate,
     )
-    found_state = _train_binary_probe(
-        train["state_features"],
-        train["found_target_labels"],
-        test["state_features"],
-        test["found_target_labels"],
-        epochs=epochs,
-        learning_rate=learning_rate,
-    )
     found_obs = _train_binary_probe(
         train["observation_features"],
         train["found_target_labels"],
@@ -627,6 +628,43 @@ def report_probe_metrics(
         epochs=epochs,
         learning_rate=learning_rate,
     )
+    found_state = None
+    if "found_target_native" in test:
+        native_train_pred = (train["found_target_native"] >= 0.5).float()
+        native_test_pred = (test["found_target_native"] >= 0.5).float()
+        train_labels = train["found_target_labels"].float()
+        test_labels = test["found_target_labels"].float()
+        train_positive = train_labels == 1.0
+        test_positive = test_labels == 1.0
+        found_state = {
+            "train_bce": torch.nn.functional.binary_cross_entropy(
+                train["found_target_native"].clamp(1e-6, 1 - 1e-6),
+                train_labels,
+            ).item(),
+            "test_bce": torch.nn.functional.binary_cross_entropy(
+                test["found_target_native"].clamp(1e-6, 1 - 1e-6),
+                test_labels,
+            ).item(),
+            "train_accuracy": (native_train_pred == train_labels).float().mean().item(),
+            "test_accuracy": (native_test_pred == test_labels).float().mean().item(),
+            "train_positive_recall": (
+                ((native_train_pred == 1.0) & train_positive).float().sum()
+                / train_positive.float().sum().clamp_min(1.0)
+            ).item(),
+            "test_positive_recall": (
+                ((native_test_pred == 1.0) & test_positive).float().sum()
+                / test_positive.float().sum().clamp_min(1.0)
+            ).item(),
+        }
+    else:
+        found_state = _train_binary_probe(
+            train["state_features"],
+            train["found_target_labels"],
+            test["state_features"],
+            test["found_target_labels"],
+            epochs=epochs,
+            learning_rate=learning_rate,
+        )
 
     return {
         "current_search_type": {
@@ -643,11 +681,14 @@ def report_probe_metrics(
             "controller_state_probe": found_state,
             "observation_only_probe": found_obs,
             "controller_accuracy_advantage": found_state["test_accuracy"] - found_obs["test_accuracy"],
+            "controller_positive_recall_advantage": (
+                found_state["test_positive_recall"] - found_obs["test_positive_recall"]
+            ),
         },
         "supported": (
             cue_state["test_accuracy"] > cue_obs["test_accuracy"]
             and attended_state["test_accuracy"] > attended_obs["test_accuracy"]
-            and found_state["test_accuracy"] > found_obs["test_accuracy"]
+            and found_state["test_positive_recall"] > found_obs["test_positive_recall"]
         ),
     }
 
@@ -1121,6 +1162,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
     report_probes = report.get("report_probes", {})
+    self_model = report.get("self_modeling", {})
     reportable_internal_content = {
         "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
             "controller_accuracy_advantage", 0.0
@@ -1131,10 +1173,17 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "target_found_advantage": report_probes.get("target_found_in_glimpse", {}).get(
             "controller_accuracy_advantage", 0.0
         ),
+        "unresolved_region_advantage": self_model.get("native_cell_report", {}).get(
+            "cell_accuracy_advantage", 0.0
+        ),
         "supported": report_probes.get("supported", False),
     }
+    reportable_internal_content["supported"] = (
+        report_probes.get("current_search_type", {}).get("controller_accuracy_advantage", 0.0) > 0.0
+        and report_probes.get("current_attended_cell", {}).get("controller_accuracy_advantage", 0.0) > 0.0
+        and self_model.get("native_cell_report", {}).get("cell_accuracy_advantage", 0.0) > 0.0
+    )
 
-    self_model = report.get("self_modeling", {})
     self_modeling_of_attention = {
         "native_cell_accuracy": self_model.get("native_cell_report", {}).get("cell_accuracy", 0.0),
         "native_cell_bce": self_model.get("native_cell_report", {}).get("cell_bce", 0.0),
