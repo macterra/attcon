@@ -82,7 +82,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "calibration_examples": 4,
             "evaluation_examples": 4,
             "probe_scenes": 2,
-            "max_output_tokens": 1200,
+            "max_output_tokens": 2000,
         },
         "reduced_shaping": {
             "enabled": True,

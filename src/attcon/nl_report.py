@@ -329,7 +329,7 @@ def run_nl_report_mode(
     if OpenAI is None:
         raise RuntimeError("openai dependency is not installed")
 
-    client = OpenAI(max_retries=0, timeout=20.0)
+    client = OpenAI(max_retries=0, timeout=45.0)
     results = []
     exact_search = 0
     exact_attended = 0
@@ -343,7 +343,7 @@ def run_nl_report_mode(
     for example in evaluation_examples:
         parsed = None
         last_error = None
-        for _ in range(3):
+        for _ in range(6):
             try:
                 response = client.responses.create(
                     model=model_name,

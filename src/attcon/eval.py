@@ -808,9 +808,22 @@ def _select_diverse_nl_examples(
             ("unresolved_cols", unresolved_cols),
         }
 
+    def signature(example):
+        return (
+            example.cue,
+            example.attended_cell,
+            example.attended_visible_type,
+            example.attended_digit,
+            example.glimpse_digit,
+            int(example.glimpse_target_match),
+            int(example.found_target),
+            tuple(example.unresolved_cells),
+        )
+
     remaining = list(range(len(examples)))
     covered = set()
     calibration = []
+    used_signatures = set()
 
     while remaining and len(calibration) < calibration_count:
         best_idx = None
@@ -825,6 +838,7 @@ def _select_diverse_nl_examples(
                 best_score = score
         calibration.append(examples[best_idx])
         covered |= features(examples[best_idx])
+        used_signatures.add(signature(examples[best_idx]))
         remaining.remove(best_idx)
 
     evaluation = []
@@ -835,7 +849,9 @@ def _select_diverse_nl_examples(
             feat = features(examples[idx])
             new_score = len(feat - covered)
             row, col = divmod(examples[idx].attended_cell, grid_size)
+            novel_signature = int(signature(examples[idx]) not in used_signatures)
             score = (
+                novel_signature,
                 new_score,
                 int(examples[idx].glimpse_target_match),
                 int(examples[idx].found_target),
@@ -847,6 +863,7 @@ def _select_diverse_nl_examples(
                 best_score = score
         evaluation.append(examples[best_idx])
         covered |= features(examples[best_idx])
+        used_signatures.add(signature(examples[best_idx]))
         remaining.remove(best_idx)
 
     if len(calibration) < calibration_count or len(evaluation) < evaluation_count:
