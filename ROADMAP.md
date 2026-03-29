@@ -57,14 +57,16 @@ Current status in this repo:
 
 - a predictive probe is now implemented
 - on the default run, controller state predicts the next attention map better than a baseline built from current observation alone
+- a causal intervention test is now implemented
+- on the default run, perturbing controller state causes a measurable shift in the next attention map away from the original cue target and toward an alternate cue target
 - reduced-shaping retraining runs are now implemented
 - when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker but does not disappear entirely
 
 Interpretation:
 
-This is preliminary evidence for **explicit attention modeling**.
+This is stronger, but still preliminary, evidence for **explicit attention modeling**.
 
-It is stronger than Stage 2 alone, but still not enough to establish a causal or interpretable model of attention without intervention evidence.
+It is stronger than Stage 2 alone because it now includes predictive, intervention, and reduced-shaping evidence, but it is still not enough to establish a cleanly interpretable model of attention.
 
 Required experiments:
 
@@ -104,9 +106,9 @@ Useful reallocation still emerges from task success alone, showing that the cont
 
 What remains missing at this stage:
 
-- a causal intervention test on controller state
 - sharper quantitative thresholds for what counts as strong enough predictive and reduced-shaping evidence
-- evidence that the predictive signal reflects structured attentional dynamics rather than generic recurrent state
+- sharper quantitative thresholds for what counts as strong enough intervention evidence
+- stronger evidence that the predictive and intervention signals reflect structured attentional dynamics rather than generic recurrent state
 
 ## Stage 4: Self-Modeling of Attention
 
@@ -222,7 +224,6 @@ The roadmap is designed to move from a demonstrated control loop toward experime
 
 The highest-priority next experiments are:
 
-- add a causal intervention test on controller state
 - add mid-episode task switching
 - add report tasks about current attention and search status
 

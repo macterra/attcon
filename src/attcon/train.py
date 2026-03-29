@@ -47,6 +47,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "intervention_test": {
+            "enabled": True,
+            "probe_scenes": 4,
+            "step": 2,
+        },
         "reduced_shaping": {
             "enabled": True,
             "weights": [0.25, 0.0],

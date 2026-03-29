@@ -316,6 +316,170 @@ def predictive_probe_metrics(
     }
 
 
+def intervention_test_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Perturb controller state with same-scene, different-cue deltas and measure next attention shifts."""
+
+    intervention_cfg = cfg["evaluation"].get("intervention_test", {})
+    if not intervention_cfg.get("enabled", False):
+        return {}
+
+    batch_size = intervention_cfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"])
+    step = intervention_cfg.get("step", 2)
+    if step < 0 or step >= task_cfg.num_steps:
+        raise ValueError("intervention_test.step must be within the episode length")
+
+    outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed)
+    states = outputs["controller_state_seq"].view(batch_size, task_cfg.num_types, task_cfg.num_steps, -1)
+    baseline_attention = outputs["attention_seq"].view(
+        batch_size, task_cfg.num_types, task_cfg.num_steps, -1
+    )
+    target_pos = probe_batch.target_pos.view(batch_size, task_cfg.num_types)
+
+    alt_cue = (torch.arange(task_cfg.num_types, device=device) + 1) % task_cfg.num_types
+    current_state = states[:, torch.arange(task_cfg.num_types, device=device), step]
+    alternate_state = states[:, alt_cue, step]
+    intervention_delta = (alternate_state - current_state).reshape(-1, current_state.shape[-1])
+
+    intervened_outputs = model(
+        probe_batch.scene,
+        probe_batch.cue,
+        target=probe_batch.target,
+        num_steps=task_cfg.num_steps,
+        intervention={"step": step, "delta": intervention_delta},
+    )
+    intervened_attention = intervened_outputs["attention_seq"].view(
+        batch_size, task_cfg.num_types, task_cfg.num_steps, -1
+    )
+
+    row_index = torch.arange(batch_size, device=device)[:, None]
+    alt_target_pos = target_pos[row_index, alt_cue[None, :]]
+    base_step_attention = baseline_attention[:, :, step]
+    intervened_step_attention = intervened_attention[:, :, step]
+
+    base_target_attention = base_step_attention.gather(2, target_pos.unsqueeze(-1)).mean().item()
+    intervened_target_attention = intervened_step_attention.gather(
+        2, target_pos.unsqueeze(-1)
+    ).mean().item()
+    base_alt_target_attention = base_step_attention.gather(2, alt_target_pos.unsqueeze(-1)).mean().item()
+    intervened_alt_target_attention = intervened_step_attention.gather(
+        2, alt_target_pos.unsqueeze(-1)
+    ).mean().item()
+
+    return {
+        "step": step,
+        "attention_change_kl": symmetric_kl(base_step_attention, intervened_step_attention).mean().item(),
+        "original_target_attention_drop": base_target_attention - intervened_target_attention,
+        "alternate_target_attention_gain": intervened_alt_target_attention - base_alt_target_attention,
+        "baseline_target_attention": base_target_attention,
+        "intervened_target_attention": intervened_target_attention,
+        "baseline_alternate_target_attention": base_alt_target_attention,
+        "intervened_alternate_target_attention": intervened_alt_target_attention,
+        "supported": (
+            intervened_alt_target_attention > base_alt_target_attention
+            and base_target_attention > intervened_target_attention
+            and symmetric_kl(base_step_attention, intervened_step_attention).mean().item() > 0.0
+        ),
+    }
+
+
+def save_intervention_plots(
+    model,
+    output_dir: Path,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> list[str]:
+    """Render baseline vs intervened attention maps around the intervention step."""
+
+    intervention_cfg = cfg["evaluation"].get("intervention_test", {})
+    if not intervention_cfg.get("enabled", False):
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    batch_size = 1
+    step = intervention_cfg.get("step", 2)
+    outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed)
+    states = outputs["controller_state_seq"].view(batch_size, task_cfg.num_types, task_cfg.num_steps, -1)
+    baseline_attention = outputs["attention_seq"].view(batch_size, task_cfg.num_types, task_cfg.num_steps, -1)
+    target_pos = probe_batch.target_pos.view(batch_size, task_cfg.num_types)
+
+    alt_cue = (torch.arange(task_cfg.num_types, device=device) + 1) % task_cfg.num_types
+    current_state = states[:, torch.arange(task_cfg.num_types, device=device), step]
+    alternate_state = states[:, alt_cue, step]
+    intervention_delta = (alternate_state - current_state).reshape(-1, current_state.shape[-1])
+
+    intervened_outputs = model(
+        probe_batch.scene,
+        probe_batch.cue,
+        target=probe_batch.target,
+        num_steps=task_cfg.num_steps,
+        intervention={"step": step, "delta": intervention_delta},
+    )
+    intervened_attention = intervened_outputs["attention_seq"].view(
+        batch_size, task_cfg.num_types, task_cfg.num_steps, -1
+    )
+
+    saved_paths = []
+    shown_steps = sorted({max(step - 1, 0), step})
+    for cue_idx in range(task_cfg.num_types):
+        target_row, target_col = divmod(target_pos[0, cue_idx].item(), task_cfg.grid_size)
+        alt_row, alt_col = divmod(target_pos[0, alt_cue[cue_idx]].item(), task_cfg.grid_size)
+        fig, axes = plt.subplots(2, len(shown_steps), figsize=(4 * len(shown_steps), 7))
+        if len(shown_steps) == 1:
+            axes = [[axes[0]], [axes[1]]]
+
+        for col_idx, step_idx in enumerate(shown_steps):
+            base_ax = axes[0][col_idx]
+            int_ax = axes[1][col_idx]
+            base_heatmap = baseline_attention[0, cue_idx, step_idx].reshape(
+                task_cfg.grid_size, task_cfg.grid_size
+            ).detach().cpu()
+            int_heatmap = intervened_attention[0, cue_idx, step_idx].reshape(
+                task_cfg.grid_size, task_cfg.grid_size
+            ).detach().cpu()
+
+            for ax, heatmap, title_prefix in (
+                (base_ax, base_heatmap, "Baseline"),
+                (int_ax, int_heatmap, "Intervened"),
+            ):
+                ax.imshow(heatmap, cmap="viridis")
+                ax.scatter(
+                    target_col,
+                    target_row,
+                    s=160,
+                    marker="o",
+                    facecolors="none",
+                    edgecolors="white",
+                    linewidths=2,
+                )
+                ax.scatter(
+                    alt_col,
+                    alt_row,
+                    s=140,
+                    marker="x",
+                    c="red",
+                    linewidths=2,
+                )
+                ax.set_title(f"{title_prefix} / Cue {cue_idx} / Step {step_idx + 1}")
+                ax.axis("off")
+
+        fig.suptitle("White circle: original target, red X: alternate-cue target", fontsize=11)
+        fig.tight_layout()
+        path = output_dir / f"intervention_probe_cue_{cue_idx}.png"
+        fig.savefig(path)
+        plt.close(fig)
+        saved_paths.append(str(path))
+
+    return saved_paths
+
+
 def reduced_shaping_metrics(
     cfg: dict[str, Any],
     task_cfg: TaskConfig,
@@ -475,11 +639,25 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": reduced_shaping_summary.get("supported", False),
     }
 
+    intervention_test = report.get("intervention_test", {})
+    causal_intervention = {
+        "step": intervention_test.get("step", -1),
+        "attention_change_kl": intervention_test.get("attention_change_kl", 0.0),
+        "original_target_attention_drop": intervention_test.get(
+            "original_target_attention_drop", 0.0
+        ),
+        "alternate_target_attention_gain": intervention_test.get(
+            "alternate_target_attention_gain", 0.0
+        ),
+        "supported": intervention_test.get("supported", False),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
         "cue_dependence": cue_dependence,
         "explicit_attention_modeling": explicit_attention_modeling,
+        "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
     }
 
@@ -612,6 +790,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9700,
     )
+    report["intervention_test"] = intervention_test_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9800,
+    )
     report["reduced_shaping"] = reduced_shaping_metrics(
         cfg,
         task_cfg,
@@ -668,8 +853,17 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9600,
     )
+    intervention_plot_paths = save_intervention_plots(
+        models["recurrent"],
+        output_dir / "plots",
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9650,
+    )
     report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
+    report["artifacts"]["intervention_plots"] = intervention_plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"

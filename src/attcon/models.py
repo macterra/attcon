@@ -208,10 +208,13 @@ class RecurrentAttentionController(BaseAttentionModel):
         num_steps: int | None = None,
         *,
         ablation: dict[str, bool] | None = None,
+        intervention: dict[str, Any] | None = None,
     ) -> dict[str, torch.Tensor]:
         steps = num_steps or self.task_config.num_steps
         if ablation is None:
             ablation = {}
+        if intervention is None:
+            intervention = {}
 
         if ablation.get("shuffle_cue"):
             perm = torch.randperm(cue.shape[0], device=cue.device)
@@ -251,6 +254,12 @@ class RecurrentAttentionController(BaseAttentionModel):
                     hidden_state = torch.tanh(
                         self.controller(summary, hidden_state) + self.summary_adapter(summary)
                     )
+
+            if step_idx == intervention.get("step"):
+                if "state_override" in intervention:
+                    hidden_state = intervention["state_override"]
+                if "delta" in intervention:
+                    hidden_state = hidden_state + intervention["delta"]
 
             attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
