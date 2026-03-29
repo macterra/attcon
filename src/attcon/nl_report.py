@@ -83,8 +83,11 @@ def _render_tokenized_state(
     unresolved_cells: list[int],
 ) -> str:
     attended_row, attended_col = divmod(attended_cell, grid_size)
+    unresolved_set = set(unresolved_cells)
     tokens = [
+        "x900",
         f"x{100 + cue}",
+        "x901",
         f"x{200 + attended_row}",
         f"x{210 + attended_col}",
         f"x{220 + attended_visible_type}",
@@ -92,11 +95,11 @@ def _render_tokenized_state(
         f"x{240 + glimpse_digit}",
         f"x{250 + int(glimpse_target_match)}",
         f"x{260 + int(found_target)}",
+        "x902",
     ]
-    for cell in unresolved_cells:
-        row, col = divmod(cell, grid_size)
-        tokens.append(f"x{300 + row}")
-        tokens.append(f"x{310 + col}")
+    for cell in range(grid_size * grid_size):
+        state_bit = 0 if cell in unresolved_set else 1
+        tokens.append(f"x{1000 + cell * 2 + state_bit}")
     return " ".join(tokens)
 
 
