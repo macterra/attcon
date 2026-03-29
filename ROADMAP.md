@@ -162,6 +162,18 @@ Success criterion:
 
 The controller reallocates rather than persisting with the original policy.
 
+Current status in this repo:
+
+- a mid-episode cue-switch evaluation is now implemented
+- on the current default run, the model does not yet pass this test
+- the recurrent controller remains stronger on stationary cue-guided control than on rapid switched-priority control
+
+Interpretation:
+
+This is negative but useful evidence.
+
+It suggests the current controller is not yet robustly flexible under changed priorities, which is exactly why this stage matters.
+
 ## Stage 6: Reportable Internal Content
 
 Question:
@@ -224,7 +236,8 @@ The roadmap is designed to move from a demonstrated control loop toward experime
 
 The highest-priority next experiments are:
 
-- add mid-episode task switching
+- train directly on mid-episode task switching or mixed stationary/switching episodes
+- add plots or diagnostics for switched-cue trajectories
 - add report tasks about current attention and search status
 
 ## Current Status
@@ -237,6 +250,7 @@ What is already supported:
 
 What is not yet established:
 
+- flexible reallocation under changed priorities
 - self-modeling of attention
 - minimal consciousness-like content
 

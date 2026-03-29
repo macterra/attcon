@@ -56,6 +56,23 @@ class AttentionControlTests(unittest.TestCase):
         sums = outputs["attention_seq"].sum(dim=-1)
         self.assertTrue(torch.allclose(sums, torch.ones_like(sums), atol=1e-5))
 
+    def test_models_accept_cue_sequences(self) -> None:
+        batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
+        cue_seq = batch.cue.unsqueeze(1).repeat(1, self.task_cfg.num_steps)
+        cue_seq[:, -1] = (cue_seq[:, -1] + 1) % self.task_cfg.num_types
+        for model in (
+            StaticAttentionBaseline(self.task_cfg, self.model_cfg),
+            RecurrentAttentionController(self.task_cfg, self.model_cfg),
+        ):
+            outputs = model(
+                batch.scene,
+                batch.cue,
+                cue_seq=cue_seq,
+                target=batch.target,
+                num_steps=self.task_cfg.num_steps,
+            )
+            self.assertEqual(outputs["attention_seq"].shape, (4, self.task_cfg.num_steps, self.task_cfg.num_cells))
+
     def test_recurrence_responds_to_feedback(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
@@ -151,6 +168,11 @@ class AttentionControlTests(unittest.TestCase):
                         "probe_scenes": 2,
                         "step": 1,
                     },
+                    "cue_switch": {
+                        "enabled": True,
+                        "probe_scenes": 2,
+                        "switch_step": 1,
+                    },
                     "reduced_shaping": {
                         "enabled": True,
                         "weights": [0.0],
@@ -164,11 +186,14 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("baseline", report)
             self.assertIn("recurrent", report)
             self.assertIn("predictive_probe", report)
+            self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
+            self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
+            self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
             self.assertIn("reduced_shaping_resilience", report["evidence"])
             self.assertTrue(Path(report["artifacts"]["report"]).exists())

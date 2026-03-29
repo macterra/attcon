@@ -120,34 +120,47 @@ class StaticAttentionBaseline(BaseAttentionModel):
         self,
         scene: torch.Tensor,
         cue: torch.Tensor,
+        cue_seq: torch.Tensor | None = None,
         target: torch.Tensor | None = None,
         num_steps: int | None = None,
         **_: Any,
     ) -> dict[str, torch.Tensor]:
         steps = num_steps or self.task_config.num_steps
-        static_state, hidden_features = self.initial_state(scene, cue)
-        attention_logits = self.attention_head(static_state) / self.model_config.temperature
-        attention = torch.softmax(attention_logits, dim=-1)
-        hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
-        observed_glimpse = self.observe_glimpse(hidden_glimpse, cue)
-        logits = self.task_head(torch.cat([observed_glimpse, static_state], dim=-1))
-        loss_proxy, confidence = self._compute_loss_proxy(logits, target)
+        cue_seq = cue.unsqueeze(1).repeat(1, steps) if cue_seq is None else cue_seq
+        logits_seq = []
+        attention_seq = []
+        confidence_seq = []
+        loss_seq = []
+        controller_state_seq = []
+        observation_seq = []
 
-        repeated_attention = attention.unsqueeze(1).repeat(1, steps, 1)
-        repeated_logits = logits.unsqueeze(1).repeat(1, steps, 1)
-        repeated_confidence = confidence.unsqueeze(1).repeat(1, steps, 1)
-        repeated_loss = loss_proxy.unsqueeze(1).repeat(1, steps, 1)
-        repeated_state = static_state.unsqueeze(1).repeat(1, steps, 1)
-        repeated_observation = observed_glimpse.unsqueeze(1).repeat(1, steps, 1)
+        for step_idx in range(steps):
+            step_cue = cue_seq[:, step_idx]
+            static_state, hidden_features = self.initial_state(scene, step_cue)
+            attention_logits = self.attention_head(static_state) / self.model_config.temperature
+            attention = torch.softmax(attention_logits, dim=-1)
+            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
+            logits = self.task_head(torch.cat([observed_glimpse, static_state], dim=-1))
+            loss_proxy, confidence = self._compute_loss_proxy(logits, target)
+
+            logits_seq.append(logits)
+            attention_seq.append(attention)
+            confidence_seq.append(confidence)
+            loss_seq.append(loss_proxy)
+            controller_state_seq.append(static_state)
+            observation_seq.append(observed_glimpse)
+
+        stacked_logits = torch.stack(logits_seq, dim=1)
 
         return {
-            "logits": logits,
-            "logits_seq": repeated_logits,
-            "attention_seq": repeated_attention,
-            "observation_seq": repeated_observation,
-            "confidence_seq": repeated_confidence,
-            "loss_seq": repeated_loss,
-            "controller_state_seq": repeated_state,
+            "logits": stacked_logits[:, -1],
+            "logits_seq": stacked_logits,
+            "attention_seq": torch.stack(attention_seq, dim=1),
+            "observation_seq": torch.stack(observation_seq, dim=1),
+            "confidence_seq": torch.stack(confidence_seq, dim=1),
+            "loss_seq": torch.stack(loss_seq, dim=1),
+            "controller_state_seq": torch.stack(controller_state_seq, dim=1),
         }
 
 
@@ -204,6 +217,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         self,
         scene: torch.Tensor,
         cue: torch.Tensor,
+        cue_seq: torch.Tensor | None = None,
         target: torch.Tensor | None = None,
         num_steps: int | None = None,
         *,
@@ -215,15 +229,15 @@ class RecurrentAttentionController(BaseAttentionModel):
             ablation = {}
         if intervention is None:
             intervention = {}
+        cue_seq = cue.unsqueeze(1).repeat(1, steps) if cue_seq is None else cue_seq
 
         if ablation.get("shuffle_cue"):
-            perm = torch.randperm(cue.shape[0], device=cue.device)
-            cue_for_policy = cue[perm]
+            perm = torch.randperm(cue_seq.shape[0], device=cue_seq.device)
+            cue_seq_for_policy = cue_seq[perm]
         else:
-            cue_for_policy = cue
+            cue_seq_for_policy = cue_seq
 
-        hidden_state, hidden_features = self.initial_state(scene, cue_for_policy)
-        cue_emb = self.cue_embedding(cue_for_policy)
+        hidden_state, hidden_features = self.initial_state(scene, cue_seq_for_policy[:, 0])
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
         previous_observation = torch.zeros(scene.shape[0], self.observation_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
@@ -237,6 +251,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         controller_state_seq = [hidden_state]
 
         for step_idx in range(steps):
+            step_cue = cue_seq_for_policy[:, step_idx]
+            cue_emb = self.cue_embedding(step_cue)
             if step_idx > 0:
                 # The next fixation is chosen from the previous fixation, what it observed,
                 # and detached task feedback rather than from the raw scene alone.
@@ -264,7 +280,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
             hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
-            observed_glimpse = self.observe_glimpse(hidden_glimpse, cue_for_policy)
+            observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             step_logits = self.task_head(torch.cat([observed_glimpse, hidden_state], dim=-1))
             step_loss, step_confidence = self._compute_loss_proxy(step_logits, target)
 

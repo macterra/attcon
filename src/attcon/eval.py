@@ -388,6 +388,67 @@ def intervention_test_metrics(
     }
 
 
+def _targets_for_cues(batch, cues: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Recover target positions and digits for arbitrary cues on a fixed batch of scenes."""
+
+    target_pos = torch.zeros_like(cues)
+    target = torch.zeros_like(cues)
+    for idx in range(batch.scene.shape[0]):
+        cue_idx = cues[idx].item()
+        pos = torch.nonzero(batch.target_types[idx] == cue_idx, as_tuple=False).flatten().item()
+        target_pos[idx] = pos
+        target[idx] = batch.digits[idx, pos]
+    return target_pos, target
+
+
+def cue_switch_metrics(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+    *,
+    switch_step: int,
+) -> dict[str, float]:
+    """Measure how strongly the model redirects attention after a mid-episode cue switch."""
+
+    generator = make_generator(seed, device)
+    base_batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    cue_before = base_batch.cue
+    cue_after = (cue_before + 1) % task_cfg.num_types
+    cue_seq = cue_before.unsqueeze(1).repeat(1, task_cfg.num_steps)
+    cue_seq[:, switch_step:] = cue_after.unsqueeze(1)
+    switched_target_pos, switched_target = _targets_for_cues(base_batch, cue_after)
+
+    with torch.no_grad():
+        outputs = model(
+            base_batch.scene,
+            cue_before,
+            cue_seq=cue_seq,
+            target=switched_target,
+            num_steps=task_cfg.num_steps,
+        )
+
+    attention = outputs["attention_seq"]
+    before_target = attention[:, switch_step - 1].gather(1, base_batch.target_pos.unsqueeze(-1)).mean().item()
+    after_old_target = attention[:, switch_step:].gather(
+        2, base_batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps - switch_step, 1)
+    ).mean().item()
+    after_new_target = attention[:, switch_step:].gather(
+        2, switched_target_pos[:, None, None].expand(-1, task_cfg.num_steps - switch_step, 1)
+    ).mean().item()
+    final_accuracy = (outputs["logits"].argmax(dim=-1) == switched_target).float().mean().item()
+
+    return {
+        "switch_step": switch_step,
+        "pre_switch_old_target_attention": before_target,
+        "post_switch_old_target_attention": after_old_target,
+        "post_switch_new_target_attention": after_new_target,
+        "switch_target_gain": after_new_target - after_old_target,
+        "switch_accuracy": final_accuracy,
+    }
+
+
 def save_intervention_plots(
     model,
     output_dir: Path,
@@ -613,6 +674,20 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
     }
 
+    cue_switch = report.get("cue_switch", {})
+    cue_switch_adaptation = {
+        "baseline_switch_target_gain": cue_switch.get("baseline", {}).get("switch_target_gain", 0.0),
+        "recurrent_switch_target_gain": cue_switch.get("recurrent", {}).get("switch_target_gain", 0.0),
+        "baseline_switch_accuracy": cue_switch.get("baseline", {}).get("switch_accuracy", 0.0),
+        "recurrent_switch_accuracy": cue_switch.get("recurrent", {}).get("switch_accuracy", 0.0),
+        "supported": (
+            cue_switch.get("recurrent", {}).get("switch_target_gain", float("-inf"))
+            > cue_switch.get("baseline", {}).get("switch_target_gain", float("-inf"))
+            and cue_switch.get("recurrent", {}).get("switch_accuracy", float("-inf"))
+            > cue_switch.get("baseline", {}).get("switch_accuracy", float("-inf"))
+        ),
+    }
+
     predictive_probe = report.get("predictive_probe", {})
     explicit_attention_modeling = {
         "controller_advantage_cross_entropy": predictive_probe.get(
@@ -656,6 +731,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
         "cue_dependence": cue_dependence,
+        "cue_switch_adaptation": cue_switch_adaptation,
         "explicit_attention_modeling": explicit_attention_modeling,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
@@ -790,6 +866,26 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9700,
     )
+    cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
+    if cue_switch_cfg.get("enabled", False):
+        report["cue_switch"] = {
+            "baseline": cue_switch_metrics(
+                models["static"],
+                task_cfg,
+                cue_switch_cfg.get("probe_scenes", eval_cfg["probe_scenes"]),
+                device,
+                cfg["seed"] + 9750,
+                switch_step=cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2),
+            ),
+            "recurrent": cue_switch_metrics(
+                models["recurrent"],
+                task_cfg,
+                cue_switch_cfg.get("probe_scenes", eval_cfg["probe_scenes"]),
+                device,
+                cfg["seed"] + 9760,
+                switch_step=cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2),
+            ),
+        }
     report["intervention_test"] = intervention_test_metrics(
         models["recurrent"],
         cfg,
