@@ -138,11 +138,13 @@ class StaticAttentionBaseline(BaseAttentionModel):
         repeated_confidence = confidence.unsqueeze(1).repeat(1, steps, 1)
         repeated_loss = loss_proxy.unsqueeze(1).repeat(1, steps, 1)
         repeated_state = static_state.unsqueeze(1).repeat(1, steps, 1)
+        repeated_observation = observed_glimpse.unsqueeze(1).repeat(1, steps, 1)
 
         return {
             "logits": logits,
             "logits_seq": repeated_logits,
             "attention_seq": repeated_attention,
+            "observation_seq": repeated_observation,
             "confidence_seq": repeated_confidence,
             "loss_seq": repeated_loss,
             "controller_state_seq": repeated_state,
@@ -226,6 +228,7 @@ class RecurrentAttentionController(BaseAttentionModel):
 
         attention_seq = []
         logits_seq = []
+        observation_seq = []
         confidence_seq = []
         loss_seq = []
         controller_state_seq = [hidden_state]
@@ -258,6 +261,7 @@ class RecurrentAttentionController(BaseAttentionModel):
 
             attention_seq.append(attention)
             logits_seq.append(step_logits)
+            observation_seq.append(observed_glimpse)
             confidence_seq.append(step_confidence)
             loss_seq.append(step_loss)
             controller_state_seq.append(hidden_state)
@@ -272,6 +276,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             "logits": stacked_logits[:, -1],
             "logits_seq": stacked_logits,
             "attention_seq": torch.stack(attention_seq, dim=1),
+            "observation_seq": torch.stack(observation_seq, dim=1),
             "confidence_seq": torch.stack(confidence_seq, dim=1),
             "loss_seq": torch.stack(loss_seq, dim=1),
             "controller_state_seq": torch.stack(controller_state_seq[:-1], dim=1),

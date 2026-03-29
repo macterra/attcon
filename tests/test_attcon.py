@@ -42,6 +42,10 @@ class AttentionControlTests(unittest.TestCase):
             outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
             self.assertEqual(outputs["logits"].shape, (4, self.task_cfg.digit_vocab_size))
             self.assertEqual(outputs["attention_seq"].shape, (4, self.task_cfg.num_steps, self.task_cfg.num_cells))
+            self.assertEqual(
+                outputs["observation_seq"].shape,
+                (4, self.task_cfg.num_steps, 1 + self.task_cfg.digit_vocab_size),
+            )
             self.assertEqual(outputs["confidence_seq"].shape, (4, self.task_cfg.num_steps, 1))
             self.assertEqual(outputs["loss_seq"].shape, (4, self.task_cfg.num_steps, 1))
 
@@ -109,6 +113,12 @@ class AttentionControlTests(unittest.TestCase):
                 "evaluation": {
                     "test_batches": 2,
                     "probe_scenes": 2,
+                    "predictive_probe": {
+                        "train_batches": 2,
+                        "test_batches": 1,
+                        "epochs": 10,
+                        "learning_rate": 0.05,
+                    },
                     "ablations": ["freeze_recurrence"],
                 },
             }
@@ -117,6 +127,10 @@ class AttentionControlTests(unittest.TestCase):
             report = run_ablations(config, result["checkpoint_path"])
             self.assertIn("baseline", report)
             self.assertIn("recurrent", report)
+            self.assertIn("predictive_probe", report)
+            self.assertIn("controller_state_probe", report["predictive_probe"])
+            self.assertIn("observation_only_probe", report["predictive_probe"])
+            self.assertIn("explicit_attention_modeling", report["evidence"])
             self.assertTrue(Path(report["artifacts"]["report"]).exists())
             self.assertTrue(report["artifacts"]["plots"])
 

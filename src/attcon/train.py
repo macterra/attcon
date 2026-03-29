@@ -41,6 +41,12 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "evaluation": {
         "test_batches": 40,
         "probe_scenes": 4,
+        "predictive_probe": {
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
         "ablations": [
             "freeze_recurrence",
             "feedforward_summary",

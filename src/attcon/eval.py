@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
+from torch import nn
 import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
@@ -166,6 +167,155 @@ def cue_sensitivity_metrics(
     }
 
 
+def _collect_probe_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Collect recurrent-state, observation, and next-attention tuples."""
+
+    state_features = []
+    observation_features = []
+    next_attention_targets = []
+
+    for batch_idx in range(num_batches):
+        outputs, _ = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
+        state_features.append(outputs["controller_state_seq"][:, :-1].reshape(-1, outputs["controller_state_seq"].shape[-1]))
+        observation_features.append(
+            outputs["observation_seq"][:, :-1].reshape(-1, outputs["observation_seq"].shape[-1])
+        )
+        next_attention_targets.append(
+            outputs["attention_seq"][:, 1:].reshape(-1, outputs["attention_seq"].shape[-1])
+        )
+
+    return (
+        torch.cat(state_features, dim=0),
+        torch.cat(observation_features, dim=0),
+        torch.cat(next_attention_targets, dim=0),
+    )
+
+
+def _train_attention_probe(
+    train_features: torch.Tensor,
+    train_targets: torch.Tensor,
+    test_features: torch.Tensor,
+    test_targets: torch.Tensor,
+    *,
+    epochs: int,
+    learning_rate: float,
+) -> dict[str, float]:
+    """Fit a linear probe that predicts the next attention distribution."""
+
+    probe = nn.Linear(train_features.shape[-1], train_targets.shape[-1]).to(train_features.device)
+    optimizer = torch.optim.Adam(probe.parameters(), lr=learning_rate)
+
+    for _ in range(epochs):
+        logits = probe(train_features)
+        loss = -(train_targets * torch.log_softmax(logits, dim=-1)).sum(dim=-1).mean()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        train_logits = probe(train_features)
+        test_logits = probe(test_features)
+        train_probs = torch.softmax(train_logits, dim=-1)
+        test_probs = torch.softmax(test_logits, dim=-1)
+
+        train_loss = -(train_targets * torch.log_softmax(train_logits, dim=-1)).sum(dim=-1).mean().item()
+        test_loss = -(test_targets * torch.log_softmax(test_logits, dim=-1)).sum(dim=-1).mean().item()
+        train_mse = (train_probs - train_targets).pow(2).mean().item()
+        test_mse = (test_probs - test_targets).pow(2).mean().item()
+        train_top1 = (
+            train_probs.argmax(dim=-1) == train_targets.argmax(dim=-1)
+        ).float().mean().item()
+        test_top1 = (
+            test_probs.argmax(dim=-1) == test_targets.argmax(dim=-1)
+        ).float().mean().item()
+
+    return {
+        "train_cross_entropy": train_loss,
+        "test_cross_entropy": test_loss,
+        "train_mse": train_mse,
+        "test_mse": test_mse,
+        "train_top1_match": train_top1,
+        "test_top1_match": test_top1,
+    }
+
+
+def predictive_probe_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Test whether controller state predicts the next attention map better than observation alone."""
+
+    probe_cfg = cfg["evaluation"].get(
+        "predictive_probe",
+        {
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
+    )
+    batch_size = cfg["training"]["batch_size"]
+    train_state, train_obs, train_targets = _collect_probe_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        probe_cfg["train_batches"],
+        device,
+        seed,
+    )
+    test_state, test_obs, test_targets = _collect_probe_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        probe_cfg["test_batches"],
+        device,
+        seed + 1000,
+    )
+
+    controller_probe = _train_attention_probe(
+        train_state,
+        train_targets,
+        test_state,
+        test_targets,
+        epochs=probe_cfg["epochs"],
+        learning_rate=probe_cfg["learning_rate"],
+    )
+    observation_probe = _train_attention_probe(
+        train_obs,
+        train_targets,
+        test_obs,
+        test_targets,
+        epochs=probe_cfg["epochs"],
+        learning_rate=probe_cfg["learning_rate"],
+    )
+
+    return {
+        "controller_state_probe": controller_probe,
+        "observation_only_probe": observation_probe,
+        "controller_advantage_cross_entropy": (
+            observation_probe["test_cross_entropy"] - controller_probe["test_cross_entropy"]
+        ),
+        "controller_advantage_mse": observation_probe["test_mse"] - controller_probe["test_mse"],
+        "controller_advantage_top1_match": (
+            controller_probe["test_top1_match"] - observation_probe["test_top1_match"]
+        ),
+        "supported": (
+            controller_probe["test_cross_entropy"] < observation_probe["test_cross_entropy"]
+            and controller_probe["test_mse"] < observation_probe["test_mse"]
+        ),
+    }
+
+
 def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     """Condense raw metrics into the three core claims from the README."""
 
@@ -208,10 +358,23 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
     }
 
+    predictive_probe = report.get("predictive_probe", {})
+    explicit_attention_modeling = {
+        "controller_advantage_cross_entropy": predictive_probe.get(
+            "controller_advantage_cross_entropy", 0.0
+        ),
+        "controller_advantage_mse": predictive_probe.get("controller_advantage_mse", 0.0),
+        "controller_advantage_top1_match": predictive_probe.get(
+            "controller_advantage_top1_match", 0.0
+        ),
+        "supported": predictive_probe.get("supported", False),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
         "cue_dependence": cue_dependence,
+        "explicit_attention_modeling": explicit_attention_modeling,
     }
 
 
@@ -335,6 +498,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
             device,
             cfg["seed"] + 9350,
         )
+    )
+    report["predictive_probe"] = predictive_probe_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9700,
     )
 
     for name in eval_cfg["ablations"]:

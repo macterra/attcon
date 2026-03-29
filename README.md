@@ -37,9 +37,11 @@ The evaluation report includes:
 - task accuracy and target attention
 - trajectory divergence and temporal reallocation
 - wrong-cue sensitivity metrics
+- a predictive probe comparing controller-state vs observation-only prediction of the next attention map
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the three core claims:
-  `dissociation`, `closed_loop_adaptation`, and `cue_dependence`
+  `dissociation`, `closed_loop_adaptation`, `cue_dependence`, and a Stage 3-style
+  `explicit_attention_modeling` probe result
 
 ## Current Result Shape
 
