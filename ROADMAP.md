@@ -6,6 +6,13 @@ The project already supports a meaningful claim about **closed-loop attention co
 
 The safest way to approach that goal is as a staged program.
 
+Stages 1 through 3 are the core sequential foundation. After that, the roadmap branches:
+
+- Stage 4 asks about representational depth: whether the controller models its own attention
+- Stage 5 asks about behavioral robustness: whether attention control remains flexible when priorities change
+
+Those two later stages are related, but neither is a strict prerequisite for the other. Stage 6 depends on progress along both branches, and Stage 7 is only worth discussing after the earlier requirements are in place.
+
 ## Stage 1: Attention
 
 Baseline question:
@@ -112,7 +119,7 @@ What remains missing at this stage:
 - sharper quantitative thresholds for what counts as strong enough intervention evidence
 - stronger evidence that the predictive and intervention signals reflect structured attentional dynamics rather than generic recurrent state
 
-## Stage 4: Self-Modeling of Attention
+## Branch A, Stage 4: Self-Modeling of Attention
 
 Question:
 
@@ -136,7 +143,7 @@ Success criterion:
 
 Internal state supports reliable report and correction about the model’s own attentional process.
 
-## Stage 5: Flexible Reallocation Under Changed Priorities
+## Branch B, Stage 5: Flexible Reallocation Under Changed Priorities
 
 Question:
 
@@ -178,6 +185,8 @@ This is now positive but still qualified evidence.
 It suggests the current controller can be trained into more flexible reallocation under changed priorities, but that flexibility does not yet coexist cleanly with every earlier positive signal.
 
 ## Stage 6: Reportable Internal Content
+
+This stage depends on progress from both Branch A and Branch B.
 
 Question:
 
@@ -246,6 +255,20 @@ A system that successfully regulates attention should embody a model relevant to
 If consciousness-like contents are identified with the contents of a regulatory self-model, then the crucial target is not raw attention or raw perception, but the controller’s internal model of its own attentional process.
 
 The roadmap is designed to move from a demonstrated control loop toward experimental evidence for that stronger type of internal modeling.
+
+## Structure Summary
+
+The intended dependency structure is:
+
+1. Stage 1: attention
+2. Stage 2: attention control
+3. Stage 3: explicit attention modeling
+4. Branch A, Stage 4: self-modeling of attention
+5. Branch B, Stage 5: flexible reallocation under changed priorities
+6. Stage 6: reportable internal content
+7. Stage 7: minimal consciousness interpretation
+
+In other words, Stage 4 and Stage 5 should be read as parallel branches after Stage 3, not as a strict ordered ladder where Stage 4 must be completed before Stage 5 begins.
 
 ## Immediate Checklist
 
