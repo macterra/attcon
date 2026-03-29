@@ -46,6 +46,9 @@ class NLExample:
     glimpse_target_match: bool
     found_target: bool
     unresolved_cells: list[int]
+    unresolved_rows: list[int]
+    unresolved_cols: list[int]
+    unresolved_count: int
     symbolic_state: str
     tokenized_state: str
     observation_only: str
@@ -58,6 +61,8 @@ def _cell_name(cell_idx: int, grid_size: int) -> str:
 
 def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
     unresolved = ", ".join(_cell_name(cell, grid_size) for cell in example.unresolved_cells) or "none"
+    unresolved_rows = " ".join(str(row) for row in example.unresolved_rows) or "none"
+    unresolved_cols = " ".join(str(col) for col in example.unresolved_cols) or "none"
     attended = _cell_name(example.attended_cell, grid_size)
     return (
         f"search_type={example.cue}\n"
@@ -67,6 +72,9 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
         f"glimpse_digit={example.glimpse_digit}\n"
         f"glimpse_target_match={str(example.glimpse_target_match).lower()}\n"
         f"found_target={str(example.found_target).lower()}\n"
+        f"unresolved_rows={unresolved_rows}\n"
+        f"unresolved_cols={unresolved_cols}\n"
+        f"unresolved_count={example.unresolved_count}\n"
         f"unresolved_cells={unresolved}"
     )
 
@@ -83,23 +91,35 @@ def _render_tokenized_state(
     unresolved_cells: list[int],
 ) -> str:
     attended_row, attended_col = divmod(attended_cell, grid_size)
-    unresolved_set = set(unresolved_cells)
+    unresolved_rows = sorted({cell // grid_size for cell in unresolved_cells})
+    unresolved_cols = sorted({cell % grid_size for cell in unresolved_cells})
     tokens = [
         "x900",
         f"x{100 + cue}",
         "x901",
         f"x{200 + attended_row}",
         f"x{210 + attended_col}",
+        "x903",
         f"x{220 + attended_visible_type}",
         f"x{230 + attended_digit}",
         f"x{240 + glimpse_digit}",
+        "x904",
         f"x{250 + int(glimpse_target_match)}",
         f"x{260 + int(found_target)}",
-        "x902",
+        "x905",
+        f"x{300 + len(unresolved_cells)}",
+        "x906",
     ]
-    for cell in range(grid_size * grid_size):
-        state_bit = 0 if cell in unresolved_set else 1
-        tokens.append(f"x{1000 + cell * 2 + state_bit}")
+    for row in range(grid_size):
+        tokens.append(f"x{320 + row * 2 + int(row in unresolved_rows)}")
+    tokens.append("x907")
+    for col in range(grid_size):
+        tokens.append(f"x{340 + col * 2 + int(col in unresolved_cols)}")
+    tokens.append("x908")
+    tokens.append(f"x{400 + attended_cell}")
+    tokens.append("x909")
+    for cell in unresolved_cells:
+        tokens.append(f"x{500 + cell}")
     return " ".join(tokens)
 
 
@@ -125,7 +145,8 @@ def _render_observation_only(
         f"attended_cell={attended}\n"
         f"attended_visible_type={attended_visible_type}\n"
         f"current_glimpse_target_match={target_match:.3f}\n"
-        f"current_glimpse_digit_argmax={digit_idx}"
+        f"current_glimpse_digit_argmax={digit_idx}\n"
+        f"unresolved_information=not_available"
     )
 
 
@@ -154,6 +175,7 @@ def collect_nl_examples(
             unresolved = torch.nonzero(
                 inspection[batch_idx, step_idx] < 0.5, as_tuple=False
             ).flatten().tolist()
+            unresolved = [int(cell) for cell in unresolved]
             example = NLExample(
                 example_id=f"scene{batch_idx}_step{step_idx}",
                 step_index=step_idx,
@@ -164,7 +186,10 @@ def collect_nl_examples(
                 glimpse_digit=glimpse_digit,
                 glimpse_target_match=glimpse_target_match,
                 found_target=bool(found_state[batch_idx, step_idx].item() >= 0.5),
-                unresolved_cells=[int(cell) for cell in unresolved],
+                unresolved_cells=unresolved,
+                unresolved_rows=sorted({cell // task_cfg.grid_size for cell in unresolved}),
+                unresolved_cols=sorted({cell % task_cfg.grid_size for cell in unresolved}),
+                unresolved_count=len(unresolved),
                 symbolic_state="",
                 tokenized_state="",
                 observation_only="",
@@ -212,15 +237,15 @@ def _schema() -> dict[str, Any]:
                 "glimpse_digit": {"type": "integer"},
                 "glimpse_target_match": {"type": "boolean"},
                 "found_target": {"type": "boolean"},
-                "unresolved_cells": {
+                "unresolved_rows": {
                     "type": "array",
-                    "items": {
-                        "type": "array",
-                        "items": {"type": "integer"},
-                        "minItems": 2,
-                        "maxItems": 2,
-                    },
+                    "items": {"type": "integer"},
                 },
+                "unresolved_cols": {
+                    "type": "array",
+                    "items": {"type": "integer"},
+                },
+                "unresolved_count": {"type": "integer"},
             },
             "required": [
                 "natural_language_report",
@@ -231,7 +256,9 @@ def _schema() -> dict[str, Any]:
                 "glimpse_digit",
                 "glimpse_target_match",
                 "found_target",
-                "unresolved_cells",
+                "unresolved_rows",
+                "unresolved_cols",
+                "unresolved_count",
             ],
             "additionalProperties": False,
         },
@@ -283,12 +310,11 @@ def _make_messages(
         payload = getattr(example, state_attr)
         answer = {
             "natural_language_report": (
-                f"I am searching for type {example.cue}, attending {_cell_name(example.attended_cell, grid_size)}, "
-                f"seeing visible type {example.attended_visible_type} and digit {example.attended_digit}, "
-                f"with glimpse digit {example.glimpse_digit} and glimpse_target_match "
-                f"{str(example.glimpse_target_match).lower()}, "
-                f"found_target is {str(example.found_target).lower()}, and unresolved cells are "
-                + ", ".join(_cell_name(cell, grid_size) for cell in example.unresolved_cells)
+                f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
+                f"visible type {example.attended_visible_type}; attended digit {example.attended_digit}; "
+                f"glimpse digit {example.glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
+                f"found {str(example.found_target).lower()}; rows {example.unresolved_rows}; "
+                f"cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
             ),
             "search_type": example.cue,
             "attended_cell": list(divmod(example.attended_cell, grid_size)),
@@ -297,7 +323,9 @@ def _make_messages(
             "glimpse_digit": example.glimpse_digit,
             "glimpse_target_match": example.glimpse_target_match,
             "found_target": example.found_target,
-            "unresolved_cells": [list(divmod(cell, grid_size)) for cell in example.unresolved_cells],
+            "unresolved_rows": example.unresolved_rows,
+            "unresolved_cols": example.unresolved_cols,
+            "unresolved_count": example.unresolved_count,
         }
         messages.extend(
             [
@@ -338,8 +366,9 @@ def run_nl_report_mode(
     exact_glimpse_digit = 0
     exact_glimpse_match = 0
     exact_found = 0
-    exact_unresolved = 0
-
+    exact_unresolved_rows = 0
+    exact_unresolved_cols = 0
+    exact_unresolved_count = 0
     for example in evaluation_examples:
         parsed = None
         last_error = None
@@ -375,7 +404,6 @@ def run_nl_report_mode(
                 last_error = exc
         if parsed is None:
             raise RuntimeError(str(last_error) if last_error is not None else "nl_report parsing failed")
-        target_unresolved = [list(divmod(cell, grid_size)) for cell in example.unresolved_cells]
         expected_attended = list(divmod(example.attended_cell, grid_size))
 
         exact_search += int(parsed["search_type"] == example.cue)
@@ -385,7 +413,9 @@ def run_nl_report_mode(
         exact_glimpse_digit += int(parsed["glimpse_digit"] == example.glimpse_digit)
         exact_glimpse_match += int(bool(parsed["glimpse_target_match"]) == example.glimpse_target_match)
         exact_found += int(bool(parsed["found_target"]) == example.found_target)
-        exact_unresolved += int(parsed["unresolved_cells"] == target_unresolved)
+        exact_unresolved_rows += int(parsed["unresolved_rows"] == example.unresolved_rows)
+        exact_unresolved_cols += int(parsed["unresolved_cols"] == example.unresolved_cols)
+        exact_unresolved_count += int(parsed["unresolved_count"] == example.unresolved_count)
 
         results.append(
             {
@@ -401,7 +431,9 @@ def run_nl_report_mode(
                     "glimpse_digit": example.glimpse_digit,
                     "glimpse_target_match": example.glimpse_target_match,
                     "found_target": example.found_target,
-                    "unresolved_cells": target_unresolved,
+                    "unresolved_rows": example.unresolved_rows,
+                    "unresolved_cols": example.unresolved_cols,
+                    "unresolved_count": example.unresolved_count,
                 },
             }
         )
@@ -416,7 +448,9 @@ def run_nl_report_mode(
         "glimpse_digit_accuracy": exact_glimpse_digit / denom,
         "glimpse_target_match_accuracy": exact_glimpse_match / denom,
         "found_target_accuracy": exact_found / denom,
-        "unresolved_cells_accuracy": exact_unresolved / denom,
+        "unresolved_rows_accuracy": exact_unresolved_rows / denom,
+        "unresolved_cols_accuracy": exact_unresolved_cols / denom,
+        "unresolved_count_accuracy": exact_unresolved_count / denom,
         "joint_accuracy": (
             sum(
                 int(
@@ -428,7 +462,9 @@ def run_nl_report_mode(
                     and bool(item["response"]["glimpse_target_match"])
                     == item["expected"]["glimpse_target_match"]
                     and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
-                    and item["response"]["unresolved_cells"] == item["expected"]["unresolved_cells"]
+                    and item["response"]["unresolved_rows"] == item["expected"]["unresolved_rows"]
+                    and item["response"]["unresolved_cols"] == item["expected"]["unresolved_cols"]
+                    and item["response"]["unresolved_count"] == item["expected"]["unresolved_count"]
                 )
                 for item in results
             )

@@ -817,7 +817,9 @@ def _select_diverse_nl_examples(
             example.glimpse_digit,
             int(example.glimpse_target_match),
             int(example.found_target),
-            tuple(example.unresolved_cells),
+            tuple(example.unresolved_rows),
+            tuple(example.unresolved_cols),
+            example.unresolved_count,
         )
 
     remaining = list(range(len(examples)))
@@ -992,14 +994,39 @@ def nl_report_metrics(
             - observation["glimpse_target_match_accuracy"]
         ),
         "tokenized_unresolved_accuracy_advantage": (
-            tokenized["unresolved_cells_accuracy"] - observation["unresolved_cells_accuracy"]
+            (
+                tokenized["unresolved_rows_accuracy"]
+                + tokenized["unresolved_cols_accuracy"]
+                + tokenized["unresolved_count_accuracy"]
+            )
+            / 3.0
+            - (
+                observation["unresolved_rows_accuracy"]
+                + observation["unresolved_cols_accuracy"]
+                + observation["unresolved_count_accuracy"]
+            )
+            / 3.0
         ),
         "symbolic_joint_accuracy_advantage": (
             symbolic["joint_accuracy"] - observation["joint_accuracy"]
         ),
         "supported": (
             tokenized["joint_accuracy"] > observation["joint_accuracy"]
-            and tokenized["unresolved_cells_accuracy"] >= observation["unresolved_cells_accuracy"]
+            and tokenized["attended_visible_type_accuracy"] >= observation["attended_visible_type_accuracy"]
+            and tokenized["attended_digit_accuracy"] >= observation["attended_digit_accuracy"]
+            and tokenized["glimpse_digit_accuracy"] >= observation["glimpse_digit_accuracy"]
+            and (
+                tokenized["unresolved_rows_accuracy"]
+                + tokenized["unresolved_cols_accuracy"]
+                + tokenized["unresolved_count_accuracy"]
+            )
+            / 3.0
+            >= (
+                observation["unresolved_rows_accuracy"]
+                + observation["unresolved_cols_accuracy"]
+                + observation["unresolved_count_accuracy"]
+            )
+            / 3.0
         ),
     }
 
