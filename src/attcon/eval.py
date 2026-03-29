@@ -240,6 +240,8 @@ def save_probe_plots(
     attention = outputs["attention_seq"]
     saved_paths = []
     for cue_idx in range(task_cfg.num_types):
+        target_pos = probe_batch.target_pos[cue_idx].item()
+        target_row, target_col = divmod(target_pos, task_cfg.grid_size)
         fig, axes = plt.subplots(1, task_cfg.num_steps, figsize=(3 * task_cfg.num_steps, 3))
         if task_cfg.num_steps == 1:
             axes = [axes]
@@ -247,7 +249,18 @@ def save_probe_plots(
             ax = axes[step_idx]
             heatmap = attention[cue_idx, step_idx].reshape(task_cfg.grid_size, task_cfg.grid_size).cpu()
             ax.imshow(heatmap, cmap="viridis")
-            ax.set_title(f"Cue {cue_idx} / Step {step_idx + 1}")
+            ax.scatter(
+                target_col,
+                target_row,
+                s=160,
+                marker="o",
+                facecolors="none",
+                edgecolors="white",
+                linewidths=2,
+            )
+            ax.set_title(
+                f"Cue {cue_idx} / Step {step_idx + 1}\nTarget: row {target_row}, col {target_col}"
+            )
             ax.axis("off")
         path = output_dir / f"attention_probe_cue_{cue_idx}.png"
         fig.tight_layout()
