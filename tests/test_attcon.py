@@ -179,10 +179,18 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(example.example_id.startswith("scene0_step0"))
         self.assertIn("search_type=", example.symbolic_state)
         self.assertIn("attended_cell=", example.symbolic_state)
+        self.assertIn("attended_visible_type=", example.symbolic_state)
+        self.assertIn("attended_digit=", example.symbolic_state)
+        self.assertIn("glimpse_digit=", example.symbolic_state)
         self.assertIn("cue=", example.observation_only)
+        self.assertIn("attended_visible_type=", example.observation_only)
         self.assertTrue(example.tokenized_state.startswith("x"))
         self.assertIsInstance(example.unresolved_cells, list)
         self.assertGreaterEqual(len(example.unresolved_cells), 0)
+        self.assertIsInstance(example.attended_visible_type, int)
+        self.assertIsInstance(example.attended_digit, int)
+        self.assertIsInstance(example.glimpse_digit, int)
+        self.assertIsInstance(example.glimpse_target_match, bool)
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

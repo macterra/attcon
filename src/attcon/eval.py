@@ -881,6 +881,20 @@ def nl_report_metrics(
         "tokenized_joint_accuracy_advantage": (
             tokenized["joint_accuracy"] - observation["joint_accuracy"]
         ),
+        "tokenized_visible_type_accuracy_advantage": (
+            tokenized["attended_visible_type_accuracy"]
+            - observation["attended_visible_type_accuracy"]
+        ),
+        "tokenized_attended_digit_accuracy_advantage": (
+            tokenized["attended_digit_accuracy"] - observation["attended_digit_accuracy"]
+        ),
+        "tokenized_glimpse_digit_accuracy_advantage": (
+            tokenized["glimpse_digit_accuracy"] - observation["glimpse_digit_accuracy"]
+        ),
+        "tokenized_glimpse_match_accuracy_advantage": (
+            tokenized["glimpse_target_match_accuracy"]
+            - observation["glimpse_target_match_accuracy"]
+        ),
         "tokenized_unresolved_accuracy_advantage": (
             tokenized["unresolved_cells_accuracy"] - observation["unresolved_cells_accuracy"]
         ),
@@ -1355,6 +1369,18 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "model": nl_report.get("model", ""),
         "tokenized_joint_accuracy": nl_report.get("tokenized_state", {}).get("joint_accuracy", 0.0),
         "observation_joint_accuracy": nl_report.get("observation_only", {}).get("joint_accuracy", 0.0),
+        "tokenized_visible_type_accuracy_advantage": nl_report.get(
+            "tokenized_visible_type_accuracy_advantage", 0.0
+        ),
+        "tokenized_attended_digit_accuracy_advantage": nl_report.get(
+            "tokenized_attended_digit_accuracy_advantage", 0.0
+        ),
+        "tokenized_glimpse_digit_accuracy_advantage": nl_report.get(
+            "tokenized_glimpse_digit_accuracy_advantage", 0.0
+        ),
+        "tokenized_glimpse_match_accuracy_advantage": nl_report.get(
+            "tokenized_glimpse_match_accuracy_advantage", 0.0
+        ),
         "tokenized_joint_accuracy_advantage": nl_report.get(
             "tokenized_joint_accuracy_advantage", 0.0
         ),
