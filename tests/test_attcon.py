@@ -15,6 +15,7 @@ import torch
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import run_ablations
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
+from attcon.nl_report import collect_nl_examples
 from attcon.train import train_experiment
 
 
@@ -167,6 +168,22 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(torch.all(inspection[:, 1:] >= inspection[:, :-1]))
         self.assertTrue(torch.all((inspection == 0.0) | (inspection == 1.0)))
 
+    def test_collect_nl_examples_exports_structured_state(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+        examples = collect_nl_examples(model, self.task_cfg, batch, outputs)
+
+        self.assertEqual(len(examples), 2 * self.task_cfg.num_steps)
+        example = examples[0]
+        self.assertTrue(example.example_id.startswith("scene0_step0"))
+        self.assertIn("search_type=", example.symbolic_state)
+        self.assertIn("attended_cell=", example.symbolic_state)
+        self.assertIn("cue=", example.observation_only)
+        self.assertTrue(example.tokenized_state.startswith("x"))
+        self.assertIsInstance(example.unresolved_cells, list)
+        self.assertGreaterEqual(len(example.unresolved_cells), 0)
+
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             config = {
@@ -219,6 +236,9 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "nl_report": {
+                        "enabled": False,
+                    },
                     "reduced_shaping": {
                         "enabled": True,
                         "weights": [0.0],
@@ -234,6 +254,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("predictive_probe", report)
             self.assertIn("report_probes", report)
             self.assertIn("self_modeling", report)
+            self.assertIn("nl_report", report)
             self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
@@ -246,6 +267,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("explicit_attention_modeling", report["evidence"])
             self.assertIn("self_modeling_of_attention", report["evidence"])
             self.assertIn("reportable_internal_content", report["evidence"])
+            self.assertIn("natural_language_reportability", report["evidence"])
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
             self.assertIn("reduced_shaping_resilience", report["evidence"])

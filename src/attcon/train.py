@@ -75,6 +75,15 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "nl_report": {
+            "enabled": False,
+            "model": "gpt-5-mini",
+            "dotenv_path": ".env",
+            "calibration_examples": 4,
+            "evaluation_examples": 4,
+            "probe_scenes": 2,
+            "max_output_tokens": 1200,
+        },
         "reduced_shaping": {
             "enabled": True,
             "weights": [0.25, 0.0],

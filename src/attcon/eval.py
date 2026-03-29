@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,7 @@ import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
 from .models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
+from .nl_report import OpenAI, collect_nl_examples, load_dotenv, run_nl_report_mode
 from .train import deep_update, evaluate_model, load_config, make_generator, set_seed, train_single_model
 
 
@@ -777,6 +779,121 @@ def self_model_metrics(
     }
 
 
+def nl_report_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Evaluate natural-language reporting from tokenized internal state."""
+
+    nl_cfg = cfg["evaluation"].get(
+        "nl_report",
+        {
+            "enabled": False,
+            "model": "gpt-5-mini",
+            "dotenv_path": ".env",
+            "calibration_examples": 4,
+            "evaluation_examples": 4,
+            "probe_scenes": 2,
+            "max_output_tokens": 240,
+        },
+    )
+    if not nl_cfg.get("enabled", False):
+        return {}
+
+    load_dotenv(nl_cfg.get("dotenv_path", ".env"))
+    if OpenAI is None:
+        return {
+            "enabled": True,
+            "skipped": True,
+            "reason": "openai dependency is not installed",
+        }
+    if not os.environ.get("OPENAI_API_KEY"):
+        return {
+            "enabled": True,
+            "skipped": True,
+            "reason": "OPENAI_API_KEY is not set",
+        }
+
+    batch_size = nl_cfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"])
+    generator = make_generator(seed, device)
+    batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    with torch.no_grad():
+        outputs = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            num_steps=task_cfg.num_steps,
+        )
+
+    examples = collect_nl_examples(model, task_cfg, batch, outputs)
+    calibration_count = int(nl_cfg.get("calibration_examples", 4))
+    evaluation_count = int(nl_cfg.get("evaluation_examples", 4))
+    required_examples = calibration_count + evaluation_count
+    if len(examples) < required_examples:
+        return {
+            "enabled": True,
+            "skipped": True,
+            "reason": (
+                f"not enough examples for nl_report: need {required_examples}, have {len(examples)}"
+            ),
+        }
+
+    calibration_examples = examples[:calibration_count]
+    evaluation_examples = examples[calibration_count:required_examples]
+    model_name = nl_cfg.get("model", "gpt-5-mini")
+    max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
+    modes = ("tokenized_state", "symbolic_state", "observation_only")
+    try:
+        results = {
+            mode: run_nl_report_mode(
+                mode=mode,
+                model_name=model_name,
+                calibration_examples=calibration_examples,
+                evaluation_examples=evaluation_examples,
+                grid_size=task_cfg.grid_size,
+                max_output_tokens=max_output_tokens,
+            )
+            for mode in modes
+        }
+    except Exception as exc:  # pragma: no cover - network/runtime behavior
+        return {
+            "enabled": True,
+            "skipped": True,
+            "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
+            "model": model_name,
+        }
+
+    tokenized = results["tokenized_state"]
+    symbolic = results["symbolic_state"]
+    observation = results["observation_only"]
+    return {
+        "enabled": True,
+        "skipped": False,
+        "model": model_name,
+        "calibration_examples": calibration_count,
+        "evaluation_examples": evaluation_count,
+        "tokenized_state": tokenized,
+        "symbolic_state": symbolic,
+        "observation_only": observation,
+        "tokenized_joint_accuracy_advantage": (
+            tokenized["joint_accuracy"] - observation["joint_accuracy"]
+        ),
+        "tokenized_unresolved_accuracy_advantage": (
+            tokenized["unresolved_cells_accuracy"] - observation["unresolved_cells_accuracy"]
+        ),
+        "symbolic_joint_accuracy_advantage": (
+            symbolic["joint_accuracy"] - observation["joint_accuracy"]
+        ),
+        "supported": (
+            tokenized["joint_accuracy"] > observation["joint_accuracy"]
+            and tokenized["unresolved_cells_accuracy"] >= observation["unresolved_cells_accuracy"]
+        ),
+    }
+
+
 def intervention_test_metrics(
     model,
     cfg: dict[str, Any],
@@ -1232,6 +1349,21 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": intervention_test.get("supported", False),
     }
 
+    nl_report = report.get("nl_report", {})
+    natural_language_reportability = {
+        "skipped": nl_report.get("skipped", not bool(nl_report)),
+        "model": nl_report.get("model", ""),
+        "tokenized_joint_accuracy": nl_report.get("tokenized_state", {}).get("joint_accuracy", 0.0),
+        "observation_joint_accuracy": nl_report.get("observation_only", {}).get("joint_accuracy", 0.0),
+        "tokenized_joint_accuracy_advantage": nl_report.get(
+            "tokenized_joint_accuracy_advantage", 0.0
+        ),
+        "tokenized_unresolved_accuracy_advantage": nl_report.get(
+            "tokenized_unresolved_accuracy_advantage", 0.0
+        ),
+        "supported": nl_report.get("supported", False),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
@@ -1240,6 +1372,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "explicit_attention_modeling": explicit_attention_modeling,
         "self_modeling_of_attention": self_modeling_of_attention,
         "reportable_internal_content": reportable_internal_content,
+        "natural_language_reportability": natural_language_reportability,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
     }
@@ -1386,6 +1519,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9735,
+    )
+    report["nl_report"] = nl_report_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9740,
     )
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
     if cue_switch_cfg.get("enabled", False):
