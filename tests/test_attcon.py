@@ -153,6 +153,8 @@ class AttentionControlTests(unittest.TestCase):
                     "learning_rate": 1e-3,
                     "aux_loss_weight": 0.1,
                     "attention_entropy_weight": 0.01,
+                    "cue_switch_probability": 0.5,
+                    "cue_switch_step": 1,
                 },
                 "evaluation": {
                     "test_batches": 2,

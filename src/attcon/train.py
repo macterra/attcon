@@ -37,6 +37,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "aux_loss_weight": 0.15,
         "attention_target_weight": 1.0,
         "attention_entropy_weight": 0.0,
+        "cue_switch_probability": 0.0,
+        "cue_switch_step": 3,
     },
     "evaluation": {
         "test_batches": 40,
@@ -151,6 +153,56 @@ def compute_attention_target_loss(
     return -target_attention.clamp_min(1e-8).log().mean()
 
 
+def _targets_for_cues(batch, cues: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Recover target positions and digits for arbitrary cues on a fixed batch of scenes."""
+
+    target_pos = torch.zeros_like(cues)
+    target = torch.zeros_like(cues)
+    for idx in range(batch.scene.shape[0]):
+        cue_idx = cues[idx].item()
+        pos = torch.nonzero(batch.target_types[idx] == cue_idx, as_tuple=False).flatten().item()
+        target_pos[idx] = pos
+        target[idx] = batch.digits[idx, pos]
+    return target_pos, target
+
+
+def prepare_training_episode(
+    batch,
+    task_cfg: TaskConfig,
+    train_cfg: dict[str, Any],
+    *,
+    generator: torch.Generator,
+    device: torch.device,
+) -> dict[str, torch.Tensor]:
+    """Build per-step cue and target sequences for mixed stationary/switch training."""
+
+    cue_seq = batch.cue.unsqueeze(1).repeat(1, task_cfg.num_steps)
+    step_targets = batch.target.unsqueeze(1).repeat(1, task_cfg.num_steps)
+    step_target_pos = batch.target_pos.unsqueeze(1).repeat(1, task_cfg.num_steps)
+
+    cue_switch_probability = float(train_cfg.get("cue_switch_probability", 0.0))
+    switch_step = int(train_cfg.get("cue_switch_step", max(task_cfg.num_steps // 2, 1)))
+    switch_step = min(max(switch_step, 1), task_cfg.num_steps - 1)
+
+    if cue_switch_probability > 0.0 and task_cfg.num_steps > 1:
+        switch_mask = torch.rand(batch.scene.shape[0], generator=generator, device=device) < cue_switch_probability
+        alt_cue = (batch.cue + 1) % task_cfg.num_types
+        alt_target_pos, alt_target = _targets_for_cues(batch, alt_cue)
+        cue_seq[switch_mask, switch_step:] = alt_cue[switch_mask].unsqueeze(1)
+        step_targets[switch_mask, switch_step:] = alt_target[switch_mask].unsqueeze(1)
+        step_target_pos[switch_mask, switch_step:] = alt_target_pos[switch_mask].unsqueeze(1)
+
+    final_target = step_targets[:, -1]
+    final_target_pos = step_target_pos[:, -1]
+    return {
+        "cue_seq": cue_seq,
+        "step_targets": step_targets,
+        "step_target_pos": step_target_pos,
+        "final_target": final_target,
+        "final_target_pos": final_target_pos,
+    }
+
+
 def evaluate_model(
     model,
     cfg: dict[str, Any],
@@ -231,14 +283,27 @@ def train_single_model(
             generator=generator,
             device=device,
         )
-        outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=task_cfg.num_steps)
-        final_loss = F.cross_entropy(outputs["logits"], batch.target)
+        episode = prepare_training_episode(
+            batch,
+            task_cfg,
+            train_cfg,
+            generator=generator,
+            device=device,
+        )
+        outputs = model(
+            batch.scene,
+            batch.cue,
+            cue_seq=episode["cue_seq"],
+            target=episode["final_target"],
+            num_steps=task_cfg.num_steps,
+        )
+        final_loss = F.cross_entropy(outputs["logits"], episode["final_target"])
         aux_loss = F.cross_entropy(
             outputs["logits_seq"][:, :-1].reshape(-1, task_cfg.digit_vocab_size),
-            batch.target.repeat_interleave(task_cfg.num_steps - 1),
+            episode["step_targets"][:, :-1].reshape(-1),
         )
         attention = outputs["attention_seq"]
-        attention_target_loss = compute_attention_target_loss(attention, batch.target_pos)
+        attention_target_loss = compute_attention_target_loss(attention, episode["final_target_pos"])
         attention_entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean()
         # The main task loss is paired with a small final-fixation objective so the
         # controller gets a direct signal about where useful evidence should end up.
@@ -254,7 +319,17 @@ def train_single_model(
         optimizer.step()
 
         if step % train_cfg["log_interval"] == 0 or step == 1:
-            metrics = compute_batch_metrics(outputs, batch)
+            batch_for_metrics = batch
+            batch_for_metrics = type(batch)(
+                scene=batch.scene,
+                cue=batch.cue,
+                target=episode["final_target"],
+                target_pos=episode["final_target_pos"],
+                visible_types=batch.visible_types,
+                digits=batch.digits,
+                target_types=batch.target_types,
+            )
+            metrics = compute_batch_metrics(outputs, batch_for_metrics)
             print(
                 f"[{name}] step={step} loss={loss.item():.4f} "
                 f"acc={metrics['accuracy']:.3f} target_attn={metrics['target_attention']:.3f} "

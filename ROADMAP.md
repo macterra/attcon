@@ -60,13 +60,15 @@ Current status in this repo:
 - a causal intervention test is now implemented
 - on the default run, perturbing controller state causes a measurable shift in the next attention map away from the original cue target and toward an alternate cue target
 - reduced-shaping retraining runs are now implemented
-- when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker but does not disappear entirely
+- on the current mixed-training default, when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker and the zero-shaping condition is no longer positive
 
 Interpretation:
 
 This is stronger, but still preliminary, evidence for **explicit attention modeling**.
 
-It is stronger than Stage 2 alone because it now includes predictive, intervention, and reduced-shaping evidence, but it is still not enough to establish a cleanly interpretable model of attention.
+It is stronger than Stage 2 alone because it now includes predictive, intervention, and reduced-shaping analyses, but it is still not enough to establish a cleanly interpretable model of attention.
+
+The latest tuning also shows a real tradeoff: training that improves switched-priority behavior strengthens Stage 5 but weakens the reduced-shaping part of Stage 3.
 
 Required experiments:
 
@@ -165,14 +167,15 @@ The controller reallocates rather than persisting with the original policy.
 Current status in this repo:
 
 - a mid-episode cue-switch evaluation is now implemented
-- on the current default run, the model does not yet pass this test
-- the recurrent controller remains stronger on stationary cue-guided control than on rapid switched-priority control
+- the default training now mixes stationary and switched-cue episodes
+- on the current default run, the recurrent controller now passes this test
+- the current checkpoint redirects attention better than the baseline after a mid-episode cue change, but this improvement appears to trade off against reduced-shaping resilience
 
 Interpretation:
 
-This is negative but useful evidence.
+This is now positive but still qualified evidence.
 
-It suggests the current controller is not yet robustly flexible under changed priorities, which is exactly why this stage matters.
+It suggests the current controller can be trained into more flexible reallocation under changed priorities, but that flexibility does not yet coexist cleanly with every earlier positive signal.
 
 ## Stage 6: Reportable Internal Content
 
@@ -248,9 +251,9 @@ The roadmap is designed to move from a demonstrated control loop toward experime
 
 The highest-priority next experiments are:
 
-- train directly on mid-episode task switching or mixed stationary/switching episodes
+- tune or curriculum-train mixed stationary/switching episodes to reduce the Stage 3 versus Stage 5 tradeoff
 - add plots or diagnostics for switched-cue trajectories
-- add report tasks about current attention and search status
+- strengthen self-modeling-style report tasks beyond simple decoder probes
 
 ## Current Status
 
@@ -259,12 +262,17 @@ What is already supported:
 - attention
 - closed-loop attention control
 - preliminary evidence for explicit attention modeling
+- flexible reallocation under changed priorities, after mixed switched-cue training
 - preliminary evidence for reportable internal content
 
 What is not yet established:
 
-- flexible reallocation under changed priorities
 - self-modeling of attention
 - minimal consciousness-like content
+
+What is currently unstable or tradeoff-limited:
+
+- reduced-shaping resilience under the mixed switched-cue training default
+- a training recipe that keeps Stage 3 and Stage 5 positive at the same time
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined and experimentally grounded.

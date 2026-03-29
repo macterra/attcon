@@ -58,9 +58,11 @@ The current evaluation also adds several positive later-stage signals:
 - a predictive probe where controller state predicts the next attention map better than the current observation summary alone
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
 - report probes where controller state supports simple readouts of current search type, current attended cell, and whether target evidence is currently in view
-- reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping, but does not disappear entirely when that shaping term is removed
+- reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping
 
-It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is not yet passed: the controller is stronger on fixed-cue control than on rapid redirection after a mid-episode cue change.
+It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is now passed after training on a mix of stationary and switched-cue episodes: the recurrent controller redirects attention better than the baseline after a mid-episode cue change.
+
+That improvement comes with a tradeoff. On the current mixed-training default, the zero-shaping reduced-shaping condition is no longer positive, so `cue_switch_adaptation` is now supported while `reduced_shaping_resilience` is not. Small probability sweeps around the current training mix improved neither result enough to satisfy both at once.
 
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 
