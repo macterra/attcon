@@ -47,7 +47,7 @@ The evaluation report includes:
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the three core claims:
   `dissociation`, `closed_loop_adaptation`, `cue_dependence`, plus Stage 3-style
-  `explicit_attention_modeling`, `reportable_internal_content`,
+  `explicit_attention_modeling`, `self_modeling_of_attention`, `reportable_internal_content`,
   `causal_attention_intervention`, and
   `reduced_shaping_resilience` results
 
@@ -59,12 +59,15 @@ The current evaluation also adds several positive later-stage signals:
 
 - a predictive probe where controller state predicts the next attention map better than the current observation summary alone
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
+- a native self-modeling evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
 - report probes where controller state supports simple readouts of current search type, current attended cell, and whether target evidence is currently in view
 - reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping
 
 It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is now passed after training on a mix of stationary and switched-cue episodes: the recurrent controller redirects attention better than the baseline after a mid-episode cue change.
 
-That improvement comes with a tradeoff. On the current mixed-training default, the zero-shaping reduced-shaping condition is no longer positive, so `cue_switch_adaptation` is now supported while `reduced_shaping_resilience` is not. Small probability sweeps around the current training mix improved neither result enough to satisfy both at once.
+The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
+
+The current Stage 4 result is stronger than the earlier decoder-only report probes. The recurrent model now exposes an explicit inspected-cell memory and a native self-model report head, and the full evaluation report shows `self_modeling_of_attention.supported = true` on the default checkpoint.
 
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 

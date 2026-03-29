@@ -67,6 +67,13 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "self_modeling": {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
         "reduced_shaping": {
             "enabled": True,
             "weights": [0.25, 0.0],

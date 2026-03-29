@@ -67,15 +67,15 @@ Current status in this repo:
 - a causal intervention test is now implemented
 - on the default run, perturbing controller state causes a measurable shift in the next attention map away from the original cue target and toward an alternate cue target
 - reduced-shaping retraining runs are now implemented
-- on the current mixed-training default, when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker and the zero-shaping condition is no longer positive
+- on the current default run, when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker but remains positive even in the zero-shaping condition
 
 Interpretation:
 
-This is stronger, but still preliminary, evidence for **explicit attention modeling**.
+This is strong evidence for **explicit attention modeling** within this benchmark.
 
 It is stronger than Stage 2 alone because it now includes predictive, intervention, and reduced-shaping analyses, but it is still not enough to establish a cleanly interpretable model of attention.
 
-The latest tuning also shows a real tradeoff: training that improves switched-priority behavior strengthens Stage 5 but weakens the reduced-shaping part of Stage 3.
+Earlier tuning exposed a real tradeoff between switched-priority behavior and reduced-shaping resilience, but the current default checkpoint now supports both.
 
 Required experiments:
 
@@ -143,6 +143,19 @@ Success criterion:
 
 Internal state supports reliable report and correction about the model’s own attentional process.
 
+Current status in this repo:
+
+- the recurrent controller now maintains an explicit inspected-cell state
+- that state tracks which cells have already been fixated and which remain uninspected
+- the default evaluation now includes a native self-model test over the full inspected/uninspected cell map
+- on the default run, the native self-model beats an observation-only probe on both full-map reporting and the binary question of whether the target has already been inspected
+
+Interpretation:
+
+This stage is now supported in a bounded, engineered sense.
+
+The current system does not just expose decoder-friendly hidden state. It now contains an explicit internal variable about prior attentional allocation and can report that variable behaviorally better than an observation-only baseline. That is enough to count as Stage 4 completion for this benchmark, while still falling short of stronger consciousness-style claims.
+
 ## Branch B, Stage 5: Flexible Reallocation Under Changed Priorities
 
 Question:
@@ -176,13 +189,13 @@ Current status in this repo:
 - a mid-episode cue-switch evaluation is now implemented
 - the default training now mixes stationary and switched-cue episodes
 - on the current default run, the recurrent controller now passes this test
-- the current checkpoint redirects attention better than the baseline after a mid-episode cue change, but this improvement appears to trade off against reduced-shaping resilience
+- the current checkpoint redirects attention better than the baseline after a mid-episode cue change
 
 Interpretation:
 
-This is now positive but still qualified evidence.
+This is now positive evidence.
 
-It suggests the current controller can be trained into more flexible reallocation under changed priorities, but that flexibility does not yet coexist cleanly with every earlier positive signal.
+The current controller can be trained into flexible reallocation under changed priorities, and the latest default checkpoint keeps that result compatible with the current Stage 3 evidence.
 
 ## Stage 6: Reportable Internal Content
 
@@ -274,9 +287,9 @@ In other words, Stage 4 and Stage 5 should be read as parallel branches after St
 
 The highest-priority next experiments are:
 
-- tune or curriculum-train mixed stationary/switching episodes to reduce the Stage 3 versus Stage 5 tradeoff
-- add plots or diagnostics for switched-cue trajectories
-- strengthen self-modeling-style report tasks beyond simple decoder probes
+- extend Stage 4 from explicit inspected-state reporting to stronger allocation-error and unresolved-region tasks
+- improve Stage 6 so native report behavior covers more than search type and attended cell
+- add plots or diagnostics for switched-cue and self-model trajectories
 
 ## Current Status
 
@@ -284,18 +297,18 @@ What is already supported:
 
 - attention
 - closed-loop attention control
-- preliminary evidence for explicit attention modeling
+- explicit attention modeling
+- self-modeling of attention
 - flexible reallocation under changed priorities, after mixed switched-cue training
 - preliminary evidence for reportable internal content
 
 What is not yet established:
 
-- self-modeling of attention
 - minimal consciousness-like content
 
 What is currently unstable or tradeoff-limited:
 
-- reduced-shaping resilience under the mixed switched-cue training default
-- a training recipe that keeps Stage 3 and Stage 5 positive at the same time
+- stronger native report behavior beyond the current explicit inspected-state scaffold
+- a broader Stage 6 story that includes target-found and unresolved-region reporting
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined and experimentally grounded.

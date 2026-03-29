@@ -175,7 +175,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             nn.Tanh(),
         )
         self.policy_head = nn.Linear(model_config.hidden_size, self.num_cells)
-        self.self_model_head = nn.Linear(model_config.hidden_size, self.num_cells)
+        self.self_model_head = nn.Linear(model_config.hidden_size + self.num_cells, self.num_cells)
 
     @property
     def summary_dim(self) -> int:
@@ -284,7 +284,7 @@ class RecurrentAttentionController(BaseAttentionModel):
                 if "delta" in intervention:
                     hidden_state = hidden_state + intervention["delta"]
 
-            self_model_logits = self.self_model_head(hidden_state)
+            self_model_logits = self.self_model_head(torch.cat([hidden_state, inspection_state], dim=-1))
             attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
             hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)

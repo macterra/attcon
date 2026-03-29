@@ -236,6 +236,80 @@ def _collect_report_probe_dataset(
     }
 
 
+def _collect_self_model_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, torch.Tensor]:
+    """Collect held-out native self-model targets and observation-only baselines."""
+
+    prev_observation_features = []
+    inspection_labels = []
+    target_inspected_labels = []
+
+    total_cell_matches = 0.0
+    total_cell_count = 0
+    total_target_matches = 0.0
+    total_target_count = 0
+    total_target_positive_hits = 0.0
+    total_target_positive_count = 0.0
+    total_bce = 0.0
+
+    for batch_idx in range(num_batches):
+        generator = make_generator(seed + batch_idx, device)
+        batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+        with torch.no_grad():
+            outputs = model(
+                batch.scene,
+                batch.cue,
+                target=batch.target,
+                num_steps=task_cfg.num_steps,
+            )
+
+        inspection_true = outputs["inspection_seq"]
+        inspection_pred = outputs["self_model_seq"]
+        prev_observation = torch.zeros_like(outputs["observation_seq"])
+        prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
+
+        target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
+        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        target_pred = inspection_pred.gather(2, target_pos).squeeze(-1)
+
+        total_cell_matches += (
+            (inspection_pred >= 0.5) == inspection_true.bool()
+        ).float().sum().item()
+        total_cell_count += inspection_true.numel()
+        total_target_matches += (
+            (target_pred >= 0.5) == target_true.bool()
+        ).float().sum().item()
+        total_target_count += target_true.numel()
+        total_target_positive_hits += (
+            ((target_pred >= 0.5) & target_true.bool()).float().sum().item()
+        )
+        total_target_positive_count += target_true.float().sum().item()
+        total_bce += torch.nn.functional.binary_cross_entropy(
+            inspection_pred,
+            inspection_true,
+        ).item()
+
+        prev_observation_features.append(prev_observation.reshape(-1, prev_observation.shape[-1]))
+        inspection_labels.append(inspection_true.reshape(-1, inspection_true.shape[-1]))
+        target_inspected_labels.append(target_true.reshape(-1))
+
+    return {
+        "prev_observation_features": torch.cat(prev_observation_features, dim=0),
+        "inspection_labels": torch.cat(inspection_labels, dim=0),
+        "target_inspected_labels": torch.cat(target_inspected_labels, dim=0),
+        "native_cell_accuracy": total_cell_matches / max(total_cell_count, 1),
+        "native_target_accuracy": total_target_matches / max(total_target_count, 1),
+        "native_target_positive_recall": total_target_positive_hits / max(total_target_positive_count, 1.0),
+        "native_cell_bce": total_bce / max(num_batches, 1),
+    }
+
+
 def _train_attention_probe(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
@@ -282,6 +356,40 @@ def _train_attention_probe(
         "train_top1_match": train_top1,
         "test_top1_match": test_top1,
     }
+
+
+def _train_multilabel_probe(
+    train_features: torch.Tensor,
+    train_targets: torch.Tensor,
+    test_features: torch.Tensor,
+    test_targets: torch.Tensor,
+    *,
+    epochs: int,
+    learning_rate: float,
+) -> dict[str, float]:
+    """Fit a linear probe for binary per-cell self-model labels."""
+
+    probe = nn.Linear(train_features.shape[-1], train_targets.shape[-1]).to(train_features.device)
+    optimizer = torch.optim.Adam(probe.parameters(), lr=learning_rate)
+
+    for _ in range(epochs):
+        logits = probe(train_features)
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(logits, train_targets)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        train_logits = probe(train_features)
+        test_logits = probe(test_features)
+        train_pred = (torch.sigmoid(train_logits) >= 0.5).float()
+        test_pred = (torch.sigmoid(test_logits) >= 0.5).float()
+        return {
+            "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_targets).item(),
+            "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_targets).item(),
+            "train_cell_accuracy": (train_pred == train_targets).float().mean().item(),
+            "test_cell_accuracy": (test_pred == test_targets).float().mean().item(),
+        }
 
 
 def _train_classification_probe(
@@ -347,11 +455,21 @@ def _train_binary_probe(
         test_logits = probe(test_features)
         train_pred = (torch.sigmoid(train_logits) >= 0.5).float()
         test_pred = (torch.sigmoid(test_logits) >= 0.5).float()
+        train_positive = train_labels == 1.0
+        test_positive = test_labels == 1.0
         return {
             "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_labels).item(),
             "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_labels).item(),
             "train_accuracy": (train_pred == train_labels).float().mean().item(),
             "test_accuracy": (test_pred == test_labels).float().mean().item(),
+            "train_positive_recall": (
+                ((train_pred == 1.0) & train_positive).float().sum()
+                / train_positive.float().sum().clamp_min(1.0)
+            ).item(),
+            "test_positive_recall": (
+                ((test_pred == 1.0) & test_positive).float().sum()
+                / test_positive.float().sum().clamp_min(1.0)
+            ).item(),
         }
 
 
@@ -530,6 +648,90 @@ def report_probe_metrics(
             cue_state["test_accuracy"] > cue_obs["test_accuracy"]
             and attended_state["test_accuracy"] > attended_obs["test_accuracy"]
             and found_state["test_accuracy"] > found_obs["test_accuracy"]
+        ),
+    }
+
+
+def self_model_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Evaluate native self-reports about attention history against a weaker baseline."""
+
+    self_cfg = cfg["evaluation"].get(
+        "self_modeling",
+        {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
+    )
+    if not self_cfg.get("enabled", False):
+        return {}
+
+    batch_size = cfg["training"]["batch_size"]
+    train = _collect_self_model_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        self_cfg["train_batches"],
+        device,
+        seed,
+    )
+    test = _collect_self_model_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        self_cfg["test_batches"],
+        device,
+        seed + 1000,
+    )
+
+    observation_probe = _train_binary_probe(
+        train["prev_observation_features"],
+        train["target_inspected_labels"],
+        test["prev_observation_features"],
+        test["target_inspected_labels"],
+        epochs=self_cfg["epochs"],
+        learning_rate=self_cfg["learning_rate"],
+    )
+    observation_cell_probe = _train_multilabel_probe(
+        train["prev_observation_features"],
+        train["inspection_labels"],
+        test["prev_observation_features"],
+        test["inspection_labels"],
+        epochs=self_cfg["epochs"],
+        learning_rate=self_cfg["learning_rate"],
+    )
+
+    return {
+        "native_cell_report": {
+            "cell_accuracy": test["native_cell_accuracy"],
+            "cell_bce": test["native_cell_bce"],
+            "observation_only_probe": observation_cell_probe,
+            "cell_accuracy_advantage": (
+                test["native_cell_accuracy"] - observation_cell_probe["test_cell_accuracy"]
+            ),
+        },
+        "target_inspected_report": {
+            "native_accuracy": test["native_target_accuracy"],
+            "native_positive_recall": test["native_target_positive_recall"],
+            "observation_only_probe": observation_probe,
+            "native_accuracy_advantage": test["native_target_accuracy"] - observation_probe["test_accuracy"],
+            "native_positive_recall_advantage": (
+                test["native_target_positive_recall"] - observation_probe["test_positive_recall"]
+            ),
+        },
+        "supported": (
+            test["native_cell_accuracy"] > observation_cell_probe["test_cell_accuracy"]
+            and test["native_cell_accuracy"] > 0.95
+            and test["native_target_positive_recall"] >= observation_probe["test_positive_recall"]
+            and test["native_target_positive_recall"] > 0.5
         ),
     }
 
@@ -932,6 +1134,28 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": report_probes.get("supported", False),
     }
 
+    self_model = report.get("self_modeling", {})
+    self_modeling_of_attention = {
+        "native_cell_accuracy": self_model.get("native_cell_report", {}).get("cell_accuracy", 0.0),
+        "native_cell_bce": self_model.get("native_cell_report", {}).get("cell_bce", 0.0),
+        "cell_accuracy_advantage": self_model.get("native_cell_report", {}).get(
+            "cell_accuracy_advantage", 0.0
+        ),
+        "target_inspected_native_accuracy": self_model.get("target_inspected_report", {}).get(
+            "native_accuracy", 0.0
+        ),
+        "target_inspected_native_positive_recall": self_model.get("target_inspected_report", {}).get(
+            "native_positive_recall", 0.0
+        ),
+        "target_inspected_advantage": self_model.get("target_inspected_report", {}).get(
+            "native_accuracy_advantage", 0.0
+        ),
+        "target_inspected_positive_recall_advantage": self_model.get(
+            "target_inspected_report", {}
+        ).get("native_positive_recall_advantage", 0.0),
+        "supported": self_model.get("supported", False),
+    }
+
     reduced_shaping = report.get("reduced_shaping", {})
     reduced_shaping_summary = reduced_shaping.get("summary", {})
     shaping_resilience = {
@@ -965,6 +1189,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "cue_dependence": cue_dependence,
         "cue_switch_adaptation": cue_switch_adaptation,
         "explicit_attention_modeling": explicit_attention_modeling,
+        "self_modeling_of_attention": self_modeling_of_attention,
         "reportable_internal_content": reportable_internal_content,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
@@ -1105,6 +1330,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9725,
+    )
+    report["self_modeling"] = self_model_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9735,
     )
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
     if cue_switch_cfg.get("enabled", False):

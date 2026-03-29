@@ -204,6 +204,13 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "self_modeling": {
+                        "enabled": True,
+                        "train_batches": 2,
+                        "test_batches": 1,
+                        "epochs": 10,
+                        "learning_rate": 0.05,
+                    },
                     "reduced_shaping": {
                         "enabled": True,
                         "weights": [0.0],
@@ -218,14 +225,18 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("recurrent", report)
             self.assertIn("predictive_probe", report)
             self.assertIn("report_probes", report)
+            self.assertIn("self_modeling", report)
             self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
             self.assertIn("current_search_type", report["report_probes"])
+            self.assertIn("target_inspected_report", report["self_modeling"])
+            self.assertIn("observation_only_probe", report["self_modeling"]["native_cell_report"])
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
+            self.assertIn("self_modeling_of_attention", report["evidence"])
             self.assertIn("reportable_internal_content", report["evidence"])
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
