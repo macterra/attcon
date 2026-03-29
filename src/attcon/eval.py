@@ -13,7 +13,7 @@ import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
 from .models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from .train import deep_update, evaluate_model, load_config, make_generator
+from .train import deep_update, evaluate_model, load_config, make_generator, set_seed, train_single_model
 
 
 def load_models_from_checkpoint(
@@ -316,6 +316,97 @@ def predictive_probe_metrics(
     }
 
 
+def reduced_shaping_metrics(
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Retrain recurrent controllers with weaker shaping and compare their behavior."""
+
+    reduced_cfg = cfg["evaluation"].get("reduced_shaping", {})
+    if not reduced_cfg.get("enabled", False):
+        return {}
+
+    weights = reduced_cfg.get("weights", [])
+    if not weights:
+        return {}
+
+    shaping_dir = output_dir / "reduced_shaping"
+    shaping_dir.mkdir(parents=True, exist_ok=True)
+    results: dict[str, Any] = {}
+
+    for weight_idx, weight in enumerate(weights):
+        variant_cfg = deep_update(
+            cfg,
+            {
+                "seed": cfg["seed"] + 20000 + weight_idx * 100,
+                "output_dir": str(shaping_dir / f"attn_weight_{str(weight).replace('.', '_')}"),
+                "training": {
+                    "attention_target_weight": float(weight),
+                },
+            },
+        )
+        set_seed(variant_cfg["seed"])
+        model_cfg = ModelConfig.from_dict(variant_cfg["model"])
+        model = RecurrentAttentionController(task_cfg, model_cfg).to(device)
+        variant_output_dir = Path(variant_cfg["output_dir"])
+        variant_output_dir.mkdir(parents=True, exist_ok=True)
+        _, best_state = train_single_model(
+            f"recurrent_attn_weight_{str(weight).replace('.', '_')}",
+            model,
+            variant_cfg,
+            task_cfg,
+            device,
+            variant_output_dir,
+        )
+        model.load_state_dict(best_state["model_state_dict"])
+        model.eval()
+
+        variant_report = evaluate_model(
+            model,
+            variant_cfg,
+            task_cfg,
+            device,
+            num_batches=cfg["evaluation"]["test_batches"],
+            seed=variant_cfg["seed"] + 9000,
+        )
+        variant_report.update(
+            trajectory_metrics(
+                model,
+                task_cfg,
+                cfg["evaluation"]["probe_scenes"],
+                device,
+                variant_cfg["seed"] + 9100,
+            )
+        )
+        variant_report.update(
+            cue_sensitivity_metrics(
+                model,
+                task_cfg,
+                cfg["evaluation"]["probe_scenes"],
+                device,
+                variant_cfg["seed"] + 9200,
+            )
+        )
+        results[str(weight)] = variant_report
+
+    baseline_weight_key = str(min(weights))
+    baseline_variant = results[baseline_weight_key]
+    results["summary"] = {
+        "lowest_weight": float(baseline_weight_key),
+        "lowest_weight_accuracy": baseline_variant["accuracy"],
+        "lowest_weight_temporal_reallocation": baseline_variant["temporal_reallocation"],
+        "lowest_weight_target_attention_gain": baseline_variant["target_attention_gain"],
+        "supported": (
+            baseline_variant["temporal_reallocation"] > 0.0
+            and baseline_variant["target_attention_gain"] > 0.0
+            and baseline_variant["accuracy"] > 0.1
+        ),
+    }
+    return results
+
+
 def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     """Condense raw metrics into the three core claims from the README."""
 
@@ -370,11 +461,26 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": predictive_probe.get("supported", False),
     }
 
+    reduced_shaping = report.get("reduced_shaping", {})
+    reduced_shaping_summary = reduced_shaping.get("summary", {})
+    shaping_resilience = {
+        "lowest_weight": reduced_shaping_summary.get("lowest_weight", 0.0),
+        "lowest_weight_accuracy": reduced_shaping_summary.get("lowest_weight_accuracy", 0.0),
+        "lowest_weight_temporal_reallocation": reduced_shaping_summary.get(
+            "lowest_weight_temporal_reallocation", 0.0
+        ),
+        "lowest_weight_target_attention_gain": reduced_shaping_summary.get(
+            "lowest_weight_target_attention_gain", 0.0
+        ),
+        "supported": reduced_shaping_summary.get("supported", False),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
         "cue_dependence": cue_dependence,
         "explicit_attention_modeling": explicit_attention_modeling,
+        "reduced_shaping_resilience": shaping_resilience,
     }
 
 
@@ -505,6 +611,12 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9700,
+    )
+    report["reduced_shaping"] = reduced_shaping_metrics(
+        cfg,
+        task_cfg,
+        device,
+        output_dir,
     )
 
     for name in eval_cfg["ablations"]:

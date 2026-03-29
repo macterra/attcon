@@ -119,6 +119,10 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "reduced_shaping": {
+                        "enabled": True,
+                        "weights": [0.0],
+                    },
                     "ablations": ["freeze_recurrence"],
                 },
             }
@@ -128,9 +132,11 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("baseline", report)
             self.assertIn("recurrent", report)
             self.assertIn("predictive_probe", report)
+            self.assertIn("reduced_shaping", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
+            self.assertIn("reduced_shaping_resilience", report["evidence"])
             self.assertTrue(Path(report["artifacts"]["report"]).exists())
             self.assertTrue(report["artifacts"]["plots"])
 

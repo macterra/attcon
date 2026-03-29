@@ -47,6 +47,10 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "reduced_shaping": {
+            "enabled": True,
+            "weights": [0.25, 0.0],
+        },
         "ablations": [
             "freeze_recurrence",
             "feedforward_summary",

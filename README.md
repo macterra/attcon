@@ -38,20 +38,26 @@ The evaluation report includes:
 - trajectory divergence and temporal reallocation
 - wrong-cue sensitivity metrics
 - a predictive probe comparing controller-state vs observation-only prediction of the next attention map
+- reduced-shaping retraining runs that test whether reallocation survives weaker or zero target-attention supervision
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the three core claims:
-  `dissociation`, `closed_loop_adaptation`, `cue_dependence`, and a Stage 3-style
-  `explicit_attention_modeling` probe result
+  `dissociation`, `closed_loop_adaptation`, `cue_dependence`, plus Stage 3-style
+  `explicit_attention_modeling` and `reduced_shaping_resilience` results
 
 ## Current Result Shape
 
 On the current default run, the recurrent controller outperforms the static baseline and stronger non-recurrent ablations, while also showing positive temporal reallocation and cue sensitivity.
 
+The current evaluation also adds two Stage 3-style signals:
+
+- a predictive probe where controller state predicts the next attention map better than the current observation summary alone
+- reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping, but does not disappear entirely when that shaping term is removed
+
 The exact numbers depend on the saved checkpoint in `outputs/minimal`, but the intended workflow is:
 
 1. train both baseline and recurrent models
 2. run ablations
-3. inspect the JSON report and attention plots
+3. inspect the JSON report, predictive-probe results, reduced-shaping results, and attention plots
 
 ## Tests
 

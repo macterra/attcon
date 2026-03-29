@@ -53,6 +53,19 @@ Does the controller state explicitly model attentional dynamics, rather than mer
 
 This is the most important next step.
 
+Current status in this repo:
+
+- a predictive probe is now implemented
+- on the default run, controller state predicts the next attention map better than a baseline built from current observation alone
+- reduced-shaping retraining runs are now implemented
+- when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker but does not disappear entirely
+
+Interpretation:
+
+This is preliminary evidence for **explicit attention modeling**.
+
+It is stronger than Stage 2 alone, but still not enough to establish a causal or interpretable model of attention without intervention evidence.
+
 Required experiments:
 
 1. Predictive probe
@@ -88,6 +101,12 @@ Remove or reduce the direct target-attention supervision term.
 Success criterion:
 
 Useful reallocation still emerges from task success alone, showing that the controller is not merely optimizing an engineered shaping objective.
+
+What remains missing at this stage:
+
+- a causal intervention test on controller state
+- sharper quantitative thresholds for what counts as strong enough predictive and reduced-shaping evidence
+- evidence that the predictive signal reflects structured attentional dynamics rather than generic recurrent state
 
 ## Stage 4: Self-Modeling of Attention
 
@@ -203,10 +222,8 @@ The roadmap is designed to move from a demonstrated control loop toward experime
 
 The highest-priority next experiments are:
 
-- add a predictive probe on controller state
 - add a causal intervention test on controller state
 - add mid-episode task switching
-- run reduced or no target-attention shaping-loss conditions
 - add report tasks about current attention and search status
 
 ## Current Status
@@ -215,10 +232,10 @@ What is already supported:
 
 - attention
 - closed-loop attention control
+- preliminary evidence for explicit attention modeling
 
 What is not yet established:
 
-- explicit attention modeling
 - self-modeling of attention
 - minimal consciousness-like content
 
