@@ -259,8 +259,10 @@ Success criterion:
 
 Good implementation constraint:
 
-- the language model should be conditioned on explicit controller and self-model state
-- evaluation should compare that against text generation from observation alone
+- symbolic serialization of internal state is allowed only as a weak baseline
+- the real target is a tokenized internal-state interface without pre-labeled variable names
+- the language model should learn to attach labels to that state rather than receiving a hand-authored report template
+- evaluation should compare tokenized-state reporting against both observation-only text generation and symbolic-dump baselines
 
 Current status in this repo:
 
@@ -269,6 +271,8 @@ Current status in this repo:
 Interpretation:
 
 This would be a stronger and more legible form of reportability than the current structured probes, but it should only count if the language output is demonstrably faithful to the real internal state.
+
+In particular, handing a language model a clean symbolic state dump would be too weak to count as the main result. The stronger test is whether language can latch onto tokenized internal state and learn stable labels for the model's own regulatory variables.
 
 ## Stage 8: Minimal Consciousness Interpretation
 
