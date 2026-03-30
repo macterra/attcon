@@ -642,6 +642,53 @@ def run_nl_report_mode(
         "unresolved_rows_accuracy": exact_unresolved_rows / denom,
         "unresolved_cols_accuracy": exact_unresolved_cols / denom,
         "unresolved_count_accuracy": exact_unresolved_count / denom,
+        "current_content_joint_accuracy": (
+            sum(
+                int(
+                    item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
+                    and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
+                    and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
+                    and bool(item["response"]["glimpse_target_match"])
+                    == item["expected"]["glimpse_target_match"]
+                )
+                for item in results
+            )
+            / denom
+        ),
+        "memory_content_joint_accuracy": (
+            sum(
+                int(
+                    item["response"]["previous_attended_visible_type"]
+                    == item["expected"]["previous_attended_visible_type"]
+                    and item["response"]["previous_attended_digit"]
+                    == item["expected"]["previous_attended_digit"]
+                    and item["response"]["previous_glimpse_digit"]
+                    == item["expected"]["previous_glimpse_digit"]
+                )
+                for item in results
+            )
+            / denom
+        ),
+        "content_only_joint_accuracy": (
+            sum(
+                int(
+                    item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
+                    and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
+                    and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
+                    and item["response"]["previous_attended_visible_type"]
+                    == item["expected"]["previous_attended_visible_type"]
+                    and item["response"]["previous_attended_digit"]
+                    == item["expected"]["previous_attended_digit"]
+                    and item["response"]["previous_glimpse_digit"]
+                    == item["expected"]["previous_glimpse_digit"]
+                    and bool(item["response"]["glimpse_target_match"])
+                    == item["expected"]["glimpse_target_match"]
+                    and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
+                )
+                for item in results
+            )
+            / denom
+        ),
         "joint_accuracy": (
             sum(
                 int(

@@ -264,6 +264,15 @@ Good implementation constraint:
 - the language model should learn to attach labels to that state rather than receiving a hand-authored report template
 - evaluation should compare tokenized-state reporting against both observation-only text generation and symbolic-dump baselines
 
+Possible parallel implementation branch:
+
+- a vision-language route may also be appropriate here, because the underlying problem is spatial
+- in that branch, the system would render internal attention/self-model state as compact panels or overlays and ask a VLM to report current and remembered attended content
+- this should still be held to the same anti-cheating standard:
+  - explicit labeled visual dumps count only as weak baselines
+  - the stronger target is minimally labeled visual internal-state rendering that still beats scene-only baselines
+  - the VLM branch should be treated as complementary to, not a replacement for, the text-token branch
+
 Current status in this repo:
 
 - a natural-language reporting harness is now implemented
@@ -353,6 +362,7 @@ The highest-priority next experiments are:
 
 - add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
 - improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
+- add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
 - evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - add plots or diagnostics for switched-cue and self-model trajectories
 
@@ -370,6 +380,7 @@ What is already supported:
 What is not yet established:
 
 - natural-language reportability grounded in tokenized internal state
+- natural-language reportability grounded in minimally labeled visual internal-state renderings
 - minimal consciousness-like content
 
 What is currently unstable or tradeoff-limited:

@@ -1081,6 +1081,18 @@ def nl_report_metrics(
         "tokenized_joint_accuracy_advantage": (
             tokenized["joint_accuracy"] - observation["joint_accuracy"]
         ),
+        "tokenized_current_content_joint_accuracy_advantage": (
+            tokenized["current_content_joint_accuracy"]
+            - observation["current_content_joint_accuracy"]
+        ),
+        "tokenized_memory_content_joint_accuracy_advantage": (
+            tokenized["memory_content_joint_accuracy"]
+            - observation["memory_content_joint_accuracy"]
+        ),
+        "tokenized_content_only_joint_accuracy_advantage": (
+            tokenized["content_only_joint_accuracy"]
+            - observation["content_only_joint_accuracy"]
+        ),
         "tokenized_visible_type_accuracy_advantage": (
             tokenized["attended_visible_type_accuracy"]
             - observation["attended_visible_type_accuracy"]
@@ -1127,6 +1139,11 @@ def nl_report_metrics(
         ),
         "symbolic_joint_accuracy_advantage": (
             symbolic["joint_accuracy"] - observation["joint_accuracy"]
+        ),
+        "content_supported": (
+            tokenized["content_only_joint_accuracy"] > observation["content_only_joint_accuracy"]
+            and tokenized["memory_content_joint_accuracy"] > observation["memory_content_joint_accuracy"]
+            and tokenized["current_content_joint_accuracy"] >= observation["current_content_joint_accuracy"]
         ),
         "supported": (
             tokenized["joint_accuracy"] > observation["joint_accuracy"]
@@ -1618,6 +1635,15 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "model": nl_report.get("model", ""),
         "tokenized_joint_accuracy": nl_report.get("tokenized_state", {}).get("joint_accuracy", 0.0),
         "observation_joint_accuracy": nl_report.get("observation_only", {}).get("joint_accuracy", 0.0),
+        "tokenized_current_content_joint_accuracy_advantage": nl_report.get(
+            "tokenized_current_content_joint_accuracy_advantage", 0.0
+        ),
+        "tokenized_memory_content_joint_accuracy_advantage": nl_report.get(
+            "tokenized_memory_content_joint_accuracy_advantage", 0.0
+        ),
+        "tokenized_content_only_joint_accuracy_advantage": nl_report.get(
+            "tokenized_content_only_joint_accuracy_advantage", 0.0
+        ),
         "tokenized_visible_type_accuracy_advantage": nl_report.get(
             "tokenized_visible_type_accuracy_advantage", 0.0
         ),
@@ -1648,6 +1674,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "tokenized_unresolved_accuracy_advantage": nl_report.get(
             "tokenized_unresolved_accuracy_advantage", 0.0
         ),
+        "content_supported": nl_report.get("content_supported", False),
         "supported": nl_report.get("supported", False),
     }
 
