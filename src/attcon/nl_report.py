@@ -107,8 +107,8 @@ def _fit_multiclass_probe(
     *,
     epochs: int = 200,
     learning_rate: float = 0.05,
-) -> torch.Tensor:
-    """Fit a small linear classifier and return hard class predictions."""
+) -> nn.Linear:
+    """Fit a small linear classifier and return the trained head."""
 
     head = nn.Linear(features.shape[-1], num_classes)
     optimizer = torch.optim.Adam(head.parameters(), lr=learning_rate)
@@ -118,8 +118,7 @@ def _fit_multiclass_probe(
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    with torch.no_grad():
-        return head(features).argmax(dim=-1)
+    return head
 
 
 def _fit_binary_probe(
@@ -128,8 +127,8 @@ def _fit_binary_probe(
     *,
     epochs: int = 200,
     learning_rate: float = 0.05,
-) -> torch.Tensor:
-    """Fit a small linear binary probe and return hard predictions."""
+) -> nn.Linear:
+    """Fit a small linear binary probe and return the trained head."""
 
     head = nn.Linear(features.shape[-1], labels.shape[-1])
     optimizer = torch.optim.Adam(head.parameters(), lr=learning_rate)
@@ -139,14 +138,11 @@ def _fit_binary_probe(
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    with torch.no_grad():
-        return (torch.sigmoid(head(features)) >= 0.5).long()
+    return head
 
 
-def _render_tokenized_examples(examples: list[NLExample]) -> None:
-    """Build a learned opaque token stream from controller, attention, and memory states."""
-
-    features = torch.stack(
+def _feature_matrix(examples: list[NLExample]) -> torch.Tensor:
+    return torch.stack(
         [
             torch.cat(
                 [
@@ -162,49 +158,78 @@ def _render_tokenized_examples(examples: list[NLExample]) -> None:
         ],
         dim=0,
     )
-    current_cell_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.attended_cell for example in examples]), num_classes=25
+
+
+def _render_tokenized_examples(
+    calibration_examples: list[NLExample],
+    target_examples: list[NLExample],
+) -> None:
+    """Build learned opaque token streams using a translator fit on calibration examples only."""
+
+    train_features = _feature_matrix(calibration_examples)
+    target_features = _feature_matrix(target_examples)
+    current_cell_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.attended_cell for example in calibration_examples]), num_classes=25
     )
-    current_visible_type_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.attended_visible_type for example in examples]), num_classes=8
+    current_visible_type_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.attended_visible_type for example in calibration_examples]),
+        num_classes=8,
     )
-    current_digit_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.attended_digit for example in examples]), num_classes=10
+    current_digit_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.attended_digit for example in calibration_examples]), num_classes=10
     )
-    glimpse_digit_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.glimpse_digit for example in examples]), num_classes=10
+    glimpse_digit_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.glimpse_digit for example in calibration_examples]), num_classes=10
     )
-    prev_cell_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.prev_attended_cell for example in examples]), num_classes=25
+    prev_cell_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.prev_attended_cell for example in calibration_examples]), num_classes=25
     )
-    prev_visible_type_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.prev_attended_visible_type for example in examples]), num_classes=8
+    prev_visible_type_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.prev_attended_visible_type for example in calibration_examples]),
+        num_classes=8,
     )
-    prev_digit_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.prev_attended_digit for example in examples]), num_classes=10
+    prev_digit_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.prev_attended_digit for example in calibration_examples]), num_classes=10
     )
-    prev_glimpse_digit_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.prev_glimpse_digit for example in examples]), num_classes=10
+    prev_glimpse_digit_head = _fit_multiclass_probe(
+        train_features, torch.tensor([example.prev_glimpse_digit for example in calibration_examples]), num_classes=10
     )
-    unresolved_row_pred = _fit_binary_probe(
-        features,
+    unresolved_row_head = _fit_binary_probe(
+        train_features,
         torch.tensor(
-            [[int(row in example.unresolved_rows) for row in range(5)] for example in examples],
+            [[int(row in example.unresolved_rows) for row in range(5)] for example in calibration_examples],
             dtype=torch.float32,
         ),
     )
-    unresolved_col_pred = _fit_binary_probe(
-        features,
+    unresolved_col_head = _fit_binary_probe(
+        train_features,
         torch.tensor(
-            [[int(col in example.unresolved_cols) for col in range(5)] for example in examples],
+            [[int(col in example.unresolved_cols) for col in range(5)] for example in calibration_examples],
             dtype=torch.float32,
         ),
     )
-    unresolved_count_pred = _fit_multiclass_probe(
-        features, torch.tensor([example.unresolved_count for example in examples]), num_classes=26
+    unresolved_count_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.unresolved_count for example in calibration_examples]),
+        num_classes=26,
     )
 
-    for idx, example in enumerate(examples):
+    with torch.no_grad():
+        current_cell_pred = current_cell_head(target_features).argmax(dim=-1)
+        current_visible_type_pred = current_visible_type_head(target_features).argmax(dim=-1)
+        current_digit_pred = current_digit_head(target_features).argmax(dim=-1)
+        glimpse_digit_pred = glimpse_digit_head(target_features).argmax(dim=-1)
+        prev_cell_pred = prev_cell_head(target_features).argmax(dim=-1)
+        prev_visible_type_pred = prev_visible_type_head(target_features).argmax(dim=-1)
+        prev_digit_pred = prev_digit_head(target_features).argmax(dim=-1)
+        prev_glimpse_digit_pred = prev_glimpse_digit_head(target_features).argmax(dim=-1)
+        unresolved_row_pred = (torch.sigmoid(unresolved_row_head(target_features)) >= 0.5).long()
+        unresolved_col_pred = (torch.sigmoid(unresolved_col_head(target_features)) >= 0.5).long()
+        unresolved_count_pred = unresolved_count_head(target_features).argmax(dim=-1)
+
+    for idx, example in enumerate(target_examples):
         current_bits = _chunk_bits(example.controller_state)
         prev_bits = _chunk_bits(example.prev_controller_state)
         attention_bits = _chunk_bits(example.attention_state)
@@ -342,7 +367,6 @@ def collect_nl_examples(
                 task_cfg.grid_size,
             )
             examples.append(example)
-    _render_tokenized_examples(examples)
     return examples
 
 

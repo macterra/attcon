@@ -14,7 +14,7 @@ import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
 from .models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from .nl_report import OpenAI, collect_nl_examples, load_dotenv, run_nl_report_mode
+from .nl_report import OpenAI, collect_nl_examples, load_dotenv, run_nl_report_mode, _render_tokenized_examples
 from .train import deep_update, evaluate_model, load_config, make_generator, set_seed, train_single_model
 
 
@@ -794,6 +794,10 @@ def _select_diverse_nl_examples(
     def features(example):
         row, col = divmod(example.attended_cell, grid_size)
         prev_row, prev_col = divmod(example.prev_attended_cell, grid_size)
+        changed_cell = int(example.attended_cell != example.prev_attended_cell)
+        changed_visible = int(example.attended_visible_type != example.prev_attended_visible_type)
+        changed_digit = int(example.attended_digit != example.prev_attended_digit)
+        changed_glimpse = int(example.glimpse_digit != example.prev_glimpse_digit)
         unresolved_rows = tuple(sorted({cell // grid_size for cell in example.unresolved_cells}))
         unresolved_cols = tuple(sorted({cell % grid_size for cell in example.unresolved_cells}))
         return {
@@ -802,6 +806,10 @@ def _select_diverse_nl_examples(
             ("col", col),
             ("prev_row", prev_row),
             ("prev_col", prev_col),
+            ("changed_cell", changed_cell),
+            ("changed_visible", changed_visible),
+            ("changed_digit", changed_digit),
+            ("changed_glimpse", changed_glimpse),
             ("visible_type", example.attended_visible_type),
             ("attended_digit", example.attended_digit),
             ("glimpse_digit", example.glimpse_digit),
@@ -844,7 +852,13 @@ def _select_diverse_nl_examples(
             feat = features(examples[idx])
             new_score = len(feat - covered)
             tie_break = len(feat)
-            score = (new_score, tie_break, -idx)
+            changed_score = (
+                int(examples[idx].attended_cell != examples[idx].prev_attended_cell)
+                + int(examples[idx].attended_visible_type != examples[idx].prev_attended_visible_type)
+                + int(examples[idx].attended_digit != examples[idx].prev_attended_digit)
+                + int(examples[idx].glimpse_digit != examples[idx].prev_glimpse_digit)
+            )
+            score = (changed_score, new_score, tie_break, -idx)
             if best_score is None or score > best_score:
                 best_idx = idx
                 best_score = score
@@ -862,7 +876,14 @@ def _select_diverse_nl_examples(
             new_score = len(feat - covered)
             row, col = divmod(examples[idx].attended_cell, grid_size)
             novel_signature = int(signature(examples[idx]) not in used_signatures)
+            changed_score = (
+                int(examples[idx].attended_cell != examples[idx].prev_attended_cell)
+                + int(examples[idx].attended_visible_type != examples[idx].prev_attended_visible_type)
+                + int(examples[idx].attended_digit != examples[idx].prev_attended_digit)
+                + int(examples[idx].glimpse_digit != examples[idx].prev_glimpse_digit)
+            )
             score = (
+                changed_score,
                 novel_signature,
                 new_score,
                 int(examples[idx].glimpse_target_match),
@@ -952,6 +973,7 @@ def nl_report_metrics(
         calibration_count=calibration_count,
         evaluation_count=evaluation_count,
     )
+    _render_tokenized_examples(calibration_examples, calibration_examples + evaluation_examples)
     model_name = nl_cfg.get("model", "gpt-5-mini")
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
     modes = ("tokenized_state", "symbolic_state", "observation_only")
