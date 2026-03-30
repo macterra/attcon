@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import torch
+import torch.nn.functional as F
 
 try:
     from openai import OpenAI
@@ -53,6 +54,11 @@ class NLExample:
     unresolved_rows: list[int]
     unresolved_cols: list[int]
     unresolved_count: int
+    controller_state: torch.Tensor
+    prev_controller_state: torch.Tensor
+    attention_state: torch.Tensor
+    prev_attention_state: torch.Tensor
+    memory_state: torch.Tensor
     symbolic_state: str
     tokenized_state: str
     observation_only: str
@@ -87,59 +93,83 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
     )
 
 
-def _render_tokenized_state(
-    grid_size: int,
-    cue: int,
-    attended_cell: int,
-    attended_visible_type: int,
-    attended_digit: int,
-    glimpse_digit: int,
-    prev_attended_cell: int,
-    prev_attended_visible_type: int,
-    prev_attended_digit: int,
-    prev_glimpse_digit: int,
-    glimpse_target_match: bool,
-    found_target: bool,
-    unresolved_cells: list[int],
-) -> str:
-    attended_row, attended_col = divmod(attended_cell, grid_size)
-    prev_attended_row, prev_attended_col = divmod(prev_attended_cell, grid_size)
-    unresolved_rows = sorted({cell // grid_size for cell in unresolved_cells})
-    unresolved_cols = sorted({cell % grid_size for cell in unresolved_cells})
-    tokens = [
-        "x900",
-        f"x{100 + cue}",
-        "x901",
-        f"x{200 + attended_row}",
-        f"x{210 + attended_col}",
-        "x903",
-        f"x{220 + attended_visible_type}",
-        f"x{230 + attended_digit}",
-        f"x{240 + glimpse_digit}",
-        "x910",
-        f"x{600 + prev_attended_row}",
-        f"x{610 + prev_attended_col}",
-        f"x{620 + prev_attended_visible_type}",
-        f"x{630 + prev_attended_digit}",
-        f"x{640 + prev_glimpse_digit}",
-        "x904",
-        f"x{250 + int(glimpse_target_match)}",
-        f"x{260 + int(found_target)}",
-        "x905",
-        f"x{300 + len(unresolved_cells)}",
-        "x906",
-    ]
-    for row in range(grid_size):
-        tokens.append(f"x{320 + row * 2 + int(row in unresolved_rows)}")
-    tokens.append("x907")
-    for col in range(grid_size):
-        tokens.append(f"x{340 + col * 2 + int(col in unresolved_cols)}")
-    tokens.append("x908")
-    tokens.append(f"x{400 + attended_cell}")
-    tokens.append("x909")
-    for cell in unresolved_cells:
-        tokens.append(f"x{500 + cell}")
-    return " ".join(tokens)
+def _select_codebook(vectors: torch.Tensor, size: int) -> torch.Tensor:
+    """Pick a small exemplar codebook with greedy farthest-point coverage."""
+
+    if vectors.shape[0] == 0:
+        raise ValueError("cannot build a codebook from zero vectors")
+    if vectors.shape[0] <= size:
+        return vectors.clone()
+
+    chosen = [int(vectors.norm(dim=-1).argmax().item())]
+    min_distance = torch.cdist(vectors[chosen], vectors).squeeze(0)
+    while len(chosen) < size:
+        next_idx = int(min_distance.argmax().item())
+        if next_idx in chosen:
+            break
+        chosen.append(next_idx)
+        min_distance = torch.minimum(min_distance, torch.cdist(vectors[[next_idx]], vectors).squeeze(0))
+    return vectors[chosen]
+
+
+def _assign_code_ids(vectors: torch.Tensor, codebook: torch.Tensor) -> torch.Tensor:
+    """Assign each vector to its nearest codebook entry."""
+
+    return torch.cdist(vectors, codebook).argmin(dim=-1)
+
+
+def _chunk_bits(vector: torch.Tensor, num_bits: int = 4) -> list[int]:
+    """Produce a few coarse binary bits from chunked latent activations."""
+
+    chunks = torch.chunk(vector, num_bits)
+    return [int(chunk.mean().item() >= 0.0) for chunk in chunks]
+
+
+def _render_tokenized_examples(examples: list[NLExample]) -> None:
+    """Build a short latent token stream from controller, attention, and memory states."""
+
+    current_states = torch.stack([example.controller_state for example in examples], dim=0)
+    prev_states = torch.stack([example.prev_controller_state for example in examples], dim=0)
+    current_attention = torch.stack([example.attention_state for example in examples], dim=0)
+    prev_attention = torch.stack([example.prev_attention_state for example in examples], dim=0)
+    memory_states = torch.stack([example.memory_state for example in examples], dim=0)
+
+    current_codebook = _select_codebook(current_states, size=min(8, len(examples)))
+    prev_codebook = _select_codebook(prev_states, size=min(8, len(examples)))
+    current_attention_codebook = _select_codebook(current_attention, size=min(8, len(examples)))
+    prev_attention_codebook = _select_codebook(prev_attention, size=min(8, len(examples)))
+    memory_codebook = _select_codebook(memory_states, size=min(8, len(examples)))
+
+    current_ids = _assign_code_ids(current_states, current_codebook)
+    prev_ids = _assign_code_ids(prev_states, prev_codebook)
+    current_attention_ids = _assign_code_ids(current_attention, current_attention_codebook)
+    prev_attention_ids = _assign_code_ids(prev_attention, prev_attention_codebook)
+    memory_ids = _assign_code_ids(memory_states, memory_codebook)
+
+    for idx, example in enumerate(examples):
+        current_bits = _chunk_bits(example.controller_state)
+        prev_bits = _chunk_bits(example.prev_controller_state)
+        attention_bits = _chunk_bits(example.attention_state)
+        prev_attention_bits = _chunk_bits(example.prev_attention_state)
+        memory_bits = _chunk_bits(example.memory_state)
+        tokens = [
+            "x900",
+            f"x{100 + example.cue}",
+            "x901",
+            f"x{1000 + int(current_ids[idx].item())}",
+            f"x{1010 + int(current_attention_ids[idx].item())}",
+            *[f"x{1020 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(current_bits)],
+            *[f"x{1040 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(attention_bits)],
+            "x910",
+            f"x{1100 + int(prev_ids[idx].item())}",
+            f"x{1110 + int(prev_attention_ids[idx].item())}",
+            *[f"x{1120 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_bits)],
+            *[f"x{1140 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_attention_bits)],
+            "x920",
+            f"x{1200 + int(memory_ids[idx].item())}",
+            *[f"x{1210 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(memory_bits)],
+        ]
+        example.tokenized_state = " ".join(tokens)
 
 
 def _render_observation_only(
@@ -182,6 +212,7 @@ def collect_nl_examples(
     found_state = outputs["found_state_seq"][..., 0]
     inspection = outputs["inspection_seq"]
     observation = outputs["observation_seq"]
+    controller_states = outputs["controller_state_seq"]
     visible_types = batch.visible_types
 
     examples: list[NLExample] = []
@@ -219,26 +250,22 @@ def collect_nl_examples(
                 unresolved_rows=sorted({cell // task_cfg.grid_size for cell in unresolved}),
                 unresolved_cols=sorted({cell % task_cfg.grid_size for cell in unresolved}),
                 unresolved_count=len(unresolved),
+                controller_state=controller_states[batch_idx, step_idx].detach().cpu(),
+                prev_controller_state=controller_states[batch_idx, prev_step_idx].detach().cpu(),
+                attention_state=attention[batch_idx, step_idx].detach().cpu(),
+                prev_attention_state=attention[batch_idx, prev_step_idx].detach().cpu(),
+                memory_state=torch.cat(
+                    [
+                        inspection[batch_idx, step_idx].detach().cpu(),
+                        found_state[batch_idx, step_idx : step_idx + 1].detach().cpu(),
+                    ],
+                    dim=0,
+                ),
                 symbolic_state="",
                 tokenized_state="",
                 observation_only="",
             )
             example.symbolic_state = _render_symbolic_state(example, task_cfg.grid_size)
-            example.tokenized_state = _render_tokenized_state(
-                task_cfg.grid_size,
-                example.cue,
-                example.attended_cell,
-                example.attended_visible_type,
-                example.attended_digit,
-                example.glimpse_digit,
-                example.prev_attended_cell,
-                example.prev_attended_visible_type,
-                example.prev_attended_digit,
-                example.prev_glimpse_digit,
-                example.glimpse_target_match,
-                example.found_target,
-                example.unresolved_cells,
-            )
             example.observation_only = _render_observation_only(
                 visible_types[batch_idx],
                 observation[batch_idx, step_idx],
@@ -248,6 +275,7 @@ def collect_nl_examples(
                 task_cfg.grid_size,
             )
             examples.append(example)
+    _render_tokenized_examples(examples)
     return examples
 
 
@@ -320,8 +348,10 @@ def _make_messages(
 ) -> list[dict[str, Any]]:
     mode_instructions = {
         "tokenized_state": (
-            "You receive opaque state tokens. Infer their meanings from the examples, "
-            "then answer using the same internal-state semantics."
+            "You receive opaque state tokens. Infer their meanings from the examples. "
+            "The token stream is organized into repeated latent sections for current attention, "
+            "previous attention, and unresolved-state summaries, but the tokens are not pre-labeled. "
+            "Use the examples to decode the same hidden structure in the evaluation case."
         ),
         "symbolic_state": (
             "You receive a direct symbolic dump of internal state. Answer faithfully."
