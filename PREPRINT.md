@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current default checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.312` vs. `0.229`), shows strong temporal reallocation (`0.751` vs. `0.000`), and achieves positive target-attention gain (`0.125` vs. `0.000`). Additional evaluations now support stronger claims than closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions on controller state shift later attention, explicit inspected-state variables support bounded self-modeling of attention history, cue-switch training yields positive changed-priority reallocation, and structured internal-content probes support reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now natural-language reportability from tokenized internal state: symbolic state dumps are reported faithfully, but tokenized-state reports do not yet reliably outperform observation-only baselines. The current repository therefore supports Stages 1 through 6 of the roadmap and an implemented but not yet successful Stage 7.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current default checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.312` vs. `0.229`), shows strong temporal reallocation (`0.751` vs. `0.000`), and achieves positive target-attention gain (`0.125` vs. `0.000`). Additional evaluations now support stronger claims than closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions on controller state shift later attention, explicit inspected-state variables support bounded self-modeling of attention history, cue-switch training yields positive changed-priority reallocation, and structured internal-content probes support reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now natural-language reportability from tokenized internal state under a stricter memory-focused test: symbolic state dumps are reported faithfully, but tokenized-state reports do not yet reliably describe current or remembered attended contents better than observation-only baselines. The current repository therefore supports Stages 1 through 6 of the roadmap and an implemented but not yet successful Stage 7.
 
 ## 1. Introduction
 
@@ -196,30 +196,32 @@ The repository now includes a Stage 7 natural-language reporting harness using `
 - tokenized internal-state reporting as the real Stage 7 target,
 - observation-only reporting as the weaker external baseline.
 
-The current picture is mixed:
+The current picture is now judged under a stricter, more skeptical setup:
 
+- evaluation examples are restricted to non-initial timesteps so remembered previous-attention content is genuinely required,
+- the report schema now asks for both current attended content and previous attended content,
 - symbolic reporting is strong and can achieve exact structured reports on held-out slices,
-- tokenized-state reporting is partially successful,
-- tokenized-state reporting does not yet beat observation-only on the full report bundle.
+- tokenized-state reporting still does not beat observation-only on the full report bundle.
 
-In a stable recent Stage 7 slice:
+In a recent skeptical Stage 7 slice:
 
 - tokenized search-type accuracy: `1.0`
-- tokenized attended-cell accuracy: `1.0`
-- tokenized visible-type accuracy: `0.5`
-- tokenized attended-digit accuracy: `0.5`
-- tokenized glimpse-digit accuracy: `0.5`
-- tokenized unresolved-cells accuracy: `0.25`
+- tokenized attended-digit accuracy: `1.0`
+- tokenized previous-attended-cell accuracy: `0.0`
+- tokenized previous-attended-visible-type accuracy: `0.0`
+- tokenized previous-attended-digit accuracy: `0.0`
+- tokenized previous-glimpse-digit accuracy: `0.0`
 - tokenized joint accuracy: `0.0`
 
 Against the same slice:
 
 - observation-only joint accuracy: `0.0`
-- observation-only visible-type accuracy: `1.0`
-- observation-only attended-digit accuracy: `0.75`
-- observation-only unresolved-cells accuracy: `0.25`
+- observation-only previous-attended-cell accuracy: `0.0`
+- observation-only previous-attended-visible-type accuracy: `0.0`
+- observation-only previous-attended-digit accuracy: `1.0`
+- observation-only previous-glimpse-digit accuracy: `1.0`
 
-So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. It does recover some structural control variables reliably, but it still underperforms observation-only on some semantic attended-content fields and remains weak on unresolved-region reporting.
+So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content.
 
 ## 6. Interpretation
 
@@ -244,6 +246,7 @@ The stronger claim should still be stated carefully. The current evidence suppor
 It does **not yet** support:
 
 - faithful natural-language report from tokenized internal state,
+- faithful language access to the current and remembered contents of attention,
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
 
 ### 6.1 Relation to Good Regulator and Modeler Schema Framing
@@ -267,6 +270,7 @@ This system is still intentionally minimal.
 - Some checkpoint-level metrics vary across training recipes.
 - Stage 7 natural-language reporting still depends on an external language model and remains unstable enough that small evaluation slices are more reliable than large aggregate runs.
 - Tokenized internal-state reporting remains the current bottleneck.
+- The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
 
 So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
 
@@ -274,8 +278,8 @@ So while the repository now supports much stronger claims than the original benc
 
 The next highest-value experiments are now concentrated in Stage 7 and beyond:
 
-1. improve the tokenized internal-state interface so attended semantic content is easier to recover than from observation-only input,
-2. compress unresolved-region reporting into a more learnable target than long exact cell lists,
+1. improve the tokenized internal-state interface so current and remembered attended semantic content are easier to recover than from observation-only input,
+2. separate current-attention content tokens from memory-of-previous-attention tokens more sharply,
 3. test natural-language reporting under cue switches and controller interventions,
 4. add uncertainty and allocation-error report targets that distinguish “not yet inspected” from “inspected but failed,”
 5. continue measuring robustness over repeated seeds and checkpoints.
@@ -302,4 +306,4 @@ Default commands:
 
 The repository now goes well beyond a minimal Stage 2 benchmark. In the current default setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports predictive and intervention evidence for explicit attention modeling, maintains an explicit self-model of inspected history, handles cue switching better than the baseline, and supports structured internal report variables. Those results are enough to support Stages 1 through 6 of the roadmap in a bounded benchmark sense.
 
-The strongest remaining open problem is Stage 7: faithful natural-language access to tokenized internal state. Symbolic state dumps are easy for the language model to report faithfully. Tokenized internal-state reporting is not yet good enough. That gap is now the clearest frontier in the project, and it is precisely what makes the benchmark useful as a disciplined stepping stone rather than a vague consciousness metaphor.
+The strongest remaining open problem is Stage 7: faithful natural-language access to tokenized internal state, especially for the current and remembered contents of attention. Symbolic state dumps are easy for the language model to report faithfully. Tokenized internal-state reporting is not yet good enough. That gap is now the clearest frontier in the project, and it is precisely what makes the benchmark useful as a disciplined stepping stone rather than a vague consciousness metaphor.

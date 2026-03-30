@@ -43,6 +43,10 @@ class NLExample:
     attended_visible_type: int
     attended_digit: int
     glimpse_digit: int
+    prev_attended_cell: int
+    prev_attended_visible_type: int
+    prev_attended_digit: int
+    prev_glimpse_digit: int
     glimpse_target_match: bool
     found_target: bool
     unresolved_cells: list[int]
@@ -70,6 +74,10 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
         f"attended_visible_type={example.attended_visible_type}\n"
         f"attended_digit={example.attended_digit}\n"
         f"glimpse_digit={example.glimpse_digit}\n"
+        f"previous_attended_cell={_cell_name(example.prev_attended_cell, grid_size)}\n"
+        f"previous_attended_visible_type={example.prev_attended_visible_type}\n"
+        f"previous_attended_digit={example.prev_attended_digit}\n"
+        f"previous_glimpse_digit={example.prev_glimpse_digit}\n"
         f"glimpse_target_match={str(example.glimpse_target_match).lower()}\n"
         f"found_target={str(example.found_target).lower()}\n"
         f"unresolved_rows={unresolved_rows}\n"
@@ -86,11 +94,16 @@ def _render_tokenized_state(
     attended_visible_type: int,
     attended_digit: int,
     glimpse_digit: int,
+    prev_attended_cell: int,
+    prev_attended_visible_type: int,
+    prev_attended_digit: int,
+    prev_glimpse_digit: int,
     glimpse_target_match: bool,
     found_target: bool,
     unresolved_cells: list[int],
 ) -> str:
     attended_row, attended_col = divmod(attended_cell, grid_size)
+    prev_attended_row, prev_attended_col = divmod(prev_attended_cell, grid_size)
     unresolved_rows = sorted({cell // grid_size for cell in unresolved_cells})
     unresolved_cols = sorted({cell % grid_size for cell in unresolved_cells})
     tokens = [
@@ -103,6 +116,12 @@ def _render_tokenized_state(
         f"x{220 + attended_visible_type}",
         f"x{230 + attended_digit}",
         f"x{240 + glimpse_digit}",
+        "x910",
+        f"x{600 + prev_attended_row}",
+        f"x{610 + prev_attended_col}",
+        f"x{620 + prev_attended_visible_type}",
+        f"x{630 + prev_attended_digit}",
+        f"x{640 + prev_glimpse_digit}",
         "x904",
         f"x{250 + int(glimpse_target_match)}",
         f"x{260 + int(found_target)}",
@@ -146,6 +165,7 @@ def _render_observation_only(
         f"attended_visible_type={attended_visible_type}\n"
         f"current_glimpse_target_match={target_match:.3f}\n"
         f"current_glimpse_digit_argmax={digit_idx}\n"
+        f"memory_about_previous_attention=not_available\n"
         f"unresolved_information=not_available"
     )
 
@@ -171,6 +191,11 @@ def collect_nl_examples(
             attended_visible_type = int(visible_types[batch_idx, attended_cell].item())
             attended_digit = int(batch.digits[batch_idx, attended_cell].item())
             glimpse_digit = int(observation[batch_idx, step_idx, 1:].argmax().item())
+            prev_step_idx = max(step_idx - 1, 0)
+            prev_attended_cell = int(attention[batch_idx, prev_step_idx].argmax().item())
+            prev_attended_visible_type = int(visible_types[batch_idx, prev_attended_cell].item())
+            prev_attended_digit = int(batch.digits[batch_idx, prev_attended_cell].item())
+            prev_glimpse_digit = int(observation[batch_idx, prev_step_idx, 1:].argmax().item())
             glimpse_target_match = bool(observation[batch_idx, step_idx, 0].item() >= 0.5)
             unresolved = torch.nonzero(
                 inspection[batch_idx, step_idx] < 0.5, as_tuple=False
@@ -184,6 +209,10 @@ def collect_nl_examples(
                 attended_visible_type=attended_visible_type,
                 attended_digit=attended_digit,
                 glimpse_digit=glimpse_digit,
+                prev_attended_cell=prev_attended_cell,
+                prev_attended_visible_type=prev_attended_visible_type,
+                prev_attended_digit=prev_attended_digit,
+                prev_glimpse_digit=prev_glimpse_digit,
                 glimpse_target_match=glimpse_target_match,
                 found_target=bool(found_state[batch_idx, step_idx].item() >= 0.5),
                 unresolved_cells=unresolved,
@@ -202,6 +231,10 @@ def collect_nl_examples(
                 example.attended_visible_type,
                 example.attended_digit,
                 example.glimpse_digit,
+                example.prev_attended_cell,
+                example.prev_attended_visible_type,
+                example.prev_attended_digit,
+                example.prev_glimpse_digit,
                 example.glimpse_target_match,
                 example.found_target,
                 example.unresolved_cells,
@@ -235,6 +268,15 @@ def _schema() -> dict[str, Any]:
                 "attended_visible_type": {"type": "integer"},
                 "attended_digit": {"type": "integer"},
                 "glimpse_digit": {"type": "integer"},
+                "previous_attended_cell": {
+                    "type": "array",
+                    "items": {"type": "integer"},
+                    "minItems": 2,
+                    "maxItems": 2,
+                },
+                "previous_attended_visible_type": {"type": "integer"},
+                "previous_attended_digit": {"type": "integer"},
+                "previous_glimpse_digit": {"type": "integer"},
                 "glimpse_target_match": {"type": "boolean"},
                 "found_target": {"type": "boolean"},
                 "unresolved_rows": {
@@ -254,6 +296,10 @@ def _schema() -> dict[str, Any]:
                 "attended_visible_type",
                 "attended_digit",
                 "glimpse_digit",
+                "previous_attended_cell",
+                "previous_attended_visible_type",
+                "previous_attended_digit",
+                "previous_glimpse_digit",
                 "glimpse_target_match",
                 "found_target",
                 "unresolved_rows",
@@ -312,15 +358,20 @@ def _make_messages(
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
                 f"visible type {example.attended_visible_type}; attended digit {example.attended_digit}; "
-                f"glimpse digit {example.glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
-                f"found {str(example.found_target).lower()}; rows {example.unresolved_rows}; "
-                f"cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
+                f"glimpse digit {example.glimpse_digit}; previous attend {_cell_name(example.prev_attended_cell, grid_size)}; "
+                f"previous visible type {example.prev_attended_visible_type}; previous attended digit {example.prev_attended_digit}; "
+                f"previous glimpse digit {example.prev_glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
+                f"found {str(example.found_target).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
             ),
             "search_type": example.cue,
             "attended_cell": list(divmod(example.attended_cell, grid_size)),
             "attended_visible_type": example.attended_visible_type,
             "attended_digit": example.attended_digit,
             "glimpse_digit": example.glimpse_digit,
+            "previous_attended_cell": list(divmod(example.prev_attended_cell, grid_size)),
+            "previous_attended_visible_type": example.prev_attended_visible_type,
+            "previous_attended_digit": example.prev_attended_digit,
+            "previous_glimpse_digit": example.prev_glimpse_digit,
             "glimpse_target_match": example.glimpse_target_match,
             "found_target": example.found_target,
             "unresolved_rows": example.unresolved_rows,
@@ -364,6 +415,10 @@ def run_nl_report_mode(
     exact_visible_type = 0
     exact_attended_digit = 0
     exact_glimpse_digit = 0
+    exact_prev_attended = 0
+    exact_prev_visible_type = 0
+    exact_prev_attended_digit = 0
+    exact_prev_glimpse_digit = 0
     exact_glimpse_match = 0
     exact_found = 0
     exact_unresolved_rows = 0
@@ -405,12 +460,19 @@ def run_nl_report_mode(
         if parsed is None:
             raise RuntimeError(str(last_error) if last_error is not None else "nl_report parsing failed")
         expected_attended = list(divmod(example.attended_cell, grid_size))
+        expected_prev_attended = list(divmod(example.prev_attended_cell, grid_size))
 
         exact_search += int(parsed["search_type"] == example.cue)
         exact_attended += int(parsed["attended_cell"] == expected_attended)
         exact_visible_type += int(parsed["attended_visible_type"] == example.attended_visible_type)
         exact_attended_digit += int(parsed["attended_digit"] == example.attended_digit)
         exact_glimpse_digit += int(parsed["glimpse_digit"] == example.glimpse_digit)
+        exact_prev_attended += int(parsed["previous_attended_cell"] == expected_prev_attended)
+        exact_prev_visible_type += int(
+            parsed["previous_attended_visible_type"] == example.prev_attended_visible_type
+        )
+        exact_prev_attended_digit += int(parsed["previous_attended_digit"] == example.prev_attended_digit)
+        exact_prev_glimpse_digit += int(parsed["previous_glimpse_digit"] == example.prev_glimpse_digit)
         exact_glimpse_match += int(bool(parsed["glimpse_target_match"]) == example.glimpse_target_match)
         exact_found += int(bool(parsed["found_target"]) == example.found_target)
         exact_unresolved_rows += int(parsed["unresolved_rows"] == example.unresolved_rows)
@@ -429,6 +491,10 @@ def run_nl_report_mode(
                     "attended_visible_type": example.attended_visible_type,
                     "attended_digit": example.attended_digit,
                     "glimpse_digit": example.glimpse_digit,
+                    "previous_attended_cell": expected_prev_attended,
+                    "previous_attended_visible_type": example.prev_attended_visible_type,
+                    "previous_attended_digit": example.prev_attended_digit,
+                    "previous_glimpse_digit": example.prev_glimpse_digit,
                     "glimpse_target_match": example.glimpse_target_match,
                     "found_target": example.found_target,
                     "unresolved_rows": example.unresolved_rows,
@@ -446,6 +512,10 @@ def run_nl_report_mode(
         "attended_visible_type_accuracy": exact_visible_type / denom,
         "attended_digit_accuracy": exact_attended_digit / denom,
         "glimpse_digit_accuracy": exact_glimpse_digit / denom,
+        "previous_attended_cell_accuracy": exact_prev_attended / denom,
+        "previous_attended_visible_type_accuracy": exact_prev_visible_type / denom,
+        "previous_attended_digit_accuracy": exact_prev_attended_digit / denom,
+        "previous_glimpse_digit_accuracy": exact_prev_glimpse_digit / denom,
         "glimpse_target_match_accuracy": exact_glimpse_match / denom,
         "found_target_accuracy": exact_found / denom,
         "unresolved_rows_accuracy": exact_unresolved_rows / denom,
@@ -459,6 +529,14 @@ def run_nl_report_mode(
                     and item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
                     and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
                     and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
+                    and item["response"]["previous_attended_cell"]
+                    == item["expected"]["previous_attended_cell"]
+                    and item["response"]["previous_attended_visible_type"]
+                    == item["expected"]["previous_attended_visible_type"]
+                    and item["response"]["previous_attended_digit"]
+                    == item["expected"]["previous_attended_digit"]
+                    and item["response"]["previous_glimpse_digit"]
+                    == item["expected"]["previous_glimpse_digit"]
                     and bool(item["response"]["glimpse_target_match"])
                     == item["expected"]["glimpse_target_match"]
                     and bool(item["response"]["found_target"]) == item["expected"]["found_target"]

@@ -182,6 +182,10 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("attended_visible_type=", example.symbolic_state)
         self.assertIn("attended_digit=", example.symbolic_state)
         self.assertIn("glimpse_digit=", example.symbolic_state)
+        self.assertIn("previous_attended_cell=", example.symbolic_state)
+        self.assertIn("previous_attended_visible_type=", example.symbolic_state)
+        self.assertIn("previous_attended_digit=", example.symbolic_state)
+        self.assertIn("previous_glimpse_digit=", example.symbolic_state)
         self.assertIn("unresolved_rows=", example.symbolic_state)
         self.assertIn("unresolved_cols=", example.symbolic_state)
         self.assertIn("unresolved_count=", example.symbolic_state)
@@ -196,6 +200,10 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.attended_visible_type, int)
         self.assertIsInstance(example.attended_digit, int)
         self.assertIsInstance(example.glimpse_digit, int)
+        self.assertIsInstance(example.prev_attended_cell, int)
+        self.assertIsInstance(example.prev_attended_visible_type, int)
+        self.assertIsInstance(example.prev_attended_digit, int)
+        self.assertIsInstance(example.prev_glimpse_digit, int)
         self.assertIsInstance(example.glimpse_target_match, bool)
 
     def test_train_and_eval_smoke(self) -> None:

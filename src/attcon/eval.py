@@ -793,15 +793,21 @@ def _select_diverse_nl_examples(
 
     def features(example):
         row, col = divmod(example.attended_cell, grid_size)
+        prev_row, prev_col = divmod(example.prev_attended_cell, grid_size)
         unresolved_rows = tuple(sorted({cell // grid_size for cell in example.unresolved_cells}))
         unresolved_cols = tuple(sorted({cell % grid_size for cell in example.unresolved_cells}))
         return {
             ("cue", example.cue),
             ("row", row),
             ("col", col),
+            ("prev_row", prev_row),
+            ("prev_col", prev_col),
             ("visible_type", example.attended_visible_type),
             ("attended_digit", example.attended_digit),
             ("glimpse_digit", example.glimpse_digit),
+            ("prev_visible_type", example.prev_attended_visible_type),
+            ("prev_attended_digit", example.prev_attended_digit),
+            ("prev_glimpse_digit", example.prev_glimpse_digit),
             ("glimpse_match", int(example.glimpse_target_match)),
             ("found_target", int(example.found_target)),
             ("unresolved_rows", unresolved_rows),
@@ -815,6 +821,10 @@ def _select_diverse_nl_examples(
             example.attended_visible_type,
             example.attended_digit,
             example.glimpse_digit,
+            example.prev_attended_cell,
+            example.prev_attended_visible_type,
+            example.prev_attended_digit,
+            example.prev_glimpse_digit,
             int(example.glimpse_target_match),
             int(example.found_target),
             tuple(example.unresolved_rows),
@@ -923,6 +933,7 @@ def nl_report_metrics(
         )
 
     examples = collect_nl_examples(model, task_cfg, batch, outputs)
+    examples = [example for example in examples if example.step_index > 0]
     calibration_count = int(nl_cfg.get("calibration_examples", 4))
     evaluation_count = int(nl_cfg.get("evaluation_examples", 4))
     required_examples = calibration_count + evaluation_count
@@ -989,6 +1000,22 @@ def nl_report_metrics(
         "tokenized_glimpse_digit_accuracy_advantage": (
             tokenized["glimpse_digit_accuracy"] - observation["glimpse_digit_accuracy"]
         ),
+        "tokenized_previous_attended_cell_accuracy_advantage": (
+            tokenized["previous_attended_cell_accuracy"]
+            - observation["previous_attended_cell_accuracy"]
+        ),
+        "tokenized_previous_visible_type_accuracy_advantage": (
+            tokenized["previous_attended_visible_type_accuracy"]
+            - observation["previous_attended_visible_type_accuracy"]
+        ),
+        "tokenized_previous_attended_digit_accuracy_advantage": (
+            tokenized["previous_attended_digit_accuracy"]
+            - observation["previous_attended_digit_accuracy"]
+        ),
+        "tokenized_previous_glimpse_digit_accuracy_advantage": (
+            tokenized["previous_glimpse_digit_accuracy"]
+            - observation["previous_glimpse_digit_accuracy"]
+        ),
         "tokenized_glimpse_match_accuracy_advantage": (
             tokenized["glimpse_target_match_accuracy"]
             - observation["glimpse_target_match_accuracy"]
@@ -1012,6 +1039,14 @@ def nl_report_metrics(
         ),
         "supported": (
             tokenized["joint_accuracy"] > observation["joint_accuracy"]
+            and tokenized["previous_attended_cell_accuracy"]
+            > observation["previous_attended_cell_accuracy"]
+            and tokenized["previous_attended_visible_type_accuracy"]
+            > observation["previous_attended_visible_type_accuracy"]
+            and tokenized["previous_attended_digit_accuracy"]
+            > observation["previous_attended_digit_accuracy"]
+            and tokenized["previous_glimpse_digit_accuracy"]
+            > observation["previous_glimpse_digit_accuracy"]
             and tokenized["attended_visible_type_accuracy"] >= observation["attended_visible_type_accuracy"]
             and tokenized["attended_digit_accuracy"] >= observation["attended_digit_accuracy"]
             and tokenized["glimpse_digit_accuracy"] >= observation["glimpse_digit_accuracy"]
@@ -1500,6 +1535,18 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "tokenized_glimpse_digit_accuracy_advantage": nl_report.get(
             "tokenized_glimpse_digit_accuracy_advantage", 0.0
+        ),
+        "tokenized_previous_attended_cell_accuracy_advantage": nl_report.get(
+            "tokenized_previous_attended_cell_accuracy_advantage", 0.0
+        ),
+        "tokenized_previous_visible_type_accuracy_advantage": nl_report.get(
+            "tokenized_previous_visible_type_accuracy_advantage", 0.0
+        ),
+        "tokenized_previous_attended_digit_accuracy_advantage": nl_report.get(
+            "tokenized_previous_attended_digit_accuracy_advantage", 0.0
+        ),
+        "tokenized_previous_glimpse_digit_accuracy_advantage": nl_report.get(
+            "tokenized_previous_glimpse_digit_accuracy_advantage", 0.0
         ),
         "tokenized_glimpse_match_accuracy_advantage": nl_report.get(
             "tokenized_glimpse_match_accuracy_advantage", 0.0

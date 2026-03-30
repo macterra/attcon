@@ -272,11 +272,14 @@ Current status in this repo:
   - tokenized internal-state reporting as the real Stage 7 target
   - observation-only reporting as a weaker external baseline
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
-- the tokenized internal-state condition is partially successful:
-  - it can often recover search type, attended cell, target-match status, and some attended-content variables
-  - it does not yet reliably outperform the observation-only baseline on the full report bundle
+- the current Stage 7 evaluation is now stricter than a generic state-description task:
+  - it asks for current attended content and remembered previous attended content
+  - it is evaluated only on non-initial timesteps where previous-attention memory is genuinely required
+- the tokenized internal-state condition is still not successful:
+  - it can sometimes recover search type, current attended digit, target-match status, and compressed unresolved summaries
+  - it still fails to report current attended location/content and remembered previous attended content reliably enough to beat observation-only baselines
 - the current blocker is representational rather than infrastructural:
-  - the tokenized interface is still not faithful enough on attended semantic content and unresolved-region reporting to count as a Stage 7 success
+  - the tokenized interface is still not faithful enough on current and remembered attended semantic content to count as a Stage 7 success
 
 Interpretation:
 
@@ -349,7 +352,7 @@ In other words, Stage 4 and Stage 5 should be read as parallel branches after St
 The highest-priority next experiments are:
 
 - add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
-- improve the tokenized internal-state interface for Stage 7 so attended content and unresolved-region reports become more faithful than observation-only baselines
+- improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
 - evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - add plots or diagnostics for switched-cue and self-model trajectories
 
@@ -373,5 +376,6 @@ What is currently unstable or tradeoff-limited:
 
 - stronger native report behavior beyond the current explicit inspected-state scaffold
 - richer uncertainty and allocation-error reporting beyond the current target-found and unresolved-region variables
+- faithful natural-language reporting of current and remembered attended content from tokenized internal state
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined and experimentally grounded.
