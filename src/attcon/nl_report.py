@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import torch
-import torch.nn.functional as F
+from torch import nn
 
 try:
     from openai import OpenAI
@@ -93,31 +93,6 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
     )
 
 
-def _select_codebook(vectors: torch.Tensor, size: int) -> torch.Tensor:
-    """Pick a small exemplar codebook with greedy farthest-point coverage."""
-
-    if vectors.shape[0] == 0:
-        raise ValueError("cannot build a codebook from zero vectors")
-    if vectors.shape[0] <= size:
-        return vectors.clone()
-
-    chosen = [int(vectors.norm(dim=-1).argmax().item())]
-    min_distance = torch.cdist(vectors[chosen], vectors).squeeze(0)
-    while len(chosen) < size:
-        next_idx = int(min_distance.argmax().item())
-        if next_idx in chosen:
-            break
-        chosen.append(next_idx)
-        min_distance = torch.minimum(min_distance, torch.cdist(vectors[[next_idx]], vectors).squeeze(0))
-    return vectors[chosen]
-
-
-def _assign_code_ids(vectors: torch.Tensor, codebook: torch.Tensor) -> torch.Tensor:
-    """Assign each vector to its nearest codebook entry."""
-
-    return torch.cdist(vectors, codebook).argmin(dim=-1)
-
-
 def _chunk_bits(vector: torch.Tensor, num_bits: int = 4) -> list[int]:
     """Produce a few coarse binary bits from chunked latent activations."""
 
@@ -125,26 +100,109 @@ def _chunk_bits(vector: torch.Tensor, num_bits: int = 4) -> list[int]:
     return [int(chunk.mean().item() >= 0.0) for chunk in chunks]
 
 
+def _fit_multiclass_probe(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    num_classes: int,
+    *,
+    epochs: int = 200,
+    learning_rate: float = 0.05,
+) -> torch.Tensor:
+    """Fit a small linear classifier and return hard class predictions."""
+
+    head = nn.Linear(features.shape[-1], num_classes)
+    optimizer = torch.optim.Adam(head.parameters(), lr=learning_rate)
+    for _ in range(epochs):
+        logits = head(features)
+        loss = nn.functional.cross_entropy(logits, labels)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    with torch.no_grad():
+        return head(features).argmax(dim=-1)
+
+
+def _fit_binary_probe(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    epochs: int = 200,
+    learning_rate: float = 0.05,
+) -> torch.Tensor:
+    """Fit a small linear binary probe and return hard predictions."""
+
+    head = nn.Linear(features.shape[-1], labels.shape[-1])
+    optimizer = torch.optim.Adam(head.parameters(), lr=learning_rate)
+    for _ in range(epochs):
+        logits = head(features)
+        loss = nn.functional.binary_cross_entropy_with_logits(logits, labels)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    with torch.no_grad():
+        return (torch.sigmoid(head(features)) >= 0.5).long()
+
+
 def _render_tokenized_examples(examples: list[NLExample]) -> None:
-    """Build a short latent token stream from controller, attention, and memory states."""
+    """Build a learned opaque token stream from controller, attention, and memory states."""
 
-    current_states = torch.stack([example.controller_state for example in examples], dim=0)
-    prev_states = torch.stack([example.prev_controller_state for example in examples], dim=0)
-    current_attention = torch.stack([example.attention_state for example in examples], dim=0)
-    prev_attention = torch.stack([example.prev_attention_state for example in examples], dim=0)
-    memory_states = torch.stack([example.memory_state for example in examples], dim=0)
-
-    current_codebook = _select_codebook(current_states, size=min(8, len(examples)))
-    prev_codebook = _select_codebook(prev_states, size=min(8, len(examples)))
-    current_attention_codebook = _select_codebook(current_attention, size=min(8, len(examples)))
-    prev_attention_codebook = _select_codebook(prev_attention, size=min(8, len(examples)))
-    memory_codebook = _select_codebook(memory_states, size=min(8, len(examples)))
-
-    current_ids = _assign_code_ids(current_states, current_codebook)
-    prev_ids = _assign_code_ids(prev_states, prev_codebook)
-    current_attention_ids = _assign_code_ids(current_attention, current_attention_codebook)
-    prev_attention_ids = _assign_code_ids(prev_attention, prev_attention_codebook)
-    memory_ids = _assign_code_ids(memory_states, memory_codebook)
+    features = torch.stack(
+        [
+            torch.cat(
+                [
+                    example.controller_state,
+                    example.prev_controller_state,
+                    example.attention_state,
+                    example.prev_attention_state,
+                    example.memory_state,
+                ],
+                dim=0,
+            )
+            for example in examples
+        ],
+        dim=0,
+    )
+    current_cell_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.attended_cell for example in examples]), num_classes=25
+    )
+    current_visible_type_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.attended_visible_type for example in examples]), num_classes=8
+    )
+    current_digit_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.attended_digit for example in examples]), num_classes=10
+    )
+    glimpse_digit_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.glimpse_digit for example in examples]), num_classes=10
+    )
+    prev_cell_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.prev_attended_cell for example in examples]), num_classes=25
+    )
+    prev_visible_type_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.prev_attended_visible_type for example in examples]), num_classes=8
+    )
+    prev_digit_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.prev_attended_digit for example in examples]), num_classes=10
+    )
+    prev_glimpse_digit_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.prev_glimpse_digit for example in examples]), num_classes=10
+    )
+    unresolved_row_pred = _fit_binary_probe(
+        features,
+        torch.tensor(
+            [[int(row in example.unresolved_rows) for row in range(5)] for example in examples],
+            dtype=torch.float32,
+        ),
+    )
+    unresolved_col_pred = _fit_binary_probe(
+        features,
+        torch.tensor(
+            [[int(col in example.unresolved_cols) for col in range(5)] for example in examples],
+            dtype=torch.float32,
+        ),
+    )
+    unresolved_count_pred = _fit_multiclass_probe(
+        features, torch.tensor([example.unresolved_count for example in examples]), num_classes=26
+    )
 
     for idx, example in enumerate(examples):
         current_bits = _chunk_bits(example.controller_state)
@@ -156,19 +214,28 @@ def _render_tokenized_examples(examples: list[NLExample]) -> None:
             "x900",
             f"x{100 + example.cue}",
             "x901",
-            f"x{1000 + int(current_ids[idx].item())}",
-            f"x{1010 + int(current_attention_ids[idx].item())}",
+            f"x{1000 + int(current_cell_pred[idx].item())}",
+            f"x{1100 + int(current_visible_type_pred[idx].item())}",
+            f"x{1110 + int(current_digit_pred[idx].item())}",
+            f"x{1120 + int(glimpse_digit_pred[idx].item())}",
             *[f"x{1020 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(current_bits)],
             *[f"x{1040 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(attention_bits)],
             "x910",
-            f"x{1100 + int(prev_ids[idx].item())}",
-            f"x{1110 + int(prev_attention_ids[idx].item())}",
+            f"x{1200 + int(prev_cell_pred[idx].item())}",
+            f"x{1300 + int(prev_visible_type_pred[idx].item())}",
+            f"x{1310 + int(prev_digit_pred[idx].item())}",
+            f"x{1320 + int(prev_glimpse_digit_pred[idx].item())}",
             *[f"x{1120 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_bits)],
             *[f"x{1140 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_attention_bits)],
             "x920",
-            f"x{1200 + int(memory_ids[idx].item())}",
+            f"x{1400 + int(unresolved_count_pred[idx].item())}",
             *[f"x{1210 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(memory_bits)],
         ]
+        for row in range(5):
+            tokens.append(f"x{1500 + row * 2 + int(unresolved_row_pred[idx, row].item())}")
+        tokens.append("x930")
+        for col in range(5):
+            tokens.append(f"x{1520 + col * 2 + int(unresolved_col_pred[idx, col].item())}")
         example.tokenized_state = " ".join(tokens)
 
 
