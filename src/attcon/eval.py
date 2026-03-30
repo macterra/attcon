@@ -981,6 +981,7 @@ def nl_report_metrics(
             "translator_train_examples": 8,
             "probe_scenes": 2,
             "max_output_tokens": 240,
+            "include_vlm": False,
         },
     )
     if not nl_cfg.get("enabled", False):
@@ -1044,7 +1045,9 @@ def nl_report_metrics(
     _render_tokenized_examples(translator_examples, calibration_examples + evaluation_examples)
     model_name = nl_cfg.get("model", "gpt-5-mini")
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
-    modes = ("tokenized_state", "symbolic_state", "observation_only")
+    modes = ["tokenized_state", "symbolic_state", "observation_only"]
+    if nl_cfg.get("include_vlm", False):
+        modes.extend(["visual_scene_only", "visual_internal_state"])
     try:
         results = {
             mode: run_nl_report_mode(
@@ -1068,6 +1071,8 @@ def nl_report_metrics(
     tokenized = results["tokenized_state"]
     symbolic = results["symbolic_state"]
     observation = results["observation_only"]
+    visual_scene = results.get("visual_scene_only", {})
+    visual_internal = results.get("visual_internal_state", {})
     return {
         "enabled": True,
         "skipped": False,
@@ -1078,6 +1083,8 @@ def nl_report_metrics(
         "tokenized_state": tokenized,
         "symbolic_state": symbolic,
         "observation_only": observation,
+        "visual_scene_only": visual_scene,
+        "visual_internal_state": visual_internal,
         "tokenized_joint_accuracy_advantage": (
             tokenized["joint_accuracy"] - observation["joint_accuracy"]
         ),
@@ -1140,10 +1147,30 @@ def nl_report_metrics(
         "symbolic_joint_accuracy_advantage": (
             symbolic["joint_accuracy"] - observation["joint_accuracy"]
         ),
+        "visual_current_content_joint_accuracy_advantage": (
+            visual_internal.get("current_content_joint_accuracy", 0.0)
+            - visual_scene.get("current_content_joint_accuracy", 0.0)
+        ),
+        "visual_memory_content_joint_accuracy_advantage": (
+            visual_internal.get("memory_content_joint_accuracy", 0.0)
+            - visual_scene.get("memory_content_joint_accuracy", 0.0)
+        ),
+        "visual_content_only_joint_accuracy_advantage": (
+            visual_internal.get("content_only_joint_accuracy", 0.0)
+            - visual_scene.get("content_only_joint_accuracy", 0.0)
+        ),
         "content_supported": (
             tokenized["content_only_joint_accuracy"] > observation["content_only_joint_accuracy"]
             and tokenized["memory_content_joint_accuracy"] > observation["memory_content_joint_accuracy"]
             and tokenized["current_content_joint_accuracy"] >= observation["current_content_joint_accuracy"]
+        ),
+        "vlm_content_supported": (
+            visual_internal.get("content_only_joint_accuracy", 0.0)
+            > visual_scene.get("content_only_joint_accuracy", 0.0)
+            and visual_internal.get("memory_content_joint_accuracy", 0.0)
+            > visual_scene.get("memory_content_joint_accuracy", 0.0)
+            and visual_internal.get("current_content_joint_accuracy", 0.0)
+            >= visual_scene.get("current_content_joint_accuracy", 0.0)
         ),
         "supported": (
             tokenized["joint_accuracy"] > observation["joint_accuracy"]

@@ -15,7 +15,7 @@ import torch
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import run_ablations
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from attcon.nl_report import collect_nl_examples
+from attcon.nl_report import collect_nl_examples, render_vlm_panel
 from attcon.train import train_experiment
 
 
@@ -205,6 +205,16 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.prev_attended_digit, int)
         self.assertIsInstance(example.prev_glimpse_digit, int)
         self.assertIsInstance(example.glimpse_target_match, bool)
+
+    def test_render_vlm_panel_returns_data_url(self) -> None:
+        batch = generate_batch(1, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+        example = collect_nl_examples(model, self.task_cfg, batch, outputs)[1]
+        scene_url = render_vlm_panel(example, self.task_cfg.grid_size, "visual_scene_only")
+        state_url = render_vlm_panel(example, self.task_cfg.grid_size, "visual_internal_state")
+        self.assertTrue(scene_url.startswith("data:image/png;base64,"))
+        self.assertTrue(state_url.startswith("data:image/png;base64,"))
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

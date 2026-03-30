@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import json
 import os
+import io
+import base64
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import matplotlib.pyplot as plt
 import torch
 from torch import nn
 
@@ -54,6 +57,7 @@ class NLExample:
     unresolved_rows: list[int]
     unresolved_cols: list[int]
     unresolved_count: int
+    visible_grid: list[int]
     controller_state: torch.Tensor
     prev_controller_state: torch.Tensor
     attention_state: torch.Tensor
@@ -342,6 +346,7 @@ def collect_nl_examples(
                 unresolved_rows=sorted({cell // task_cfg.grid_size for cell in unresolved}),
                 unresolved_cols=sorted({cell % task_cfg.grid_size for cell in unresolved}),
                 unresolved_count=len(unresolved),
+                visible_grid=[int(value) for value in visible_types[batch_idx].tolist()],
                 controller_state=controller_states[batch_idx, step_idx].detach().cpu(),
                 prev_controller_state=controller_states[batch_idx, prev_step_idx].detach().cpu(),
                 attention_state=attention[batch_idx, step_idx].detach().cpu(),
@@ -367,7 +372,74 @@ def collect_nl_examples(
                 task_cfg.grid_size,
             )
             examples.append(example)
+    _render_tokenized_examples(examples, examples)
     return examples
+
+
+def _attention_to_grid(attention: torch.Tensor, grid_size: int) -> torch.Tensor:
+    return attention.reshape(grid_size, grid_size)
+
+
+def _figure_to_data_url(fig) -> str:
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format="png", dpi=140, bbox_inches="tight")
+    plt.close(fig)
+    encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+    return f"data:image/png;base64,{encoded}"
+
+
+def render_vlm_panel(example: NLExample, grid_size: int, mode: str) -> str:
+    """Render a compact scene/state panel for VLM-based Stage 7 probes."""
+
+    visible = torch.tensor(example.visible_grid, dtype=torch.float32).reshape(grid_size, grid_size)
+    current_attention = _attention_to_grid(example.attention_state, grid_size)
+    previous_attention = _attention_to_grid(example.prev_attention_state, grid_size)
+    unresolved = torch.zeros(grid_size * grid_size, dtype=torch.float32)
+    for cell in example.unresolved_cells:
+        unresolved[cell] = 1.0
+    unresolved = unresolved.reshape(grid_size, grid_size)
+
+    if mode == "visual_scene_only":
+        fig, axes = plt.subplots(1, 2, figsize=(5.5, 3.0))
+        panels = [
+            ("Visible Types", visible, "viridis"),
+            ("Current Glimpse", current_attention, "magma"),
+        ]
+    elif mode == "visual_internal_state":
+        fig, axes = plt.subplots(1, 4, figsize=(10.5, 3.0))
+        panels = [
+            ("Visible Types", visible, "viridis"),
+            ("Current Attention", current_attention, "magma"),
+            ("Previous Attention", previous_attention, "magma"),
+            ("Unresolved", unresolved, "gray_r"),
+        ]
+    else:
+        raise ValueError(f"unknown VLM render mode: {mode}")
+
+    axes = axes.flatten() if hasattr(axes, "flatten") else [axes]
+    for ax, (title, panel, cmap) in zip(axes, panels):
+        ax.imshow(panel, cmap=cmap, interpolation="nearest", vmin=float(panel.min()), vmax=float(panel.max()) if float(panel.max()) > float(panel.min()) else None)
+        ax.set_title(title, fontsize=9)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        if title == "Visible Types":
+            for row in range(grid_size):
+                for col in range(grid_size):
+                    ax.text(col, row, str(int(visible[row, col].item())), ha="center", va="center", color="white", fontsize=8)
+        if title == "Current Attention":
+            row, col = divmod(example.attended_cell, grid_size)
+            ax.scatter([col], [row], s=60, facecolors="none", edgecolors="white", linewidths=1.5)
+        if title == "Previous Attention":
+            row, col = divmod(example.prev_attended_cell, grid_size)
+            ax.scatter([col], [row], s=60, facecolors="none", edgecolors="white", linewidths=1.5)
+    for ax in axes[len(panels):]:
+        ax.axis("off")
+    fig.suptitle(
+        f"Cue {example.cue} | match={str(example.glimpse_target_match).lower()} | found={str(example.found_target).lower()}",
+        fontsize=9,
+    )
+    fig.tight_layout()
+    return _figure_to_data_url(fig)
 
 
 def _schema() -> dict[str, Any]:
@@ -444,6 +516,14 @@ def _make_messages(
             "previous attention, and unresolved-state summaries, but the tokens are not pre-labeled. "
             "Use the examples to decode the same hidden structure in the evaluation case."
         ),
+        "visual_scene_only": (
+            "You receive only a visual scene panel and minimal task context. "
+            "Answer as best you can from the visible scene plus the current glimpse-like panel."
+        ),
+        "visual_internal_state": (
+            "You receive a compact visual rendering of internal attention state. "
+            "Use the panel to report current and remembered attended content faithfully."
+        ),
         "symbolic_state": (
             "You receive a direct symbolic dump of internal state. Answer faithfully."
         ),
@@ -456,7 +536,7 @@ def _make_messages(
         "tokenized_state": "tokenized_state",
         "symbolic_state": "symbolic_state",
         "observation_only": "observation_only",
-    }[mode]
+    }.get(mode)
 
     messages: list[dict[str, Any]] = [
         {
@@ -473,8 +553,26 @@ def _make_messages(
             ],
         }
     ]
+
+    def user_content(example: NLExample) -> list[dict[str, Any]]:
+        if mode == "visual_scene_only":
+            return [
+                {"type": "input_text", "text": f"cue={example.cue}\ncurrent_glimpse_digit_argmax={example.glimpse_digit}\ncurrent_glimpse_target_match={str(example.glimpse_target_match).lower()}"},
+                {"type": "input_image", "image_url": render_vlm_panel(example, grid_size, "visual_scene_only")},
+            ]
+        if mode == "visual_internal_state":
+            return [
+                {"type": "input_text", "text": f"cue={example.cue}"},
+                {"type": "input_image", "image_url": render_vlm_panel(example, grid_size, "visual_internal_state")},
+            ]
+        return [{"type": "input_text", "text": getattr(example, state_attr)}]
+
+    def record_input(example: NLExample) -> str:
+        if mode in {"visual_scene_only", "visual_internal_state"}:
+            return f"{mode}:image_panel"
+        return getattr(example, state_attr)
+
     for example in calibration_examples:
-        payload = getattr(example, state_attr)
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
@@ -501,7 +599,7 @@ def _make_messages(
         }
         messages.extend(
             [
-                {"role": "user", "content": [{"type": "input_text", "text": payload}]},
+                {"role": "user", "content": user_content(example)},
                 {"role": "assistant", "content": [{"type": "output_text", "text": json.dumps(answer)}]},
             ]
         )
@@ -509,7 +607,7 @@ def _make_messages(
     messages.append(
         {
             "role": "user",
-            "content": [{"type": "input_text", "text": getattr(eval_example, state_attr)}],
+            "content": user_content(eval_example),
         }
     )
     return messages
@@ -545,6 +643,12 @@ def run_nl_report_mode(
     exact_unresolved_rows = 0
     exact_unresolved_cols = 0
     exact_unresolved_count = 0
+
+    def input_summary(example: NLExample) -> str:
+        if mode in {"visual_scene_only", "visual_internal_state"}:
+            return f"{mode}:image_panel"
+        return getattr(example, mode)
+
     for example in evaluation_examples:
         parsed = None
         last_error = None
@@ -604,7 +708,7 @@ def run_nl_report_mode(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": getattr(example, mode),
+                "input": input_summary(example),
                 "response": parsed,
                 "expected": {
                     "search_type": example.cue,
