@@ -904,6 +904,63 @@ def _select_diverse_nl_examples(
     return calibration, evaluation
 
 
+def _select_translator_examples(
+    examples,
+    *,
+    grid_size: int,
+    target_count: int,
+):
+    """Pick a broader training pool for the Stage 7 translator."""
+
+    if not examples or target_count <= 0:
+        return []
+
+    def features(example):
+        row, col = divmod(example.attended_cell, grid_size)
+        prev_row, prev_col = divmod(example.prev_attended_cell, grid_size)
+        return {
+            ("cue", example.cue),
+            ("row", row),
+            ("col", col),
+            ("prev_row", prev_row),
+            ("prev_col", prev_col),
+            ("visible_type", example.attended_visible_type),
+            ("attended_digit", example.attended_digit),
+            ("glimpse_digit", example.glimpse_digit),
+            ("prev_visible_type", example.prev_attended_visible_type),
+            ("prev_attended_digit", example.prev_attended_digit),
+            ("prev_glimpse_digit", example.prev_glimpse_digit),
+            ("changed_cell", int(example.attended_cell != example.prev_attended_cell)),
+            ("changed_visible", int(example.attended_visible_type != example.prev_attended_visible_type)),
+            ("changed_digit", int(example.attended_digit != example.prev_attended_digit)),
+            ("changed_glimpse", int(example.glimpse_digit != example.prev_glimpse_digit)),
+        }
+
+    remaining = list(range(len(examples)))
+    covered = set()
+    selected = []
+    while remaining and len(selected) < target_count:
+        best_idx = None
+        best_score = None
+        for idx in remaining:
+            feat = features(examples[idx])
+            new_score = len(feat - covered)
+            changed_score = (
+                int(examples[idx].attended_cell != examples[idx].prev_attended_cell)
+                + int(examples[idx].attended_visible_type != examples[idx].prev_attended_visible_type)
+                + int(examples[idx].attended_digit != examples[idx].prev_attended_digit)
+                + int(examples[idx].glimpse_digit != examples[idx].prev_glimpse_digit)
+            )
+            score = (changed_score, new_score, -idx)
+            if best_score is None or score > best_score:
+                best_idx = idx
+                best_score = score
+        selected.append(examples[best_idx])
+        covered |= features(examples[best_idx])
+        remaining.remove(best_idx)
+    return selected
+
+
 def nl_report_metrics(
     model,
     cfg: dict[str, Any],
@@ -921,6 +978,7 @@ def nl_report_metrics(
             "dotenv_path": ".env",
             "calibration_examples": 4,
             "evaluation_examples": 4,
+            "translator_train_examples": 8,
             "probe_scenes": 2,
             "max_output_tokens": 240,
         },
@@ -957,6 +1015,7 @@ def nl_report_metrics(
     examples = [example for example in examples if example.step_index > 0]
     calibration_count = int(nl_cfg.get("calibration_examples", 4))
     evaluation_count = int(nl_cfg.get("evaluation_examples", 4))
+    translator_train_count = int(nl_cfg.get("translator_train_examples", 8))
     required_examples = calibration_count + evaluation_count
     if len(examples) < required_examples:
         return {
@@ -973,7 +1032,16 @@ def nl_report_metrics(
         calibration_count=calibration_count,
         evaluation_count=evaluation_count,
     )
-    _render_tokenized_examples(calibration_examples, calibration_examples + evaluation_examples)
+    held_out_ids = {id(example) for example in calibration_examples + evaluation_examples}
+    translator_pool = [example for example in examples if id(example) not in held_out_ids]
+    translator_examples = _select_translator_examples(
+        translator_pool,
+        grid_size=task_cfg.grid_size,
+        target_count=translator_train_count,
+    )
+    if not translator_examples:
+        translator_examples = calibration_examples
+    _render_tokenized_examples(translator_examples, calibration_examples + evaluation_examples)
     model_name = nl_cfg.get("model", "gpt-5-mini")
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
     modes = ("tokenized_state", "symbolic_state", "observation_only")
@@ -1006,6 +1074,7 @@ def nl_report_metrics(
         "model": model_name,
         "calibration_examples": calibration_count,
         "evaluation_examples": evaluation_count,
+        "translator_train_examples": len(translator_examples),
         "tokenized_state": tokenized,
         "symbolic_state": symbolic,
         "observation_only": observation,
