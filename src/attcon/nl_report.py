@@ -63,6 +63,8 @@ class NLExample:
     attention_state: torch.Tensor
     prev_attention_state: torch.Tensor
     memory_state: torch.Tensor
+    current_observation_state: torch.Tensor
+    prev_observation_state: torch.Tensor
     symbolic_state: str
     tokenized_state: str
     observation_only: str
@@ -358,6 +360,8 @@ def collect_nl_examples(
                     ],
                     dim=0,
                 ),
+                current_observation_state=observation[batch_idx, step_idx].detach().cpu(),
+                prev_observation_state=observation[batch_idx, prev_step_idx].detach().cpu(),
                 symbolic_state="",
                 tokenized_state="",
                 observation_only="",
@@ -394,6 +398,16 @@ def render_vlm_panel(example: NLExample, grid_size: int, mode: str) -> str:
     visible = torch.tensor(example.visible_grid, dtype=torch.float32).reshape(grid_size, grid_size)
     current_attention = _attention_to_grid(example.attention_state, grid_size)
     previous_attention = _attention_to_grid(example.prev_attention_state, grid_size)
+    current_evidence = example.current_observation_state.detach().cpu().reshape(1, -1)
+    previous_evidence = example.prev_observation_state.detach().cpu().reshape(1, -1)
+    current_signature = torch.zeros(3, grid_size * grid_size, dtype=torch.float32)
+    previous_signature = torch.zeros(3, grid_size * grid_size, dtype=torch.float32)
+    current_signature[0, example.attended_cell] = 1.0
+    current_signature[1, example.attended_visible_type] = 1.0
+    current_signature[2, example.attended_digit] = 1.0
+    previous_signature[0, example.prev_attended_cell] = 1.0
+    previous_signature[1, example.prev_attended_visible_type] = 1.0
+    previous_signature[2, example.prev_attended_digit] = 1.0
     unresolved = torch.zeros(grid_size * grid_size, dtype=torch.float32)
     for cell in example.unresolved_cells:
         unresolved[cell] = 1.0
@@ -401,16 +415,17 @@ def render_vlm_panel(example: NLExample, grid_size: int, mode: str) -> str:
 
     if mode == "visual_scene_only":
         fig, axes = plt.subplots(1, 2, figsize=(5.5, 3.0))
-        panels = [
-            ("Visible Types", visible, "viridis"),
-            ("Current Glimpse", current_attention, "magma"),
-        ]
+        panels = [("Visible Types", visible, "viridis")]
     elif mode == "visual_internal_state":
-        fig, axes = plt.subplots(1, 4, figsize=(10.5, 3.0))
+        fig, axes = plt.subplots(2, 4, figsize=(12.0, 5.5))
         panels = [
             ("Visible Types", visible, "viridis"),
             ("Current Attention", current_attention, "magma"),
             ("Previous Attention", previous_attention, "magma"),
+            ("Current Content Code", current_signature, "Blues"),
+            ("Previous Content Code", previous_signature, "Blues"),
+            ("Current Evidence", current_evidence, "cividis"),
+            ("Previous Evidence", previous_evidence, "cividis"),
             ("Unresolved", unresolved, "gray_r"),
         ]
     else:
@@ -426,12 +441,45 @@ def render_vlm_panel(example: NLExample, grid_size: int, mode: str) -> str:
             for row in range(grid_size):
                 for col in range(grid_size):
                     ax.text(col, row, str(int(visible[row, col].item())), ha="center", va="center", color="white", fontsize=8)
+            if mode == "visual_internal_state":
+                cur_row, cur_col = divmod(example.attended_cell, grid_size)
+                prev_row, prev_col = divmod(example.prev_attended_cell, grid_size)
+                ax.scatter([cur_col], [cur_row], s=80, facecolors="none", edgecolors="white", linewidths=1.8)
+                ax.scatter([prev_col], [prev_row], s=60, marker="s", facecolors="none", edgecolors="cyan", linewidths=1.4)
         if title == "Current Attention":
             row, col = divmod(example.attended_cell, grid_size)
             ax.scatter([col], [row], s=60, facecolors="none", edgecolors="white", linewidths=1.5)
         if title == "Previous Attention":
             row, col = divmod(example.prev_attended_cell, grid_size)
             ax.scatter([col], [row], s=60, facecolors="none", edgecolors="white", linewidths=1.5)
+        if title in {"Current Evidence", "Previous Evidence"}:
+            labels = ["M"] + [str(idx) for idx in range(panel.shape[-1] - 1)]
+            ax.set_xticks(range(len(labels)))
+            ax.set_xticklabels(labels, fontsize=7)
+            ax.set_yticks([])
+        if title in {"Current Content Code", "Previous Content Code"}:
+            ax.set_yticks([0, 1, 2])
+            ax.set_yticklabels(["cell", "type", "digit"], fontsize=7)
+            ax.set_xticks([])
+    if mode == "visual_scene_only" and len(axes) > 1:
+        axes[1].axis("off")
+        axes[1].text(
+            0.05,
+            0.82,
+            "\n".join(
+                [
+                    f"Cue: {example.cue}",
+                    f"Glimpse digit: {example.glimpse_digit}",
+                    f"Target match: {str(example.glimpse_target_match).lower()}",
+                    f"Found: {str(example.found_target).lower()}",
+                ]
+            ),
+            fontsize=9,
+            va="top",
+            ha="left",
+            family="monospace",
+        )
+        axes[1].set_title("Task Context", fontsize=9)
     for ax in axes[len(panels):]:
         ax.axis("off")
     fig.suptitle(
@@ -518,11 +566,12 @@ def _make_messages(
         ),
         "visual_scene_only": (
             "You receive only a visual scene panel and minimal task context. "
-            "Answer as best you can from the visible scene plus the current glimpse-like panel."
+            "Answer as best you can from the visible scene and the textual task context only."
         ),
         "visual_internal_state": (
             "You receive a compact visual rendering of internal attention state. "
-            "Use the panel to report current and remembered attended content faithfully."
+            "Use the panel to report current and remembered attended content faithfully. "
+            "The panel may include compact content-code rows for attended location, visible type, and attended digit."
         ),
         "symbolic_state": (
             "You receive a direct symbolic dump of internal state. Answer faithfully."
