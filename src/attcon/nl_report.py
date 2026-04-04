@@ -2,10 +2,11 @@ from __future__ import annotations
 
 """Natural-language reportability helpers for Stage 7 experiments."""
 
-import json
-import os
 import io
 import base64
+import json
+import os
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -274,8 +275,6 @@ def _render_observation_only(
     visible_types: torch.Tensor,
     observation: torch.Tensor,
     cue: int,
-    attended_cell: int,
-    attended_visible_type: int,
     grid_size: int,
 ) -> str:
     visible_rows = []
@@ -285,14 +284,13 @@ def _render_observation_only(
 
     target_match = float(observation[0].item())
     digit_idx = int(observation[1:].argmax().item())
-    attended = _cell_name(attended_cell, grid_size)
     return (
         f"cue={cue}\n"
         f"visible_grid=\n" + "\n".join(visible_rows) + "\n"
-        f"attended_cell={attended}\n"
-        f"attended_visible_type={attended_visible_type}\n"
         f"current_glimpse_target_match={target_match:.3f}\n"
         f"current_glimpse_digit_argmax={digit_idx}\n"
+        f"current_attention_location=not_available\n"
+        f"current_attention_content=not_available\n"
         f"memory_about_previous_attention=not_available\n"
         f"unresolved_information=not_available"
     )
@@ -371,8 +369,6 @@ def collect_nl_examples(
                 visible_types[batch_idx],
                 observation[batch_idx, step_idx],
                 example.cue,
-                example.attended_cell,
-                example.attended_visible_type,
                 task_cfg.grid_size,
             )
             examples.append(example)
@@ -551,6 +547,34 @@ def _schema() -> dict[str, Any]:
     }
 
 
+def _extract_response_json(response: Any) -> dict[str, Any]:
+    """Recover structured JSON from several possible SDK response shapes."""
+
+    output_parsed = getattr(response, "output_parsed", None)
+    if isinstance(output_parsed, dict):
+        return output_parsed
+
+    output_text = getattr(response, "output_text", "") or ""
+    if output_text:
+        return json.loads(output_text)
+
+    for item in getattr(response, "output", []) or []:
+        parsed = getattr(item, "parsed", None)
+        if isinstance(parsed, dict):
+            return parsed
+        for content in getattr(item, "content", None) or []:
+            parsed = getattr(content, "parsed", None)
+            if isinstance(parsed, dict):
+                return parsed
+            text_value = getattr(content, "text", None)
+            if text_value:
+                return json.loads(text_value)
+
+    raise RuntimeError(
+        f"empty structured response with status={getattr(response, 'status', None)}"
+    )
+
+
 def _make_messages(
     mode: str,
     calibration_examples: list[NLExample],
@@ -670,13 +694,15 @@ def run_nl_report_mode(
     evaluation_examples: list[NLExample],
     grid_size: int,
     max_output_tokens: int,
+    request_retries: int = 8,
+    retry_backoff_seconds: float = 2.0,
 ) -> dict[str, Any]:
     """Query an OpenAI model for one reporting mode and score structured faithfulness."""
 
     if OpenAI is None:
         raise RuntimeError("openai dependency is not installed")
 
-    client = OpenAI(max_retries=0, timeout=45.0)
+    client = OpenAI(max_retries=2, timeout=90.0)
     results = []
     exact_search = 0
     exact_attended = 0
@@ -701,7 +727,7 @@ def run_nl_report_mode(
     for example in evaluation_examples:
         parsed = None
         last_error = None
-        for _ in range(6):
+        for attempt in range(max(request_retries, 1)):
             try:
                 response = client.responses.create(
                     model=model_name,
@@ -713,24 +739,12 @@ def run_nl_report_mode(
                         "format": {"type": "json_schema", **_schema()},
                     },
                 )
-                output_text = getattr(response, "output_text", "") or ""
-                if not output_text:
-                    for item in getattr(response, "output", []) or []:
-                        for content in getattr(item, "content", None) or []:
-                            text_value = getattr(content, "text", None)
-                            if text_value:
-                                output_text = text_value
-                                break
-                        if output_text:
-                            break
-                if not output_text:
-                    raise RuntimeError(
-                        f"empty structured response with status={getattr(response, 'status', None)}"
-                    )
-                parsed = json.loads(output_text)
+                parsed = _extract_response_json(response)
                 break
-            except (json.JSONDecodeError, RuntimeError) as exc:
+            except Exception as exc:
                 last_error = exc
+                if attempt + 1 < max(request_retries, 1):
+                    time.sleep(retry_backoff_seconds * (attempt + 1))
         if parsed is None:
             raise RuntimeError(str(last_error) if last_error is not None else "nl_report parsing failed")
         expected_attended = list(divmod(example.attended_cell, grid_size))
