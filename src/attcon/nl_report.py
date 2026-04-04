@@ -492,7 +492,7 @@ def _schema() -> dict[str, Any]:
         "schema": {
             "type": "object",
             "properties": {
-                "natural_language_report": {"type": "string"},
+                "natural_language_report": {"type": "string", "maxLength": 120},
                 "search_type": {"type": "integer"},
                 "attended_cell": {
                     "type": "array",
@@ -580,7 +580,10 @@ def _make_messages(
     calibration_examples: list[NLExample],
     eval_example: NLExample,
     grid_size: int,
+    teaching_examples: list[NLExample] | None = None,
 ) -> list[dict[str, Any]]:
+    if teaching_examples is None:
+        teaching_examples = []
     mode_instructions = {
         "tokenized_state": (
             "You receive opaque state tokens. Infer their meanings from the examples. "
@@ -620,6 +623,7 @@ def _make_messages(
                     "text": (
                         "You are reporting a controller's internal state on a "
                         f"{grid_size}x{grid_size} grid. "
+                        "Keep natural_language_report to one short sentence. "
                         + mode_instructions[mode]
                     ),
                 }
@@ -645,7 +649,11 @@ def _make_messages(
             return f"{mode}:image_panel"
         return getattr(example, state_attr)
 
-    for example in calibration_examples:
+    demo_examples = calibration_examples
+    if mode in {"tokenized_state", "visual_internal_state"} and teaching_examples:
+        demo_examples = teaching_examples + calibration_examples
+
+    for example in demo_examples:
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
@@ -696,6 +704,7 @@ def run_nl_report_mode(
     max_output_tokens: int,
     request_retries: int = 8,
     retry_backoff_seconds: float = 2.0,
+    teaching_examples: list[NLExample] | None = None,
 ) -> dict[str, Any]:
     """Query an OpenAI model for one reporting mode and score structured faithfulness."""
 
@@ -731,7 +740,13 @@ def run_nl_report_mode(
             try:
                 response = client.responses.create(
                     model=model_name,
-                    input=_make_messages(mode, calibration_examples, example, grid_size),
+                    input=_make_messages(
+                        mode,
+                        calibration_examples,
+                        example,
+                        grid_size,
+                        teaching_examples=teaching_examples,
+                    ),
                     max_output_tokens=max_output_tokens,
                     reasoning={"effort": "low"},
                     text={
