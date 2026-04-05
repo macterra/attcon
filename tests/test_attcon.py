@@ -15,7 +15,7 @@ import torch
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import run_ablations
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from attcon.nl_report import collect_nl_examples
+from attcon.nl_report import _extract_response_json, collect_nl_examples
 from attcon.train import train_experiment
 
 
@@ -190,7 +190,8 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("unresolved_cols=", example.symbolic_state)
         self.assertIn("unresolved_count=", example.symbolic_state)
         self.assertIn("cue=", example.observation_only)
-        self.assertIn("attended_visible_type=", example.observation_only)
+        self.assertIn("current_attention_location=not_available", example.observation_only)
+        self.assertIn("current_attention_content=not_available", example.observation_only)
         self.assertTrue(example.tokenized_state.startswith("x"))
         self.assertIsInstance(example.unresolved_cells, list)
         self.assertIsInstance(example.unresolved_rows, list)
@@ -205,6 +206,47 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.prev_attended_digit, int)
         self.assertIsInstance(example.prev_glimpse_digit, int)
         self.assertIsInstance(example.glimpse_target_match, bool)
+
+    def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
+        class FakeContent:
+            def __init__(self, *, text=None, parsed=None) -> None:
+                self.text = text
+                self.parsed = parsed
+
+        class FakeItem:
+            def __init__(self, *, content=None, parsed=None) -> None:
+                self.content = content or []
+                self.parsed = parsed
+
+        class FakeResponse:
+            def __init__(self, *, output_text="", output=None, output_parsed=None) -> None:
+                self.output_text = output_text
+                self.output = output or []
+                self.output_parsed = output_parsed
+                self.status = "completed"
+
+        expected = {"search_type": 1}
+        self.assertEqual(_extract_response_json(FakeResponse(output_parsed=expected)), expected)
+        self.assertEqual(
+            _extract_response_json(FakeResponse(output_text='{"search_type": 1}')),
+            expected,
+        )
+        self.assertEqual(
+            _extract_response_json(FakeResponse(output=[FakeItem(parsed=expected)])),
+            expected,
+        )
+        self.assertEqual(
+            _extract_response_json(
+                FakeResponse(output=[FakeItem(content=[FakeContent(parsed=expected)])])
+            ),
+            expected,
+        )
+        self.assertEqual(
+            _extract_response_json(
+                FakeResponse(output=[FakeItem(content=[FakeContent(text='{"search_type": 1}')])])
+            ),
+            expected,
+        )
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

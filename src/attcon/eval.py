@@ -1054,6 +1054,7 @@ def nl_report_metrics(
                 evaluation_examples=evaluation_examples,
                 grid_size=task_cfg.grid_size,
                 max_output_tokens=max_output_tokens,
+                teaching_examples=translator_examples,
             )
             for mode in modes
         }
