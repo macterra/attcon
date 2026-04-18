@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
+import numpy as np
 from torch import nn
 import torch
 
@@ -1785,6 +1786,72 @@ def save_self_model_plots(
     return [str(path)]
 
 
+def save_uncertainty_report_plots(
+    metrics: dict[str, Any],
+    output_dir: Path,
+) -> list[str]:
+    """Render compact comparison plots for Stage 6B uncertainty reports."""
+
+    if not metrics:
+        return []
+
+    signal_names = (
+        "relevant_region_inspected",
+        "unresolved_search",
+        "wrong_candidate_history",
+        "allocation_error",
+    )
+    available = [name for name in signal_names if name in metrics]
+    if not available:
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    labels = [name.replace("_", "\n") for name in available]
+    native_accuracy = [metrics[name]["native_report"]["test_accuracy"] for name in available]
+    observation_accuracy = [
+        metrics[name]["observation_only_probe"]["test_accuracy"] for name in available
+    ]
+    native_recall = [metrics[name]["native_report"]["test_positive_recall"] for name in available]
+    observation_recall = [
+        metrics[name]["observation_only_probe"]["test_positive_recall"] for name in available
+    ]
+
+    x_positions = np.arange(len(available))
+    width = 0.35
+
+    fig, axes = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
+    axes[0].bar(x_positions - width / 2, native_accuracy, width=width, label="Native")
+    axes[0].bar(
+        x_positions + width / 2,
+        observation_accuracy,
+        width=width,
+        label="Observation-only",
+    )
+    axes[0].set_ylabel("Accuracy")
+    axes[0].set_ylim(0.0, 1.05)
+    axes[0].set_title("Stage 6B accuracy comparison")
+    axes[0].legend(loc="best", fontsize=8)
+
+    axes[1].bar(x_positions - width / 2, native_recall, width=width, label="Native")
+    axes[1].bar(
+        x_positions + width / 2,
+        observation_recall,
+        width=width,
+        label="Observation-only",
+    )
+    axes[1].set_ylabel("Positive recall")
+    axes[1].set_ylim(0.0, 1.05)
+    axes[1].set_title("Stage 6B positive-recall comparison")
+    axes[1].set_xticks(x_positions, labels)
+    axes[1].legend(loc="best", fontsize=8)
+
+    fig.tight_layout()
+    path = output_dir / "uncertainty_report_diagnostics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -2597,6 +2664,10 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         report["self_model_diagnostics"],
         output_dir / "plots",
     )
+    uncertainty_plot_paths = save_uncertainty_report_plots(
+        report["uncertainty_report_probes"],
+        output_dir / "plots",
+    )
     cue_switch_plot_paths = save_cue_switch_plots(
         {"baseline": models["static"], "recurrent": models["recurrent"]},
         output_dir / "plots",
@@ -2610,6 +2681,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
     report["artifacts"]["self_state_plots"] = self_state_plot_paths
     report["artifacts"]["self_model_plots"] = self_model_plot_paths
+    report["artifacts"]["uncertainty_plots"] = uncertainty_plot_paths
     report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
