@@ -2453,6 +2453,12 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             "all_intervention_supported", False
         ),
         "stage3_multi_seed_supported": stage3_multi_seed.get("supported", False),
+        "single_run_supported": (
+            predictive_probe.get("supported", False)
+            and intervention_test.get("supported", False)
+            and reduced_shaping_summary.get("supported", False)
+        ),
+        "robust_supported": stage3_multi_seed.get("supported", False),
         "supported": (
             predictive_probe.get("supported", False)
             and intervention_test.get("supported", False)

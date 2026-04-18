@@ -433,6 +433,17 @@ class AttentionControlTests(unittest.TestCase):
                     "all_intervention_supported": False,
                     "supported": False,
                 },
+                "predictive_probe": {
+                    "supported": True,
+                },
+                "intervention_test": {
+                    "supported": True,
+                },
+                "reduced_shaping": {
+                    "summary": {
+                        "supported": True,
+                    }
+                },
                 "nl_report": {
                     "model": "gpt-5-mini",
                     "tokenized_joint_accuracy_advantage": 0.25,
@@ -530,6 +541,8 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(explicit_attention["stage3_all_predictive_supported"])
         self.assertFalse(explicit_attention["stage3_all_intervention_supported"])
         self.assertFalse(explicit_attention["stage3_multi_seed_supported"])
+        self.assertTrue(explicit_attention["single_run_supported"])
+        self.assertFalse(explicit_attention["robust_supported"])
         self.assertFalse(explicit_attention["supported"])
         stage6b = summary["structured_reportability_uncertainty_and_allocation_error"]
         self.assertTrue(stage6b["supported"])
