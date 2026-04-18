@@ -1563,6 +1563,43 @@ def self_state_diagnostics(
     }
 
 
+def self_model_diagnostics(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Summarize how the learned self-model tracks inspected vs uninspected cells."""
+
+    outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed)
+    attention = outputs["attention_seq"].float()
+    inspection = outputs["inspection_seq"].float()
+    self_model = outputs["self_model_seq"].float()
+    target_pos = probe_batch.target_pos.view(batch_size, task_cfg.num_types)
+    target_pos = target_pos.reshape(-1)
+
+    flat_attention = attention.reshape(-1, task_cfg.num_steps, task_cfg.num_cells)
+    flat_inspection = inspection.reshape(-1, task_cfg.num_steps, task_cfg.num_cells)
+    flat_self_model = self_model.reshape(-1, task_cfg.num_steps, task_cfg.num_cells)
+    target_index = target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
+
+    target_self_model = flat_self_model.gather(2, target_index).squeeze(-1)
+    target_inspection = flat_inspection.gather(2, target_index).squeeze(-1)
+    target_attention = flat_attention.gather(2, target_index).squeeze(-1)
+
+    inspected_error = (flat_self_model - flat_inspection).abs().mean(dim=-1)
+    target_alignment = 1.0 - (target_self_model - target_inspection).abs()
+
+    return {
+        "target_self_model_mass_by_step": target_self_model.mean(dim=0).tolist(),
+        "target_inspection_state_by_step": target_inspection.mean(dim=0).tolist(),
+        "target_attention_by_step": target_attention.mean(dim=0).tolist(),
+        "self_model_cell_error_by_step": inspected_error.mean(dim=0).tolist(),
+        "target_self_model_alignment_by_step": target_alignment.mean(dim=0).tolist(),
+    }
+
+
 def save_intervention_plots(
     model,
     output_dir: Path,
@@ -2391,6 +2428,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         eval_cfg["probe_scenes"],
         device,
         cfg["seed"] + 9739,
+    )
+    report["self_model_diagnostics"] = self_model_diagnostics(
+        models["recurrent"],
+        task_cfg,
+        eval_cfg["probe_scenes"],
+        device,
+        cfg["seed"] + 9741,
     )
     report["nl_report"] = nl_report_metrics(
         models["recurrent"],
