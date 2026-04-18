@@ -321,6 +321,14 @@ class AttentionControlTests(unittest.TestCase):
                         "target_attention_gain": 0.0,
                     }
                 },
+                "stage3_multi_seed": {
+                    "num_seeds": 3,
+                    "predictive_supported_fraction": 2.0 / 3.0,
+                    "intervention_supported_fraction": 1.0 / 3.0,
+                    "all_predictive_supported": False,
+                    "all_intervention_supported": False,
+                    "supported": False,
+                },
                 "nl_report": {
                     "model": "gpt-5-mini",
                     "tokenized_joint_accuracy_advantage": 0.25,
@@ -349,6 +357,13 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertEqual(nl_summary["tokenized_allocation_error_accuracy_advantage"], 0.25)
         self.assertTrue(nl_summary["supported"])
+        explicit_attention = summary["explicit_attention_modeling"]
+        self.assertEqual(explicit_attention["stage3_num_seeds"], 3)
+        self.assertEqual(explicit_attention["stage3_predictive_supported_fraction"], 2.0 / 3.0)
+        self.assertEqual(explicit_attention["stage3_intervention_supported_fraction"], 1.0 / 3.0)
+        self.assertFalse(explicit_attention["stage3_all_predictive_supported"])
+        self.assertFalse(explicit_attention["stage3_all_intervention_supported"])
+        self.assertFalse(explicit_attention["stage3_multi_seed_supported"])
 
     def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
