@@ -1940,6 +1940,78 @@ def save_uncertainty_report_plots(
     return [str(path)]
 
 
+def save_stage3_multi_seed_plots(
+    metrics: dict[str, Any],
+    output_dir: Path,
+) -> list[str]:
+    """Render compact robustness plots for repeated-seed Stage 3 checks."""
+
+    if not metrics:
+        return []
+    predictive_runs = metrics.get("predictive_probe_runs", [])
+    intervention_runs = metrics.get("intervention_runs", [])
+    if not predictive_runs and not intervention_runs:
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    fig, axes = plt.subplots(2, 1, figsize=(8, 7), sharex=False)
+
+    if predictive_runs:
+        x = list(range(1, len(predictive_runs) + 1))
+        axes[0].plot(
+            x,
+            [run["controller_advantage_cross_entropy"] for run in predictive_runs],
+            marker="o",
+            label="Cross-entropy advantage",
+        )
+        axes[0].plot(
+            x,
+            [run["controller_advantage_top1_match"] for run in predictive_runs],
+            marker="o",
+            label="Top-1 advantage",
+        )
+        axes[0].axhline(0.0, color="black", linewidth=1, linestyle="--")
+        axes[0].set_title("Stage 3 predictive-probe margins by seed")
+        axes[0].set_ylabel("Advantage")
+        axes[0].legend(loc="best", fontsize=8)
+    else:
+        axes[0].axis("off")
+
+    if intervention_runs:
+        x = list(range(1, len(intervention_runs) + 1))
+        axes[1].plot(
+            x,
+            [run["attention_change_kl"] for run in intervention_runs],
+            marker="o",
+            label="Attention-change KL",
+        )
+        axes[1].plot(
+            x,
+            [run["original_target_attention_drop"] for run in intervention_runs],
+            marker="o",
+            label="Original-target drop",
+        )
+        axes[1].plot(
+            x,
+            [run["alternate_target_attention_gain"] for run in intervention_runs],
+            marker="o",
+            label="Alternate-target gain",
+        )
+        axes[1].axhline(0.0, color="black", linewidth=1, linestyle="--")
+        axes[1].set_title("Stage 3 intervention margins by seed")
+        axes[1].set_xlabel("Seed index")
+        axes[1].set_ylabel("Effect size")
+        axes[1].legend(loc="best", fontsize=8)
+    else:
+        axes[1].axis("off")
+
+    fig.tight_layout()
+    path = output_dir / "stage3_multi_seed_diagnostics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -3123,6 +3195,10 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9675,
     )
+    stage3_multi_seed_plot_paths = save_stage3_multi_seed_plots(
+        report["stage3_multi_seed"],
+        output_dir / "plots",
+    )
     stage7_visual_report_artifacts = save_stage7_visual_report_plots(
         models["recurrent"],
         output_dir / "plots",
@@ -3138,6 +3214,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["self_model_plots"] = self_model_plot_paths
     report["artifacts"]["uncertainty_plots"] = uncertainty_plot_paths
     report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
+    report["artifacts"]["stage3_multi_seed_plots"] = stage3_multi_seed_plot_paths
     report["artifacts"]["stage7_visual_reports"] = stage7_visual_report_artifacts["plot_paths"]
     report["artifacts"]["stage7_visual_report_metadata"] = stage7_visual_report_artifacts[
         "metadata_path"
