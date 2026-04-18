@@ -596,6 +596,8 @@ class AttentionControlTests(unittest.TestCase):
             self.assertTrue(report["artifacts"]["plots"])
             self.assertTrue(report["artifacts"]["self_state_plots"])
             self.assertTrue(Path(report["artifacts"]["self_state_plots"][0]).exists())
+            self.assertTrue(report["artifacts"]["cue_switch_plots"])
+            self.assertTrue(Path(report["artifacts"]["cue_switch_plots"][0]).exists())
 
 
 if __name__ == "__main__":
