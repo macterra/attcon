@@ -70,6 +70,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
                 "min_alternate_target_attention_gain": 0.01,
             },
         },
+        "stage3_multi_seed": {
+            "enabled": True,
+            "num_seeds": 3,
+            "seed_stride": 100,
+        },
         "cue_switch": {
             "enabled": True,
             "probe_scenes": 4,

@@ -1883,6 +1883,89 @@ def reduced_shaping_metrics(
     return results
 
 
+def stage3_multi_seed_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+    *,
+    reduced_shaping_summary: dict[str, Any],
+) -> dict[str, Any]:
+    """Repeat Stage 3 probe-style checks across multiple evaluation seeds."""
+
+    multi_cfg = cfg["evaluation"].get("stage3_multi_seed", {})
+    if not multi_cfg.get("enabled", False):
+        return {}
+
+    num_seeds = int(multi_cfg.get("num_seeds", 3))
+    seed_stride = int(multi_cfg.get("seed_stride", 100))
+    predictive_runs = []
+    intervention_runs = []
+
+    for idx in range(num_seeds):
+        run_seed = seed + idx * seed_stride
+        predictive = predictive_probe_metrics(
+            model,
+            cfg,
+            task_cfg,
+            device,
+            run_seed,
+        )
+        intervention = intervention_test_metrics(
+            model,
+            cfg,
+            task_cfg,
+            device,
+            run_seed + seed_stride // 2,
+        )
+        predictive_runs.append(
+            {
+                "seed": run_seed,
+                "supported": predictive.get("supported", False),
+                "controller_advantage_cross_entropy": predictive.get(
+                    "controller_advantage_cross_entropy", 0.0
+                ),
+                "controller_advantage_mse": predictive.get("controller_advantage_mse", 0.0),
+                "controller_advantage_top1_match": predictive.get(
+                    "controller_advantage_top1_match", 0.0
+                ),
+            }
+        )
+        intervention_runs.append(
+            {
+                "seed": run_seed + seed_stride // 2,
+                "supported": intervention.get("supported", False),
+                "attention_change_kl": intervention.get("attention_change_kl", 0.0),
+                "original_target_attention_drop": intervention.get(
+                    "original_target_attention_drop", 0.0
+                ),
+                "alternate_target_attention_gain": intervention.get(
+                    "alternate_target_attention_gain", 0.0
+                ),
+            }
+        )
+
+    predictive_supported = sum(int(item["supported"]) for item in predictive_runs)
+    intervention_supported = sum(int(item["supported"]) for item in intervention_runs)
+    reduced_shaping_supported = reduced_shaping_summary.get("supported", False)
+    return {
+        "num_seeds": num_seeds,
+        "predictive_probe_runs": predictive_runs,
+        "intervention_runs": intervention_runs,
+        "reduced_shaping_supported": reduced_shaping_supported,
+        "predictive_supported_fraction": predictive_supported / max(num_seeds, 1),
+        "intervention_supported_fraction": intervention_supported / max(num_seeds, 1),
+        "all_predictive_supported": predictive_supported == num_seeds,
+        "all_intervention_supported": intervention_supported == num_seeds,
+        "supported": (
+            predictive_supported == num_seeds
+            and intervention_supported == num_seeds
+            and reduced_shaping_supported
+        ),
+    }
+
+
 def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     """Condense raw metrics into the three core claims from the README."""
 
@@ -2348,6 +2431,14 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         output_dir,
+    )
+    report["stage3_multi_seed"] = stage3_multi_seed_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9850,
+        reduced_shaping_summary=report["reduced_shaping"].get("summary", {}),
     )
 
     for name in eval_cfg["ablations"]:
