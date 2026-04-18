@@ -3309,6 +3309,10 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         "metadata_path"
     ]
     report["stage3_summary"] = build_stage3_summary(report)
+    stage3_summary_path = output_dir / "stage3_summary.json"
+    with open(stage3_summary_path, "w", encoding="utf-8") as handle:
+        json.dump(report["stage3_summary"], handle, indent=2)
+    report["artifacts"]["stage3_summary"] = str(stage3_summary_path)
     report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
         stage7_visual_report_artifacts["metadata_path"]
     )

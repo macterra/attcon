@@ -1036,6 +1036,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertTrue(Path(report["artifacts"]["cue_switch_plots"][0]).exists())
             self.assertTrue(report["artifacts"]["stage3_multi_seed_plots"])
             self.assertTrue(Path(report["artifacts"]["stage3_multi_seed_plots"][0]).exists())
+            self.assertTrue(Path(report["artifacts"]["stage3_summary"]).exists())
             self.assertTrue(report["artifacts"]["stage7_visual_reports"])
             self.assertTrue(Path(report["artifacts"]["stage7_visual_reports"][0]).exists())
             self.assertTrue(Path(report["artifacts"]["stage7_visual_report_metadata"]).exists())
