@@ -371,6 +371,7 @@ Current status in this repo:
 - the current evaluation is stricter than a generic state-description task because it asks for current attended content and remembered previous attended content
 - evaluation is restricted to non-initial timesteps where previous-attention memory is genuinely required
 - the Stage 7 schema now also includes Stage 6B-style variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error
+- the Stage 7 example format now also carries cue-history and inspection-history fields, and the evaluator can run dedicated cue-switch and intervention slices through the same NL reporting harness
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - the tokenized internal-state condition is still not successful enough to beat observation-only baselines on current attended location or remembered previous attended content
 
@@ -382,7 +383,7 @@ Current assessment:
 
 Interpretation:
 
-Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim. The reporting harness now covers the Stage 6B uncertainty/allocation-error variables too, so the next failures or successes should be easier to interpret against the broader roadmap.
+Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim. The reporting harness now covers the Stage 6B uncertainty/allocation-error variables too, and it can also evaluate cue-switch and intervention slices through the same interface, so the next failures or successes should be easier to interpret against the broader roadmap.
 
 ## Stage 8: Conservative Interpretation as Minimal Consciousness-Like Content
 
