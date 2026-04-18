@@ -2186,6 +2186,17 @@ def stage3_multi_seed_metrics(
     predictive_supported = sum(int(item["supported"]) for item in predictive_runs)
     intervention_supported = sum(int(item["supported"]) for item in intervention_runs)
     reduced_shaping_supported = reduced_shaping_summary.get("supported", False)
+
+    def _mean(values: list[float]) -> float:
+        return sum(values) / max(len(values), 1)
+
+    predictive_ce = [item["controller_advantage_cross_entropy"] for item in predictive_runs]
+    predictive_mse = [item["controller_advantage_mse"] for item in predictive_runs]
+    predictive_top1 = [item["controller_advantage_top1_match"] for item in predictive_runs]
+    intervention_kl = [item["attention_change_kl"] for item in intervention_runs]
+    intervention_drop = [item["original_target_attention_drop"] for item in intervention_runs]
+    intervention_gain = [item["alternate_target_attention_gain"] for item in intervention_runs]
+
     return {
         "num_seeds": num_seeds,
         "predictive_probe_runs": predictive_runs,
@@ -2195,6 +2206,18 @@ def stage3_multi_seed_metrics(
         "intervention_supported_fraction": intervention_supported / max(num_seeds, 1),
         "all_predictive_supported": predictive_supported == num_seeds,
         "all_intervention_supported": intervention_supported == num_seeds,
+        "predictive_cross_entropy_advantage_mean": _mean(predictive_ce),
+        "predictive_cross_entropy_advantage_min": min(predictive_ce) if predictive_ce else 0.0,
+        "predictive_mse_advantage_mean": _mean(predictive_mse),
+        "predictive_mse_advantage_min": min(predictive_mse) if predictive_mse else 0.0,
+        "predictive_top1_advantage_mean": _mean(predictive_top1),
+        "predictive_top1_advantage_min": min(predictive_top1) if predictive_top1 else 0.0,
+        "intervention_attention_change_kl_mean": _mean(intervention_kl),
+        "intervention_attention_change_kl_min": min(intervention_kl) if intervention_kl else 0.0,
+        "intervention_original_target_drop_mean": _mean(intervention_drop),
+        "intervention_original_target_drop_min": min(intervention_drop) if intervention_drop else 0.0,
+        "intervention_alternate_target_gain_mean": _mean(intervention_gain),
+        "intervention_alternate_target_gain_min": min(intervention_gain) if intervention_gain else 0.0,
         "supported": (
             predictive_supported == num_seeds
             and intervention_supported == num_seeds
@@ -2280,6 +2303,30 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "stage3_intervention_supported_fraction": stage3_multi_seed.get(
             "intervention_supported_fraction", 0.0
+        ),
+        "stage3_predictive_cross_entropy_advantage_mean": stage3_multi_seed.get(
+            "predictive_cross_entropy_advantage_mean", 0.0
+        ),
+        "stage3_predictive_cross_entropy_advantage_min": stage3_multi_seed.get(
+            "predictive_cross_entropy_advantage_min", 0.0
+        ),
+        "stage3_predictive_top1_advantage_mean": stage3_multi_seed.get(
+            "predictive_top1_advantage_mean", 0.0
+        ),
+        "stage3_predictive_top1_advantage_min": stage3_multi_seed.get(
+            "predictive_top1_advantage_min", 0.0
+        ),
+        "stage3_intervention_attention_change_kl_mean": stage3_multi_seed.get(
+            "intervention_attention_change_kl_mean", 0.0
+        ),
+        "stage3_intervention_attention_change_kl_min": stage3_multi_seed.get(
+            "intervention_attention_change_kl_min", 0.0
+        ),
+        "stage3_intervention_alternate_target_gain_mean": stage3_multi_seed.get(
+            "intervention_alternate_target_gain_mean", 0.0
+        ),
+        "stage3_intervention_alternate_target_gain_min": stage3_multi_seed.get(
+            "intervention_alternate_target_gain_min", 0.0
         ),
         "stage3_all_predictive_supported": stage3_multi_seed.get("all_predictive_supported", False),
         "stage3_all_intervention_supported": stage3_multi_seed.get(
