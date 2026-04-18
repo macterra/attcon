@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 import tempfile
@@ -12,10 +13,12 @@ if str(SRC) not in sys.path:
 
 import torch
 
+import attcon.eval as eval_module
 import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
+    nl_report_metrics,
     run_ablations,
     self_model_diagnostics,
     self_state_diagnostics,
@@ -416,6 +419,17 @@ class AttentionControlTests(unittest.TestCase):
                     "supported": True,
                     "tokenized_state": {"joint_accuracy": 0.75},
                     "observation_only": {"joint_accuracy": 0.25},
+                    "cue_switch_slice": {
+                        "supported": True,
+                        "tokenized_joint_accuracy_advantage": 0.1,
+                        "tokenized_memory_content_joint_accuracy_advantage": 0.2,
+                    },
+                    "intervention_slice": {
+                        "supported": False,
+                        "tokenized_joint_accuracy_advantage": 0.05,
+                        "tokenized_memory_content_joint_accuracy_advantage": 0.15,
+                        "attention_change_fraction": 0.5,
+                    },
                 }
             }
         )
@@ -431,6 +445,19 @@ class AttentionControlTests(unittest.TestCase):
             0.5,
         )
         self.assertEqual(nl_summary["tokenized_allocation_error_accuracy_advantage"], 0.25)
+        self.assertTrue(nl_summary["cue_switch_slice_supported"])
+        self.assertEqual(nl_summary["cue_switch_tokenized_joint_accuracy_advantage"], 0.1)
+        self.assertEqual(
+            nl_summary["cue_switch_tokenized_memory_content_joint_accuracy_advantage"],
+            0.2,
+        )
+        self.assertFalse(nl_summary["intervention_slice_supported"])
+        self.assertEqual(nl_summary["intervention_tokenized_joint_accuracy_advantage"], 0.05)
+        self.assertEqual(
+            nl_summary["intervention_tokenized_memory_content_joint_accuracy_advantage"],
+            0.15,
+        )
+        self.assertEqual(nl_summary["intervention_attention_change_fraction"], 0.5)
         self.assertTrue(nl_summary["supported"])
         explicit_attention = summary["explicit_attention_modeling"]
         self.assertEqual(explicit_attention["stage3_num_seeds"], 3)
@@ -531,6 +558,86 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(metrics["attended_cell_previously_inspected_accuracy"], 1.0)
         self.assertEqual(metrics["uncertainty_content_joint_accuracy"], 1.0)
         self.assertEqual(metrics["joint_accuracy"], 1.0)
+
+    def test_nl_report_metrics_includes_cue_switch_and_intervention_slices(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "evaluation": {
+                "probe_scenes": 2,
+                "cue_switch": {
+                    "enabled": True,
+                    "switch_step": 1,
+                },
+                "intervention_test": {
+                    "enabled": True,
+                    "step": 1,
+                },
+                "nl_report": {
+                    "enabled": True,
+                    "calibration_examples": 1,
+                    "evaluation_examples": 1,
+                    "translator_train_examples": 1,
+                    "probe_scenes": 2,
+                    "max_output_tokens": 64,
+                },
+            }
+        }
+
+        original_openai = eval_module.OpenAI
+        original_run = eval_module.run_nl_report_mode
+        original_api_key = os.environ.get("OPENAI_API_KEY")
+
+        def fake_run_nl_report_mode(**kwargs):
+            return {
+                "mode": kwargs["mode"],
+                "joint_accuracy": 1.0,
+                "current_content_joint_accuracy": 1.0,
+                "memory_content_joint_accuracy": 1.0,
+                "content_only_joint_accuracy": 1.0,
+                "attended_visible_type_accuracy": 1.0,
+                "attended_digit_accuracy": 1.0,
+                "glimpse_digit_accuracy": 1.0,
+                "previous_attended_cell_accuracy": 1.0,
+                "previous_attended_visible_type_accuracy": 1.0,
+                "previous_attended_digit_accuracy": 1.0,
+                "previous_glimpse_digit_accuracy": 1.0,
+                "glimpse_target_match_accuracy": 1.0,
+                "relevant_region_inspected_accuracy": 1.0,
+                "unresolved_search_accuracy": 1.0,
+                "wrong_candidate_history_accuracy": 1.0,
+                "allocation_error_accuracy": 1.0,
+                "uncertainty_content_joint_accuracy": 1.0,
+                "unresolved_rows_accuracy": 1.0,
+                "unresolved_cols_accuracy": 1.0,
+                "unresolved_count_accuracy": 1.0,
+            }
+
+        eval_module.OpenAI = object()
+        eval_module.run_nl_report_mode = fake_run_nl_report_mode
+        os.environ["OPENAI_API_KEY"] = "test-key"
+        try:
+            metrics = nl_report_metrics(
+                model,
+                config,
+                self.task_cfg,
+                torch.device("cpu"),
+                seed=23,
+            )
+        finally:
+            eval_module.OpenAI = original_openai
+            eval_module.run_nl_report_mode = original_run
+            if original_api_key is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = original_api_key
+
+        self.assertFalse(metrics["skipped"])
+        self.assertIn("cue_switch_slice", metrics)
+        self.assertIn("intervention_slice", metrics)
+        self.assertFalse(metrics["cue_switch_slice"]["skipped"])
+        self.assertFalse(metrics["intervention_slice"]["skipped"])
+        self.assertGreater(metrics["intervention_slice"]["delta_norm"], 0.0)
+        self.assertTrue(0.0 <= metrics["intervention_slice"]["attention_change_fraction"] <= 1.0)
 
     def test_self_state_diagnostics_exposes_stepwise_series(self) -> None:
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
