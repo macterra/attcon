@@ -22,7 +22,12 @@ from attcon.eval import (
     stage3_multi_seed_metrics,
 )
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from attcon.nl_report import _extract_response_json, collect_nl_examples, run_nl_report_mode
+from attcon.nl_report import (
+    _extract_response_json,
+    collect_cue_switch_nl_examples,
+    collect_nl_examples,
+    run_nl_report_mode,
+)
 from attcon.train import train_experiment
 
 
@@ -218,6 +223,8 @@ class AttentionControlTests(unittest.TestCase):
         example = examples[0]
         self.assertTrue(example.example_id.startswith("scene0_step0"))
         self.assertIn("search_type=", example.symbolic_state)
+        self.assertIn("previous_search_type=", example.symbolic_state)
+        self.assertIn("cue_switched=", example.symbolic_state)
         self.assertIn("attended_cell=", example.symbolic_state)
         self.assertIn("attended_visible_type=", example.symbolic_state)
         self.assertIn("attended_digit=", example.symbolic_state)
@@ -226,14 +233,20 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("previous_attended_visible_type=", example.symbolic_state)
         self.assertIn("previous_attended_digit=", example.symbolic_state)
         self.assertIn("previous_glimpse_digit=", example.symbolic_state)
+        self.assertIn("previous_found_target=", example.symbolic_state)
         self.assertIn("relevant_region_inspected=", example.symbolic_state)
         self.assertIn("unresolved_search=", example.symbolic_state)
         self.assertIn("wrong_candidate_history=", example.symbolic_state)
         self.assertIn("allocation_error=", example.symbolic_state)
+        self.assertIn("inspected_count=", example.symbolic_state)
+        self.assertIn("previous_inspected_count=", example.symbolic_state)
+        self.assertIn("attended_cell_previously_inspected=", example.symbolic_state)
         self.assertIn("unresolved_rows=", example.symbolic_state)
         self.assertIn("unresolved_cols=", example.symbolic_state)
         self.assertIn("unresolved_count=", example.symbolic_state)
         self.assertIn("cue=", example.observation_only)
+        self.assertIn("previous_cue=", example.observation_only)
+        self.assertIn("cue_switched=not_available", example.observation_only)
         self.assertIn("current_attention_location=not_available", example.observation_only)
         self.assertIn("current_attention_content=not_available", example.observation_only)
         self.assertIn("wrong_candidate_history=not_available", example.observation_only)
@@ -251,10 +264,16 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.prev_attended_digit, int)
         self.assertIsInstance(example.prev_glimpse_digit, int)
         self.assertIsInstance(example.glimpse_target_match, bool)
+        self.assertIsInstance(example.previous_cue, int)
+        self.assertIsInstance(example.cue_switched, bool)
+        self.assertIsInstance(example.previous_found_target, bool)
         self.assertIsInstance(example.relevant_region_inspected, bool)
         self.assertIsInstance(example.unresolved_search, bool)
         self.assertIsInstance(example.wrong_candidate_history, bool)
         self.assertIsInstance(example.allocation_error, bool)
+        self.assertIsInstance(example.inspected_count, int)
+        self.assertIsInstance(example.previous_inspected_count, int)
+        self.assertIsInstance(example.attended_cell_previously_inspected, bool)
 
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
         class FakeContent:
@@ -295,6 +314,33 @@ class AttentionControlTests(unittest.TestCase):
                 FakeResponse(output=[FakeItem(content=[FakeContent(text='{"search_type": 1}')])])
             ),
             expected,
+        )
+
+    def test_collect_cue_switch_nl_examples_marks_post_switch_steps(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        examples = collect_cue_switch_nl_examples(
+            model,
+            self.task_cfg,
+            batch,
+            switch_step=1,
+        )
+
+        self.assertEqual(len(examples), 2 * self.task_cfg.num_steps)
+        pre_switch = [example for example in examples if example.step_index == 0]
+        switch_transition = [example for example in examples if example.step_index == 1]
+        post_switch = [example for example in examples if example.step_index >= 1]
+        self.assertTrue(pre_switch)
+        self.assertTrue(switch_transition)
+        self.assertTrue(post_switch)
+        self.assertTrue(all(example.example_id.startswith("cue_switch_") for example in examples))
+        self.assertTrue(all(not example.cue_switched for example in pre_switch))
+        self.assertTrue(all(example.cue_switched for example in switch_transition))
+        self.assertTrue(
+            all(
+                example.cue != int(batch.cue[int(example.example_id.split("scene", 1)[1].split("_", 1)[0])].item())
+                for example in post_switch
+            )
         )
 
     def test_build_evidence_summary_surfaces_nl_uncertainty_metrics(self) -> None:
@@ -384,6 +430,8 @@ class AttentionControlTests(unittest.TestCase):
             return {
                 "natural_language_report": "faithful summary",
                 "search_type": example.cue,
+                "previous_search_type": example.previous_cue,
+                "cue_switched": example.cue_switched,
                 "attended_cell": list(divmod(example.attended_cell, self.task_cfg.grid_size)),
                 "attended_visible_type": example.attended_visible_type,
                 "attended_digit": example.attended_digit,
@@ -393,11 +441,15 @@ class AttentionControlTests(unittest.TestCase):
                 "previous_attended_digit": example.prev_attended_digit,
                 "previous_glimpse_digit": example.prev_glimpse_digit,
                 "glimpse_target_match": example.glimpse_target_match,
+                "previous_found_target": example.previous_found_target,
                 "found_target": example.found_target,
                 "relevant_region_inspected": example.relevant_region_inspected,
                 "unresolved_search": example.unresolved_search,
                 "wrong_candidate_history": example.wrong_candidate_history,
                 "allocation_error": example.allocation_error,
+                "inspected_count": example.inspected_count,
+                "previous_inspected_count": example.previous_inspected_count,
+                "attended_cell_previously_inspected": example.attended_cell_previously_inspected,
                 "unresolved_rows": example.unresolved_rows,
                 "unresolved_cols": example.unresolved_cols,
                 "unresolved_count": example.unresolved_count,
@@ -442,6 +494,12 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(metrics["unresolved_search_accuracy"], 1.0)
         self.assertEqual(metrics["wrong_candidate_history_accuracy"], 1.0)
         self.assertEqual(metrics["allocation_error_accuracy"], 1.0)
+        self.assertEqual(metrics["previous_search_type_accuracy"], 1.0)
+        self.assertEqual(metrics["cue_switched_accuracy"], 1.0)
+        self.assertEqual(metrics["previous_found_target_accuracy"], 1.0)
+        self.assertEqual(metrics["inspected_count_accuracy"], 1.0)
+        self.assertEqual(metrics["previous_inspected_count_accuracy"], 1.0)
+        self.assertEqual(metrics["attended_cell_previously_inspected_accuracy"], 1.0)
         self.assertEqual(metrics["uncertainty_content_joint_accuracy"], 1.0)
         self.assertEqual(metrics["joint_accuracy"], 1.0)
 
