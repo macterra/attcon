@@ -510,6 +510,39 @@ def collect_nl_examples(
     return examples
 
 
+def collect_cue_switch_nl_examples(
+    model,
+    task_cfg,
+    batch,
+    *,
+    switch_step: int,
+) -> list[NLExample]:
+    """Collect Stage 7 examples from mid-episode cue-switch episodes."""
+
+    if switch_step <= 0 or switch_step >= task_cfg.num_steps:
+        raise ValueError("switch_step must be within the interior of the episode")
+
+    cue_before = batch.cue
+    cue_after = (cue_before + 1) % task_cfg.num_types
+    cue_seq = cue_before.unsqueeze(1).repeat(1, task_cfg.num_steps)
+    cue_seq[:, switch_step:] = cue_after.unsqueeze(1)
+
+    with torch.no_grad():
+        outputs = model(
+            batch.scene,
+            batch.cue,
+            cue_seq=cue_seq,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+        )
+
+    examples = collect_nl_examples(model, task_cfg, batch, outputs, cue_seq=cue_seq)
+    for example in examples:
+        example.example_id = f"cue_switch_{example.example_id}"
+    return examples
+
+
 def _schema() -> dict[str, Any]:
     return {
         "name": "nl_report",
