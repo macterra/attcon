@@ -2,7 +2,7 @@
 
 `attcon` is a minimal PyTorch benchmark for testing whether a model is merely computing attention or actually controlling it over time.
 
-The current roadmap treats Stages 1 through 3 as the sequential foundation, then splits into two parallel lines of work: self-modeling of attention and flexible reallocation under changed priorities. After structured reportability, the next planned step is a natural-language reporting layer grounded in tokenized internal state rather than a hand-authored symbolic dump.
+The current roadmap treats Stages 1 through 3 as the sequential foundation, then splits into parallel lines of work around engineered self-state tracking, stronger learned self-modeling, and flexible reallocation under changed priorities. After structured reportability, the next planned step is a natural-language reporting layer grounded in tokenized internal state rather than a hand-authored symbolic dump.
 
 The current implementation trains and compares:
 
@@ -45,11 +45,13 @@ The evaluation report includes:
 - report probes that test whether controller state can support simple readouts of current regulatory content, including cumulative target-found status and unresolved regions
 - reduced-shaping retraining runs that test whether reallocation survives weaker or zero target-attention supervision
 - ablations over recurrence and feedback channels
-- an `evidence` summary for the three core claims:
-  `dissociation`, `closed_loop_adaptation`, `cue_dependence`, plus Stage 3-style
-  `explicit_attention_modeling`, `self_modeling_of_attention`, `reportable_internal_content`,
-  `causal_attention_intervention`, and
-  `reduced_shaping_resilience` results
+- an `evidence` summary for the core benchmark claims plus the later roadmap stages:
+  `dissociation`, `closed_loop_adaptation`, `cue_dependence`,
+  `explicit_attention_modeling`, `engineered_self_state_tracking`,
+  `learned_self_modeling_of_attention`, `structured_reportability`,
+  `structured_reportability_uncertainty_and_allocation_error`,
+  `natural_language_reportability`, `causal_attention_intervention`, and
+  `reduced_shaping_resilience`
 
 ## Current Result Shape
 
@@ -59,7 +61,7 @@ The current evaluation also adds several positive later-stage signals:
 
 - a predictive probe where controller state predicts the next attention map better than the current observation summary alone
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
-- a native self-modeling evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
+- an engineered self-state evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
 - report probes where controller state supports simple readouts of current search type, current attended cell, cumulative target-found status, and unresolved regions
 - reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping
 
@@ -67,9 +69,9 @@ It also includes a Stage 5-style cue-switch test. On the current default checkpo
 
 The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
 
-The current Stage 4 result is stronger than the earlier decoder-only report probes. The recurrent model now exposes an explicit inspected-cell memory and a native self-model report head, and the full evaluation report shows `self_modeling_of_attention.supported = true` on the default checkpoint.
+The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
 
-The current Stage 6 result is also now positive. The latest report shows `reportable_internal_content.supported = true`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting.
+The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, remains open.
 
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 

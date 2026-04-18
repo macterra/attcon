@@ -1548,6 +1548,9 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
     predictive_probe = report.get("predictive_probe", {})
+    intervention_test = report.get("intervention_test", {})
+    reduced_shaping = report.get("reduced_shaping", {})
+    reduced_shaping_summary = reduced_shaping.get("summary", {})
     explicit_attention_modeling = {
         "controller_advantage_cross_entropy": predictive_probe.get(
             "controller_advantage_cross_entropy", 0.0
@@ -1556,12 +1559,18 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "controller_advantage_top1_match": predictive_probe.get(
             "controller_advantage_top1_match", 0.0
         ),
-        "supported": predictive_probe.get("supported", False),
+        "intervention_supported": intervention_test.get("supported", False),
+        "reduced_shaping_supported": reduced_shaping_summary.get("supported", False),
+        "supported": (
+            predictive_probe.get("supported", False)
+            and intervention_test.get("supported", False)
+            and reduced_shaping_summary.get("supported", False)
+        ),
     }
 
     report_probes = report.get("report_probes", {})
     self_model = report.get("self_modeling", {})
-    reportable_internal_content = {
+    structured_reportability = {
         "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
             "controller_accuracy_advantage", 0.0
         ),
@@ -1576,13 +1585,13 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "supported": report_probes.get("supported", False),
     }
-    reportable_internal_content["supported"] = (
+    structured_reportability["supported"] = (
         report_probes.get("current_search_type", {}).get("controller_accuracy_advantage", 0.0) > 0.0
         and report_probes.get("current_attended_cell", {}).get("controller_accuracy_advantage", 0.0) > 0.0
         and self_model.get("native_cell_report", {}).get("cell_accuracy_advantage", 0.0) > 0.0
     )
 
-    self_modeling_of_attention = {
+    engineered_self_state_tracking = {
         "native_cell_accuracy": self_model.get("native_cell_report", {}).get("cell_accuracy", 0.0),
         "native_cell_bce": self_model.get("native_cell_report", {}).get("cell_bce", 0.0),
         "cell_accuracy_advantage": self_model.get("native_cell_report", {}).get(
@@ -1603,8 +1612,26 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": self_model.get("supported", False),
     }
 
-    reduced_shaping = report.get("reduced_shaping", {})
-    reduced_shaping_summary = reduced_shaping.get("summary", {})
+    learned_self_modeling_of_attention = {
+        "implemented": bool(self_model),
+        "positive_evidence": False,
+        "supported": False,
+        "note": (
+            "The current benchmark exposes an engineered inspected-state scaffold. "
+            "That supports engineered self-state tracking, but not a stronger learned self-model claim."
+        ),
+    }
+
+    structured_reportability_uncertainty_and_allocation_error = {
+        "implemented": False,
+        "positive_evidence": False,
+        "supported": False,
+        "note": (
+            "Uncertainty and allocation-error reporting are not yet separated from the current "
+            "target-found and unresolved-region variables."
+        ),
+    }
+
     shaping_resilience = {
         "lowest_weight": reduced_shaping_summary.get("lowest_weight", 0.0),
         "lowest_weight_accuracy": reduced_shaping_summary.get("lowest_weight_accuracy", 0.0),
@@ -1617,7 +1644,6 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": reduced_shaping_summary.get("supported", False),
     }
 
-    intervention_test = report.get("intervention_test", {})
     causal_intervention = {
         "step": intervention_test.get("step", -1),
         "attention_change_kl": intervention_test.get("attention_change_kl", 0.0),
@@ -1685,8 +1711,12 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "cue_dependence": cue_dependence,
         "cue_switch_adaptation": cue_switch_adaptation,
         "explicit_attention_modeling": explicit_attention_modeling,
-        "self_modeling_of_attention": self_modeling_of_attention,
-        "reportable_internal_content": reportable_internal_content,
+        "engineered_self_state_tracking": engineered_self_state_tracking,
+        "learned_self_modeling_of_attention": learned_self_modeling_of_attention,
+        "structured_reportability": structured_reportability,
+        "structured_reportability_uncertainty_and_allocation_error": (
+            structured_reportability_uncertainty_and_allocation_error
+        ),
         "natural_language_reportability": natural_language_reportability,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,

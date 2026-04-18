@@ -329,8 +329,13 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("observation_only_probe", report["self_modeling"]["native_cell_report"])
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
-            self.assertIn("self_modeling_of_attention", report["evidence"])
-            self.assertIn("reportable_internal_content", report["evidence"])
+            self.assertIn("engineered_self_state_tracking", report["evidence"])
+            self.assertIn("learned_self_modeling_of_attention", report["evidence"])
+            self.assertIn("structured_reportability", report["evidence"])
+            self.assertIn(
+                "structured_reportability_uncertainty_and_allocation_error",
+                report["evidence"],
+            )
             self.assertIn("natural_language_reportability", report["evidence"])
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
