@@ -219,12 +219,17 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("previous_attended_visible_type=", example.symbolic_state)
         self.assertIn("previous_attended_digit=", example.symbolic_state)
         self.assertIn("previous_glimpse_digit=", example.symbolic_state)
+        self.assertIn("relevant_region_inspected=", example.symbolic_state)
+        self.assertIn("unresolved_search=", example.symbolic_state)
+        self.assertIn("wrong_candidate_history=", example.symbolic_state)
+        self.assertIn("allocation_error=", example.symbolic_state)
         self.assertIn("unresolved_rows=", example.symbolic_state)
         self.assertIn("unresolved_cols=", example.symbolic_state)
         self.assertIn("unresolved_count=", example.symbolic_state)
         self.assertIn("cue=", example.observation_only)
         self.assertIn("current_attention_location=not_available", example.observation_only)
         self.assertIn("current_attention_content=not_available", example.observation_only)
+        self.assertIn("wrong_candidate_history=not_available", example.observation_only)
         self.assertTrue(example.tokenized_state.startswith("x"))
         self.assertIsInstance(example.unresolved_cells, list)
         self.assertIsInstance(example.unresolved_rows, list)
@@ -239,6 +244,10 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.prev_attended_digit, int)
         self.assertIsInstance(example.prev_glimpse_digit, int)
         self.assertIsInstance(example.glimpse_target_match, bool)
+        self.assertIsInstance(example.relevant_region_inspected, bool)
+        self.assertIsInstance(example.unresolved_search, bool)
+        self.assertIsInstance(example.wrong_candidate_history, bool)
+        self.assertIsInstance(example.allocation_error, bool)
 
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
         class FakeContent:

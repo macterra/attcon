@@ -51,6 +51,10 @@ class NLExample:
     prev_glimpse_digit: int
     glimpse_target_match: bool
     found_target: bool
+    relevant_region_inspected: bool
+    unresolved_search: bool
+    wrong_candidate_history: bool
+    allocation_error: bool
     unresolved_cells: list[int]
     unresolved_rows: list[int]
     unresolved_cols: list[int]
@@ -87,6 +91,10 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
         f"previous_glimpse_digit={example.prev_glimpse_digit}\n"
         f"glimpse_target_match={str(example.glimpse_target_match).lower()}\n"
         f"found_target={str(example.found_target).lower()}\n"
+        f"relevant_region_inspected={str(example.relevant_region_inspected).lower()}\n"
+        f"unresolved_search={str(example.unresolved_search).lower()}\n"
+        f"wrong_candidate_history={str(example.wrong_candidate_history).lower()}\n"
+        f"allocation_error={str(example.allocation_error).lower()}\n"
         f"unresolved_rows={unresolved_rows}\n"
         f"unresolved_cols={unresolved_cols}\n"
         f"unresolved_count={example.unresolved_count}\n"
@@ -216,6 +224,34 @@ def _render_tokenized_examples(
         torch.tensor([example.unresolved_count for example in calibration_examples]),
         num_classes=26,
     )
+    relevant_region_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.relevant_region_inspected)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
+    unresolved_search_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.unresolved_search)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
+    wrong_candidate_history_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.wrong_candidate_history)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
+    allocation_error_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.allocation_error)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
 
     with torch.no_grad():
         current_cell_pred = current_cell_head(target_features).argmax(dim=-1)
@@ -229,6 +265,12 @@ def _render_tokenized_examples(
         unresolved_row_pred = (torch.sigmoid(unresolved_row_head(target_features)) >= 0.5).long()
         unresolved_col_pred = (torch.sigmoid(unresolved_col_head(target_features)) >= 0.5).long()
         unresolved_count_pred = unresolved_count_head(target_features).argmax(dim=-1)
+        relevant_region_pred = (torch.sigmoid(relevant_region_head(target_features)) >= 0.5).long()
+        unresolved_search_pred = (torch.sigmoid(unresolved_search_head(target_features)) >= 0.5).long()
+        wrong_candidate_history_pred = (
+            torch.sigmoid(wrong_candidate_history_head(target_features)) >= 0.5
+        ).long()
+        allocation_error_pred = (torch.sigmoid(allocation_error_head(target_features)) >= 0.5).long()
 
     for idx, example in enumerate(target_examples):
         current_bits = _chunk_bits(example.controller_state)
@@ -255,6 +297,10 @@ def _render_tokenized_examples(
             *[f"x{1140 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_attention_bits)],
             "x920",
             f"x{1400 + int(unresolved_count_pred[idx].item())}",
+            f"x{1410 + int(relevant_region_pred[idx, 0].item())}",
+            f"x{1412 + int(unresolved_search_pred[idx, 0].item())}",
+            f"x{1414 + int(wrong_candidate_history_pred[idx, 0].item())}",
+            f"x{1416 + int(allocation_error_pred[idx, 0].item())}",
             *[f"x{1210 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(memory_bits)],
         ]
         for row in range(5):
@@ -286,6 +332,10 @@ def _render_observation_only(
         f"current_attention_location=not_available\n"
         f"current_attention_content=not_available\n"
         f"memory_about_previous_attention=not_available\n"
+        f"relevant_region_inspected=not_available\n"
+        f"unresolved_search=not_available\n"
+        f"wrong_candidate_history=not_available\n"
+        f"allocation_error=not_available\n"
         f"unresolved_information=not_available"
     )
 
@@ -300,6 +350,10 @@ def collect_nl_examples(
 
     attention = outputs["attention_seq"]
     found_state = outputs["found_state_seq"][..., 0]
+    relevant_region = outputs["relevant_region_seq"][..., 0]
+    unresolved_search = outputs["unresolved_search_seq"][..., 0]
+    wrong_candidate_history = outputs["wrong_candidate_history_seq"][..., 0]
+    allocation_error = outputs["allocation_error_seq"][..., 0]
     inspection = outputs["inspection_seq"]
     observation = outputs["observation_seq"]
     controller_states = outputs["controller_state_seq"]
@@ -336,6 +390,12 @@ def collect_nl_examples(
                 prev_glimpse_digit=prev_glimpse_digit,
                 glimpse_target_match=glimpse_target_match,
                 found_target=bool(found_state[batch_idx, step_idx].item() >= 0.5),
+                relevant_region_inspected=bool(relevant_region[batch_idx, step_idx].item() >= 0.5),
+                unresolved_search=bool(unresolved_search[batch_idx, step_idx].item() >= 0.5),
+                wrong_candidate_history=bool(
+                    wrong_candidate_history[batch_idx, step_idx].item() >= 0.5
+                ),
+                allocation_error=bool(allocation_error[batch_idx, step_idx].item() >= 0.5),
                 unresolved_cells=unresolved,
                 unresolved_rows=sorted({cell // task_cfg.grid_size for cell in unresolved}),
                 unresolved_cols=sorted({cell % task_cfg.grid_size for cell in unresolved}),
@@ -395,6 +455,10 @@ def _schema() -> dict[str, Any]:
                 "previous_glimpse_digit": {"type": "integer"},
                 "glimpse_target_match": {"type": "boolean"},
                 "found_target": {"type": "boolean"},
+                "relevant_region_inspected": {"type": "boolean"},
+                "unresolved_search": {"type": "boolean"},
+                "wrong_candidate_history": {"type": "boolean"},
+                "allocation_error": {"type": "boolean"},
                 "unresolved_rows": {
                     "type": "array",
                     "items": {"type": "integer"},
@@ -418,6 +482,10 @@ def _schema() -> dict[str, Any]:
                 "previous_glimpse_digit",
                 "glimpse_target_match",
                 "found_target",
+                "relevant_region_inspected",
+                "unresolved_search",
+                "wrong_candidate_history",
+                "allocation_error",
                 "unresolved_rows",
                 "unresolved_cols",
                 "unresolved_count",
@@ -512,7 +580,9 @@ def _make_messages(
                 f"glimpse digit {example.glimpse_digit}; previous attend {_cell_name(example.prev_attended_cell, grid_size)}; "
                 f"previous visible type {example.prev_attended_visible_type}; previous attended digit {example.prev_attended_digit}; "
                 f"previous glimpse digit {example.prev_glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
-                f"found {str(example.found_target).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
+                f"found {str(example.found_target).lower()}; relevant inspected {str(example.relevant_region_inspected).lower()}; "
+                f"unresolved search {str(example.unresolved_search).lower()}; wrong candidate history {str(example.wrong_candidate_history).lower()}; "
+                f"allocation error {str(example.allocation_error).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
             ),
             "search_type": example.cue,
             "attended_cell": list(divmod(example.attended_cell, grid_size)),
@@ -525,6 +595,10 @@ def _make_messages(
             "previous_glimpse_digit": example.prev_glimpse_digit,
             "glimpse_target_match": example.glimpse_target_match,
             "found_target": example.found_target,
+            "relevant_region_inspected": example.relevant_region_inspected,
+            "unresolved_search": example.unresolved_search,
+            "wrong_candidate_history": example.wrong_candidate_history,
+            "allocation_error": example.allocation_error,
             "unresolved_rows": example.unresolved_rows,
             "unresolved_cols": example.unresolved_cols,
             "unresolved_count": example.unresolved_count,
