@@ -370,6 +370,7 @@ Current status in this repo:
 - the harness compares symbolic internal-state serialization, tokenized internal-state reporting, and observation-only reporting
 - the current evaluation is stricter than a generic state-description task because it asks for current attended content and remembered previous attended content
 - evaluation is restricted to non-initial timesteps where previous-attention memory is genuinely required
+- the Stage 7 schema now also includes Stage 6B-style variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - the tokenized internal-state condition is still not successful enough to beat observation-only baselines on current attended location or remembered previous attended content
 
@@ -381,7 +382,7 @@ Current assessment:
 
 Interpretation:
 
-Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim.
+Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim. The reporting harness now covers the Stage 6B uncertainty/allocation-error variables too, so the next failures or successes should be easier to interpret against the broader roadmap.
 
 ## Stage 8: Conservative Interpretation as Minimal Consciousness-Like Content
 
@@ -446,7 +447,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
 - [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
 - [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
-- [ ] update the preprint and any remaining prose so it matches the revised roadmap status labels
+- [x] update the preprint and any remaining prose so it matches the revised roadmap status labels
 - [ ] add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
 - [ ] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines

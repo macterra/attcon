@@ -202,6 +202,7 @@ The current picture is now judged under a stricter, more skeptical setup:
 
 - evaluation examples are restricted to non-initial timesteps so remembered previous-attention content is genuinely required,
 - the report schema now asks for both current attended content and previous attended content,
+- the same schema now also carries Stage 6B-style variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error,
 - symbolic reporting is strong and can achieve exact structured reports on held-out slices,
 - tokenized-state reporting still does not beat observation-only on the full report bundle.
 
@@ -223,7 +224,7 @@ Against the same slice:
 - observation-only previous-attended-digit accuracy: `1.0`
 - observation-only previous-glimpse-digit accuracy: `1.0`
 
-So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content.
+So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content. The harness is nevertheless better aligned with the roadmap than before, because the language-report schema now covers the same Stage 6B uncertainty/allocation-error variables used in the structured evaluator, and the scorer reports those fields separately.
 
 ## 6. Interpretation
 
@@ -284,7 +285,7 @@ The next highest-value experiments are now concentrated in Stage 3 thresholding,
 
 1. set and test explicit Stage 3 claim thresholds across repeated seeds and checkpoints,
 2. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
-3. split Stage 6A-style structured reportability from Stage 6B-style uncertainty and allocation-error reportability in all writeups and artifacts,
+3. continue documenting the now-completed split between Stage 6A-style structured reportability and Stage 6B-style uncertainty/allocation-error reportability across writeups and artifacts,
 4. improve the tokenized internal-state interface so current and remembered attended semantic content are easier to recover than from observation-only input,
 5. separate current-attention content tokens from memory-of-previous-attention tokens more sharply,
 6. test natural-language reporting under cue switches and controller interventions,

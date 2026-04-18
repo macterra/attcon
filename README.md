@@ -73,6 +73,8 @@ The current Stage 4A-style result is stronger than the earlier decoder-only repo
 
 The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, now has bounded positive evidence via the new `wrong_candidate_history` signal, but it is still provisional rather than broadly settled.
 
+The Stage 7 natural-language harness now exposes the same Stage 6B variables in its schema and metrics: `relevant_region_inspected`, `unresolved_search`, `wrong_candidate_history`, and `allocation_error` are present in the symbolic baseline, the tokenized internal-state interface, and the observation-only control. That does not yet make Stage 7 supported, but it does mean later language-report claims can be checked against the same uncertainty/allocation-error distinctions already tracked in structured form.
+
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 
 The exact numbers depend on the saved checkpoint in `outputs/minimal`, but the intended workflow is:
