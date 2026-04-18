@@ -2012,6 +2012,50 @@ def save_stage3_multi_seed_plots(
     return [str(path)]
 
 
+def save_stage3_checkpoint_family_plots(
+    summary: dict[str, Any],
+    output_dir: Path,
+) -> list[str]:
+    """Render compact Stage 3 robustness plots across checkpoint families."""
+
+    families = summary.get("families", [])
+    if not families:
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    labels = [family.get("family", "unknown") for family in families]
+    predictive = [family.get("predictive_supported_fraction", 0.0) for family in families]
+    intervention = [family.get("intervention_supported_fraction", 0.0) for family in families]
+    x = np.arange(len(labels))
+    width = 0.35
+
+    fig, axes = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
+    axes[0].bar(x - width / 2, predictive, width=width, label="Predictive support fraction")
+    axes[0].bar(x + width / 2, intervention, width=width, label="Intervention support fraction")
+    axes[0].set_ylim(0.0, 1.05)
+    axes[0].set_ylabel("Support fraction")
+    axes[0].set_title("Stage 3 support fractions across checkpoint families")
+    axes[0].legend(loc="best", fontsize=8)
+
+    predictive_gap = [family.get("predictive_cross_entropy_advantage_min_gap", 0.0) for family in families]
+    intervention_gap = [
+        family.get("intervention_alternate_target_gain_min_gap", 0.0) for family in families
+    ]
+    axes[1].bar(x - width / 2, predictive_gap, width=width, label="Predictive min-gap")
+    axes[1].bar(x + width / 2, intervention_gap, width=width, label="Intervention gain min-gap")
+    axes[1].axhline(0.0, color="black", linewidth=1, linestyle="--")
+    axes[1].set_ylabel("Worst-case threshold gap")
+    axes[1].set_title("Stage 3 bottleneck margins across checkpoint families")
+    axes[1].set_xticks(x, labels)
+    axes[1].legend(loc="best", fontsize=8)
+
+    fig.tight_layout()
+    path = output_dir / "stage3_checkpoint_family_diagnostics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -2167,6 +2211,22 @@ def reduced_shaping_metrics(
                 variant_cfg["seed"] + 9200,
             )
         )
+        variant_report["stage3"] = evaluate_stage3_bundle(
+            model,
+            variant_cfg,
+            task_cfg,
+            device,
+            variant_cfg["seed"] + 9300,
+            reduced_shaping_summary={
+                "supported": (
+                    variant_report["accuracy"] >= thresholds.get("min_accuracy", 0.1)
+                    and variant_report["temporal_reallocation"]
+                    >= thresholds.get("min_temporal_reallocation", 0.0)
+                    and variant_report["target_attention_gain"]
+                    >= thresholds.get("min_target_attention_gain", 0.0)
+                )
+            },
+        )
         results[str(weight)] = variant_report
 
     baseline_weight_key = str(min(weights))
@@ -2271,6 +2331,59 @@ def stage3_multi_seed_metrics(
     intervention_drop = [item["original_target_attention_drop"] for item in intervention_runs]
     intervention_gain = [item["alternate_target_attention_gain"] for item in intervention_runs]
 
+    ce_threshold = predictive_thresholds.get("min_advantage_cross_entropy", 0.0)
+    mse_threshold = predictive_thresholds.get("min_advantage_mse", 0.0)
+    top1_threshold = predictive_thresholds.get("min_advantage_top1_match", 0.0)
+    kl_threshold = intervention_thresholds.get("min_attention_change_kl", 0.0)
+    drop_threshold = intervention_thresholds.get("min_original_target_attention_drop", 0.0)
+    gain_threshold = intervention_thresholds.get("min_alternate_target_attention_gain", 0.0)
+
+    for run in predictive_runs:
+        run["cross_entropy_gap"] = run["controller_advantage_cross_entropy"] - ce_threshold
+        run["mse_gap"] = run["controller_advantage_mse"] - mse_threshold
+        run["top1_gap"] = run["controller_advantage_top1_match"] - top1_threshold
+    for run in intervention_runs:
+        run["attention_change_kl_gap"] = run["attention_change_kl"] - kl_threshold
+        run["original_target_attention_drop_gap"] = (
+            run["original_target_attention_drop"] - drop_threshold
+        )
+        run["alternate_target_attention_gain_gap"] = (
+            run["alternate_target_attention_gain"] - gain_threshold
+        )
+
+    predictive_gap_items = [
+        ("predictive_cross_entropy_advantage_min_gap", min((run["cross_entropy_gap"] for run in predictive_runs), default=0.0)),
+        ("predictive_mse_advantage_min_gap", min((run["mse_gap"] for run in predictive_runs), default=0.0)),
+        ("predictive_top1_advantage_min_gap", min((run["top1_gap"] for run in predictive_runs), default=0.0)),
+        (
+            "intervention_attention_change_kl_min_gap",
+            min((run["attention_change_kl_gap"] for run in intervention_runs), default=0.0),
+        ),
+        (
+            "intervention_original_target_drop_min_gap",
+            min((run["original_target_attention_drop_gap"] for run in intervention_runs), default=0.0),
+        ),
+        (
+            "intervention_alternate_target_gain_min_gap",
+            min((run["alternate_target_attention_gain_gap"] for run in intervention_runs), default=0.0),
+        ),
+    ]
+    bottleneck_metric, bottleneck_gap = min(predictive_gap_items, key=lambda item: item[1])
+    worst_predictive_run = min(
+        predictive_runs,
+        key=lambda run: min(run["cross_entropy_gap"], run["mse_gap"], run["top1_gap"]),
+        default={"seed": seed},
+    )
+    worst_intervention_run = min(
+        intervention_runs,
+        key=lambda run: min(
+            run["attention_change_kl_gap"],
+            run["original_target_attention_drop_gap"],
+            run["alternate_target_attention_gain_gap"],
+        ),
+        default={"seed": seed + seed_stride // 2},
+    )
+
     failure_reasons = []
     if predictive_supported != num_seeds:
         failure_reasons.append("predictive_probe_instability")
@@ -2288,48 +2401,177 @@ def stage3_multi_seed_metrics(
         "intervention_supported_fraction": intervention_supported / max(num_seeds, 1),
         "all_predictive_supported": predictive_supported == num_seeds,
         "all_intervention_supported": intervention_supported == num_seeds,
+        "predictive_cross_entropy_supported_fraction": (
+            sum(int(run["cross_entropy_gap"] >= 0.0) for run in predictive_runs) / max(num_seeds, 1)
+        ),
+        "predictive_mse_supported_fraction": (
+            sum(int(run["mse_gap"] >= 0.0) for run in predictive_runs) / max(num_seeds, 1)
+        ),
+        "predictive_top1_supported_fraction": (
+            sum(int(run["top1_gap"] >= 0.0) for run in predictive_runs) / max(num_seeds, 1)
+        ),
         "predictive_cross_entropy_advantage_mean": _mean(predictive_ce),
         "predictive_cross_entropy_advantage_min": min(predictive_ce) if predictive_ce else 0.0,
         "predictive_cross_entropy_advantage_min_gap": (
             (min(predictive_ce) if predictive_ce else 0.0)
-            - predictive_thresholds.get("min_advantage_cross_entropy", 0.0)
+            - ce_threshold
         ),
         "predictive_mse_advantage_mean": _mean(predictive_mse),
         "predictive_mse_advantage_min": min(predictive_mse) if predictive_mse else 0.0,
         "predictive_mse_advantage_min_gap": (
             (min(predictive_mse) if predictive_mse else 0.0)
-            - predictive_thresholds.get("min_advantage_mse", 0.0)
+            - mse_threshold
         ),
         "predictive_top1_advantage_mean": _mean(predictive_top1),
         "predictive_top1_advantage_min": min(predictive_top1) if predictive_top1 else 0.0,
         "predictive_top1_advantage_min_gap": (
             (min(predictive_top1) if predictive_top1 else 0.0)
-            - predictive_thresholds.get("min_advantage_top1_match", 0.0)
+            - top1_threshold
+        ),
+        "intervention_attention_change_kl_supported_fraction": (
+            sum(int(run["attention_change_kl_gap"] >= 0.0) for run in intervention_runs)
+            / max(num_seeds, 1)
+        ),
+        "intervention_original_target_drop_supported_fraction": (
+            sum(int(run["original_target_attention_drop_gap"] >= 0.0) for run in intervention_runs)
+            / max(num_seeds, 1)
+        ),
+        "intervention_alternate_target_gain_supported_fraction": (
+            sum(int(run["alternate_target_attention_gain_gap"] >= 0.0) for run in intervention_runs)
+            / max(num_seeds, 1)
         ),
         "intervention_attention_change_kl_mean": _mean(intervention_kl),
         "intervention_attention_change_kl_min": min(intervention_kl) if intervention_kl else 0.0,
         "intervention_attention_change_kl_min_gap": (
             (min(intervention_kl) if intervention_kl else 0.0)
-            - intervention_thresholds.get("min_attention_change_kl", 0.0)
+            - kl_threshold
         ),
         "intervention_original_target_drop_mean": _mean(intervention_drop),
         "intervention_original_target_drop_min": min(intervention_drop) if intervention_drop else 0.0,
         "intervention_original_target_drop_min_gap": (
             (min(intervention_drop) if intervention_drop else 0.0)
-            - intervention_thresholds.get("min_original_target_attention_drop", 0.0)
+            - drop_threshold
         ),
         "intervention_alternate_target_gain_mean": _mean(intervention_gain),
         "intervention_alternate_target_gain_min": min(intervention_gain) if intervention_gain else 0.0,
         "intervention_alternate_target_gain_min_gap": (
             (min(intervention_gain) if intervention_gain else 0.0)
-            - intervention_thresholds.get("min_alternate_target_attention_gain", 0.0)
+            - gain_threshold
         ),
+        "worst_predictive_seed": worst_predictive_run["seed"],
+        "worst_intervention_seed": worst_intervention_run["seed"],
+        "bottleneck_metric": bottleneck_metric,
+        "bottleneck_gap": bottleneck_gap,
         "failure_reasons": failure_reasons,
         "supported": (
             predictive_supported == num_seeds
             and intervention_supported == num_seeds
             and reduced_shaping_supported
         ),
+    }
+
+
+def evaluate_stage3_bundle(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+    *,
+    reduced_shaping_summary: dict[str, Any],
+) -> dict[str, Any]:
+    """Evaluate the full Stage 3 bundle for a single checkpoint family."""
+
+    predictive_probe = predictive_probe_metrics(
+        model,
+        cfg,
+        task_cfg,
+        device,
+        seed,
+    )
+    intervention_test = intervention_test_metrics(
+        model,
+        cfg,
+        task_cfg,
+        device,
+        seed + 100,
+    )
+    multi_seed = stage3_multi_seed_metrics(
+        model,
+        cfg,
+        task_cfg,
+        device,
+        seed + 200,
+        reduced_shaping_summary=reduced_shaping_summary,
+    )
+    stage3_summary = build_stage3_summary(
+        {
+            "predictive_probe": predictive_probe,
+            "intervention_test": intervention_test,
+            "reduced_shaping": {"summary": reduced_shaping_summary},
+            "stage3_multi_seed": multi_seed,
+        }
+    )
+    return {
+        "predictive_probe": predictive_probe,
+        "intervention_test": intervention_test,
+        "stage3_multi_seed": multi_seed,
+        "stage3_summary": stage3_summary,
+    }
+
+
+def build_stage3_checkpoint_family_summary(report: dict[str, Any]) -> dict[str, Any]:
+    """Aggregate Stage 3 robustness across the default and reduced-shaping checkpoints."""
+
+    families = [
+        {
+            "family": "default",
+            **report.get("stage3_summary", {}),
+        }
+    ]
+    reduced_shaping = report.get("reduced_shaping", {})
+    for family_name, family_report in reduced_shaping.items():
+        if family_name == "summary" or not isinstance(family_report, dict):
+            continue
+        stage3 = family_report.get("stage3", {})
+        families.append(
+            {
+                "family": f"reduced_shaping_{family_name}",
+                **stage3.get("stage3_summary", {}),
+            }
+        )
+
+    robust_families = sum(int(family.get("robust_supported", False)) for family in families)
+    single_run_families = sum(int(family.get("single_run_supported", False)) for family in families)
+    failure_reasons = sorted(
+        {
+            reason
+            for family in families
+            for reason in family.get("failure_reasons", [])
+        }
+    )
+    verdict = "robust"
+    if robust_families != len(families):
+        verdict = "checkpoint_fragile"
+    if single_run_families == 0:
+        verdict = "no_single_run_support"
+    bottleneck_family = min(
+        families,
+        key=lambda family: family.get("bottleneck_gap", 0.0),
+        default={"family": "default", "bottleneck_metric": "", "bottleneck_gap": 0.0},
+    )
+
+    return {
+        "num_families": len(families),
+        "single_run_supported_families": single_run_families,
+        "robust_supported_families": robust_families,
+        "supported": robust_families == len(families),
+        "verdict": verdict,
+        "failure_reasons": failure_reasons,
+        "bottleneck_family": bottleneck_family.get("family", "default"),
+        "bottleneck_metric": bottleneck_family.get("bottleneck_metric", ""),
+        "bottleneck_gap": bottleneck_family.get("bottleneck_gap", 0.0),
+        "families": families,
     }
 
 
@@ -2394,6 +2636,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     reduced_shaping = report.get("reduced_shaping", {})
     reduced_shaping_summary = reduced_shaping.get("summary", {})
     stage3_multi_seed = report.get("stage3_multi_seed", {})
+    stage3_checkpoint_family = report.get("stage3_checkpoint_family", {})
     explicit_attention_modeling = {
         "controller_advantage_cross_entropy": predictive_probe.get(
             "controller_advantage_cross_entropy", 0.0
@@ -2448,11 +2691,30 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             "intervention_alternate_target_gain_min_gap", 0.0
         ),
         "stage3_failure_reasons": stage3_multi_seed.get("failure_reasons", []),
+        "stage3_bottleneck_metric": stage3_multi_seed.get("bottleneck_metric", ""),
+        "stage3_bottleneck_gap": stage3_multi_seed.get("bottleneck_gap", 0.0),
+        "stage3_worst_predictive_seed": stage3_multi_seed.get("worst_predictive_seed", 0),
+        "stage3_worst_intervention_seed": stage3_multi_seed.get("worst_intervention_seed", 0),
         "stage3_all_predictive_supported": stage3_multi_seed.get("all_predictive_supported", False),
         "stage3_all_intervention_supported": stage3_multi_seed.get(
             "all_intervention_supported", False
         ),
         "stage3_multi_seed_supported": stage3_multi_seed.get("supported", False),
+        "stage3_checkpoint_family_supported": stage3_checkpoint_family.get("supported", False),
+        "stage3_checkpoint_family_num_families": stage3_checkpoint_family.get("num_families", 0),
+        "stage3_checkpoint_family_robust_supported_families": stage3_checkpoint_family.get(
+            "robust_supported_families", 0
+        ),
+        "stage3_checkpoint_family_verdict": stage3_checkpoint_family.get("verdict", "missing"),
+        "stage3_checkpoint_family_bottleneck_family": stage3_checkpoint_family.get(
+            "bottleneck_family", ""
+        ),
+        "stage3_checkpoint_family_bottleneck_metric": stage3_checkpoint_family.get(
+            "bottleneck_metric", ""
+        ),
+        "stage3_checkpoint_family_bottleneck_gap": stage3_checkpoint_family.get(
+            "bottleneck_gap", 0.0
+        ),
         "single_run_supported": (
             predictive_probe.get("supported", False)
             and intervention_test.get("supported", False)
@@ -2464,6 +2726,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             and intervention_test.get("supported", False)
             and reduced_shaping_summary.get("supported", False)
             and stage3_multi_seed.get("supported", False)
+            and stage3_checkpoint_family.get("supported", False)
         ),
     }
 
@@ -2718,6 +2981,10 @@ def build_stage3_summary(report: dict[str, Any]) -> dict[str, Any]:
         "predictive_supported_fraction": multi_seed.get("predictive_supported_fraction", 0.0),
         "intervention_supported_fraction": multi_seed.get("intervention_supported_fraction", 0.0),
         "failure_reasons": multi_seed.get("failure_reasons", []),
+        "bottleneck_metric": multi_seed.get("bottleneck_metric", ""),
+        "bottleneck_gap": multi_seed.get("bottleneck_gap", 0.0),
+        "worst_predictive_seed": multi_seed.get("worst_predictive_seed", 0),
+        "worst_intervention_seed": multi_seed.get("worst_intervention_seed", 0),
         "predictive_cross_entropy_advantage_min_gap": multi_seed.get(
             "predictive_cross_entropy_advantage_min_gap", 0.0
         ),
@@ -3114,13 +3381,6 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
             cfg["seed"] + 9350,
         )
     )
-    report["predictive_probe"] = predictive_probe_metrics(
-        models["recurrent"],
-        cfg,
-        task_cfg,
-        device,
-        cfg["seed"] + 9700,
-    )
     report["report_probes"] = report_probe_metrics(
         models["recurrent"],
         cfg,
@@ -3183,27 +3443,23 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
                 switch_step=cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2),
             ),
         }
-    report["intervention_test"] = intervention_test_metrics(
-        models["recurrent"],
-        cfg,
-        task_cfg,
-        device,
-        cfg["seed"] + 9800,
-    )
     report["reduced_shaping"] = reduced_shaping_metrics(
         cfg,
         task_cfg,
         device,
         output_dir,
     )
-    report["stage3_multi_seed"] = stage3_multi_seed_metrics(
+    stage3_bundle = evaluate_stage3_bundle(
         models["recurrent"],
         cfg,
         task_cfg,
         device,
-        cfg["seed"] + 9850,
+        cfg["seed"] + 9700,
         reduced_shaping_summary=report["reduced_shaping"].get("summary", {}),
     )
+    report["predictive_probe"] = stage3_bundle["predictive_probe"]
+    report["intervention_test"] = stage3_bundle["intervention_test"]
+    report["stage3_multi_seed"] = stage3_bundle["stage3_multi_seed"]
 
     for name in eval_cfg["ablations"]:
         ablation = {name: True}
@@ -3296,7 +3552,6 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9685,
     )
-    report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
     report["artifacts"]["self_state_plots"] = self_state_plot_paths
@@ -3309,13 +3564,23 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         "metadata_path"
     ]
     report["stage3_summary"] = build_stage3_summary(report)
+    report["stage3_checkpoint_family"] = build_stage3_checkpoint_family_summary(report)
     stage3_summary_path = output_dir / "stage3_summary.json"
     with open(stage3_summary_path, "w", encoding="utf-8") as handle:
         json.dump(report["stage3_summary"], handle, indent=2)
     report["artifacts"]["stage3_summary"] = str(stage3_summary_path)
+    stage3_checkpoint_family_path = output_dir / "stage3_checkpoint_family_summary.json"
+    with open(stage3_checkpoint_family_path, "w", encoding="utf-8") as handle:
+        json.dump(report["stage3_checkpoint_family"], handle, indent=2)
+    report["artifacts"]["stage3_checkpoint_family_summary"] = str(stage3_checkpoint_family_path)
+    report["artifacts"]["stage3_checkpoint_family_plots"] = save_stage3_checkpoint_family_plots(
+        report["stage3_checkpoint_family"],
+        output_dir / "plots",
+    )
     report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
         stage7_visual_report_artifacts["metadata_path"]
     )
+    report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"

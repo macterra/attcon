@@ -18,6 +18,7 @@ import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
+    build_stage3_checkpoint_family_summary,
     build_stage3_summary,
     nl_report_metrics,
     run_ablations,
@@ -586,6 +587,52 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(summary["robust_supported"])
         self.assertEqual(len(summary["failure_reasons"]), 2)
         self.assertEqual(summary["predictive_supported_fraction"], 2.0 / 3.0)
+        self.assertIn("bottleneck_metric", summary)
+        self.assertIn("bottleneck_gap", summary)
+
+    def test_build_stage3_checkpoint_family_summary_tracks_family_support(self) -> None:
+        summary = build_stage3_checkpoint_family_summary(
+            {
+                "stage3_summary": {
+                    "single_run_supported": True,
+                    "robust_supported": False,
+                    "predictive_supported_fraction": 1.0,
+                    "intervention_supported_fraction": 2.0 / 3.0,
+                    "failure_reasons": ["intervention_instability"],
+                    "bottleneck_metric": "intervention_attention_change_kl_min_gap",
+                    "bottleneck_gap": -0.02,
+                    "predictive_cross_entropy_advantage_min_gap": 0.02,
+                    "intervention_alternate_target_gain_min_gap": -0.01,
+                },
+                "reduced_shaping": {
+                    "0.0": {
+                        "stage3": {
+                            "stage3_summary": {
+                                "single_run_supported": False,
+                                "robust_supported": False,
+                                "predictive_supported_fraction": 0.0,
+                                "intervention_supported_fraction": 0.0,
+                                "failure_reasons": ["predictive_probe_instability"],
+                                "bottleneck_metric": "predictive_top1_advantage_min_gap",
+                                "bottleneck_gap": -0.5,
+                                "predictive_cross_entropy_advantage_min_gap": -0.02,
+                                "intervention_alternate_target_gain_min_gap": -0.03,
+                            }
+                        }
+                    }
+                },
+            }
+        )
+        self.assertEqual(summary["num_families"], 2)
+        self.assertEqual(summary["single_run_supported_families"], 1)
+        self.assertEqual(summary["robust_supported_families"], 0)
+        self.assertFalse(summary["supported"])
+        self.assertEqual(summary["verdict"], "checkpoint_fragile")
+        self.assertIn("intervention_instability", summary["failure_reasons"])
+        self.assertEqual(summary["bottleneck_family"], "reduced_shaping_0.0")
+        self.assertEqual(summary["bottleneck_metric"], "predictive_top1_advantage_min_gap")
+        self.assertEqual(summary["families"][0]["family"], "default")
+        self.assertEqual(summary["families"][1]["family"], "reduced_shaping_0.0")
 
     def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
@@ -894,6 +941,10 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("predictive_top1_advantage_min_gap", metrics)
         self.assertIn("intervention_attention_change_kl_min_gap", metrics)
         self.assertIn("intervention_alternate_target_gain_min_gap", metrics)
+        self.assertIn("bottleneck_metric", metrics)
+        self.assertIn("bottleneck_gap", metrics)
+        self.assertIn("worst_predictive_seed", metrics)
+        self.assertIn("worst_intervention_seed", metrics)
         self.assertIn("failure_reasons", metrics)
         self.assertTrue(0.0 <= metrics["predictive_supported_fraction"] <= 1.0)
         self.assertTrue(0.0 <= metrics["intervention_supported_fraction"] <= 1.0)
@@ -1000,6 +1051,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("self_model_diagnostics", report)
             self.assertIn("stage7_visual_report_summary", report)
             self.assertIn("stage3_multi_seed", report)
+            self.assertIn("stage3_checkpoint_family", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
             self.assertIn("current_search_type", report["report_probes"])
@@ -1029,12 +1081,15 @@ class AttentionControlTests(unittest.TestCase):
             explicit_attention = report["evidence"]["explicit_attention_modeling"]
             self.assertIn("intervention_supported", explicit_attention)
             self.assertIn("reduced_shaping_supported", explicit_attention)
+            self.assertIn("stage3_checkpoint_family_supported", explicit_attention)
             self.assertEqual(
                 explicit_attention["supported"],
                 (
                     report["predictive_probe"]["supported"]
                     and report["intervention_test"]["supported"]
                     and report["reduced_shaping"]["summary"]["supported"]
+                    and report["stage3_multi_seed"]["supported"]
+                    and report["stage3_checkpoint_family"]["supported"]
                 ),
             )
             self.assertTrue(Path(report["artifacts"]["report"]).exists())
@@ -1050,6 +1105,9 @@ class AttentionControlTests(unittest.TestCase):
             self.assertTrue(report["artifacts"]["stage3_multi_seed_plots"])
             self.assertTrue(Path(report["artifacts"]["stage3_multi_seed_plots"][0]).exists())
             self.assertTrue(Path(report["artifacts"]["stage3_summary"]).exists())
+            self.assertTrue(Path(report["artifacts"]["stage3_checkpoint_family_summary"]).exists())
+            self.assertTrue(report["artifacts"]["stage3_checkpoint_family_plots"])
+            self.assertTrue(Path(report["artifacts"]["stage3_checkpoint_family_plots"][0]).exists())
             self.assertTrue(report["artifacts"]["stage7_visual_reports"])
             self.assertTrue(Path(report["artifacts"]["stage7_visual_reports"][0]).exists())
             self.assertTrue(Path(report["artifacts"]["stage7_visual_report_metadata"]).exists())
