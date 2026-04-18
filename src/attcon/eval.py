@@ -2118,6 +2118,36 @@ def export_stage3_robustness_tables(
     }
 
 
+def save_stage3_robustness_note(report: dict[str, Any], output_dir: Path) -> str:
+    """Write a compact human-readable Stage 3 robustness note."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    summary = report.get("stage3_summary", {})
+    checkpoint_family = report.get("stage3_checkpoint_family", {})
+    lines = [
+        "# Stage 3 Robustness Note",
+        "",
+        f"- Single-run support: `{summary.get('single_run_supported', False)}`",
+        f"- Robust support: `{summary.get('robust_supported', False)}`",
+        f"- Predictive supported fraction: `{summary.get('predictive_supported_fraction', 0.0):.3f}`",
+        f"- Intervention supported fraction: `{summary.get('intervention_supported_fraction', 0.0):.3f}`",
+        f"- Bottleneck metric: `{summary.get('bottleneck_metric', '')}`",
+        f"- Bottleneck gap: `{summary.get('bottleneck_gap', 0.0):.6f}`",
+        f"- Worst predictive seed: `{summary.get('worst_predictive_seed', 0)}`",
+        f"- Worst intervention seed: `{summary.get('worst_intervention_seed', 0)}`",
+        f"- Checkpoint-family verdict: `{checkpoint_family.get('verdict', 'missing')}`",
+        f"- Checkpoint-family bottleneck: `{checkpoint_family.get('bottleneck_family', '')}` / `{checkpoint_family.get('bottleneck_metric', '')}`",
+    ]
+    failure_reasons = summary.get("failure_reasons", [])
+    if failure_reasons:
+        lines.append(f"- Failure reasons: `{', '.join(failure_reasons)}`")
+
+    path = output_dir / "stage3_robustness_note.md"
+    with open(path, "w", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+    return str(path)
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -3640,6 +3670,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         output_dir / "plots",
     )
     report["artifacts"].update(export_stage3_robustness_tables(report, output_dir))
+    report["artifacts"]["stage3_robustness_note"] = save_stage3_robustness_note(report, output_dir)
     report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
         stage7_visual_report_artifacts["metadata_path"]
     )
