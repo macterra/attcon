@@ -2644,13 +2644,14 @@ def save_stage7_visual_report_plots(
     task_cfg: TaskConfig,
     device: torch.device,
     seed: int,
-) -> list[str]:
+) -> dict[str, Any]:
     """Render qualitative Stage 7 panels comparing scene-only, symbolic, and tokenized reports."""
 
     output_dir.mkdir(parents=True, exist_ok=True)
     generator = make_generator(seed, device)
     base_batch = generate_batch(1, task_cfg.num_steps, task_cfg, generator=generator, device=device)
     saved_paths: list[str] = []
+    metadata: list[dict[str, Any]] = []
 
     with torch.no_grad():
         base_outputs = model(
@@ -2667,7 +2668,28 @@ def save_stage7_visual_report_plots(
         base_examples[-1],
     )
 
-    def _save_triptych(filename: str, figure_title: str, example, batch) -> None:
+    def _example_metadata(slice_name: str, example, path: Path) -> dict[str, Any]:
+        return {
+            "slice": slice_name,
+            "path": str(path),
+            "step_index": int(example.step_index),
+            "cue": int(example.cue),
+            "previous_cue": int(example.previous_cue),
+            "cue_switched": bool(example.cue_switched),
+            "attended_cell": int(example.attended_cell),
+            "prev_attended_cell": int(example.prev_attended_cell),
+            "relevant_region_inspected": bool(example.relevant_region_inspected),
+            "unresolved_search": bool(example.unresolved_search),
+            "current_wrong_candidate": bool(example.current_wrong_candidate),
+            "wrong_candidate_history": bool(example.wrong_candidate_history),
+            "revisit_unresolved": bool(example.revisit_unresolved),
+            "allocation_error": bool(example.allocation_error),
+            "symbolic_state": example.symbolic_state,
+            "tokenized_state": example.tokenized_state,
+            "observation_only": example.observation_only,
+        }
+
+    def _save_triptych(filename: str, figure_title: str, example, batch, *, slice_name: str) -> None:
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
         _draw_stage7_scene_panel(
             axes[0],
@@ -2687,12 +2709,14 @@ def save_stage7_visual_report_plots(
         fig.savefig(path)
         plt.close(fig)
         saved_paths.append(str(path))
+        metadata.append(_example_metadata(slice_name, example, path))
 
     _save_triptych(
         "stage7_visual_default.png",
         f"Stage 7 Default Slice, Step {default_example.step_index + 1}",
         default_example,
         base_batch,
+        slice_name="default",
     )
 
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
@@ -2713,6 +2737,7 @@ def save_stage7_visual_report_plots(
             f"Stage 7 Cue Switch Slice, Step {cue_switch_example.step_index + 1}",
             cue_switch_example,
             base_batch,
+            slice_name="cue_switch",
         )
 
     intervention_cfg = cfg["evaluation"].get("intervention_test", {})
@@ -2774,8 +2799,17 @@ def save_stage7_visual_report_plots(
         fig.savefig(path)
         plt.close(fig)
         saved_paths.append(str(path))
+        metadata.append(_example_metadata("intervention_baseline", baseline_example, path))
+        metadata.append(_example_metadata("intervention_intervened", intervened_example, path))
 
-    return saved_paths
+    metadata_path = output_dir / "stage7_visual_report_metadata.json"
+    with open(metadata_path, "w", encoding="utf-8") as handle:
+        json.dump(metadata, handle, indent=2)
+
+    return {
+        "plot_paths": saved_paths,
+        "metadata_path": str(metadata_path),
+    }
 
 
 def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[str, Any]:
@@ -3013,7 +3047,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9675,
     )
-    stage7_visual_report_paths = save_stage7_visual_report_plots(
+    stage7_visual_report_artifacts = save_stage7_visual_report_plots(
         models["recurrent"],
         output_dir / "plots",
         cfg,
@@ -3028,7 +3062,10 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["self_model_plots"] = self_model_plot_paths
     report["artifacts"]["uncertainty_plots"] = uncertainty_plot_paths
     report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
-    report["artifacts"]["stage7_visual_reports"] = stage7_visual_report_paths
+    report["artifacts"]["stage7_visual_reports"] = stage7_visual_report_artifacts["plot_paths"]
+    report["artifacts"]["stage7_visual_report_metadata"] = stage7_visual_report_artifacts[
+        "metadata_path"
+    ]
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"
