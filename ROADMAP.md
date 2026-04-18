@@ -158,7 +158,7 @@ What remains missing:
 
 Interpretation:
 
-The current results are promising and materially stronger than Stage 2 alone, but Stage 3 should still be treated as **implemented with positive evidence**, not as fully settled. The repo now includes a repeated-seed Stage 3 summary so predictive and intervention support can be checked across multiple evaluation seeds, but that summary currently shows instability rather than a robust pass.
+The current results are promising and materially stronger than Stage 2 alone, but Stage 3 should still be treated as **implemented with positive evidence**, not as fully settled. The repo now includes a repeated-seed Stage 3 summary so predictive and intervention support can be checked across multiple evaluation seeds, and the top-level evidence summary now distinguishes a weaker single-run pass from the stricter robust pass. At present that repeated-seed summary still shows instability rather than a robust pass.
 
 ## Branch A, Stage 4A: Engineered Self-State Tracking
 
@@ -449,7 +449,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
 - [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
 - [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
-The evaluator now includes a repeated-seed Stage 3 summary helper, but the broader claim is still open until those repeated-seed results are strong enough to count as support.
+The evaluator now includes a repeated-seed Stage 3 summary helper plus dedicated Stage 3 diagnostics plots, but the broader claim is still open until those repeated-seed results are strong enough to count as support.
 - [x] update the preprint and any remaining prose so it matches the revised roadmap status labels
 - [x] add finer Stage 6B reports that distinguish active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
