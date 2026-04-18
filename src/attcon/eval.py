@@ -15,7 +15,15 @@ import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
 from .models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from .nl_report import OpenAI, collect_nl_examples, load_dotenv, run_nl_report_mode, _render_tokenized_examples
+from .nl_report import (
+    OpenAI,
+    collect_cue_switch_nl_examples,
+    collect_intervention_nl_examples,
+    collect_nl_examples,
+    load_dotenv,
+    run_nl_report_mode,
+    _render_tokenized_examples,
+)
 from .train import deep_update, evaluate_model, load_config, make_generator, set_seed, train_single_model
 
 
@@ -1185,6 +1193,194 @@ def nl_report_metrics(
     batch_size = nl_cfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"])
     generator = make_generator(seed, device)
     batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    calibration_count = int(nl_cfg.get("calibration_examples", 4))
+    evaluation_count = int(nl_cfg.get("evaluation_examples", 4))
+    translator_train_count = int(nl_cfg.get("translator_train_examples", 8))
+    model_name = nl_cfg.get("model", "gpt-5-mini")
+    max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
+    modes = ("tokenized_state", "symbolic_state", "observation_only")
+    required_examples = calibration_count + evaluation_count
+
+    def _score_examples(slice_name: str, examples: list[Any]) -> dict[str, Any]:
+        examples = [example for example in examples if example.step_index > 0]
+        if len(examples) < required_examples:
+            return {
+                "enabled": True,
+                "skipped": True,
+                "reason": (
+                    f"not enough examples for {slice_name}: need {required_examples}, have {len(examples)}"
+                ),
+            }
+
+        calibration_examples, evaluation_examples = _select_diverse_nl_examples(
+            examples,
+            grid_size=task_cfg.grid_size,
+            calibration_count=calibration_count,
+            evaluation_count=evaluation_count,
+        )
+        held_out_ids = {id(example) for example in calibration_examples + evaluation_examples}
+        translator_pool = [example for example in examples if id(example) not in held_out_ids]
+        translator_examples = _select_translator_examples(
+            translator_pool,
+            grid_size=task_cfg.grid_size,
+            target_count=translator_train_count,
+        )
+        if not translator_examples:
+            translator_examples = calibration_examples
+        _render_tokenized_examples(translator_examples, calibration_examples + evaluation_examples)
+        try:
+            results = {
+                mode: run_nl_report_mode(
+                    mode=mode,
+                    model_name=model_name,
+                    calibration_examples=calibration_examples,
+                    evaluation_examples=evaluation_examples,
+                    grid_size=task_cfg.grid_size,
+                    max_output_tokens=max_output_tokens,
+                    teaching_examples=translator_examples,
+                )
+                for mode in modes
+            }
+        except Exception as exc:  # pragma: no cover - network/runtime behavior
+            return {
+                "enabled": True,
+                "skipped": True,
+                "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
+                "model": model_name,
+            }
+
+        tokenized = results["tokenized_state"]
+        symbolic = results["symbolic_state"]
+        observation = results["observation_only"]
+        return {
+            "enabled": True,
+            "skipped": False,
+            "model": model_name,
+            "slice": slice_name,
+            "calibration_examples": calibration_count,
+            "evaluation_examples": evaluation_count,
+            "translator_train_examples": len(translator_examples),
+            "tokenized_state": tokenized,
+            "symbolic_state": symbolic,
+            "observation_only": observation,
+            "tokenized_joint_accuracy_advantage": (
+                tokenized["joint_accuracy"] - observation["joint_accuracy"]
+            ),
+            "tokenized_current_content_joint_accuracy_advantage": (
+                tokenized["current_content_joint_accuracy"]
+                - observation["current_content_joint_accuracy"]
+            ),
+            "tokenized_memory_content_joint_accuracy_advantage": (
+                tokenized["memory_content_joint_accuracy"]
+                - observation["memory_content_joint_accuracy"]
+            ),
+            "tokenized_content_only_joint_accuracy_advantage": (
+                tokenized["content_only_joint_accuracy"]
+                - observation["content_only_joint_accuracy"]
+            ),
+            "tokenized_visible_type_accuracy_advantage": (
+                tokenized["attended_visible_type_accuracy"]
+                - observation["attended_visible_type_accuracy"]
+            ),
+            "tokenized_attended_digit_accuracy_advantage": (
+                tokenized["attended_digit_accuracy"] - observation["attended_digit_accuracy"]
+            ),
+            "tokenized_glimpse_digit_accuracy_advantage": (
+                tokenized["glimpse_digit_accuracy"] - observation["glimpse_digit_accuracy"]
+            ),
+            "tokenized_previous_attended_cell_accuracy_advantage": (
+                tokenized["previous_attended_cell_accuracy"]
+                - observation["previous_attended_cell_accuracy"]
+            ),
+            "tokenized_previous_visible_type_accuracy_advantage": (
+                tokenized["previous_attended_visible_type_accuracy"]
+                - observation["previous_attended_visible_type_accuracy"]
+            ),
+            "tokenized_previous_attended_digit_accuracy_advantage": (
+                tokenized["previous_attended_digit_accuracy"]
+                - observation["previous_attended_digit_accuracy"]
+            ),
+            "tokenized_previous_glimpse_digit_accuracy_advantage": (
+                tokenized["previous_glimpse_digit_accuracy"]
+                - observation["previous_glimpse_digit_accuracy"]
+            ),
+            "tokenized_glimpse_match_accuracy_advantage": (
+                tokenized["glimpse_target_match_accuracy"]
+                - observation["glimpse_target_match_accuracy"]
+            ),
+            "tokenized_relevant_region_accuracy_advantage": (
+                tokenized["relevant_region_inspected_accuracy"]
+                - observation["relevant_region_inspected_accuracy"]
+            ),
+            "tokenized_unresolved_search_accuracy_advantage": (
+                tokenized["unresolved_search_accuracy"]
+                - observation["unresolved_search_accuracy"]
+            ),
+            "tokenized_wrong_candidate_history_accuracy_advantage": (
+                tokenized["wrong_candidate_history_accuracy"]
+                - observation["wrong_candidate_history_accuracy"]
+            ),
+            "tokenized_allocation_error_accuracy_advantage": (
+                tokenized["allocation_error_accuracy"]
+                - observation["allocation_error_accuracy"]
+            ),
+            "tokenized_uncertainty_content_joint_accuracy_advantage": (
+                tokenized["uncertainty_content_joint_accuracy"]
+                - observation["uncertainty_content_joint_accuracy"]
+            ),
+            "tokenized_unresolved_accuracy_advantage": (
+                (
+                    tokenized["unresolved_rows_accuracy"]
+                    + tokenized["unresolved_cols_accuracy"]
+                    + tokenized["unresolved_count_accuracy"]
+                )
+                / 3.0
+                - (
+                    observation["unresolved_rows_accuracy"]
+                    + observation["unresolved_cols_accuracy"]
+                    + observation["unresolved_count_accuracy"]
+                )
+                / 3.0
+            ),
+            "symbolic_joint_accuracy_advantage": (
+                symbolic["joint_accuracy"] - observation["joint_accuracy"]
+            ),
+            "content_supported": (
+                tokenized["content_only_joint_accuracy"] > observation["content_only_joint_accuracy"]
+                and tokenized["memory_content_joint_accuracy"] > observation["memory_content_joint_accuracy"]
+                and tokenized["current_content_joint_accuracy"]
+                >= observation["current_content_joint_accuracy"]
+            ),
+            "supported": (
+                tokenized["joint_accuracy"] > observation["joint_accuracy"]
+                and tokenized["previous_attended_cell_accuracy"]
+                > observation["previous_attended_cell_accuracy"]
+                and tokenized["previous_attended_visible_type_accuracy"]
+                > observation["previous_attended_visible_type_accuracy"]
+                and tokenized["previous_attended_digit_accuracy"]
+                > observation["previous_attended_digit_accuracy"]
+                and tokenized["previous_glimpse_digit_accuracy"]
+                > observation["previous_glimpse_digit_accuracy"]
+                and tokenized["attended_visible_type_accuracy"] >= observation["attended_visible_type_accuracy"]
+                and tokenized["attended_digit_accuracy"] >= observation["attended_digit_accuracy"]
+                and tokenized["glimpse_digit_accuracy"] >= observation["glimpse_digit_accuracy"]
+                and tokenized["uncertainty_content_joint_accuracy"]
+                >= observation["uncertainty_content_joint_accuracy"]
+                and (
+                    tokenized["unresolved_rows_accuracy"]
+                    + tokenized["unresolved_cols_accuracy"]
+                    + tokenized["unresolved_count_accuracy"]
+                )
+                / 3.0
+                >= (
+                    observation["unresolved_rows_accuracy"]
+                    + observation["unresolved_cols_accuracy"]
+                    + observation["unresolved_count_accuracy"]
+                )
+                / 3.0
+            ),
+        }
+
     with torch.no_grad():
         outputs = model(
             batch.scene,
@@ -1194,190 +1390,40 @@ def nl_report_metrics(
             num_steps=task_cfg.num_steps,
         )
 
-    examples = collect_nl_examples(model, task_cfg, batch, outputs)
-    examples = [example for example in examples if example.step_index > 0]
-    calibration_count = int(nl_cfg.get("calibration_examples", 4))
-    evaluation_count = int(nl_cfg.get("evaluation_examples", 4))
-    translator_train_count = int(nl_cfg.get("translator_train_examples", 8))
-    required_examples = calibration_count + evaluation_count
-    if len(examples) < required_examples:
-        return {
-            "enabled": True,
-            "skipped": True,
-            "reason": (
-                f"not enough examples for nl_report: need {required_examples}, have {len(examples)}"
-            ),
-        }
+    base_examples = collect_nl_examples(model, task_cfg, batch, outputs)
+    base_result = _score_examples("default", base_examples)
+    if base_result.get("skipped", False):
+        return base_result
 
-    calibration_examples, evaluation_examples = _select_diverse_nl_examples(
-        examples,
-        grid_size=task_cfg.grid_size,
-        calibration_count=calibration_count,
-        evaluation_count=evaluation_count,
-    )
-    held_out_ids = {id(example) for example in calibration_examples + evaluation_examples}
-    translator_pool = [example for example in examples if id(example) not in held_out_ids]
-    translator_examples = _select_translator_examples(
-        translator_pool,
-        grid_size=task_cfg.grid_size,
-        target_count=translator_train_count,
-    )
-    if not translator_examples:
-        translator_examples = calibration_examples
-    _render_tokenized_examples(translator_examples, calibration_examples + evaluation_examples)
-    model_name = nl_cfg.get("model", "gpt-5-mini")
-    max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
-    modes = ("tokenized_state", "symbolic_state", "observation_only")
-    try:
-        results = {
-            mode: run_nl_report_mode(
-                mode=mode,
-                model_name=model_name,
-                calibration_examples=calibration_examples,
-                evaluation_examples=evaluation_examples,
-                grid_size=task_cfg.grid_size,
-                max_output_tokens=max_output_tokens,
-                teaching_examples=translator_examples,
-            )
-            for mode in modes
-        }
-    except Exception as exc:  # pragma: no cover - network/runtime behavior
-        return {
-            "enabled": True,
-            "skipped": True,
-            "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
-            "model": model_name,
-        }
+    result = dict(base_result)
+    cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
+    if cue_switch_cfg.get("enabled", False):
+        cue_switch_examples = collect_cue_switch_nl_examples(
+            model,
+            task_cfg,
+            batch,
+            switch_step=int(cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2)),
+        )
+        result["cue_switch_slice"] = _score_examples("cue_switch", cue_switch_examples)
 
-    tokenized = results["tokenized_state"]
-    symbolic = results["symbolic_state"]
-    observation = results["observation_only"]
-    return {
-        "enabled": True,
-        "skipped": False,
-        "model": model_name,
-        "calibration_examples": calibration_count,
-        "evaluation_examples": evaluation_count,
-        "translator_train_examples": len(translator_examples),
-        "tokenized_state": tokenized,
-        "symbolic_state": symbolic,
-        "observation_only": observation,
-        "tokenized_joint_accuracy_advantage": (
-            tokenized["joint_accuracy"] - observation["joint_accuracy"]
-        ),
-        "tokenized_current_content_joint_accuracy_advantage": (
-            tokenized["current_content_joint_accuracy"]
-            - observation["current_content_joint_accuracy"]
-        ),
-        "tokenized_memory_content_joint_accuracy_advantage": (
-            tokenized["memory_content_joint_accuracy"]
-            - observation["memory_content_joint_accuracy"]
-        ),
-        "tokenized_content_only_joint_accuracy_advantage": (
-            tokenized["content_only_joint_accuracy"]
-            - observation["content_only_joint_accuracy"]
-        ),
-        "tokenized_visible_type_accuracy_advantage": (
-            tokenized["attended_visible_type_accuracy"]
-            - observation["attended_visible_type_accuracy"]
-        ),
-        "tokenized_attended_digit_accuracy_advantage": (
-            tokenized["attended_digit_accuracy"] - observation["attended_digit_accuracy"]
-        ),
-        "tokenized_glimpse_digit_accuracy_advantage": (
-            tokenized["glimpse_digit_accuracy"] - observation["glimpse_digit_accuracy"]
-        ),
-        "tokenized_previous_attended_cell_accuracy_advantage": (
-            tokenized["previous_attended_cell_accuracy"]
-            - observation["previous_attended_cell_accuracy"]
-        ),
-        "tokenized_previous_visible_type_accuracy_advantage": (
-            tokenized["previous_attended_visible_type_accuracy"]
-            - observation["previous_attended_visible_type_accuracy"]
-        ),
-        "tokenized_previous_attended_digit_accuracy_advantage": (
-            tokenized["previous_attended_digit_accuracy"]
-            - observation["previous_attended_digit_accuracy"]
-        ),
-        "tokenized_previous_glimpse_digit_accuracy_advantage": (
-            tokenized["previous_glimpse_digit_accuracy"]
-            - observation["previous_glimpse_digit_accuracy"]
-        ),
-        "tokenized_glimpse_match_accuracy_advantage": (
-            tokenized["glimpse_target_match_accuracy"]
-            - observation["glimpse_target_match_accuracy"]
-        ),
-        "tokenized_relevant_region_accuracy_advantage": (
-            tokenized["relevant_region_inspected_accuracy"]
-            - observation["relevant_region_inspected_accuracy"]
-        ),
-        "tokenized_unresolved_search_accuracy_advantage": (
-            tokenized["unresolved_search_accuracy"]
-            - observation["unresolved_search_accuracy"]
-        ),
-        "tokenized_wrong_candidate_history_accuracy_advantage": (
-            tokenized["wrong_candidate_history_accuracy"]
-            - observation["wrong_candidate_history_accuracy"]
-        ),
-        "tokenized_allocation_error_accuracy_advantage": (
-            tokenized["allocation_error_accuracy"]
-            - observation["allocation_error_accuracy"]
-        ),
-        "tokenized_uncertainty_content_joint_accuracy_advantage": (
-            tokenized["uncertainty_content_joint_accuracy"]
-            - observation["uncertainty_content_joint_accuracy"]
-        ),
-        "tokenized_unresolved_accuracy_advantage": (
-            (
-                tokenized["unresolved_rows_accuracy"]
-                + tokenized["unresolved_cols_accuracy"]
-                + tokenized["unresolved_count_accuracy"]
-            )
-            / 3.0
-            - (
-                observation["unresolved_rows_accuracy"]
-                + observation["unresolved_cols_accuracy"]
-                + observation["unresolved_count_accuracy"]
-            )
-            / 3.0
-        ),
-        "symbolic_joint_accuracy_advantage": (
-            symbolic["joint_accuracy"] - observation["joint_accuracy"]
-        ),
-        "content_supported": (
-            tokenized["content_only_joint_accuracy"] > observation["content_only_joint_accuracy"]
-            and tokenized["memory_content_joint_accuracy"] > observation["memory_content_joint_accuracy"]
-            and tokenized["current_content_joint_accuracy"] >= observation["current_content_joint_accuracy"]
-        ),
-        "supported": (
-            tokenized["joint_accuracy"] > observation["joint_accuracy"]
-            and tokenized["previous_attended_cell_accuracy"]
-            > observation["previous_attended_cell_accuracy"]
-            and tokenized["previous_attended_visible_type_accuracy"]
-            > observation["previous_attended_visible_type_accuracy"]
-            and tokenized["previous_attended_digit_accuracy"]
-            > observation["previous_attended_digit_accuracy"]
-            and tokenized["previous_glimpse_digit_accuracy"]
-            > observation["previous_glimpse_digit_accuracy"]
-            and tokenized["attended_visible_type_accuracy"] >= observation["attended_visible_type_accuracy"]
-            and tokenized["attended_digit_accuracy"] >= observation["attended_digit_accuracy"]
-            and tokenized["glimpse_digit_accuracy"] >= observation["glimpse_digit_accuracy"]
-            and tokenized["uncertainty_content_joint_accuracy"]
-            >= observation["uncertainty_content_joint_accuracy"]
-            and (
-                tokenized["unresolved_rows_accuracy"]
-                + tokenized["unresolved_cols_accuracy"]
-                + tokenized["unresolved_count_accuracy"]
-            )
-            / 3.0
-            >= (
-                observation["unresolved_rows_accuracy"]
-                + observation["unresolved_cols_accuracy"]
-                + observation["unresolved_count_accuracy"]
-            )
-            / 3.0
-        ),
-    }
+    intervention_cfg = cfg["evaluation"].get("intervention_test", {})
+    if intervention_cfg.get("enabled", False):
+        intervention_examples = collect_intervention_nl_examples(
+            model,
+            task_cfg,
+            batch,
+            intervention_step=int(intervention_cfg.get("step", 1)),
+        )
+        result["intervention_slice"] = _score_examples(
+            "intervention",
+            intervention_examples["intervened_examples"],
+        )
+        result["intervention_slice"]["delta_norm"] = intervention_examples["delta_norm"]
+        result["intervention_slice"]["attention_change_fraction"] = intervention_examples[
+            "attention_change_fraction"
+        ]
+
+    return result
 
 
 def intervention_test_metrics(
@@ -2316,6 +2362,8 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
     nl_report = report.get("nl_report", {})
+    cue_switch_nl = nl_report.get("cue_switch_slice", {})
+    intervention_nl = nl_report.get("intervention_slice", {})
     natural_language_reportability = {
         "skipped": nl_report.get("skipped", not bool(nl_report)),
         "model": nl_report.get("model", ""),
@@ -2374,6 +2422,23 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "tokenized_unresolved_accuracy_advantage": nl_report.get(
             "tokenized_unresolved_accuracy_advantage", 0.0
+        ),
+        "cue_switch_slice_supported": cue_switch_nl.get("supported", False),
+        "cue_switch_tokenized_joint_accuracy_advantage": cue_switch_nl.get(
+            "tokenized_joint_accuracy_advantage", 0.0
+        ),
+        "cue_switch_tokenized_memory_content_joint_accuracy_advantage": cue_switch_nl.get(
+            "tokenized_memory_content_joint_accuracy_advantage", 0.0
+        ),
+        "intervention_slice_supported": intervention_nl.get("supported", False),
+        "intervention_tokenized_joint_accuracy_advantage": intervention_nl.get(
+            "tokenized_joint_accuracy_advantage", 0.0
+        ),
+        "intervention_tokenized_memory_content_joint_accuracy_advantage": intervention_nl.get(
+            "tokenized_memory_content_joint_accuracy_advantage", 0.0
+        ),
+        "intervention_attention_change_fraction": intervention_nl.get(
+            "attention_change_fraction", 0.0
         ),
         "content_supported": nl_report.get("content_supported", False),
         "supported": nl_report.get("supported", False),
