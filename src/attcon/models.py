@@ -122,6 +122,8 @@ class StaticAttentionBaseline(BaseAttentionModel):
         cue: torch.Tensor,
         cue_seq: torch.Tensor | None = None,
         target: torch.Tensor | None = None,
+        target_pos: torch.Tensor | None = None,
+        target_pos_seq: torch.Tensor | None = None,
         num_steps: int | None = None,
         **_: Any,
     ) -> dict[str, torch.Tensor]:
@@ -177,6 +179,9 @@ class RecurrentAttentionController(BaseAttentionModel):
         self.policy_head = nn.Linear(model_config.hidden_size, self.num_cells)
         self.self_model_head = nn.Linear(model_config.hidden_size + self.num_cells, self.num_cells)
         self.target_found_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
+        self.relevant_region_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
+        self.unresolved_search_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
+        self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 1, 1)
 
     @property
     def summary_dim(self) -> int:
@@ -223,6 +228,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         cue: torch.Tensor,
         cue_seq: torch.Tensor | None = None,
         target: torch.Tensor | None = None,
+        target_pos: torch.Tensor | None = None,
+        target_pos_seq: torch.Tensor | None = None,
         num_steps: int | None = None,
         *,
         ablation: dict[str, bool] | None = None,
@@ -234,6 +241,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         if intervention is None:
             intervention = {}
         cue_seq = cue.unsqueeze(1).repeat(1, steps) if cue_seq is None else cue_seq
+        if target_pos_seq is None and target_pos is not None:
+            target_pos_seq = target_pos.unsqueeze(1).repeat(1, steps)
 
         if ablation.get("shuffle_cue"):
             perm = torch.randperm(cue_seq.shape[0], device=cue_seq.device)
@@ -258,7 +267,13 @@ class RecurrentAttentionController(BaseAttentionModel):
         inspection_seq = []
         self_model_logits_seq = []
         target_found_logits_seq = []
+        relevant_region_logits_seq = []
+        unresolved_search_logits_seq = []
+        allocation_error_logits_seq = []
         found_state_seq = []
+        relevant_region_seq = []
+        unresolved_search_seq = []
+        allocation_error_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -299,8 +314,27 @@ class RecurrentAttentionController(BaseAttentionModel):
             attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
             inspection_state_post = torch.maximum(inspection_state, attended_one_hot)
             found_state_post = torch.maximum(found_state, observed_glimpse[:, :1].detach())
+            report_features = torch.cat([hidden_state, inspection_state_post, found_state_post], dim=-1)
             target_found_logits = self.target_found_head(
-                torch.cat([hidden_state, inspection_state_post, found_state_post], dim=-1)
+                report_features
+            )
+            relevant_region_logits = self.relevant_region_head(report_features)
+            unresolved_search_logits = self.unresolved_search_head(report_features)
+
+            if target_pos_seq is not None:
+                step_target_pos = target_pos_seq[:, step_idx]
+                target_inspected = inspection_state_post.gather(1, step_target_pos.unsqueeze(-1))
+                unresolved_search = 1.0 - target_inspected
+                allocation_error = (
+                    (attended_cell != step_target_pos) & (target_inspected.squeeze(-1) < 0.5)
+                ).float().unsqueeze(-1)
+            else:
+                target_inspected = torch.zeros(scene.shape[0], 1, device=scene.device)
+                unresolved_search = torch.zeros(scene.shape[0], 1, device=scene.device)
+                allocation_error = torch.zeros(scene.shape[0], 1, device=scene.device)
+
+            allocation_error_logits = self.allocation_error_head(
+                torch.cat([hidden_state, inspection_state_post, attended_one_hot, found_state_post], dim=-1)
             )
 
             attention_seq.append(attention)
@@ -312,7 +346,13 @@ class RecurrentAttentionController(BaseAttentionModel):
             inspection_seq.append(inspection_state)
             self_model_logits_seq.append(self_model_logits)
             target_found_logits_seq.append(target_found_logits)
+            relevant_region_logits_seq.append(relevant_region_logits)
+            unresolved_search_logits_seq.append(unresolved_search_logits)
+            allocation_error_logits_seq.append(allocation_error_logits)
             found_state_seq.append(found_state_post)
+            relevant_region_seq.append(target_inspected)
+            unresolved_search_seq.append(unresolved_search)
+            allocation_error_seq.append(allocation_error)
 
             previous_attention = attention.detach()
             inspection_state = inspection_state_post
@@ -336,4 +376,10 @@ class RecurrentAttentionController(BaseAttentionModel):
             "found_state_seq": torch.stack(found_state_seq, dim=1),
             "target_found_logits_seq": torch.stack(target_found_logits_seq, dim=1),
             "target_found_seq": torch.sigmoid(torch.stack(target_found_logits_seq, dim=1)),
+            "relevant_region_logits_seq": torch.stack(relevant_region_logits_seq, dim=1),
+            "relevant_region_seq": torch.stack(relevant_region_seq, dim=1),
+            "unresolved_search_logits_seq": torch.stack(unresolved_search_logits_seq, dim=1),
+            "unresolved_search_seq": torch.stack(unresolved_search_seq, dim=1),
+            "allocation_error_logits_seq": torch.stack(allocation_error_logits_seq, dim=1),
+            "allocation_error_seq": torch.stack(allocation_error_seq, dim=1),
         }

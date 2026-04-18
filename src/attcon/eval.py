@@ -65,6 +65,7 @@ def _probe_outputs(
             probe_batch.scene,
             probe_batch.cue,
             target=probe_batch.target,
+            target_pos=probe_batch.target_pos,
             num_steps=task_cfg.num_steps,
         )
     return outputs, probe_batch
@@ -83,6 +84,7 @@ def _evaluate_probe_batch(
             probe_batch.scene,
             cue,
             target=probe_batch.target,
+            target_pos=probe_batch.target_pos,
             num_steps=task_cfg.num_steps,
         )
 
@@ -247,6 +249,54 @@ def _collect_report_probe_dataset(
     return report
 
 
+def _collect_uncertainty_probe_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, torch.Tensor]:
+    """Collect held-out labels and native predictions for Stage 6B-style report variables."""
+
+    state_features = []
+    observation_features = []
+    relevant_region_labels = []
+    unresolved_search_labels = []
+    allocation_error_labels = []
+    relevant_region_native = []
+    unresolved_search_native = []
+    allocation_error_native = []
+
+    for batch_idx in range(num_batches):
+        outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
+        state_features.append(outputs["controller_state_seq"].reshape(-1, outputs["controller_state_seq"].shape[-1]))
+        observation_features.append(outputs["observation_seq"].reshape(-1, outputs["observation_seq"].shape[-1]))
+        relevant_region_labels.append(outputs["relevant_region_seq"].reshape(-1))
+        unresolved_search_labels.append(outputs["unresolved_search_seq"].reshape(-1))
+        allocation_error_labels.append(outputs["allocation_error_seq"].reshape(-1))
+        relevant_region_native.append(outputs["relevant_region_seq"].reshape(-1))
+        unresolved_search_native.append(outputs["unresolved_search_seq"].reshape(-1))
+        allocation_error_native.append(outputs["allocation_error_seq"].reshape(-1))
+        if "relevant_region_logits_seq" in outputs:
+            relevant_region_native[-1] = torch.sigmoid(outputs["relevant_region_logits_seq"]).reshape(-1)
+        if "unresolved_search_logits_seq" in outputs:
+            unresolved_search_native[-1] = torch.sigmoid(outputs["unresolved_search_logits_seq"]).reshape(-1)
+        if "allocation_error_logits_seq" in outputs:
+            allocation_error_native[-1] = torch.sigmoid(outputs["allocation_error_logits_seq"]).reshape(-1)
+
+    return {
+        "state_features": torch.cat(state_features, dim=0),
+        "observation_features": torch.cat(observation_features, dim=0),
+        "relevant_region_labels": torch.cat(relevant_region_labels, dim=0),
+        "unresolved_search_labels": torch.cat(unresolved_search_labels, dim=0),
+        "allocation_error_labels": torch.cat(allocation_error_labels, dim=0),
+        "relevant_region_native": torch.cat(relevant_region_native, dim=0),
+        "unresolved_search_native": torch.cat(unresolved_search_native, dim=0),
+        "allocation_error_native": torch.cat(allocation_error_native, dim=0),
+    }
+
+
 def _collect_self_model_dataset(
     model,
     task_cfg: TaskConfig,
@@ -277,6 +327,7 @@ def _collect_self_model_dataset(
                 batch.scene,
                 batch.cue,
                 target=batch.target,
+                target_pos=batch.target_pos,
                 num_steps=task_cfg.num_steps,
             )
 
@@ -790,6 +841,103 @@ def self_model_metrics(
     }
 
 
+def uncertainty_report_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Evaluate Stage 6B-style native uncertainty and allocation-error reports."""
+
+    probe_cfg = cfg["evaluation"].get(
+        "uncertainty_report_probes",
+        {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
+    )
+    if not probe_cfg.get("enabled", False):
+        return {}
+
+    batch_size = cfg["training"]["batch_size"]
+    train = _collect_uncertainty_probe_dataset(
+        model, task_cfg, batch_size, probe_cfg["train_batches"], device, seed
+    )
+    test = _collect_uncertainty_probe_dataset(
+        model, task_cfg, batch_size, probe_cfg["test_batches"], device, seed + 1000
+    )
+    epochs = probe_cfg["epochs"]
+    learning_rate = probe_cfg["learning_rate"]
+
+    def _native_binary_report(native_scores: torch.Tensor, labels: torch.Tensor) -> dict[str, float]:
+        native_pred = (native_scores >= 0.5).float()
+        labels = labels.float()
+        positive = labels == 1.0
+        return {
+            "test_bce": torch.nn.functional.binary_cross_entropy(
+                native_scores.clamp(1e-6, 1 - 1e-6),
+                labels,
+            ).item(),
+            "test_accuracy": (native_pred == labels).float().mean().item(),
+            "test_positive_recall": (
+                ((native_pred == 1.0) & positive).float().sum()
+                / positive.float().sum().clamp_min(1.0)
+            ).item(),
+        }
+
+    def _compare_binary(name: str, native_key: str, label_key: str) -> dict[str, Any]:
+        observation_probe = _train_binary_probe(
+            train["observation_features"],
+            train[label_key],
+            test["observation_features"],
+            test[label_key],
+            epochs=epochs,
+            learning_rate=learning_rate,
+        )
+        native_report = _native_binary_report(test[native_key], test[label_key])
+        return {
+            "native_report": native_report,
+            "observation_only_probe": observation_probe,
+            "native_accuracy_advantage": (
+                native_report["test_accuracy"] - observation_probe["test_accuracy"]
+            ),
+            "native_positive_recall_advantage": (
+                native_report["test_positive_recall"] - observation_probe["test_positive_recall"]
+            ),
+            "name": name,
+        }
+
+    relevant_region = _compare_binary(
+        "relevant_region_inspected",
+        "relevant_region_native",
+        "relevant_region_labels",
+    )
+    unresolved_search = _compare_binary(
+        "unresolved_search",
+        "unresolved_search_native",
+        "unresolved_search_labels",
+    )
+    allocation_error = _compare_binary(
+        "allocation_error",
+        "allocation_error_native",
+        "allocation_error_labels",
+    )
+    return {
+        "relevant_region_inspected": relevant_region,
+        "unresolved_search": unresolved_search,
+        "allocation_error": allocation_error,
+        "supported": (
+            relevant_region["native_accuracy_advantage"] > 0.0
+            and unresolved_search["native_accuracy_advantage"] > 0.0
+            and allocation_error["native_positive_recall_advantage"] > 0.0
+        ),
+    }
+
+
 def _select_diverse_nl_examples(
     examples,
     *,
@@ -1019,6 +1167,7 @@ def nl_report_metrics(
             batch.scene,
             batch.cue,
             target=batch.target,
+            target_pos=batch.target_pos,
             num_steps=task_cfg.num_steps,
         )
 
@@ -1221,6 +1370,7 @@ def intervention_test_metrics(
         probe_batch.scene,
         probe_batch.cue,
         target=probe_batch.target,
+        target_pos=probe_batch.target_pos,
         num_steps=task_cfg.num_steps,
         intervention={"step": step, "delta": intervention_delta},
     )
@@ -1311,6 +1461,8 @@ def cue_switch_metrics(
             cue_before,
             cue_seq=cue_seq,
             target=switched_target,
+            target_pos=switched_target_pos,
+            target_pos_seq=switched_target_pos.unsqueeze(1).repeat(1, task_cfg.num_steps),
             num_steps=task_cfg.num_steps,
         )
 
@@ -1365,6 +1517,7 @@ def save_intervention_plots(
         probe_batch.scene,
         probe_batch.cue,
         target=probe_batch.target,
+        target_pos=probe_batch.target_pos,
         num_steps=task_cfg.num_steps,
         intervention={"step": step, "delta": intervention_delta},
     )
@@ -1604,6 +1757,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
 
     report_probes = report.get("report_probes", {})
     self_model = report.get("self_modeling", {})
+    uncertainty_reports = report.get("uncertainty_report_probes", {})
     structured_reportability = {
         "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
             "controller_accuracy_advantage", 0.0
@@ -1657,13 +1811,27 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
     structured_reportability_uncertainty_and_allocation_error = {
-        "implemented": False,
-        "positive_evidence": False,
-        "supported": False,
-        "note": (
-            "Uncertainty and allocation-error reporting are not yet separated from the current "
-            "target-found and unresolved-region variables."
+        "implemented": bool(uncertainty_reports),
+        "positive_evidence": (
+            uncertainty_reports.get("relevant_region_inspected", {}).get("native_accuracy_advantage", 0.0)
+            > 0.0
+            or uncertainty_reports.get("unresolved_search", {}).get("native_accuracy_advantage", 0.0)
+            > 0.0
+            or uncertainty_reports.get("allocation_error", {}).get(
+                "native_positive_recall_advantage", 0.0
+            )
+            > 0.0
         ),
+        "supported": uncertainty_reports.get("supported", False),
+        "relevant_region_accuracy_advantage": uncertainty_reports.get(
+            "relevant_region_inspected", {}
+        ).get("native_accuracy_advantage", 0.0),
+        "unresolved_search_accuracy_advantage": uncertainty_reports.get(
+            "unresolved_search", {}
+        ).get("native_accuracy_advantage", 0.0),
+        "allocation_error_positive_recall_advantage": uncertainty_reports.get(
+            "allocation_error", {}
+        ).get("native_positive_recall_advantage", 0.0),
     }
 
     shaping_resilience = {
@@ -1776,6 +1944,7 @@ def save_probe_plots(
             probe_batch.scene,
             probe_batch.cue,
             target=probe_batch.target,
+            target_pos=probe_batch.target_pos,
             num_steps=task_cfg.num_steps,
         )
 
@@ -1899,6 +2068,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9735,
     )
+    report["uncertainty_report_probes"] = uncertainty_report_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9738,
+    )
     report["nl_report"] = nl_report_metrics(
         models["recurrent"],
         cfg,
@@ -1953,10 +2129,11 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         )
         report["ablations"][name].update(
             trajectory_metrics(
-                lambda scene, cue, target=None, num_steps=None: models["recurrent"](
+                lambda scene, cue, target=None, target_pos=None, num_steps=None: models["recurrent"](
                     scene,
                     cue,
                     target=target,
+                    target_pos=target_pos,
                     num_steps=num_steps,
                     ablation=ablation,
                 ),
@@ -1968,10 +2145,11 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         )
         report["ablations"][name].update(
             cue_sensitivity_metrics(
-                lambda scene, cue, target=None, num_steps=None: models["recurrent"](
+                lambda scene, cue, target=None, target_pos=None, num_steps=None: models["recurrent"](
                     scene,
                     cue,
                     target=target,
+                    target_pos=target_pos,
                     num_steps=num_steps,
                     ablation=ablation,
                 ),

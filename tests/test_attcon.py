@@ -71,6 +71,18 @@ class AttentionControlTests(unittest.TestCase):
             recurrent_outputs["target_found_seq"].shape,
             (4, self.task_cfg.num_steps, 1),
         )
+        self.assertEqual(
+            recurrent_outputs["relevant_region_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
+        self.assertEqual(
+            recurrent_outputs["unresolved_search_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
+        self.assertEqual(
+            recurrent_outputs["allocation_error_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
 
     def test_attention_is_normalized(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
@@ -310,6 +322,13 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "uncertainty_report_probes": {
+                        "enabled": True,
+                        "train_batches": 2,
+                        "test_batches": 1,
+                        "epochs": 10,
+                        "learning_rate": 0.05,
+                    },
                     "nl_report": {
                         "enabled": False,
                     },
@@ -333,6 +352,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("predictive_probe", report)
             self.assertIn("report_probes", report)
             self.assertIn("self_modeling", report)
+            self.assertIn("uncertainty_report_probes", report)
             self.assertIn("nl_report", report)
             self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
@@ -342,6 +362,11 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("current_search_type", report["report_probes"])
             self.assertIn("target_inspected_report", report["self_modeling"])
             self.assertIn("observation_only_probe", report["self_modeling"]["native_cell_report"])
+            self.assertIn(
+                "relevant_region_inspected",
+                report["uncertainty_report_probes"],
+            )
+            self.assertIn("allocation_error", report["uncertainty_report_probes"])
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
             self.assertIn("engineered_self_state_tracking", report["evidence"])

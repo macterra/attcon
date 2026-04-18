@@ -39,6 +39,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "attention_entropy_weight": 0.0,
         "self_model_weight": 0.1,
         "target_found_report_weight": 0.05,
+        "relevant_region_report_weight": 0.05,
+        "unresolved_search_report_weight": 0.05,
+        "allocation_error_report_weight": 0.05,
         "cue_switch_probability": 0.0,
         "cue_switch_step": 3,
     },
@@ -79,6 +82,13 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "learning_rate": 0.05,
         },
         "self_modeling": {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+        },
+        "uncertainty_report_probes": {
             "enabled": True,
             "train_batches": 12,
             "test_batches": 6,
@@ -268,6 +278,7 @@ def evaluate_model(
                 batch.scene,
                 batch.cue,
                 target=batch.target,
+                target_pos=batch.target_pos,
                 num_steps=task_cfg.num_steps,
                 ablation=ablation,
             )
@@ -328,6 +339,8 @@ def train_single_model(
             batch.cue,
             cue_seq=episode["cue_seq"],
             target=episode["final_target"],
+            target_pos=episode["final_target_pos"],
+            target_pos_seq=episode["step_target_pos"],
             num_steps=task_cfg.num_steps,
         )
         final_loss = F.cross_entropy(outputs["logits"], episode["final_target"])
@@ -352,6 +365,24 @@ def train_single_model(
                 outputs["target_found_logits_seq"],
                 target_found_labels,
             )
+        relevant_region_report_loss = torch.tensor(0.0, device=device)
+        if "relevant_region_logits_seq" in outputs and "relevant_region_seq" in outputs:
+            relevant_region_report_loss = F.binary_cross_entropy_with_logits(
+                outputs["relevant_region_logits_seq"],
+                outputs["relevant_region_seq"].detach(),
+            )
+        unresolved_search_report_loss = torch.tensor(0.0, device=device)
+        if "unresolved_search_logits_seq" in outputs and "unresolved_search_seq" in outputs:
+            unresolved_search_report_loss = F.binary_cross_entropy_with_logits(
+                outputs["unresolved_search_logits_seq"],
+                outputs["unresolved_search_seq"].detach(),
+            )
+        allocation_error_report_loss = torch.tensor(0.0, device=device)
+        if "allocation_error_logits_seq" in outputs and "allocation_error_seq" in outputs:
+            allocation_error_report_loss = F.binary_cross_entropy_with_logits(
+                outputs["allocation_error_logits_seq"],
+                outputs["allocation_error_seq"].detach(),
+            )
         # The main task loss is paired with a small final-fixation objective so the
         # controller gets a direct signal about where useful evidence should end up.
         loss = (
@@ -361,6 +392,9 @@ def train_single_model(
             + train_cfg["attention_entropy_weight"] * attention_entropy
             + train_cfg.get("self_model_weight", 0.0) * self_model_loss
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
+            + train_cfg.get("relevant_region_report_weight", 0.0) * relevant_region_report_loss
+            + train_cfg.get("unresolved_search_report_weight", 0.0) * unresolved_search_report_loss
+            + train_cfg.get("allocation_error_report_weight", 0.0) * allocation_error_report_loss
         )
 
         optimizer.zero_grad()
