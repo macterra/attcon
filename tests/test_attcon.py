@@ -556,6 +556,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
+            self.assertIn("self_state_diagnostics", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
             self.assertIn("current_search_type", report["report_probes"])
@@ -593,6 +594,8 @@ class AttentionControlTests(unittest.TestCase):
             )
             self.assertTrue(Path(report["artifacts"]["report"]).exists())
             self.assertTrue(report["artifacts"]["plots"])
+            self.assertTrue(report["artifacts"]["self_state_plots"])
+            self.assertTrue(Path(report["artifacts"]["self_state_plots"][0]).exists())
 
 
 if __name__ == "__main__":
