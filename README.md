@@ -69,7 +69,7 @@ It also includes a Stage 5-style cue-switch test. On the current default checkpo
 
 The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
 
-The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over the predictive-probe and intervention checks together with the reduced-shaping result. That summary is intentionally conservative: it makes it easier to see when Stage 3 evidence is unstable across probe seeds instead of looking strong only on one slice.
+The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over the predictive-probe and intervention checks together with the reduced-shaping result. That summary is intentionally conservative: it makes it easier to see when Stage 3 evidence is unstable across probe seeds instead of looking strong only on one slice. The same stability numbers are also surfaced in the `evidence.explicit_attention_modeling` block so the headline claim summary does not hide repeated-seed fragility.
 
 The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
 
@@ -77,7 +77,7 @@ The current Stage 6A-style result is also now positive. The latest report tracks
 
 The Stage 7 natural-language harness now exposes the same Stage 6B variables in its schema and metrics: `relevant_region_inspected`, `unresolved_search`, `wrong_candidate_history`, and `allocation_error` are present in the symbolic baseline, the tokenized internal-state interface, and the observation-only control. That does not yet make Stage 7 supported, but it does mean later language-report claims can be checked against the same uncertainty/allocation-error distinctions already tracked in structured form.
 
-The eval artifacts now also include intervention comparison plots, switched-cue comparison plots, and self-state trajectory plots, so the recurrent controller's internal and behavioral dynamics can be inspected without reading raw JSON arrays.
+The eval artifacts now also include intervention comparison plots, switched-cue comparison plots, self-state trajectory plots, self-model trajectory plots, and Stage 6B uncertainty-report comparison plots, so the recurrent controller's internal and behavioral dynamics can be inspected without reading raw JSON arrays.
 
 The exact numbers depend on the saved checkpoint in `outputs/minimal`, but the intended workflow is:
 

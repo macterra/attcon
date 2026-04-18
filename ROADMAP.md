@@ -454,8 +454,8 @@ The evaluator now includes a repeated-seed Stage 3 summary helper, but the broad
 - [ ] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
 - [ ] evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
-- [ ] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
-The repo now emits switched-cue comparison plots and self-state diagnostics plots; self-model-specific trajectory views remain to be added.
+- [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
+The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, and Stage 6B uncertainty diagnostics plots.
 
 ## Current Status Snapshot
 
