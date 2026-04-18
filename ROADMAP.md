@@ -152,13 +152,13 @@ This stage should count as supported only when all three conditions hold:
 
 What remains missing:
 
-- explicit numerical thresholds for predictive, intervention, and reduced-shaping evidence
+- repeated success across more than one evaluation seed and, eventually, more than one checkpoint family
 - stronger evidence that the signal reflects structured attentional dynamics rather than generic recurrent state
 - a clearer statement of what would falsify the stage
 
 Interpretation:
 
-The current results are promising and materially stronger than Stage 2 alone, but Stage 3 should be treated as **implemented with positive evidence**, not as fully settled, until the claim thresholds are fixed and passed.
+The current results are promising and materially stronger than Stage 2 alone, but Stage 3 should still be treated as **implemented with positive evidence**, not as fully settled. The repo now includes a repeated-seed Stage 3 summary so predictive and intervention support can be checked across multiple evaluation seeds, but that summary currently shows instability rather than a robust pass.
 
 ## Branch A, Stage 4A: Engineered Self-State Tracking
 
@@ -447,6 +447,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
 - [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
 - [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
+The evaluator now includes a repeated-seed Stage 3 summary helper, but the broader claim is still open until those repeated-seed results are strong enough to count as support.
 - [x] update the preprint and any remaining prose so it matches the revised roadmap status labels
 - [ ] add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
@@ -454,6 +455,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [ ] evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
 - [ ] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
+The repo now emits switched-cue comparison plots and self-state diagnostics plots; self-model-specific trajectory views remain to be added.
 
 ## Current Status Snapshot
 
