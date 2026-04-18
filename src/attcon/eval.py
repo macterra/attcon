@@ -2056,6 +2056,68 @@ def save_stage3_checkpoint_family_plots(
     return [str(path)]
 
 
+def export_stage3_robustness_tables(
+    report: dict[str, Any],
+    output_dir: Path,
+) -> dict[str, str]:
+    """Export compact machine-readable Stage 3 robustness tables."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    multi_seed = report.get("stage3_multi_seed", {})
+    checkpoint_family = report.get("stage3_checkpoint_family", {})
+
+    seed_rows: list[dict[str, Any]] = []
+    for run in multi_seed.get("predictive_probe_runs", []):
+        seed_rows.append(
+            {
+                "table": "predictive_probe_runs",
+                "seed": run.get("seed", 0),
+                "supported": run.get("supported", False),
+                "controller_advantage_cross_entropy": run.get(
+                    "controller_advantage_cross_entropy", 0.0
+                ),
+                "controller_advantage_mse": run.get("controller_advantage_mse", 0.0),
+                "controller_advantage_top1_match": run.get("controller_advantage_top1_match", 0.0),
+                "cross_entropy_gap": run.get("cross_entropy_gap", 0.0),
+                "mse_gap": run.get("mse_gap", 0.0),
+                "top1_gap": run.get("top1_gap", 0.0),
+            }
+        )
+    for run in multi_seed.get("intervention_runs", []):
+        seed_rows.append(
+            {
+                "table": "intervention_runs",
+                "seed": run.get("seed", 0),
+                "supported": run.get("supported", False),
+                "attention_change_kl": run.get("attention_change_kl", 0.0),
+                "original_target_attention_drop": run.get("original_target_attention_drop", 0.0),
+                "alternate_target_attention_gain": run.get("alternate_target_attention_gain", 0.0),
+                "attention_change_kl_gap": run.get("attention_change_kl_gap", 0.0),
+                "original_target_attention_drop_gap": run.get(
+                    "original_target_attention_drop_gap", 0.0
+                ),
+                "alternate_target_attention_gain_gap": run.get(
+                    "alternate_target_attention_gain_gap", 0.0
+                ),
+            }
+        )
+
+    family_rows = checkpoint_family.get("families", [])
+
+    seed_path = output_dir / "stage3_seed_table.json"
+    with open(seed_path, "w", encoding="utf-8") as handle:
+        json.dump(seed_rows, handle, indent=2)
+
+    family_path = output_dir / "stage3_checkpoint_family_table.json"
+    with open(family_path, "w", encoding="utf-8") as handle:
+        json.dump(family_rows, handle, indent=2)
+
+    return {
+        "stage3_seed_table": str(seed_path),
+        "stage3_checkpoint_family_table": str(family_path),
+    }
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -3577,6 +3639,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         report["stage3_checkpoint_family"],
         output_dir / "plots",
     )
+    report["artifacts"].update(export_stage3_robustness_tables(report, output_dir))
     report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
         stage7_visual_report_artifacts["metadata_path"]
     )
