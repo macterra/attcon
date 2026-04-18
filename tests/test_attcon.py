@@ -17,6 +17,7 @@ from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
     run_ablations,
+    self_model_diagnostics,
     self_state_diagnostics,
     stage3_multi_seed_metrics,
 )
@@ -460,6 +461,36 @@ class AttentionControlTests(unittest.TestCase):
             "unresolved_search_rate_by_step",
             "wrong_candidate_history_rate_by_step",
             "allocation_error_rate_by_step",
+        )
+        for key in bounded_series:
+            self.assertTrue(all(0.0 <= value <= 1.0 for value in diagnostics[key]), key)
+
+    def test_self_model_diagnostics_exposes_stepwise_series(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        diagnostics = self_model_diagnostics(
+            model,
+            self.task_cfg,
+            batch_size=2,
+            device=torch.device("cpu"),
+            seed=13,
+        )
+        expected_keys = {
+            "target_self_model_mass_by_step",
+            "target_inspection_state_by_step",
+            "target_attention_by_step",
+            "self_model_cell_error_by_step",
+            "target_self_model_alignment_by_step",
+        }
+        self.assertEqual(set(diagnostics), expected_keys)
+        for key, values in diagnostics.items():
+            self.assertEqual(len(values), self.task_cfg.num_steps, key)
+            for value in values:
+                self.assertIsInstance(value, float, key)
+        bounded_series = (
+            "target_self_model_mass_by_step",
+            "target_inspection_state_by_step",
+            "target_attention_by_step",
+            "target_self_model_alignment_by_step",
         )
         for key in bounded_series:
             self.assertTrue(all(0.0 <= value <= 1.0 for value in diagnostics[key]), key)
