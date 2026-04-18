@@ -279,6 +279,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         unresolved_search_seq = []
         wrong_candidate_history_seq = []
         allocation_error_seq = []
+        current_wrong_candidate_seq = []
+        revisit_unresolved_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -352,7 +354,9 @@ class RecurrentAttentionController(BaseAttentionModel):
             else:
                 target_inspected = torch.zeros(scene.shape[0], 1, device=scene.device)
                 unresolved_search = torch.zeros(scene.shape[0], 1, device=scene.device)
+                current_wrong_candidate = torch.zeros(scene.shape[0], 1, device=scene.device)
                 wrong_candidate_history = torch.zeros(scene.shape[0], 1, device=scene.device)
+                revisit_unresolved = torch.zeros(scene.shape[0], 1, device=scene.device)
                 allocation_error = torch.zeros(scene.shape[0], 1, device=scene.device)
 
             allocation_error_logits = self.allocation_error_head(
@@ -368,6 +372,10 @@ class RecurrentAttentionController(BaseAttentionModel):
                 )
             )
             revisit_flag = (inspection_state * attended_one_hot).sum(dim=-1, keepdim=True).clamp_max(1.0)
+            revisit_unresolved = (
+                (revisit_flag.squeeze(-1) > 0.5)
+                & (unresolved_search.squeeze(-1) > 0.5)
+            ).float().unsqueeze(-1)
 
             attention_seq.append(attention)
             logits_seq.append(step_logits)
@@ -385,7 +393,9 @@ class RecurrentAttentionController(BaseAttentionModel):
             found_state_seq.append(found_state_post)
             relevant_region_seq.append(target_inspected)
             unresolved_search_seq.append(unresolved_search)
+            current_wrong_candidate_seq.append(current_wrong_candidate)
             wrong_candidate_history_seq.append(wrong_candidate_history)
+            revisit_unresolved_seq.append(revisit_unresolved)
             allocation_error_seq.append(allocation_error)
 
             previous_attention = attention.detach()
@@ -416,8 +426,10 @@ class RecurrentAttentionController(BaseAttentionModel):
             "relevant_region_seq": torch.stack(relevant_region_seq, dim=1),
             "unresolved_search_logits_seq": torch.stack(unresolved_search_logits_seq, dim=1),
             "unresolved_search_seq": torch.stack(unresolved_search_seq, dim=1),
+            "current_wrong_candidate_seq": torch.stack(current_wrong_candidate_seq, dim=1),
             "wrong_candidate_history_logits_seq": torch.stack(wrong_candidate_history_logits_seq, dim=1),
             "wrong_candidate_history_seq": torch.stack(wrong_candidate_history_seq, dim=1),
+            "revisit_unresolved_seq": torch.stack(revisit_unresolved_seq, dim=1),
             "allocation_error_logits_seq": torch.stack(allocation_error_logits_seq, dim=1),
             "allocation_error_seq": torch.stack(allocation_error_seq, dim=1),
         }

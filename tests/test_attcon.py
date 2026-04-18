@@ -96,6 +96,14 @@ class AttentionControlTests(unittest.TestCase):
             (4, self.task_cfg.num_steps, 1),
         )
         self.assertEqual(
+            recurrent_outputs["current_wrong_candidate_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
+        self.assertEqual(
+            recurrent_outputs["revisit_unresolved_seq"].shape,
+            (4, self.task_cfg.num_steps, 1),
+        )
+        self.assertEqual(
             recurrent_outputs["allocation_error_seq"].shape,
             (4, self.task_cfg.num_steps, 1),
         )
@@ -208,13 +216,19 @@ class AttentionControlTests(unittest.TestCase):
         )
         relevant = outputs["relevant_region_seq"]
         unresolved = outputs["unresolved_search_seq"]
+        current_wrong_candidate = outputs["current_wrong_candidate_seq"]
         wrong_candidate_history = outputs["wrong_candidate_history_seq"]
+        revisit_unresolved = outputs["revisit_unresolved_seq"]
         allocation_error = outputs["allocation_error_seq"]
         self.assertTrue(torch.all((relevant == 0.0) | (relevant == 1.0)))
         self.assertTrue(torch.all((unresolved == 0.0) | (unresolved == 1.0)))
+        self.assertTrue(torch.all((current_wrong_candidate == 0.0) | (current_wrong_candidate == 1.0)))
         self.assertTrue(torch.all((wrong_candidate_history == 0.0) | (wrong_candidate_history == 1.0)))
+        self.assertTrue(torch.all((revisit_unresolved == 0.0) | (revisit_unresolved == 1.0)))
         self.assertTrue(torch.all((allocation_error == 0.0) | (allocation_error == 1.0)))
         self.assertTrue(torch.allclose(relevant + unresolved, torch.ones_like(relevant)))
+        self.assertTrue(torch.all(current_wrong_candidate <= wrong_candidate_history))
+        self.assertTrue(torch.all(revisit_unresolved <= unresolved))
         self.assertLess(allocation_error.float().mean().item(), 0.95)
 
     def test_collect_nl_examples_exports_structured_state(self) -> None:
