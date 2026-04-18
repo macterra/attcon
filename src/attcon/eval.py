@@ -2290,6 +2290,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             predictive_probe.get("supported", False)
             and intervention_test.get("supported", False)
             and reduced_shaping_summary.get("supported", False)
+            and stage3_multi_seed.get("supported", False)
         ),
     }
 

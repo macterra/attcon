@@ -530,6 +530,7 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(explicit_attention["stage3_all_predictive_supported"])
         self.assertFalse(explicit_attention["stage3_all_intervention_supported"])
         self.assertFalse(explicit_attention["stage3_multi_seed_supported"])
+        self.assertFalse(explicit_attention["supported"])
         stage6b = summary["structured_reportability_uncertainty_and_allocation_error"]
         self.assertTrue(stage6b["supported"])
 
