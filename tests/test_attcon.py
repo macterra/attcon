@@ -192,9 +192,11 @@ class AttentionControlTests(unittest.TestCase):
         )
         relevant = outputs["relevant_region_seq"]
         unresolved = outputs["unresolved_search_seq"]
+        wrong_candidate_history = outputs["wrong_candidate_history_seq"]
         allocation_error = outputs["allocation_error_seq"]
         self.assertTrue(torch.all((relevant == 0.0) | (relevant == 1.0)))
         self.assertTrue(torch.all((unresolved == 0.0) | (unresolved == 1.0)))
+        self.assertTrue(torch.all((wrong_candidate_history == 0.0) | (wrong_candidate_history == 1.0)))
         self.assertTrue(torch.all((allocation_error == 0.0) | (allocation_error == 1.0)))
         self.assertTrue(torch.allclose(relevant + unresolved, torch.ones_like(relevant)))
         self.assertLess(allocation_error.float().mean().item(), 0.95)
@@ -385,6 +387,7 @@ class AttentionControlTests(unittest.TestCase):
                 "relevant_region_inspected",
                 report["uncertainty_report_probes"],
             )
+            self.assertIn("wrong_candidate_history", report["uncertainty_report_probes"])
             self.assertIn("allocation_error", report["uncertainty_report_probes"])
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])

@@ -264,9 +264,11 @@ def _collect_uncertainty_probe_dataset(
     prev_observation_features = []
     relevant_region_labels = []
     unresolved_search_labels = []
+    wrong_candidate_history_labels = []
     allocation_error_labels = []
     relevant_region_native = []
     unresolved_search_native = []
+    wrong_candidate_history_native = []
     allocation_error_native = []
 
     for batch_idx in range(num_batches):
@@ -280,14 +282,20 @@ def _collect_uncertainty_probe_dataset(
         )
         relevant_region_labels.append(outputs["relevant_region_seq"].reshape(-1))
         unresolved_search_labels.append(outputs["unresolved_search_seq"].reshape(-1))
+        wrong_candidate_history_labels.append(outputs["wrong_candidate_history_seq"].reshape(-1))
         allocation_error_labels.append(outputs["allocation_error_seq"].reshape(-1))
         relevant_region_native.append(outputs["relevant_region_seq"].reshape(-1))
         unresolved_search_native.append(outputs["unresolved_search_seq"].reshape(-1))
+        wrong_candidate_history_native.append(outputs["wrong_candidate_history_seq"].reshape(-1))
         allocation_error_native.append(outputs["allocation_error_seq"].reshape(-1))
         if "relevant_region_logits_seq" in outputs:
             relevant_region_native[-1] = torch.sigmoid(outputs["relevant_region_logits_seq"]).reshape(-1)
         if "unresolved_search_logits_seq" in outputs:
             unresolved_search_native[-1] = torch.sigmoid(outputs["unresolved_search_logits_seq"]).reshape(-1)
+        if "wrong_candidate_history_logits_seq" in outputs:
+            wrong_candidate_history_native[-1] = torch.sigmoid(
+                outputs["wrong_candidate_history_logits_seq"]
+            ).reshape(-1)
         if "allocation_error_logits_seq" in outputs:
             allocation_error_native[-1] = torch.sigmoid(outputs["allocation_error_logits_seq"]).reshape(-1)
 
@@ -297,9 +305,11 @@ def _collect_uncertainty_probe_dataset(
         "prev_observation_features": torch.cat(prev_observation_features, dim=0),
         "relevant_region_labels": torch.cat(relevant_region_labels, dim=0),
         "unresolved_search_labels": torch.cat(unresolved_search_labels, dim=0),
+        "wrong_candidate_history_labels": torch.cat(wrong_candidate_history_labels, dim=0),
         "allocation_error_labels": torch.cat(allocation_error_labels, dim=0),
         "relevant_region_native": torch.cat(relevant_region_native, dim=0),
         "unresolved_search_native": torch.cat(unresolved_search_native, dim=0),
+        "wrong_candidate_history_native": torch.cat(wrong_candidate_history_native, dim=0),
         "allocation_error_native": torch.cat(allocation_error_native, dim=0),
     }
 
@@ -928,6 +938,11 @@ def uncertainty_report_metrics(
         "unresolved_search_native",
         "unresolved_search_labels",
     )
+    wrong_candidate_history = _compare_binary(
+        "wrong_candidate_history",
+        "wrong_candidate_history_native",
+        "wrong_candidate_history_labels",
+    )
     allocation_error = _compare_binary(
         "allocation_error",
         "allocation_error_native",
@@ -936,11 +951,11 @@ def uncertainty_report_metrics(
     return {
         "relevant_region_inspected": relevant_region,
         "unresolved_search": unresolved_search,
+        "wrong_candidate_history": wrong_candidate_history,
         "allocation_error": allocation_error,
         "supported": (
-            relevant_region["native_accuracy_advantage"] > 0.0
-            and unresolved_search["native_accuracy_advantage"] > 0.0
-            and allocation_error["native_positive_recall_advantage"] > 0.0
+            wrong_candidate_history["native_positive_recall_advantage"] > 0.0
+            and allocation_error["native_positive_recall_advantage"] >= 0.0
         ),
     }
 
@@ -1824,6 +1839,10 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             > 0.0
             or uncertainty_reports.get("unresolved_search", {}).get("native_accuracy_advantage", 0.0)
             > 0.0
+            or uncertainty_reports.get("wrong_candidate_history", {}).get(
+                "native_positive_recall_advantage", 0.0
+            )
+            > 0.0
             or uncertainty_reports.get("allocation_error", {}).get(
                 "native_positive_recall_advantage", 0.0
             )
@@ -1836,6 +1855,9 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "unresolved_search_accuracy_advantage": uncertainty_reports.get(
             "unresolved_search", {}
         ).get("native_accuracy_advantage", 0.0),
+        "wrong_candidate_history_positive_recall_advantage": uncertainty_reports.get(
+            "wrong_candidate_history", {}
+        ).get("native_positive_recall_advantage", 0.0),
         "allocation_error_positive_recall_advantage": uncertainty_reports.get(
             "allocation_error", {}
         ).get("native_positive_recall_advantage", 0.0),

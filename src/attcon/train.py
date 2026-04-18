@@ -41,6 +41,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "target_found_report_weight": 0.05,
         "relevant_region_report_weight": 0.05,
         "unresolved_search_report_weight": 0.05,
+        "wrong_candidate_history_report_weight": 0.05,
         "allocation_error_report_weight": 0.05,
         "cue_switch_probability": 0.0,
         "cue_switch_step": 3,
@@ -377,6 +378,12 @@ def train_single_model(
                 outputs["unresolved_search_logits_seq"],
                 outputs["unresolved_search_seq"].detach(),
             )
+        wrong_candidate_history_report_loss = torch.tensor(0.0, device=device)
+        if "wrong_candidate_history_logits_seq" in outputs and "wrong_candidate_history_seq" in outputs:
+            wrong_candidate_history_report_loss = F.binary_cross_entropy_with_logits(
+                outputs["wrong_candidate_history_logits_seq"],
+                outputs["wrong_candidate_history_seq"].detach(),
+            )
         allocation_error_report_loss = torch.tensor(0.0, device=device)
         if "allocation_error_logits_seq" in outputs and "allocation_error_seq" in outputs:
             allocation_error_report_loss = F.binary_cross_entropy_with_logits(
@@ -394,6 +401,8 @@ def train_single_model(
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
             + train_cfg.get("relevant_region_report_weight", 0.0) * relevant_region_report_loss
             + train_cfg.get("unresolved_search_report_weight", 0.0) * unresolved_search_report_loss
+            + train_cfg.get("wrong_candidate_history_report_weight", 0.0)
+            * wrong_candidate_history_report_loss
             + train_cfg.get("allocation_error_report_weight", 0.0) * allocation_error_report_loss
         )
 

@@ -181,7 +181,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         self.target_found_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.relevant_region_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.unresolved_search_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
-        self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 1, 1)
+        self.wrong_candidate_history_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
+        self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 2, 1)
 
     @property
     def summary_dim(self) -> int:
@@ -254,6 +255,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         previous_attention = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
         inspection_state = torch.zeros(scene.shape[0], self.num_cells, device=scene.device)
         found_state = torch.zeros(scene.shape[0], 1, device=scene.device)
+        wrong_candidate_state = torch.zeros(scene.shape[0], 1, device=scene.device)
+        previous_revisit = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_observation = torch.zeros(scene.shape[0], self.observation_dim, device=scene.device)
         previous_loss = torch.zeros(scene.shape[0], 1, device=scene.device)
         previous_confidence = torch.zeros(scene.shape[0], 1, device=scene.device)
@@ -269,10 +272,12 @@ class RecurrentAttentionController(BaseAttentionModel):
         target_found_logits_seq = []
         relevant_region_logits_seq = []
         unresolved_search_logits_seq = []
+        wrong_candidate_history_logits_seq = []
         allocation_error_logits_seq = []
         found_state_seq = []
         relevant_region_seq = []
         unresolved_search_seq = []
+        wrong_candidate_history_seq = []
         allocation_error_seq = []
 
         for step_idx in range(steps):
@@ -320,15 +325,25 @@ class RecurrentAttentionController(BaseAttentionModel):
             )
             relevant_region_logits = self.relevant_region_head(report_features)
             unresolved_search_logits = self.unresolved_search_head(report_features)
+            wrong_candidate_history_logits = self.wrong_candidate_history_head(
+                torch.cat([hidden_state, inspection_state, wrong_candidate_state], dim=-1)
+            )
 
             if target_pos_seq is not None:
                 step_target_pos = target_pos_seq[:, step_idx]
                 target_inspected = inspection_state.gather(1, step_target_pos.unsqueeze(-1))
                 unresolved_search = 1.0 - target_inspected
+                batch_index = torch.arange(scene.shape[0], device=scene.device)
+                attended_visible_type = scene[batch_index, attended_cell, : self.num_types].argmax(dim=-1)
+                current_wrong_candidate = (
+                    (attended_cell != step_target_pos)
+                    & (step_cue == attended_visible_type)
+                ).float().unsqueeze(-1)
+                wrong_candidate_history = torch.maximum(wrong_candidate_state, current_wrong_candidate)
                 if step_idx > 0:
-                    previous_attended_cell = previous_attention.argmax(dim=-1)
                     allocation_error = (
-                        (previous_attended_cell != step_target_pos)
+                        (previous_revisit.squeeze(-1) > 0.5)
+                        & (wrong_candidate_state.squeeze(-1) > 0.5)
                         & (target_inspected.squeeze(-1) < 0.5)
                         & (previous_observation[:, 0] < 0.5)
                     ).float().unsqueeze(-1)
@@ -337,14 +352,22 @@ class RecurrentAttentionController(BaseAttentionModel):
             else:
                 target_inspected = torch.zeros(scene.shape[0], 1, device=scene.device)
                 unresolved_search = torch.zeros(scene.shape[0], 1, device=scene.device)
+                wrong_candidate_history = torch.zeros(scene.shape[0], 1, device=scene.device)
                 allocation_error = torch.zeros(scene.shape[0], 1, device=scene.device)
 
             allocation_error_logits = self.allocation_error_head(
                 torch.cat(
-                    [hidden_state, inspection_state, previous_attention, previous_observation[:, :1]],
+                    [
+                        hidden_state,
+                        inspection_state,
+                        previous_attention,
+                        previous_observation[:, :1],
+                        previous_revisit,
+                    ],
                     dim=-1,
                 )
             )
+            revisit_flag = (inspection_state * attended_one_hot).sum(dim=-1, keepdim=True).clamp_max(1.0)
 
             attention_seq.append(attention)
             logits_seq.append(step_logits)
@@ -357,15 +380,19 @@ class RecurrentAttentionController(BaseAttentionModel):
             target_found_logits_seq.append(target_found_logits)
             relevant_region_logits_seq.append(relevant_region_logits)
             unresolved_search_logits_seq.append(unresolved_search_logits)
+            wrong_candidate_history_logits_seq.append(wrong_candidate_history_logits)
             allocation_error_logits_seq.append(allocation_error_logits)
             found_state_seq.append(found_state_post)
             relevant_region_seq.append(target_inspected)
             unresolved_search_seq.append(unresolved_search)
+            wrong_candidate_history_seq.append(wrong_candidate_history)
             allocation_error_seq.append(allocation_error)
 
             previous_attention = attention.detach()
             inspection_state = inspection_state_post
             found_state = found_state_post
+            wrong_candidate_state = wrong_candidate_history
+            previous_revisit = revisit_flag
             previous_observation = observed_glimpse
             previous_loss = step_loss
             previous_confidence = step_confidence
@@ -389,6 +416,8 @@ class RecurrentAttentionController(BaseAttentionModel):
             "relevant_region_seq": torch.stack(relevant_region_seq, dim=1),
             "unresolved_search_logits_seq": torch.stack(unresolved_search_logits_seq, dim=1),
             "unresolved_search_seq": torch.stack(unresolved_search_seq, dim=1),
+            "wrong_candidate_history_logits_seq": torch.stack(wrong_candidate_history_logits_seq, dim=1),
+            "wrong_candidate_history_seq": torch.stack(wrong_candidate_history_seq, dim=1),
             "allocation_error_logits_seq": torch.stack(allocation_error_logits_seq, dim=1),
             "allocation_error_seq": torch.stack(allocation_error_seq, dim=1),
         }
