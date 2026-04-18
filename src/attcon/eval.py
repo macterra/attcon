@@ -1306,6 +1306,26 @@ def nl_report_metrics(
             tokenized["glimpse_target_match_accuracy"]
             - observation["glimpse_target_match_accuracy"]
         ),
+        "tokenized_relevant_region_accuracy_advantage": (
+            tokenized["relevant_region_inspected_accuracy"]
+            - observation["relevant_region_inspected_accuracy"]
+        ),
+        "tokenized_unresolved_search_accuracy_advantage": (
+            tokenized["unresolved_search_accuracy"]
+            - observation["unresolved_search_accuracy"]
+        ),
+        "tokenized_wrong_candidate_history_accuracy_advantage": (
+            tokenized["wrong_candidate_history_accuracy"]
+            - observation["wrong_candidate_history_accuracy"]
+        ),
+        "tokenized_allocation_error_accuracy_advantage": (
+            tokenized["allocation_error_accuracy"]
+            - observation["allocation_error_accuracy"]
+        ),
+        "tokenized_uncertainty_content_joint_accuracy_advantage": (
+            tokenized["uncertainty_content_joint_accuracy"]
+            - observation["uncertainty_content_joint_accuracy"]
+        ),
         "tokenized_unresolved_accuracy_advantage": (
             (
                 tokenized["unresolved_rows_accuracy"]
@@ -1341,6 +1361,8 @@ def nl_report_metrics(
             and tokenized["attended_visible_type_accuracy"] >= observation["attended_visible_type_accuracy"]
             and tokenized["attended_digit_accuracy"] >= observation["attended_digit_accuracy"]
             and tokenized["glimpse_digit_accuracy"] >= observation["glimpse_digit_accuracy"]
+            and tokenized["uncertainty_content_joint_accuracy"]
+            >= observation["uncertainty_content_joint_accuracy"]
             and (
                 tokenized["unresolved_rows_accuracy"]
                 + tokenized["unresolved_cols_accuracy"]
@@ -1925,6 +1947,21 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "tokenized_glimpse_match_accuracy_advantage": nl_report.get(
             "tokenized_glimpse_match_accuracy_advantage", 0.0
+        ),
+        "tokenized_relevant_region_accuracy_advantage": nl_report.get(
+            "tokenized_relevant_region_accuracy_advantage", 0.0
+        ),
+        "tokenized_unresolved_search_accuracy_advantage": nl_report.get(
+            "tokenized_unresolved_search_accuracy_advantage", 0.0
+        ),
+        "tokenized_wrong_candidate_history_accuracy_advantage": nl_report.get(
+            "tokenized_wrong_candidate_history_accuracy_advantage", 0.0
+        ),
+        "tokenized_allocation_error_accuracy_advantage": nl_report.get(
+            "tokenized_allocation_error_accuracy_advantage", 0.0
+        ),
+        "tokenized_uncertainty_content_joint_accuracy_advantage": nl_report.get(
+            "tokenized_uncertainty_content_joint_accuracy_advantage", 0.0
         ),
         "tokenized_joint_accuracy_advantage": nl_report.get(
             "tokenized_joint_accuracy_advantage", 0.0

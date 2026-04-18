@@ -13,7 +13,7 @@ if str(SRC) not in sys.path:
 import torch
 
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
-from attcon.eval import run_ablations
+from attcon.eval import build_evidence_summary, run_ablations
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
 from attcon.nl_report import _extract_response_json, collect_nl_examples
 from attcon.train import train_experiment
@@ -289,6 +289,59 @@ class AttentionControlTests(unittest.TestCase):
             ),
             expected,
         )
+
+    def test_build_evidence_summary_surfaces_nl_uncertainty_metrics(self) -> None:
+        summary = build_evidence_summary(
+            {
+                "baseline": {
+                    "accuracy": 0.1,
+                    "temporal_reallocation": 0.0,
+                    "target_attention_gain": 0.0,
+                    "cue_accuracy_delta": 0.0,
+                    "cue_target_attention_delta": 0.0,
+                },
+                "recurrent": {
+                    "accuracy": 0.2,
+                    "temporal_reallocation": 0.1,
+                    "target_attention_gain": 0.1,
+                    "cue_accuracy_delta": 0.1,
+                    "cue_target_attention_delta": 0.1,
+                },
+                "ablations": {
+                    "freeze_recurrence": {
+                        "accuracy": 0.1,
+                        "temporal_reallocation": 0.0,
+                        "target_attention_gain": 0.0,
+                    }
+                },
+                "nl_report": {
+                    "model": "gpt-5-mini",
+                    "tokenized_joint_accuracy_advantage": 0.25,
+                    "tokenized_uncertainty_content_joint_accuracy_advantage": 0.5,
+                    "tokenized_relevant_region_accuracy_advantage": 0.25,
+                    "tokenized_unresolved_search_accuracy_advantage": 0.25,
+                    "tokenized_wrong_candidate_history_accuracy_advantage": 0.5,
+                    "tokenized_allocation_error_accuracy_advantage": 0.25,
+                    "content_supported": True,
+                    "supported": True,
+                    "tokenized_state": {"joint_accuracy": 0.75},
+                    "observation_only": {"joint_accuracy": 0.25},
+                }
+            }
+        )
+        nl_summary = summary["natural_language_reportability"]
+        self.assertEqual(
+            nl_summary["tokenized_uncertainty_content_joint_accuracy_advantage"],
+            0.5,
+        )
+        self.assertEqual(nl_summary["tokenized_relevant_region_accuracy_advantage"], 0.25)
+        self.assertEqual(nl_summary["tokenized_unresolved_search_accuracy_advantage"], 0.25)
+        self.assertEqual(
+            nl_summary["tokenized_wrong_candidate_history_accuracy_advantage"],
+            0.5,
+        )
+        self.assertEqual(nl_summary["tokenized_allocation_error_accuracy_advantage"], 0.25)
+        self.assertTrue(nl_summary["supported"])
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

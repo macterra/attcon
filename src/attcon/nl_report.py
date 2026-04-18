@@ -649,6 +649,10 @@ def run_nl_report_mode(
     exact_prev_glimpse_digit = 0
     exact_glimpse_match = 0
     exact_found = 0
+    exact_relevant_region = 0
+    exact_unresolved_search = 0
+    exact_wrong_candidate_history = 0
+    exact_allocation_error = 0
     exact_unresolved_rows = 0
     exact_unresolved_cols = 0
     exact_unresolved_count = 0
@@ -697,6 +701,14 @@ def run_nl_report_mode(
         exact_prev_glimpse_digit += int(parsed["previous_glimpse_digit"] == example.prev_glimpse_digit)
         exact_glimpse_match += int(bool(parsed["glimpse_target_match"]) == example.glimpse_target_match)
         exact_found += int(bool(parsed["found_target"]) == example.found_target)
+        exact_relevant_region += int(
+            bool(parsed["relevant_region_inspected"]) == example.relevant_region_inspected
+        )
+        exact_unresolved_search += int(bool(parsed["unresolved_search"]) == example.unresolved_search)
+        exact_wrong_candidate_history += int(
+            bool(parsed["wrong_candidate_history"]) == example.wrong_candidate_history
+        )
+        exact_allocation_error += int(bool(parsed["allocation_error"]) == example.allocation_error)
         exact_unresolved_rows += int(parsed["unresolved_rows"] == example.unresolved_rows)
         exact_unresolved_cols += int(parsed["unresolved_cols"] == example.unresolved_cols)
         exact_unresolved_count += int(parsed["unresolved_count"] == example.unresolved_count)
@@ -719,6 +731,10 @@ def run_nl_report_mode(
                     "previous_glimpse_digit": example.prev_glimpse_digit,
                     "glimpse_target_match": example.glimpse_target_match,
                     "found_target": example.found_target,
+                    "relevant_region_inspected": example.relevant_region_inspected,
+                    "unresolved_search": example.unresolved_search,
+                    "wrong_candidate_history": example.wrong_candidate_history,
+                    "allocation_error": example.allocation_error,
                     "unresolved_rows": example.unresolved_rows,
                     "unresolved_cols": example.unresolved_cols,
                     "unresolved_count": example.unresolved_count,
@@ -740,6 +756,10 @@ def run_nl_report_mode(
         "previous_glimpse_digit_accuracy": exact_prev_glimpse_digit / denom,
         "glimpse_target_match_accuracy": exact_glimpse_match / denom,
         "found_target_accuracy": exact_found / denom,
+        "relevant_region_inspected_accuracy": exact_relevant_region / denom,
+        "unresolved_search_accuracy": exact_unresolved_search / denom,
+        "wrong_candidate_history_accuracy": exact_wrong_candidate_history / denom,
+        "allocation_error_accuracy": exact_allocation_error / denom,
         "unresolved_rows_accuracy": exact_unresolved_rows / denom,
         "unresolved_cols_accuracy": exact_unresolved_cols / denom,
         "unresolved_count_accuracy": exact_unresolved_count / denom,
@@ -785,6 +805,30 @@ def run_nl_report_mode(
                     and bool(item["response"]["glimpse_target_match"])
                     == item["expected"]["glimpse_target_match"]
                     and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
+                    and bool(item["response"]["relevant_region_inspected"])
+                    == item["expected"]["relevant_region_inspected"]
+                    and bool(item["response"]["unresolved_search"])
+                    == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["wrong_candidate_history"])
+                    == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["allocation_error"])
+                    == item["expected"]["allocation_error"]
+                )
+                for item in results
+            )
+            / denom
+        ),
+        "uncertainty_content_joint_accuracy": (
+            sum(
+                int(
+                    bool(item["response"]["relevant_region_inspected"])
+                    == item["expected"]["relevant_region_inspected"]
+                    and bool(item["response"]["unresolved_search"])
+                    == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["wrong_candidate_history"])
+                    == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["allocation_error"])
+                    == item["expected"]["allocation_error"]
                 )
                 for item in results
             )
@@ -809,6 +853,14 @@ def run_nl_report_mode(
                     and bool(item["response"]["glimpse_target_match"])
                     == item["expected"]["glimpse_target_match"]
                     and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
+                    and bool(item["response"]["relevant_region_inspected"])
+                    == item["expected"]["relevant_region_inspected"]
+                    and bool(item["response"]["unresolved_search"])
+                    == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["wrong_candidate_history"])
+                    == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["allocation_error"])
+                    == item["expected"]["allocation_error"]
                     and item["response"]["unresolved_rows"] == item["expected"]["unresolved_rows"]
                     and item["response"]["unresolved_cols"] == item["expected"]["unresolved_cols"]
                     and item["response"]["unresolved_count"] == item["expected"]["unresolved_count"]
