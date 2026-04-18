@@ -37,10 +37,22 @@ evaluation:
     test_batches: 6
     epochs: 60
     learning_rate: 0.05
+    thresholds:
+      min_advantage_cross_entropy: 0.01
+      min_advantage_mse: 0.00001
+      min_advantage_top1_match: 0.05
   intervention_test:
     enabled: true
     probe_scenes: 4
     step: 2
+    thresholds:
+      min_attention_change_kl: 0.01
+      min_original_target_attention_drop: 0.01
+      min_alternate_target_attention_gain: 0.01
+  stage3_multi_seed:
+    enabled: true
+    num_seeds: 3
+    seed_stride: 100
   cue_switch:
     enabled: true
     probe_scenes: 4
