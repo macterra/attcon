@@ -34,6 +34,7 @@ from attcon.nl_report import (
     run_nl_report_mode,
 )
 from attcon.train import train_experiment
+from attcon.train import load_config
 
 
 class AttentionControlTests(unittest.TestCase):
@@ -50,6 +51,18 @@ class AttentionControlTests(unittest.TestCase):
             pos = target_positions.item()
             self.assertEqual(pos, batch.target_pos[idx].item())
             self.assertEqual(batch.digits[idx, pos].item(), batch.target[idx].item())
+
+    def test_stage3_robustness_is_enabled_in_repo_configs(self) -> None:
+        for path in (
+            ROOT / "configs" / "minimal.yaml",
+            ROOT / "configs" / "tune_prob_025.yaml",
+            ROOT / "configs" / "tune_prob_035.yaml",
+        ):
+            cfg = load_config(path)
+            self.assertTrue(cfg["evaluation"]["stage3_multi_seed"]["enabled"], path.name)
+            self.assertGreaterEqual(cfg["evaluation"]["stage3_multi_seed"]["num_seeds"], 3, path.name)
+            self.assertIn("thresholds", cfg["evaluation"]["predictive_probe"], path.name)
+            self.assertIn("thresholds", cfg["evaluation"]["intervention_test"], path.name)
 
     def test_model_shapes(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
