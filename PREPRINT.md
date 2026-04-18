@@ -224,7 +224,7 @@ Against the same slice:
 - observation-only previous-attended-digit accuracy: `1.0`
 - observation-only previous-glimpse-digit accuracy: `1.0`
 
-So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content. The harness is nevertheless better aligned with the roadmap than before, because the language-report schema now covers the same Stage 6B uncertainty/allocation-error variables used in the structured evaluator, and the scorer reports those fields separately.
+So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content. The harness is nevertheless better aligned with the roadmap than before, because the language-report schema now covers the same Stage 6B uncertainty/allocation-error variables used in the structured evaluator, the example format now carries cue-history and inspection-history fields too, and the evaluator can run dedicated cue-switch and intervention NL slices through the same reporting interface.
 
 ## 6. Interpretation
 
