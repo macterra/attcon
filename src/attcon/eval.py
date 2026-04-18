@@ -1740,6 +1740,51 @@ def save_self_state_plots(
     return [str(path)]
 
 
+def save_self_model_plots(
+    diagnostics: dict[str, Any],
+    output_dir: Path,
+) -> list[str]:
+    """Render compact line plots for self-model trajectory diagnostics."""
+
+    if not diagnostics:
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    num_steps = len(diagnostics["target_self_model_mass_by_step"])
+    steps = list(range(1, num_steps + 1))
+
+    fig, axes = plt.subplots(2, 1, figsize=(8, 7), sharex=True)
+    bounded_series = (
+        ("target_self_model_mass_by_step", "Target self-model mass"),
+        ("target_inspection_state_by_step", "Target inspection state"),
+        ("target_attention_by_step", "Target attention"),
+        ("target_self_model_alignment_by_step", "Target self-model alignment"),
+    )
+    for key, label in bounded_series:
+        axes[0].plot(steps, diagnostics[key], marker="o", label=label)
+    axes[0].set_ylabel("Rate")
+    axes[0].set_ylim(-0.05, 1.05)
+    axes[0].set_title("Target-focused self-model trajectories")
+    axes[0].legend(loc="best", fontsize=8)
+
+    axes[1].plot(
+        steps,
+        diagnostics["self_model_cell_error_by_step"],
+        marker="o",
+        label="Self-model cell error",
+    )
+    axes[1].set_xlabel("Step")
+    axes[1].set_ylabel("Mean absolute error")
+    axes[1].set_title("Self-model vs inspection mismatch")
+    axes[1].legend(loc="best", fontsize=8)
+
+    fig.tight_layout()
+    path = output_dir / "self_model_diagnostics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def save_cue_switch_plots(
     models: dict[str, Any],
     output_dir: Path,
@@ -2548,6 +2593,10 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         report["self_state_diagnostics"],
         output_dir / "plots",
     )
+    self_model_plot_paths = save_self_model_plots(
+        report["self_model_diagnostics"],
+        output_dir / "plots",
+    )
     cue_switch_plot_paths = save_cue_switch_plots(
         {"baseline": models["static"], "recurrent": models["recurrent"]},
         output_dir / "plots",
@@ -2560,6 +2609,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
     report["artifacts"]["self_state_plots"] = self_state_plot_paths
+    report["artifacts"]["self_model_plots"] = self_model_plot_paths
     report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
