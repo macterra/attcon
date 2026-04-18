@@ -644,6 +644,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
             self.assertIn("self_state_diagnostics", report)
+            self.assertIn("self_model_diagnostics", report)
             self.assertIn("stage3_multi_seed", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
@@ -684,6 +685,8 @@ class AttentionControlTests(unittest.TestCase):
             self.assertTrue(report["artifacts"]["plots"])
             self.assertTrue(report["artifacts"]["self_state_plots"])
             self.assertTrue(Path(report["artifacts"]["self_state_plots"][0]).exists())
+            self.assertTrue(report["artifacts"]["self_model_plots"])
+            self.assertTrue(Path(report["artifacts"]["self_model_plots"][0]).exists())
             self.assertTrue(report["artifacts"]["cue_switch_plots"])
             self.assertTrue(Path(report["artifacts"]["cue_switch_plots"][0]).exists())
 
