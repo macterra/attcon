@@ -147,7 +147,7 @@ Reduced-shaping condition:
 - temporal reallocation remains `0.484`
 - target-attention gain remains `0.0255`
 
-Together, these results provide positive but still threshold-sensitive evidence for a bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation. In the revised roadmap and evaluator, this stage should count as supported only when predictive, intervention, and reduced-shaping thresholds are all met together.
+Together, these results provide positive but still threshold-sensitive evidence for a bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation. In the revised roadmap and evaluator, this stage should count as supported only when predictive, intervention, and reduced-shaping thresholds are all met together. The evaluator now also includes a repeated-seed Stage 3 summary, and that summary currently highlights instability across probe seeds rather than a robust pass.
 
 ### 5.4 Engineered Self-State Tracking
 
@@ -309,8 +309,10 @@ Default commands:
 .venv/bin/python -m attcon.eval --config configs/minimal.yaml --checkpoint outputs/minimal/experiment.pt
 ```
 
+Current evaluation artifacts also include intervention comparison plots, switched-cue comparison plots, and self-state diagnostics plots in addition to the JSON report.
+
 ## 10. Conclusion
 
-The repository now goes well beyond a minimal Stage 2 benchmark. In the current default setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports predictive, intervention, and reduced-shaping analyses around explicit attention modeling, maintains an explicit engineered state about inspected history, handles cue switching better than the baseline, and supports structured internal report variables. Those results are enough to support a bounded attention-control benchmark plus later-stage engineered self-state and structured-reportability results, but not yet enough to collapse the later roadmap stages into a single settled ladder.
+The repository now goes well beyond a minimal Stage 2 benchmark. In the current default setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports predictive, intervention, and reduced-shaping analyses around explicit attention modeling, maintains an explicit engineered state about inspected history, handles cue switching better than the baseline, and supports structured internal report variables. The evaluator also now exposes repeated-seed Stage 3 summaries plus switched-cue and self-state diagnostics artifacts, which make current weaknesses easier to inspect rather than masking them behind a single headline run. Those results are enough to support a bounded attention-control benchmark plus later-stage engineered self-state and structured-reportability results, but not yet enough to collapse the later roadmap stages into a single settled ladder.
 
 The strongest remaining open problem is Stage 7: faithful natural-language access to internal attention state, especially for the current and remembered contents of attention. Symbolic state dumps are easy for a language model to report faithfully. Tokenized internal-state reporting is not yet good enough, and a VLM route may prove more natural for spatial internal-state readout if held to the same baseline controls. That gap is now the clearest frontier in the project, and it is precisely what makes the benchmark useful as a disciplined stepping stone rather than a vague consciousness metaphor.
