@@ -837,6 +837,11 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("intervention_attention_change_kl_min", metrics)
         self.assertIn("intervention_alternate_target_gain_mean", metrics)
         self.assertIn("intervention_alternate_target_gain_min", metrics)
+        self.assertIn("predictive_cross_entropy_advantage_min_gap", metrics)
+        self.assertIn("predictive_top1_advantage_min_gap", metrics)
+        self.assertIn("intervention_attention_change_kl_min_gap", metrics)
+        self.assertIn("intervention_alternate_target_gain_min_gap", metrics)
+        self.assertIn("failure_reasons", metrics)
         self.assertTrue(0.0 <= metrics["predictive_supported_fraction"] <= 1.0)
         self.assertTrue(0.0 <= metrics["intervention_supported_fraction"] <= 1.0)
 
