@@ -314,7 +314,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
             inspection_state_post = torch.maximum(inspection_state, attended_one_hot)
             found_state_post = torch.maximum(found_state, observed_glimpse[:, :1].detach())
-            report_features = torch.cat([hidden_state, inspection_state_post, found_state_post], dim=-1)
+            report_features = torch.cat([hidden_state, inspection_state, found_state], dim=-1)
             target_found_logits = self.target_found_head(
                 report_features
             )
@@ -323,18 +323,27 @@ class RecurrentAttentionController(BaseAttentionModel):
 
             if target_pos_seq is not None:
                 step_target_pos = target_pos_seq[:, step_idx]
-                target_inspected = inspection_state_post.gather(1, step_target_pos.unsqueeze(-1))
+                target_inspected = inspection_state.gather(1, step_target_pos.unsqueeze(-1))
                 unresolved_search = 1.0 - target_inspected
-                allocation_error = (
-                    (attended_cell != step_target_pos) & (target_inspected.squeeze(-1) < 0.5)
-                ).float().unsqueeze(-1)
+                if step_idx > 0:
+                    previous_attended_cell = previous_attention.argmax(dim=-1)
+                    allocation_error = (
+                        (previous_attended_cell != step_target_pos)
+                        & (target_inspected.squeeze(-1) < 0.5)
+                        & (previous_observation[:, 0] < 0.5)
+                    ).float().unsqueeze(-1)
+                else:
+                    allocation_error = torch.zeros(scene.shape[0], 1, device=scene.device)
             else:
                 target_inspected = torch.zeros(scene.shape[0], 1, device=scene.device)
                 unresolved_search = torch.zeros(scene.shape[0], 1, device=scene.device)
                 allocation_error = torch.zeros(scene.shape[0], 1, device=scene.device)
 
             allocation_error_logits = self.allocation_error_head(
-                torch.cat([hidden_state, inspection_state_post, attended_one_hot, found_state_post], dim=-1)
+                torch.cat(
+                    [hidden_state, inspection_state, previous_attention, previous_observation[:, :1]],
+                    dim=-1,
+                )
             )
 
             attention_seq.append(attention)

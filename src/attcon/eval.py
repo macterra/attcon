@@ -261,6 +261,7 @@ def _collect_uncertainty_probe_dataset(
 
     state_features = []
     observation_features = []
+    prev_observation_features = []
     relevant_region_labels = []
     unresolved_search_labels = []
     allocation_error_labels = []
@@ -270,8 +271,13 @@ def _collect_uncertainty_probe_dataset(
 
     for batch_idx in range(num_batches):
         outputs, probe_batch = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
+        prev_observation = torch.zeros_like(outputs["observation_seq"])
+        prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
         state_features.append(outputs["controller_state_seq"].reshape(-1, outputs["controller_state_seq"].shape[-1]))
         observation_features.append(outputs["observation_seq"].reshape(-1, outputs["observation_seq"].shape[-1]))
+        prev_observation_features.append(
+            prev_observation.reshape(-1, prev_observation.shape[-1])
+        )
         relevant_region_labels.append(outputs["relevant_region_seq"].reshape(-1))
         unresolved_search_labels.append(outputs["unresolved_search_seq"].reshape(-1))
         allocation_error_labels.append(outputs["allocation_error_seq"].reshape(-1))
@@ -288,6 +294,7 @@ def _collect_uncertainty_probe_dataset(
     return {
         "state_features": torch.cat(state_features, dim=0),
         "observation_features": torch.cat(observation_features, dim=0),
+        "prev_observation_features": torch.cat(prev_observation_features, dim=0),
         "relevant_region_labels": torch.cat(relevant_region_labels, dim=0),
         "unresolved_search_labels": torch.cat(unresolved_search_labels, dim=0),
         "allocation_error_labels": torch.cat(allocation_error_labels, dim=0),
@@ -891,9 +898,9 @@ def uncertainty_report_metrics(
 
     def _compare_binary(name: str, native_key: str, label_key: str) -> dict[str, Any]:
         observation_probe = _train_binary_probe(
-            train["observation_features"],
+            train["prev_observation_features"],
             train[label_key],
-            test["observation_features"],
+            test["prev_observation_features"],
             test[label_key],
             epochs=epochs,
             learning_rate=learning_rate,

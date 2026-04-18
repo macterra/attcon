@@ -180,6 +180,25 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(torch.all(inspection[:, 1:] >= inspection[:, :-1]))
         self.assertTrue(torch.all((inspection == 0.0) | (inspection == 1.0)))
 
+    def test_stage6b_signals_are_bounded(self) -> None:
+        batch = generate_batch(8, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        outputs = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=self.task_cfg.num_steps,
+        )
+        relevant = outputs["relevant_region_seq"]
+        unresolved = outputs["unresolved_search_seq"]
+        allocation_error = outputs["allocation_error_seq"]
+        self.assertTrue(torch.all((relevant == 0.0) | (relevant == 1.0)))
+        self.assertTrue(torch.all((unresolved == 0.0) | (unresolved == 1.0)))
+        self.assertTrue(torch.all((allocation_error == 0.0) | (allocation_error == 1.0)))
+        self.assertTrue(torch.allclose(relevant + unresolved, torch.ones_like(relevant)))
+        self.assertLess(allocation_error.float().mean().item(), 0.95)
+
     def test_collect_nl_examples_exports_structured_state(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
