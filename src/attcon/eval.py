@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import textwrap
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -2580,6 +2581,203 @@ def save_probe_plots(
     return saved_paths
 
 
+def _wrap_panel_text(text: str, width: int = 34) -> str:
+    lines = []
+    for raw_line in text.splitlines():
+        wrapped = textwrap.wrap(raw_line, width=width) or [""]
+        lines.extend(wrapped)
+    return "\n".join(lines)
+
+
+def _draw_stage7_scene_panel(
+    ax,
+    *,
+    visible_types: torch.Tensor,
+    digits: torch.Tensor,
+    grid_size: int,
+    attended_cell: int,
+    cue: int,
+    previous_cue: int,
+    title: str,
+) -> None:
+    visible_grid = visible_types.reshape(grid_size, grid_size).detach().cpu().numpy()
+    digits_grid = digits.reshape(grid_size, grid_size).detach().cpu().numpy()
+    row, col = divmod(attended_cell, grid_size)
+
+    ax.imshow(visible_grid, cmap="tab20", vmin=0, vmax=max(int(visible_grid.max()), 1))
+    for row_idx in range(grid_size):
+        for col_idx in range(grid_size):
+            ax.text(
+                col_idx,
+                row_idx,
+                f"{int(visible_grid[row_idx, col_idx])}\n{int(digits_grid[row_idx, col_idx])}",
+                ha="center",
+                va="center",
+                fontsize=7,
+                color="white" if visible_grid[row_idx, col_idx] >= 3 else "black",
+            )
+    ax.scatter(col, row, s=180, marker="o", facecolors="none", edgecolors="red", linewidths=2)
+    ax.set_title(f"{title}\ncue {cue}, prev {previous_cue}", fontsize=10)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+
+def _draw_stage7_text_panel(ax, *, title: str, text: str) -> None:
+    ax.axis("off")
+    ax.set_title(title, fontsize=10)
+    ax.text(
+        0.0,
+        1.0,
+        _wrap_panel_text(text),
+        va="top",
+        ha="left",
+        family="monospace",
+        fontsize=8,
+        transform=ax.transAxes,
+    )
+
+
+def save_stage7_visual_report_plots(
+    model,
+    output_dir: Path,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> list[str]:
+    """Render qualitative Stage 7 panels comparing scene-only, symbolic, and tokenized reports."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    generator = make_generator(seed, device)
+    base_batch = generate_batch(1, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    saved_paths: list[str] = []
+
+    with torch.no_grad():
+        base_outputs = model(
+            base_batch.scene,
+            base_batch.cue,
+            target=base_batch.target,
+            target_pos=base_batch.target_pos,
+            num_steps=task_cfg.num_steps,
+        )
+    base_examples = collect_nl_examples(model, task_cfg, base_batch, base_outputs)
+    default_step = min(1, task_cfg.num_steps - 1)
+    default_example = next(
+        (example for example in base_examples if example.step_index == default_step),
+        base_examples[-1],
+    )
+
+    def _save_triptych(filename: str, figure_title: str, example, batch) -> None:
+        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        _draw_stage7_scene_panel(
+            axes[0],
+            visible_types=batch.visible_types[0],
+            digits=batch.digits[0],
+            grid_size=task_cfg.grid_size,
+            attended_cell=example.attended_cell,
+            cue=example.cue,
+            previous_cue=example.previous_cue,
+            title="Scene Only",
+        )
+        _draw_stage7_text_panel(axes[1], title="Explicit Symbolic State", text=example.symbolic_state)
+        _draw_stage7_text_panel(axes[2], title="Minimal Tokenized State", text=example.tokenized_state)
+        fig.suptitle(figure_title, fontsize=12)
+        fig.tight_layout()
+        path = output_dir / filename
+        fig.savefig(path)
+        plt.close(fig)
+        saved_paths.append(str(path))
+
+    _save_triptych(
+        "stage7_visual_default.png",
+        f"Stage 7 Default Slice, Step {default_example.step_index + 1}",
+        default_example,
+        base_batch,
+    )
+
+    cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
+    if cue_switch_cfg.get("enabled", False):
+        switch_step = int(cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2))
+        cue_switch_examples = collect_cue_switch_nl_examples(
+            model,
+            task_cfg,
+            base_batch,
+            switch_step=switch_step,
+        )
+        cue_switch_example = next(
+            (example for example in cue_switch_examples if example.step_index == switch_step),
+            cue_switch_examples[-1],
+        )
+        _save_triptych(
+            "stage7_visual_cue_switch.png",
+            f"Stage 7 Cue Switch Slice, Step {cue_switch_example.step_index + 1}",
+            cue_switch_example,
+            base_batch,
+        )
+
+    intervention_cfg = cfg["evaluation"].get("intervention_test", {})
+    if intervention_cfg.get("enabled", False):
+        intervention_step = int(intervention_cfg.get("step", 1))
+        intervention_examples = collect_intervention_nl_examples(
+            model,
+            task_cfg,
+            base_batch,
+            intervention_step=intervention_step,
+        )
+        baseline_example = next(
+            (
+                example
+                for example in intervention_examples["baseline_examples"]
+                if example.step_index == intervention_step
+            ),
+            intervention_examples["baseline_examples"][-1],
+        )
+        intervened_example = next(
+            (
+                example
+                for example in intervention_examples["intervened_examples"]
+                if example.step_index == intervention_step
+            ),
+            intervention_examples["intervened_examples"][-1],
+        )
+
+        fig, axes = plt.subplots(2, 3, figsize=(15, 9))
+        for row_idx, (row_title, example) in enumerate(
+            (("Baseline", baseline_example), ("Intervened", intervened_example))
+        ):
+            _draw_stage7_scene_panel(
+                axes[row_idx, 0],
+                visible_types=base_batch.visible_types[0],
+                digits=base_batch.digits[0],
+                grid_size=task_cfg.grid_size,
+                attended_cell=example.attended_cell,
+                cue=example.cue,
+                previous_cue=example.previous_cue,
+                title=f"{row_title} Scene Only",
+            )
+            _draw_stage7_text_panel(
+                axes[row_idx, 1],
+                title=f"{row_title} Symbolic State",
+                text=example.symbolic_state,
+            )
+            _draw_stage7_text_panel(
+                axes[row_idx, 2],
+                title=f"{row_title} Tokenized State",
+                text=example.tokenized_state,
+            )
+        fig.suptitle(
+            f"Stage 7 Intervention Slice, Step {intervention_step + 1}",
+            fontsize=12,
+        )
+        fig.tight_layout()
+        path = output_dir / "stage7_visual_intervention.png"
+        fig.savefig(path)
+        plt.close(fig)
+        saved_paths.append(str(path))
+
+    return saved_paths
+
+
 def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[str, Any]:
     """Run the full evaluation suite and write a JSON report plus plot artifacts."""
 
@@ -2815,6 +3013,14 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9675,
     )
+    stage7_visual_report_paths = save_stage7_visual_report_plots(
+        models["recurrent"],
+        output_dir / "plots",
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9685,
+    )
     report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
@@ -2822,6 +3028,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["self_model_plots"] = self_model_plot_paths
     report["artifacts"]["uncertainty_plots"] = uncertainty_plot_paths
     report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
+    report["artifacts"]["stage7_visual_reports"] = stage7_visual_report_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"
