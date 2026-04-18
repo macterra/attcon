@@ -71,7 +71,7 @@ The earlier cue-switch tuning exposed a real tradeoff, but the current default c
 
 The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
 
-The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, remains open.
+The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, now has bounded positive evidence via the new `wrong_candidate_history` signal, but it is still provisional rather than broadly settled.
 
 The eval artifacts now also include intervention comparison plots that show baseline versus intervened attention around the intervention step, with both the original and alternate cue targets marked.
 

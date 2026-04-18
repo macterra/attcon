@@ -186,7 +186,7 @@ Current default results:
 - target-found accuracy advantage: `0.0124`
 - unresolved-region advantage from native self-model: `0.0172`
 
-This supports a bounded Stage 6A-style claim: the same controller state that guides attention also supports structured reports about current search type, attended cell, target-found state, and unresolved regions. The stronger Stage 6B-style target, reportability of uncertainty and allocation error, is not yet implemented as a distinct supported result.
+This supports a bounded Stage 6A-style claim: the same controller state that guides attention also supports structured reports about current search type, attended cell, target-found state, and unresolved regions. The stronger Stage 6B-style target, reportability of uncertainty and allocation error, is now implemented as a distinct evaluation family. It remains provisional overall, but the new wrong-candidate-history signal provides bounded positive evidence that at least one uncertainty-style report variable can beat an observation-only baseline on positive-recall style reporting.
 
 ### 5.7 Natural-Language Reportability
 
@@ -248,7 +248,7 @@ The stronger claim should still be stated carefully. The current evidence suppor
 It does **not yet** support:
 
 - a clean Stage 4B-style claim of learned self-modeling of attention,
-- a clean Stage 6B-style claim of uncertainty and allocation-error reportability,
+- a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability,
 - faithful natural-language report from tokenized internal state,
 - faithful language access to the current and remembered contents of attention,
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
@@ -263,7 +263,7 @@ The benchmark still admits a natural interpretation in the language of the Good 
 - explicit inspected-state variables,
 - and later report-oriented self-model variables.
 
-What the current repository adds is a sharper boundary around that interpretation. Bounded structured reportability is now supported for a limited set of internal variables, but uncertainty-style reportability and natural-language reportability from tokenized internal state are not yet supported. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
+What the current repository adds is a sharper boundary around that interpretation. Bounded structured reportability is now supported for a limited set of internal variables, and Stage 6B-style uncertainty reporting now has an initial foothold through the wrong-candidate-history signal, but the broader uncertainty/allocation-error bundle and natural-language reportability from tokenized internal state are not yet settled. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
 
 ## 7. Limitations
 
@@ -283,7 +283,7 @@ So while the repository now supports much stronger claims than the original benc
 The next highest-value experiments are now concentrated in Stage 3 thresholding, Stage 6B, and Stage 7:
 
 1. set and test explicit Stage 3 claim thresholds across repeated seeds and checkpoints,
-2. add uncertainty and allocation-error report targets that distinguish “not yet inspected” from “inspected but failed,”
+2. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
 3. split Stage 6A-style structured reportability from Stage 6B-style uncertainty and allocation-error reportability in all writeups and artifacts,
 4. improve the tokenized internal-state interface so current and remembered attended semantic content are easier to recover than from observation-only input,
 5. separate current-attention content tokens from memory-of-previous-attention tokens more sharply,

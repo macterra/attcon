@@ -313,13 +313,13 @@ Target report variables:
 
 Current assessment:
 
-- implemented: partially
-- positive evidence: not enough yet
-- supported: no
+- implemented: yes
+- positive evidence: yes, in a bounded sense
+- supported: provisional and benchmark-specific, not yet broad
 
 Interpretation:
 
-This stage should remain open until the roadmap has native variables and evaluations that distinguish uncertainty, unresolved search, and allocation error in a way that observation-only baselines cannot match.
+This stage now has a meaningful foothold in the benchmark. The current evaluator includes native variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error, and the new wrong-candidate-history signal can outperform an observation-only baseline on positive-recall style reporting. That is enough to count as bounded positive evidence for Stage 6B, while still falling short of a broad or fully stable support claim.
 
 ## Stage 7: Faithful Natural-Language Reportability
 
@@ -448,7 +448,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
 - [ ] update the preprint and any remaining prose so it matches the revised roadmap status labels
 - [ ] add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
-- [ ] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
+- [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
 - [ ] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
 - [ ] evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
@@ -467,12 +467,12 @@ What is already supported:
 What currently has positive but still provisional evidence:
 
 - explicit attention modeling
+- structured reportability of uncertainty and allocation error
 - parts of natural-language reportability infrastructure
 
 What is not yet established:
 
 - learned self-modeling of attention
-- structured reportability of uncertainty and allocation error
 - faithful natural-language reportability grounded in tokenized internal state
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
 - minimal consciousness-like content
