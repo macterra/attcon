@@ -1342,9 +1342,16 @@ def nl_report_metrics(
                 tokenized["unresolved_search_accuracy"]
                 - observation["unresolved_search_accuracy"]
             ),
+            "tokenized_current_wrong_candidate_accuracy_advantage": (
+                tokenized["current_wrong_candidate_accuracy"]
+                - observation["current_wrong_candidate_accuracy"]
+            ),
             "tokenized_wrong_candidate_history_accuracy_advantage": (
                 tokenized["wrong_candidate_history_accuracy"]
                 - observation["wrong_candidate_history_accuracy"]
+            ),
+            "tokenized_revisit_unresolved_accuracy_advantage": (
+                tokenized["revisit_unresolved_accuracy"] - observation["revisit_unresolved_accuracy"]
             ),
             "tokenized_allocation_error_accuracy_advantage": (
                 tokenized["allocation_error_accuracy"]
@@ -2456,8 +2463,14 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "tokenized_unresolved_search_accuracy_advantage": nl_report.get(
             "tokenized_unresolved_search_accuracy_advantage", 0.0
         ),
+        "tokenized_current_wrong_candidate_accuracy_advantage": nl_report.get(
+            "tokenized_current_wrong_candidate_accuracy_advantage", 0.0
+        ),
         "tokenized_wrong_candidate_history_accuracy_advantage": nl_report.get(
             "tokenized_wrong_candidate_history_accuracy_advantage", 0.0
+        ),
+        "tokenized_revisit_unresolved_accuracy_advantage": nl_report.get(
+            "tokenized_revisit_unresolved_accuracy_advantage", 0.0
         ),
         "tokenized_allocation_error_accuracy_advantage": nl_report.get(
             "tokenized_allocation_error_accuracy_advantage", 0.0

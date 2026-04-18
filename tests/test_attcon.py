@@ -254,7 +254,9 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("previous_found_target=", example.symbolic_state)
         self.assertIn("relevant_region_inspected=", example.symbolic_state)
         self.assertIn("unresolved_search=", example.symbolic_state)
+        self.assertIn("current_wrong_candidate=", example.symbolic_state)
         self.assertIn("wrong_candidate_history=", example.symbolic_state)
+        self.assertIn("revisit_unresolved=", example.symbolic_state)
         self.assertIn("allocation_error=", example.symbolic_state)
         self.assertIn("inspected_count=", example.symbolic_state)
         self.assertIn("previous_inspected_count=", example.symbolic_state)
@@ -267,7 +269,9 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("cue_switched=not_available", example.observation_only)
         self.assertIn("current_attention_location=not_available", example.observation_only)
         self.assertIn("current_attention_content=not_available", example.observation_only)
+        self.assertIn("current_wrong_candidate=not_available", example.observation_only)
         self.assertIn("wrong_candidate_history=not_available", example.observation_only)
+        self.assertIn("revisit_unresolved=not_available", example.observation_only)
         self.assertTrue(example.tokenized_state.startswith("x"))
         self.assertIsInstance(example.unresolved_cells, list)
         self.assertIsInstance(example.unresolved_rows, list)
@@ -287,7 +291,9 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.previous_found_target, bool)
         self.assertIsInstance(example.relevant_region_inspected, bool)
         self.assertIsInstance(example.unresolved_search, bool)
+        self.assertIsInstance(example.current_wrong_candidate, bool)
         self.assertIsInstance(example.wrong_candidate_history, bool)
+        self.assertIsInstance(example.revisit_unresolved, bool)
         self.assertIsInstance(example.allocation_error, bool)
         self.assertIsInstance(example.inspected_count, int)
         self.assertIsInstance(example.previous_inspected_count, int)
@@ -427,7 +433,9 @@ class AttentionControlTests(unittest.TestCase):
                     "tokenized_uncertainty_content_joint_accuracy_advantage": 0.5,
                     "tokenized_relevant_region_accuracy_advantage": 0.25,
                     "tokenized_unresolved_search_accuracy_advantage": 0.25,
+                    "tokenized_current_wrong_candidate_accuracy_advantage": 0.4,
                     "tokenized_wrong_candidate_history_accuracy_advantage": 0.5,
+                    "tokenized_revisit_unresolved_accuracy_advantage": 0.3,
                     "tokenized_allocation_error_accuracy_advantage": 0.25,
                     "content_supported": True,
                     "supported": True,
@@ -483,8 +491,16 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(nl_summary["tokenized_relevant_region_accuracy_advantage"], 0.25)
         self.assertEqual(nl_summary["tokenized_unresolved_search_accuracy_advantage"], 0.25)
         self.assertEqual(
+            nl_summary["tokenized_current_wrong_candidate_accuracy_advantage"],
+            0.4,
+        )
+        self.assertEqual(
             nl_summary["tokenized_wrong_candidate_history_accuracy_advantage"],
             0.5,
+        )
+        self.assertEqual(
+            nl_summary["tokenized_revisit_unresolved_accuracy_advantage"],
+            0.3,
         )
         self.assertEqual(nl_summary["tokenized_allocation_error_accuracy_advantage"], 0.25)
         self.assertTrue(nl_summary["cue_switch_slice_supported"])
@@ -545,7 +561,9 @@ class AttentionControlTests(unittest.TestCase):
                 "found_target": example.found_target,
                 "relevant_region_inspected": example.relevant_region_inspected,
                 "unresolved_search": example.unresolved_search,
+                "current_wrong_candidate": example.current_wrong_candidate,
                 "wrong_candidate_history": example.wrong_candidate_history,
+                "revisit_unresolved": example.revisit_unresolved,
                 "allocation_error": example.allocation_error,
                 "inspected_count": example.inspected_count,
                 "previous_inspected_count": example.previous_inspected_count,
@@ -592,7 +610,9 @@ class AttentionControlTests(unittest.TestCase):
 
         self.assertEqual(metrics["relevant_region_inspected_accuracy"], 1.0)
         self.assertEqual(metrics["unresolved_search_accuracy"], 1.0)
+        self.assertEqual(metrics["current_wrong_candidate_accuracy"], 1.0)
         self.assertEqual(metrics["wrong_candidate_history_accuracy"], 1.0)
+        self.assertEqual(metrics["revisit_unresolved_accuracy"], 1.0)
         self.assertEqual(metrics["allocation_error_accuracy"], 1.0)
         self.assertEqual(metrics["previous_search_type_accuracy"], 1.0)
         self.assertEqual(metrics["cue_switched_accuracy"], 1.0)
@@ -648,7 +668,9 @@ class AttentionControlTests(unittest.TestCase):
                 "glimpse_target_match_accuracy": 1.0,
                 "relevant_region_inspected_accuracy": 1.0,
                 "unresolved_search_accuracy": 1.0,
+                "current_wrong_candidate_accuracy": 1.0,
                 "wrong_candidate_history_accuracy": 1.0,
+                "revisit_unresolved_accuracy": 1.0,
                 "allocation_error_accuracy": 1.0,
                 "uncertainty_content_joint_accuracy": 1.0,
                 "unresolved_rows_accuracy": 1.0,

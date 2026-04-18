@@ -55,7 +55,9 @@ class NLExample:
     found_target: bool
     relevant_region_inspected: bool
     unresolved_search: bool
+    current_wrong_candidate: bool
     wrong_candidate_history: bool
+    revisit_unresolved: bool
     allocation_error: bool
     previous_found_target: bool
     inspected_count: int
@@ -102,7 +104,9 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
         f"found_target={str(example.found_target).lower()}\n"
         f"relevant_region_inspected={str(example.relevant_region_inspected).lower()}\n"
         f"unresolved_search={str(example.unresolved_search).lower()}\n"
+        f"current_wrong_candidate={str(example.current_wrong_candidate).lower()}\n"
         f"wrong_candidate_history={str(example.wrong_candidate_history).lower()}\n"
+        f"revisit_unresolved={str(example.revisit_unresolved).lower()}\n"
         f"allocation_error={str(example.allocation_error).lower()}\n"
         f"inspected_count={example.inspected_count}\n"
         f"previous_inspected_count={example.previous_inspected_count}\n"
@@ -283,10 +287,24 @@ def _render_tokenized_examples(
             dtype=torch.float32,
         ),
     )
+    current_wrong_candidate_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.current_wrong_candidate)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
     wrong_candidate_history_head = _fit_binary_probe(
         train_features,
         torch.tensor(
             [[float(example.wrong_candidate_history)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
+    revisit_unresolved_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.revisit_unresolved)] for example in calibration_examples],
             dtype=torch.float32,
         ),
     )
@@ -320,8 +338,14 @@ def _render_tokenized_examples(
         ).long()
         relevant_region_pred = (torch.sigmoid(relevant_region_head(target_features)) >= 0.5).long()
         unresolved_search_pred = (torch.sigmoid(unresolved_search_head(target_features)) >= 0.5).long()
+        current_wrong_candidate_pred = (
+            torch.sigmoid(current_wrong_candidate_head(target_features)) >= 0.5
+        ).long()
         wrong_candidate_history_pred = (
             torch.sigmoid(wrong_candidate_history_head(target_features)) >= 0.5
+        ).long()
+        revisit_unresolved_pred = (
+            torch.sigmoid(revisit_unresolved_head(target_features)) >= 0.5
         ).long()
         allocation_error_pred = (torch.sigmoid(allocation_error_head(target_features)) >= 0.5).long()
 
@@ -358,8 +382,10 @@ def _render_tokenized_examples(
             f"x{1496 + int(attended_previously_inspected_pred[idx, 0].item())}",
             f"x{1410 + int(relevant_region_pred[idx, 0].item())}",
             f"x{1412 + int(unresolved_search_pred[idx, 0].item())}",
-            f"x{1414 + int(wrong_candidate_history_pred[idx, 0].item())}",
-            f"x{1416 + int(allocation_error_pred[idx, 0].item())}",
+            f"x{1414 + int(current_wrong_candidate_pred[idx, 0].item())}",
+            f"x{1416 + int(wrong_candidate_history_pred[idx, 0].item())}",
+            f"x{1418 + int(revisit_unresolved_pred[idx, 0].item())}",
+            f"x{1420 + int(allocation_error_pred[idx, 0].item())}",
             *[f"x{1210 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(memory_bits)],
         ]
         for row in range(5):
@@ -397,7 +423,9 @@ def _render_observation_only(
         f"previous_found_target=not_available\n"
         f"relevant_region_inspected=not_available\n"
         f"unresolved_search=not_available\n"
+        f"current_wrong_candidate=not_available\n"
         f"wrong_candidate_history=not_available\n"
+        f"revisit_unresolved=not_available\n"
         f"allocation_error=not_available\n"
         f"inspected_count=not_available\n"
         f"previous_inspected_count=not_available\n"
@@ -420,7 +448,9 @@ def collect_nl_examples(
     found_state = outputs["found_state_seq"][..., 0]
     relevant_region = outputs["relevant_region_seq"][..., 0]
     unresolved_search = outputs["unresolved_search_seq"][..., 0]
+    current_wrong_candidate = outputs["current_wrong_candidate_seq"][..., 0]
     wrong_candidate_history = outputs["wrong_candidate_history_seq"][..., 0]
+    revisit_unresolved = outputs["revisit_unresolved_seq"][..., 0]
     allocation_error = outputs["allocation_error_seq"][..., 0]
     inspection = outputs["inspection_seq"]
     observation = outputs["observation_seq"]
@@ -469,8 +499,14 @@ def collect_nl_examples(
                 found_target=bool(found_state[batch_idx, step_idx].item() >= 0.5),
                 relevant_region_inspected=bool(relevant_region[batch_idx, step_idx].item() >= 0.5),
                 unresolved_search=bool(unresolved_search[batch_idx, step_idx].item() >= 0.5),
+                current_wrong_candidate=bool(
+                    current_wrong_candidate[batch_idx, step_idx].item() >= 0.5
+                ),
                 wrong_candidate_history=bool(
                     wrong_candidate_history[batch_idx, step_idx].item() >= 0.5
+                ),
+                revisit_unresolved=bool(
+                    revisit_unresolved[batch_idx, step_idx].item() >= 0.5
                 ),
                 allocation_error=bool(allocation_error[batch_idx, step_idx].item() >= 0.5),
                 inspected_count=inspected_count,
@@ -643,7 +679,9 @@ def _schema() -> dict[str, Any]:
                 "found_target": {"type": "boolean"},
                 "relevant_region_inspected": {"type": "boolean"},
                 "unresolved_search": {"type": "boolean"},
+                "current_wrong_candidate": {"type": "boolean"},
                 "wrong_candidate_history": {"type": "boolean"},
+                "revisit_unresolved": {"type": "boolean"},
                 "allocation_error": {"type": "boolean"},
                 "inspected_count": {"type": "integer"},
                 "previous_inspected_count": {"type": "integer"},
@@ -676,7 +714,9 @@ def _schema() -> dict[str, Any]:
                 "found_target",
                 "relevant_region_inspected",
                 "unresolved_search",
+                "current_wrong_candidate",
                 "wrong_candidate_history",
+                "revisit_unresolved",
                 "allocation_error",
                 "inspected_count",
                 "previous_inspected_count",
@@ -777,7 +817,8 @@ def _make_messages(
                 f"previous visible type {example.prev_attended_visible_type}; previous attended digit {example.prev_attended_digit}; "
                 f"previous glimpse digit {example.prev_glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
                 f"previous found {str(example.previous_found_target).lower()}; found {str(example.found_target).lower()}; relevant inspected {str(example.relevant_region_inspected).lower()}; "
-                f"unresolved search {str(example.unresolved_search).lower()}; wrong candidate history {str(example.wrong_candidate_history).lower()}; "
+                f"unresolved search {str(example.unresolved_search).lower()}; current wrong candidate {str(example.current_wrong_candidate).lower()}; "
+                f"wrong candidate history {str(example.wrong_candidate_history).lower()}; revisit unresolved {str(example.revisit_unresolved).lower()}; "
                 f"allocation error {str(example.allocation_error).lower()}; inspected count {example.inspected_count}; previous inspected count {example.previous_inspected_count}; "
                 f"attended previously inspected {str(example.attended_cell_previously_inspected).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
             ),
@@ -797,7 +838,9 @@ def _make_messages(
             "found_target": example.found_target,
             "relevant_region_inspected": example.relevant_region_inspected,
             "unresolved_search": example.unresolved_search,
+            "current_wrong_candidate": example.current_wrong_candidate,
             "wrong_candidate_history": example.wrong_candidate_history,
+            "revisit_unresolved": example.revisit_unresolved,
             "allocation_error": example.allocation_error,
             "inspected_count": example.inspected_count,
             "previous_inspected_count": example.previous_inspected_count,
@@ -857,7 +900,9 @@ def run_nl_report_mode(
     exact_found = 0
     exact_relevant_region = 0
     exact_unresolved_search = 0
+    exact_current_wrong_candidate = 0
     exact_wrong_candidate_history = 0
+    exact_revisit_unresolved = 0
     exact_allocation_error = 0
     exact_inspected_count = 0
     exact_previous_inspected_count = 0
@@ -917,8 +962,14 @@ def run_nl_report_mode(
             bool(parsed["relevant_region_inspected"]) == example.relevant_region_inspected
         )
         exact_unresolved_search += int(bool(parsed["unresolved_search"]) == example.unresolved_search)
+        exact_current_wrong_candidate += int(
+            bool(parsed["current_wrong_candidate"]) == example.current_wrong_candidate
+        )
         exact_wrong_candidate_history += int(
             bool(parsed["wrong_candidate_history"]) == example.wrong_candidate_history
+        )
+        exact_revisit_unresolved += int(
+            bool(parsed["revisit_unresolved"]) == example.revisit_unresolved
         )
         exact_allocation_error += int(bool(parsed["allocation_error"]) == example.allocation_error)
         exact_inspected_count += int(parsed["inspected_count"] == example.inspected_count)
@@ -956,7 +1007,9 @@ def run_nl_report_mode(
                     "found_target": example.found_target,
                     "relevant_region_inspected": example.relevant_region_inspected,
                     "unresolved_search": example.unresolved_search,
+                    "current_wrong_candidate": example.current_wrong_candidate,
                     "wrong_candidate_history": example.wrong_candidate_history,
+                    "revisit_unresolved": example.revisit_unresolved,
                     "allocation_error": example.allocation_error,
                     "inspected_count": example.inspected_count,
                     "previous_inspected_count": example.previous_inspected_count,
@@ -987,7 +1040,9 @@ def run_nl_report_mode(
         "found_target_accuracy": exact_found / denom,
         "relevant_region_inspected_accuracy": exact_relevant_region / denom,
         "unresolved_search_accuracy": exact_unresolved_search / denom,
+        "current_wrong_candidate_accuracy": exact_current_wrong_candidate / denom,
         "wrong_candidate_history_accuracy": exact_wrong_candidate_history / denom,
+        "revisit_unresolved_accuracy": exact_revisit_unresolved / denom,
         "allocation_error_accuracy": exact_allocation_error / denom,
         "inspected_count_accuracy": exact_inspected_count / denom,
         "previous_inspected_count_accuracy": exact_previous_inspected_count / denom,
@@ -1051,8 +1106,12 @@ def run_nl_report_mode(
                     == item["expected"]["relevant_region_inspected"]
                     and bool(item["response"]["unresolved_search"])
                     == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["current_wrong_candidate"])
+                    == item["expected"]["current_wrong_candidate"]
                     and bool(item["response"]["wrong_candidate_history"])
                     == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["revisit_unresolved"])
+                    == item["expected"]["revisit_unresolved"]
                     and bool(item["response"]["allocation_error"])
                     == item["expected"]["allocation_error"]
                 )
@@ -1067,8 +1126,12 @@ def run_nl_report_mode(
                     == item["expected"]["relevant_region_inspected"]
                     and bool(item["response"]["unresolved_search"])
                     == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["current_wrong_candidate"])
+                    == item["expected"]["current_wrong_candidate"]
                     and bool(item["response"]["wrong_candidate_history"])
                     == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["revisit_unresolved"])
+                    == item["expected"]["revisit_unresolved"]
                     and bool(item["response"]["allocation_error"])
                     == item["expected"]["allocation_error"]
                 )
@@ -1103,8 +1166,12 @@ def run_nl_report_mode(
                     == item["expected"]["relevant_region_inspected"]
                     and bool(item["response"]["unresolved_search"])
                     == item["expected"]["unresolved_search"]
+                    and bool(item["response"]["current_wrong_candidate"])
+                    == item["expected"]["current_wrong_candidate"]
                     and bool(item["response"]["wrong_candidate_history"])
                     == item["expected"]["wrong_candidate_history"]
+                    and bool(item["response"]["revisit_unresolved"])
+                    == item["expected"]["revisit_unresolved"]
                     and bool(item["response"]["allocation_error"])
                     == item["expected"]["allocation_error"]
                     and item["response"]["inspected_count"] == item["expected"]["inspected_count"]
