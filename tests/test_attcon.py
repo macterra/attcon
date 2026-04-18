@@ -930,6 +930,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("reduced_shaping", report)
             self.assertIn("self_state_diagnostics", report)
             self.assertIn("self_model_diagnostics", report)
+            self.assertIn("stage7_visual_report_summary", report)
             self.assertIn("stage3_multi_seed", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
@@ -981,6 +982,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertTrue(report["artifacts"]["stage7_visual_reports"])
             self.assertTrue(Path(report["artifacts"]["stage7_visual_reports"][0]).exists())
             self.assertTrue(Path(report["artifacts"]["stage7_visual_report_metadata"]).exists())
+            self.assertGreaterEqual(report["stage7_visual_report_summary"]["num_examples"], 1)
 
 
 if __name__ == "__main__":

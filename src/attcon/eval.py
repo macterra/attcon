@@ -2812,6 +2812,34 @@ def save_stage7_visual_report_plots(
     }
 
 
+def load_stage7_visual_report_summary(metadata_path: str | Path) -> dict[str, Any]:
+    """Build a compact summary over exported Stage 7 visual panel metadata."""
+
+    path = Path(metadata_path)
+    if not path.exists():
+        return {}
+
+    with open(path, "r", encoding="utf-8") as handle:
+        metadata = json.load(handle)
+
+    slice_names = [item["slice"] for item in metadata]
+    return {
+        "num_examples": len(metadata),
+        "slice_names": slice_names,
+        "cue_switch_examples": sum(int("cue_switch" in name) for name in slice_names),
+        "intervention_examples": sum(int("intervention" in name) for name in slice_names),
+        "current_wrong_candidate_examples": sum(
+            int(bool(item.get("current_wrong_candidate", False))) for item in metadata
+        ),
+        "revisit_unresolved_examples": sum(
+            int(bool(item.get("revisit_unresolved", False))) for item in metadata
+        ),
+        "allocation_error_examples": sum(
+            int(bool(item.get("allocation_error", False))) for item in metadata
+        ),
+    }
+
+
 def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[str, Any]:
     """Run the full evaluation suite and write a JSON report plus plot artifacts."""
 
@@ -3066,6 +3094,9 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["stage7_visual_report_metadata"] = stage7_visual_report_artifacts[
         "metadata_path"
     ]
+    report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
+        stage7_visual_report_artifacts["metadata_path"]
+    )
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"
