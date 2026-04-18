@@ -125,6 +125,18 @@ def _chunk_bits(vector: torch.Tensor, num_bits: int = 4) -> list[int]:
     return [int(chunk.mean().item() >= 0.0) for chunk in chunks]
 
 
+def _opaque_value_token(base: int, value: int) -> str:
+    return f"x{base + value}"
+
+
+def _opaque_bool_token(base: int, value: int) -> str:
+    return f"x{base + int(value)}"
+
+
+def _opaque_bit_tokens(base: int, bits: list[int]) -> list[str]:
+    return [f"x{base + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(bits)]
+
+
 def _fit_multiclass_probe(
     features: torch.Tensor,
     labels: torch.Tensor,
@@ -357,42 +369,42 @@ def _render_tokenized_examples(
         memory_bits = _chunk_bits(example.memory_state)
         tokens = [
             "x900",
-            f"x{100 + example.cue}",
-            f"x{1800 + int(previous_cue_pred[idx].item())}",
-            f"x{1810 + int(cue_switched_pred[idx, 0].item())}",
+            _opaque_value_token(100, example.cue),
+            _opaque_value_token(200, int(previous_cue_pred[idx].item())),
+            _opaque_bool_token(300, int(cue_switched_pred[idx, 0].item())),
             "x901",
-            f"x{1000 + int(current_cell_pred[idx].item())}",
-            f"x{1100 + int(current_visible_type_pred[idx].item())}",
-            f"x{1110 + int(current_digit_pred[idx].item())}",
-            f"x{1120 + int(glimpse_digit_pred[idx].item())}",
-            *[f"x{1020 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(current_bits)],
-            *[f"x{1040 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(attention_bits)],
+            _opaque_value_token(1000, int(current_cell_pred[idx].item())),
+            _opaque_value_token(1100, int(current_visible_type_pred[idx].item())),
+            _opaque_value_token(1200, int(current_digit_pred[idx].item())),
+            _opaque_value_token(1300, int(glimpse_digit_pred[idx].item())),
+            *_opaque_bit_tokens(1400, current_bits),
+            *_opaque_bit_tokens(1500, attention_bits),
             "x910",
-            f"x{1200 + int(prev_cell_pred[idx].item())}",
-            f"x{1300 + int(prev_visible_type_pred[idx].item())}",
-            f"x{1310 + int(prev_digit_pred[idx].item())}",
-            f"x{1320 + int(prev_glimpse_digit_pred[idx].item())}",
-            *[f"x{1120 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_bits)],
-            *[f"x{1140 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_attention_bits)],
+            _opaque_value_token(2000, int(prev_cell_pred[idx].item())),
+            _opaque_value_token(2100, int(prev_visible_type_pred[idx].item())),
+            _opaque_value_token(2200, int(prev_digit_pred[idx].item())),
+            _opaque_value_token(2300, int(prev_glimpse_digit_pred[idx].item())),
+            *_opaque_bit_tokens(2400, prev_bits),
+            *_opaque_bit_tokens(2500, prev_attention_bits),
             "x920",
-            f"x{1400 + int(unresolved_count_pred[idx].item())}",
-            f"x{1430 + int(previous_found_pred[idx, 0].item())}",
-            f"x{1440 + int(inspected_count_pred[idx].item())}",
-            f"x{1470 + int(previous_inspected_count_pred[idx].item())}",
-            f"x{1496 + int(attended_previously_inspected_pred[idx, 0].item())}",
-            f"x{1410 + int(relevant_region_pred[idx, 0].item())}",
-            f"x{1412 + int(unresolved_search_pred[idx, 0].item())}",
-            f"x{1414 + int(current_wrong_candidate_pred[idx, 0].item())}",
-            f"x{1416 + int(wrong_candidate_history_pred[idx, 0].item())}",
-            f"x{1418 + int(revisit_unresolved_pred[idx, 0].item())}",
-            f"x{1420 + int(allocation_error_pred[idx, 0].item())}",
-            *[f"x{1210 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(memory_bits)],
+            _opaque_value_token(3000, int(unresolved_count_pred[idx].item())),
+            _opaque_bool_token(3100, int(previous_found_pred[idx, 0].item())),
+            _opaque_value_token(3200, int(inspected_count_pred[idx].item())),
+            _opaque_value_token(3300, int(previous_inspected_count_pred[idx].item())),
+            _opaque_bool_token(3400, int(attended_previously_inspected_pred[idx, 0].item())),
+            _opaque_bool_token(3500, int(relevant_region_pred[idx, 0].item())),
+            _opaque_bool_token(3510, int(unresolved_search_pred[idx, 0].item())),
+            _opaque_bool_token(3520, int(current_wrong_candidate_pred[idx, 0].item())),
+            _opaque_bool_token(3530, int(wrong_candidate_history_pred[idx, 0].item())),
+            _opaque_bool_token(3540, int(revisit_unresolved_pred[idx, 0].item())),
+            _opaque_bool_token(3550, int(allocation_error_pred[idx, 0].item())),
+            *_opaque_bit_tokens(3600, memory_bits),
         ]
         for row in range(5):
-            tokens.append(f"x{1500 + row * 2 + int(unresolved_row_pred[idx, row].item())}")
+            tokens.append(_opaque_bool_token(3700 + row * 10, int(unresolved_row_pred[idx, row].item())))
         tokens.append("x930")
         for col in range(5):
-            tokens.append(f"x{1520 + col * 2 + int(unresolved_col_pred[idx, col].item())}")
+            tokens.append(_opaque_bool_token(3800 + col * 10, int(unresolved_col_pred[idx, col].item())))
         example.tokenized_state = " ".join(tokens)
 
 
