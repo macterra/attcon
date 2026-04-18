@@ -41,6 +41,8 @@ class NLExample:
     example_id: str
     step_index: int
     cue: int
+    previous_cue: int
+    cue_switched: bool
     attended_cell: int
     attended_visible_type: int
     attended_digit: int
@@ -55,6 +57,10 @@ class NLExample:
     unresolved_search: bool
     wrong_candidate_history: bool
     allocation_error: bool
+    previous_found_target: bool
+    inspected_count: int
+    previous_inspected_count: int
+    attended_cell_previously_inspected: bool
     unresolved_cells: list[int]
     unresolved_rows: list[int]
     unresolved_cols: list[int]
@@ -81,6 +87,8 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
     attended = _cell_name(example.attended_cell, grid_size)
     return (
         f"search_type={example.cue}\n"
+        f"previous_search_type={example.previous_cue}\n"
+        f"cue_switched={str(example.cue_switched).lower()}\n"
         f"attended_cell={attended}\n"
         f"attended_visible_type={example.attended_visible_type}\n"
         f"attended_digit={example.attended_digit}\n"
@@ -90,11 +98,15 @@ def _render_symbolic_state(example: NLExample, grid_size: int) -> str:
         f"previous_attended_digit={example.prev_attended_digit}\n"
         f"previous_glimpse_digit={example.prev_glimpse_digit}\n"
         f"glimpse_target_match={str(example.glimpse_target_match).lower()}\n"
+        f"previous_found_target={str(example.previous_found_target).lower()}\n"
         f"found_target={str(example.found_target).lower()}\n"
         f"relevant_region_inspected={str(example.relevant_region_inspected).lower()}\n"
         f"unresolved_search={str(example.unresolved_search).lower()}\n"
         f"wrong_candidate_history={str(example.wrong_candidate_history).lower()}\n"
         f"allocation_error={str(example.allocation_error).lower()}\n"
+        f"inspected_count={example.inspected_count}\n"
+        f"previous_inspected_count={example.previous_inspected_count}\n"
+        f"attended_cell_previously_inspected={str(example.attended_cell_previously_inspected).lower()}\n"
         f"unresolved_rows={unresolved_rows}\n"
         f"unresolved_cols={unresolved_cols}\n"
         f"unresolved_count={example.unresolved_count}\n"
@@ -224,6 +236,39 @@ def _render_tokenized_examples(
         torch.tensor([example.unresolved_count for example in calibration_examples]),
         num_classes=26,
     )
+    previous_cue_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.previous_cue for example in calibration_examples]),
+        num_classes=8,
+    )
+    cue_switched_head = _fit_binary_probe(
+        train_features,
+        torch.tensor([[float(example.cue_switched)] for example in calibration_examples], dtype=torch.float32),
+    )
+    previous_found_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.previous_found_target)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
+    inspected_count_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.inspected_count for example in calibration_examples]),
+        num_classes=26,
+    )
+    previous_inspected_count_head = _fit_multiclass_probe(
+        train_features,
+        torch.tensor([example.previous_inspected_count for example in calibration_examples]),
+        num_classes=26,
+    )
+    attended_previously_inspected_head = _fit_binary_probe(
+        train_features,
+        torch.tensor(
+            [[float(example.attended_cell_previously_inspected)] for example in calibration_examples],
+            dtype=torch.float32,
+        ),
+    )
     relevant_region_head = _fit_binary_probe(
         train_features,
         torch.tensor(
@@ -265,6 +310,14 @@ def _render_tokenized_examples(
         unresolved_row_pred = (torch.sigmoid(unresolved_row_head(target_features)) >= 0.5).long()
         unresolved_col_pred = (torch.sigmoid(unresolved_col_head(target_features)) >= 0.5).long()
         unresolved_count_pred = unresolved_count_head(target_features).argmax(dim=-1)
+        previous_cue_pred = previous_cue_head(target_features).argmax(dim=-1)
+        cue_switched_pred = (torch.sigmoid(cue_switched_head(target_features)) >= 0.5).long()
+        previous_found_pred = (torch.sigmoid(previous_found_head(target_features)) >= 0.5).long()
+        inspected_count_pred = inspected_count_head(target_features).argmax(dim=-1)
+        previous_inspected_count_pred = previous_inspected_count_head(target_features).argmax(dim=-1)
+        attended_previously_inspected_pred = (
+            torch.sigmoid(attended_previously_inspected_head(target_features)) >= 0.5
+        ).long()
         relevant_region_pred = (torch.sigmoid(relevant_region_head(target_features)) >= 0.5).long()
         unresolved_search_pred = (torch.sigmoid(unresolved_search_head(target_features)) >= 0.5).long()
         wrong_candidate_history_pred = (
@@ -281,6 +334,8 @@ def _render_tokenized_examples(
         tokens = [
             "x900",
             f"x{100 + example.cue}",
+            f"x{1800 + int(previous_cue_pred[idx].item())}",
+            f"x{1810 + int(cue_switched_pred[idx, 0].item())}",
             "x901",
             f"x{1000 + int(current_cell_pred[idx].item())}",
             f"x{1100 + int(current_visible_type_pred[idx].item())}",
@@ -297,6 +352,10 @@ def _render_tokenized_examples(
             *[f"x{1140 + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(prev_attention_bits)],
             "x920",
             f"x{1400 + int(unresolved_count_pred[idx].item())}",
+            f"x{1430 + int(previous_found_pred[idx, 0].item())}",
+            f"x{1440 + int(inspected_count_pred[idx].item())}",
+            f"x{1470 + int(previous_inspected_count_pred[idx].item())}",
+            f"x{1496 + int(attended_previously_inspected_pred[idx, 0].item())}",
             f"x{1410 + int(relevant_region_pred[idx, 0].item())}",
             f"x{1412 + int(unresolved_search_pred[idx, 0].item())}",
             f"x{1414 + int(wrong_candidate_history_pred[idx, 0].item())}",
@@ -315,6 +374,7 @@ def _render_observation_only(
     visible_types: torch.Tensor,
     observation: torch.Tensor,
     cue: int,
+    previous_cue: int,
     grid_size: int,
 ) -> str:
     visible_rows = []
@@ -326,16 +386,22 @@ def _render_observation_only(
     digit_idx = int(observation[1:].argmax().item())
     return (
         f"cue={cue}\n"
+        f"previous_cue={previous_cue}\n"
         f"visible_grid=\n" + "\n".join(visible_rows) + "\n"
         f"current_glimpse_target_match={target_match:.3f}\n"
         f"current_glimpse_digit_argmax={digit_idx}\n"
         f"current_attention_location=not_available\n"
         f"current_attention_content=not_available\n"
         f"memory_about_previous_attention=not_available\n"
+        f"cue_switched=not_available\n"
+        f"previous_found_target=not_available\n"
         f"relevant_region_inspected=not_available\n"
         f"unresolved_search=not_available\n"
         f"wrong_candidate_history=not_available\n"
         f"allocation_error=not_available\n"
+        f"inspected_count=not_available\n"
+        f"previous_inspected_count=not_available\n"
+        f"attended_cell_previously_inspected=not_available\n"
         f"unresolved_information=not_available"
     )
 
@@ -345,6 +411,8 @@ def collect_nl_examples(
     task_cfg,
     batch,
     outputs: dict[str, torch.Tensor],
+    *,
+    cue_seq: torch.Tensor | None = None,
 ) -> list[NLExample]:
     """Extract per-step examples from one batch of recurrent outputs."""
 
@@ -358,6 +426,8 @@ def collect_nl_examples(
     observation = outputs["observation_seq"]
     controller_states = outputs["controller_state_seq"]
     visible_types = batch.visible_types
+    if cue_seq is None:
+        cue_seq = batch.cue.unsqueeze(1).repeat(1, task_cfg.num_steps)
 
     examples: list[NLExample] = []
     for batch_idx in range(batch.scene.shape[0]):
@@ -372,14 +442,20 @@ def collect_nl_examples(
             prev_attended_digit = int(batch.digits[batch_idx, prev_attended_cell].item())
             prev_glimpse_digit = int(observation[batch_idx, prev_step_idx, 1:].argmax().item())
             glimpse_target_match = bool(observation[batch_idx, step_idx, 0].item() >= 0.5)
+            current_cue = int(cue_seq[batch_idx, step_idx].item())
+            previous_cue = int(cue_seq[batch_idx, prev_step_idx].item())
             unresolved = torch.nonzero(
                 inspection[batch_idx, step_idx] < 0.5, as_tuple=False
             ).flatten().tolist()
             unresolved = [int(cell) for cell in unresolved]
+            inspected_count = int(inspection[batch_idx, step_idx].sum().item())
+            previous_inspected_count = int(inspection[batch_idx, prev_step_idx].sum().item())
             example = NLExample(
                 example_id=f"scene{batch_idx}_step{step_idx}",
                 step_index=step_idx,
-                cue=int(batch.cue[batch_idx].item()),
+                cue=current_cue,
+                previous_cue=previous_cue,
+                cue_switched=bool(step_idx > 0 and current_cue != previous_cue),
                 attended_cell=attended_cell,
                 attended_visible_type=attended_visible_type,
                 attended_digit=attended_digit,
@@ -389,6 +465,7 @@ def collect_nl_examples(
                 prev_attended_digit=prev_attended_digit,
                 prev_glimpse_digit=prev_glimpse_digit,
                 glimpse_target_match=glimpse_target_match,
+                previous_found_target=bool(found_state[batch_idx, prev_step_idx].item() >= 0.5),
                 found_target=bool(found_state[batch_idx, step_idx].item() >= 0.5),
                 relevant_region_inspected=bool(relevant_region[batch_idx, step_idx].item() >= 0.5),
                 unresolved_search=bool(unresolved_search[batch_idx, step_idx].item() >= 0.5),
@@ -396,6 +473,11 @@ def collect_nl_examples(
                     wrong_candidate_history[batch_idx, step_idx].item() >= 0.5
                 ),
                 allocation_error=bool(allocation_error[batch_idx, step_idx].item() >= 0.5),
+                inspected_count=inspected_count,
+                previous_inspected_count=previous_inspected_count,
+                attended_cell_previously_inspected=bool(
+                    inspection[batch_idx, prev_step_idx, attended_cell].item() >= 0.5
+                ),
                 unresolved_cells=unresolved,
                 unresolved_rows=sorted({cell // task_cfg.grid_size for cell in unresolved}),
                 unresolved_cols=sorted({cell % task_cfg.grid_size for cell in unresolved}),
@@ -420,6 +502,7 @@ def collect_nl_examples(
                 visible_types[batch_idx],
                 observation[batch_idx, step_idx],
                 example.cue,
+                example.previous_cue,
                 task_cfg.grid_size,
             )
             examples.append(example)
@@ -435,6 +518,8 @@ def _schema() -> dict[str, Any]:
             "properties": {
                 "natural_language_report": {"type": "string"},
                 "search_type": {"type": "integer"},
+                "previous_search_type": {"type": "integer"},
+                "cue_switched": {"type": "boolean"},
                 "attended_cell": {
                     "type": "array",
                     "items": {"type": "integer"},
@@ -454,11 +539,15 @@ def _schema() -> dict[str, Any]:
                 "previous_attended_digit": {"type": "integer"},
                 "previous_glimpse_digit": {"type": "integer"},
                 "glimpse_target_match": {"type": "boolean"},
+                "previous_found_target": {"type": "boolean"},
                 "found_target": {"type": "boolean"},
                 "relevant_region_inspected": {"type": "boolean"},
                 "unresolved_search": {"type": "boolean"},
                 "wrong_candidate_history": {"type": "boolean"},
                 "allocation_error": {"type": "boolean"},
+                "inspected_count": {"type": "integer"},
+                "previous_inspected_count": {"type": "integer"},
+                "attended_cell_previously_inspected": {"type": "boolean"},
                 "unresolved_rows": {
                     "type": "array",
                     "items": {"type": "integer"},
@@ -472,6 +561,8 @@ def _schema() -> dict[str, Any]:
             "required": [
                 "natural_language_report",
                 "search_type",
+                "previous_search_type",
+                "cue_switched",
                 "attended_cell",
                 "attended_visible_type",
                 "attended_digit",
@@ -481,11 +572,15 @@ def _schema() -> dict[str, Any]:
                 "previous_attended_digit",
                 "previous_glimpse_digit",
                 "glimpse_target_match",
+                "previous_found_target",
                 "found_target",
                 "relevant_region_inspected",
                 "unresolved_search",
                 "wrong_candidate_history",
                 "allocation_error",
+                "inspected_count",
+                "previous_inspected_count",
+                "attended_cell_previously_inspected",
                 "unresolved_rows",
                 "unresolved_cols",
                 "unresolved_count",
@@ -576,15 +671,19 @@ def _make_messages(
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
+                f"previous search type {example.previous_cue}; cue switched {str(example.cue_switched).lower()}; "
                 f"visible type {example.attended_visible_type}; attended digit {example.attended_digit}; "
                 f"glimpse digit {example.glimpse_digit}; previous attend {_cell_name(example.prev_attended_cell, grid_size)}; "
                 f"previous visible type {example.prev_attended_visible_type}; previous attended digit {example.prev_attended_digit}; "
                 f"previous glimpse digit {example.prev_glimpse_digit}; match {str(example.glimpse_target_match).lower()}; "
-                f"found {str(example.found_target).lower()}; relevant inspected {str(example.relevant_region_inspected).lower()}; "
+                f"previous found {str(example.previous_found_target).lower()}; found {str(example.found_target).lower()}; relevant inspected {str(example.relevant_region_inspected).lower()}; "
                 f"unresolved search {str(example.unresolved_search).lower()}; wrong candidate history {str(example.wrong_candidate_history).lower()}; "
-                f"allocation error {str(example.allocation_error).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
+                f"allocation error {str(example.allocation_error).lower()}; inspected count {example.inspected_count}; previous inspected count {example.previous_inspected_count}; "
+                f"attended previously inspected {str(example.attended_cell_previously_inspected).lower()}; rows {example.unresolved_rows}; cols {example.unresolved_cols}; unresolved {example.unresolved_count}"
             ),
             "search_type": example.cue,
+            "previous_search_type": example.previous_cue,
+            "cue_switched": example.cue_switched,
             "attended_cell": list(divmod(example.attended_cell, grid_size)),
             "attended_visible_type": example.attended_visible_type,
             "attended_digit": example.attended_digit,
@@ -594,11 +693,15 @@ def _make_messages(
             "previous_attended_digit": example.prev_attended_digit,
             "previous_glimpse_digit": example.prev_glimpse_digit,
             "glimpse_target_match": example.glimpse_target_match,
+            "previous_found_target": example.previous_found_target,
             "found_target": example.found_target,
             "relevant_region_inspected": example.relevant_region_inspected,
             "unresolved_search": example.unresolved_search,
             "wrong_candidate_history": example.wrong_candidate_history,
             "allocation_error": example.allocation_error,
+            "inspected_count": example.inspected_count,
+            "previous_inspected_count": example.previous_inspected_count,
+            "attended_cell_previously_inspected": example.attended_cell_previously_inspected,
             "unresolved_rows": example.unresolved_rows,
             "unresolved_cols": example.unresolved_cols,
             "unresolved_count": example.unresolved_count,
@@ -639,6 +742,8 @@ def run_nl_report_mode(
     client = OpenAI(max_retries=2, timeout=90.0)
     results = []
     exact_search = 0
+    exact_previous_search = 0
+    exact_cue_switched = 0
     exact_attended = 0
     exact_visible_type = 0
     exact_attended_digit = 0
@@ -648,11 +753,15 @@ def run_nl_report_mode(
     exact_prev_attended_digit = 0
     exact_prev_glimpse_digit = 0
     exact_glimpse_match = 0
+    exact_previous_found = 0
     exact_found = 0
     exact_relevant_region = 0
     exact_unresolved_search = 0
     exact_wrong_candidate_history = 0
     exact_allocation_error = 0
+    exact_inspected_count = 0
+    exact_previous_inspected_count = 0
+    exact_attended_previously_inspected = 0
     exact_unresolved_rows = 0
     exact_unresolved_cols = 0
     exact_unresolved_count = 0
@@ -689,6 +798,8 @@ def run_nl_report_mode(
         expected_prev_attended = list(divmod(example.prev_attended_cell, grid_size))
 
         exact_search += int(parsed["search_type"] == example.cue)
+        exact_previous_search += int(parsed["previous_search_type"] == example.previous_cue)
+        exact_cue_switched += int(bool(parsed["cue_switched"]) == example.cue_switched)
         exact_attended += int(parsed["attended_cell"] == expected_attended)
         exact_visible_type += int(parsed["attended_visible_type"] == example.attended_visible_type)
         exact_attended_digit += int(parsed["attended_digit"] == example.attended_digit)
@@ -700,6 +811,7 @@ def run_nl_report_mode(
         exact_prev_attended_digit += int(parsed["previous_attended_digit"] == example.prev_attended_digit)
         exact_prev_glimpse_digit += int(parsed["previous_glimpse_digit"] == example.prev_glimpse_digit)
         exact_glimpse_match += int(bool(parsed["glimpse_target_match"]) == example.glimpse_target_match)
+        exact_previous_found += int(bool(parsed["previous_found_target"]) == example.previous_found_target)
         exact_found += int(bool(parsed["found_target"]) == example.found_target)
         exact_relevant_region += int(
             bool(parsed["relevant_region_inspected"]) == example.relevant_region_inspected
@@ -709,6 +821,14 @@ def run_nl_report_mode(
             bool(parsed["wrong_candidate_history"]) == example.wrong_candidate_history
         )
         exact_allocation_error += int(bool(parsed["allocation_error"]) == example.allocation_error)
+        exact_inspected_count += int(parsed["inspected_count"] == example.inspected_count)
+        exact_previous_inspected_count += int(
+            parsed["previous_inspected_count"] == example.previous_inspected_count
+        )
+        exact_attended_previously_inspected += int(
+            bool(parsed["attended_cell_previously_inspected"])
+            == example.attended_cell_previously_inspected
+        )
         exact_unresolved_rows += int(parsed["unresolved_rows"] == example.unresolved_rows)
         exact_unresolved_cols += int(parsed["unresolved_cols"] == example.unresolved_cols)
         exact_unresolved_count += int(parsed["unresolved_count"] == example.unresolved_count)
@@ -721,6 +841,8 @@ def run_nl_report_mode(
                 "response": parsed,
                 "expected": {
                     "search_type": example.cue,
+                    "previous_search_type": example.previous_cue,
+                    "cue_switched": example.cue_switched,
                     "attended_cell": expected_attended,
                     "attended_visible_type": example.attended_visible_type,
                     "attended_digit": example.attended_digit,
@@ -730,11 +852,15 @@ def run_nl_report_mode(
                     "previous_attended_digit": example.prev_attended_digit,
                     "previous_glimpse_digit": example.prev_glimpse_digit,
                     "glimpse_target_match": example.glimpse_target_match,
+                    "previous_found_target": example.previous_found_target,
                     "found_target": example.found_target,
                     "relevant_region_inspected": example.relevant_region_inspected,
                     "unresolved_search": example.unresolved_search,
                     "wrong_candidate_history": example.wrong_candidate_history,
                     "allocation_error": example.allocation_error,
+                    "inspected_count": example.inspected_count,
+                    "previous_inspected_count": example.previous_inspected_count,
+                    "attended_cell_previously_inspected": example.attended_cell_previously_inspected,
                     "unresolved_rows": example.unresolved_rows,
                     "unresolved_cols": example.unresolved_cols,
                     "unresolved_count": example.unresolved_count,
@@ -746,6 +872,8 @@ def run_nl_report_mode(
     return {
         "mode": mode,
         "search_type_accuracy": exact_search / denom,
+        "previous_search_type_accuracy": exact_previous_search / denom,
+        "cue_switched_accuracy": exact_cue_switched / denom,
         "attended_cell_accuracy": exact_attended / denom,
         "attended_visible_type_accuracy": exact_visible_type / denom,
         "attended_digit_accuracy": exact_attended_digit / denom,
@@ -755,11 +883,15 @@ def run_nl_report_mode(
         "previous_attended_digit_accuracy": exact_prev_attended_digit / denom,
         "previous_glimpse_digit_accuracy": exact_prev_glimpse_digit / denom,
         "glimpse_target_match_accuracy": exact_glimpse_match / denom,
+        "previous_found_target_accuracy": exact_previous_found / denom,
         "found_target_accuracy": exact_found / denom,
         "relevant_region_inspected_accuracy": exact_relevant_region / denom,
         "unresolved_search_accuracy": exact_unresolved_search / denom,
         "wrong_candidate_history_accuracy": exact_wrong_candidate_history / denom,
         "allocation_error_accuracy": exact_allocation_error / denom,
+        "inspected_count_accuracy": exact_inspected_count / denom,
+        "previous_inspected_count_accuracy": exact_previous_inspected_count / denom,
+        "attended_cell_previously_inspected_accuracy": exact_attended_previously_inspected / denom,
         "unresolved_rows_accuracy": exact_unresolved_rows / denom,
         "unresolved_cols_accuracy": exact_unresolved_cols / denom,
         "unresolved_count_accuracy": exact_unresolved_count / denom,
@@ -793,6 +925,16 @@ def run_nl_report_mode(
         "content_only_joint_accuracy": (
             sum(
                 int(
+                    item["response"]["previous_search_type"] == item["expected"]["previous_search_type"]
+                    and bool(item["response"]["cue_switched"]) == item["expected"]["cue_switched"]
+                    and bool(item["response"]["previous_found_target"])
+                    == item["expected"]["previous_found_target"]
+                    and item["response"]["inspected_count"] == item["expected"]["inspected_count"]
+                    and item["response"]["previous_inspected_count"]
+                    == item["expected"]["previous_inspected_count"]
+                    and bool(item["response"]["attended_cell_previously_inspected"])
+                    == item["expected"]["attended_cell_previously_inspected"]
+                    and
                     item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
                     and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
                     and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
@@ -838,6 +980,8 @@ def run_nl_report_mode(
             sum(
                 int(
                     item["response"]["search_type"] == item["expected"]["search_type"]
+                    and item["response"]["previous_search_type"] == item["expected"]["previous_search_type"]
+                    and bool(item["response"]["cue_switched"]) == item["expected"]["cue_switched"]
                     and item["response"]["attended_cell"] == item["expected"]["attended_cell"]
                     and item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
                     and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
@@ -852,6 +996,8 @@ def run_nl_report_mode(
                     == item["expected"]["previous_glimpse_digit"]
                     and bool(item["response"]["glimpse_target_match"])
                     == item["expected"]["glimpse_target_match"]
+                    and bool(item["response"]["previous_found_target"])
+                    == item["expected"]["previous_found_target"]
                     and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
                     and bool(item["response"]["relevant_region_inspected"])
                     == item["expected"]["relevant_region_inspected"]
@@ -861,6 +1007,11 @@ def run_nl_report_mode(
                     == item["expected"]["wrong_candidate_history"]
                     and bool(item["response"]["allocation_error"])
                     == item["expected"]["allocation_error"]
+                    and item["response"]["inspected_count"] == item["expected"]["inspected_count"]
+                    and item["response"]["previous_inspected_count"]
+                    == item["expected"]["previous_inspected_count"]
+                    and bool(item["response"]["attended_cell_previously_inspected"])
+                    == item["expected"]["attended_cell_previously_inspected"]
                     and item["response"]["unresolved_rows"] == item["expected"]["unresolved_rows"]
                     and item["response"]["unresolved_cols"] == item["expected"]["unresolved_cols"]
                     and item["response"]["unresolved_count"] == item["expected"]["unresolved_count"]
