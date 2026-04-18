@@ -1656,6 +1656,53 @@ def save_intervention_plots(
     return saved_paths
 
 
+def save_self_state_plots(
+    diagnostics: dict[str, Any],
+    output_dir: Path,
+) -> list[str]:
+    """Render compact line plots for recurrent self-state diagnostics."""
+
+    if not diagnostics:
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    num_steps = len(diagnostics["inspection_coverage_by_step"])
+    steps = list(range(1, num_steps + 1))
+
+    fig, axes = plt.subplots(2, 1, figsize=(8, 7), sharex=True)
+    bounded_series = (
+        ("inspection_coverage_by_step", "Inspection coverage"),
+        ("found_state_rate_by_step", "Found state"),
+        ("relevant_region_rate_by_step", "Relevant region"),
+        ("unresolved_search_rate_by_step", "Unresolved search"),
+        ("wrong_candidate_history_rate_by_step", "Wrong candidate history"),
+        ("allocation_error_rate_by_step", "Allocation error"),
+    )
+    for key, label in bounded_series:
+        axes[0].plot(steps, diagnostics[key], marker="o", label=label)
+    axes[0].set_ylabel("Rate")
+    axes[0].set_ylim(-0.05, 1.05)
+    axes[0].set_title("Stepwise self-state rates")
+    axes[0].legend(loc="best", fontsize=8)
+
+    mass_series = (
+        ("self_model_mass_on_inspected_cells_by_step", "Self-model on inspected"),
+        ("self_model_mass_on_uninspected_cells_by_step", "Self-model on uninspected"),
+    )
+    for key, label in mass_series:
+        axes[1].plot(steps, diagnostics[key], marker="o", label=label)
+    axes[1].set_xlabel("Step")
+    axes[1].set_ylabel("Mean mass")
+    axes[1].set_title("Self-model mass allocation")
+    axes[1].legend(loc="best", fontsize=8)
+
+    fig.tight_layout()
+    path = output_dir / "self_state_diagnostics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def reduced_shaping_metrics(
     cfg: dict[str, Any],
     task_cfg: TaskConfig,
@@ -2281,9 +2328,14 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         device,
         cfg["seed"] + 9650,
     )
+    self_state_plot_paths = save_self_state_plots(
+        report["self_state_diagnostics"],
+        output_dir / "plots",
+    )
     report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
+    report["artifacts"]["self_state_plots"] = self_state_plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"
