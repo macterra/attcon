@@ -2175,6 +2175,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     intervention_test = report.get("intervention_test", {})
     reduced_shaping = report.get("reduced_shaping", {})
     reduced_shaping_summary = reduced_shaping.get("summary", {})
+    stage3_multi_seed = report.get("stage3_multi_seed", {})
     explicit_attention_modeling = {
         "controller_advantage_cross_entropy": predictive_probe.get(
             "controller_advantage_cross_entropy", 0.0
@@ -2185,6 +2186,18 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "intervention_supported": intervention_test.get("supported", False),
         "reduced_shaping_supported": reduced_shaping_summary.get("supported", False),
+        "stage3_num_seeds": stage3_multi_seed.get("num_seeds", 0),
+        "stage3_predictive_supported_fraction": stage3_multi_seed.get(
+            "predictive_supported_fraction", 0.0
+        ),
+        "stage3_intervention_supported_fraction": stage3_multi_seed.get(
+            "intervention_supported_fraction", 0.0
+        ),
+        "stage3_all_predictive_supported": stage3_multi_seed.get("all_predictive_supported", False),
+        "stage3_all_intervention_supported": stage3_multi_seed.get(
+            "all_intervention_supported", False
+        ),
+        "stage3_multi_seed_supported": stage3_multi_seed.get("supported", False),
         "supported": (
             predictive_probe.get("supported", False)
             and intervention_test.get("supported", False)
