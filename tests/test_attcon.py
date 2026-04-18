@@ -445,6 +445,34 @@ class AttentionControlTests(unittest.TestCase):
                         "attention_change_fraction": 0.5,
                     },
                 }
+                ,
+                "uncertainty_report_probes": {
+                    "relevant_region_inspected": {
+                        "native_accuracy_advantage": 0.0,
+                        "native_positive_recall_advantage": 0.0,
+                    },
+                    "unresolved_search": {
+                        "native_accuracy_advantage": 0.1,
+                        "native_positive_recall_advantage": 0.1,
+                    },
+                    "current_wrong_candidate": {
+                        "native_accuracy_advantage": 0.2,
+                        "native_positive_recall_advantage": 0.3,
+                    },
+                    "wrong_candidate_history": {
+                        "native_accuracy_advantage": 0.1,
+                        "native_positive_recall_advantage": 0.4,
+                    },
+                    "revisit_unresolved": {
+                        "native_accuracy_advantage": 0.05,
+                        "native_positive_recall_advantage": 0.2,
+                    },
+                    "allocation_error": {
+                        "native_accuracy_advantage": 0.0,
+                        "native_positive_recall_advantage": 0.1,
+                    },
+                    "supported": True,
+                },
             }
         )
         nl_summary = summary["natural_language_reportability"]
@@ -480,6 +508,8 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(explicit_attention["stage3_all_predictive_supported"])
         self.assertFalse(explicit_attention["stage3_all_intervention_supported"])
         self.assertFalse(explicit_attention["stage3_multi_seed_supported"])
+        stage6b = summary["structured_reportability_uncertainty_and_allocation_error"]
+        self.assertTrue(stage6b["supported"])
 
     def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
@@ -667,7 +697,9 @@ class AttentionControlTests(unittest.TestCase):
             "found_state_rate_by_step",
             "relevant_region_rate_by_step",
             "unresolved_search_rate_by_step",
+            "current_wrong_candidate_rate_by_step",
             "wrong_candidate_history_rate_by_step",
+            "revisit_unresolved_rate_by_step",
             "allocation_error_rate_by_step",
             "self_model_mass_on_inspected_cells_by_step",
             "self_model_mass_on_uninspected_cells_by_step",
@@ -682,7 +714,9 @@ class AttentionControlTests(unittest.TestCase):
             "found_state_rate_by_step",
             "relevant_region_rate_by_step",
             "unresolved_search_rate_by_step",
+            "current_wrong_candidate_rate_by_step",
             "wrong_candidate_history_rate_by_step",
+            "revisit_unresolved_rate_by_step",
             "allocation_error_rate_by_step",
         )
         for key in bounded_series:
@@ -878,7 +912,9 @@ class AttentionControlTests(unittest.TestCase):
                 "relevant_region_inspected",
                 report["uncertainty_report_probes"],
             )
+            self.assertIn("current_wrong_candidate", report["uncertainty_report_probes"])
             self.assertIn("wrong_candidate_history", report["uncertainty_report_probes"])
+            self.assertIn("revisit_unresolved", report["uncertainty_report_probes"])
             self.assertIn("allocation_error", report["uncertainty_report_probes"])
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
