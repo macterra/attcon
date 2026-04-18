@@ -14,7 +14,7 @@ import torch
 
 import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
-from attcon.eval import build_evidence_summary, run_ablations
+from attcon.eval import build_evidence_summary, run_ablations, self_state_diagnostics
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
 from attcon.nl_report import _extract_response_json, collect_nl_examples, run_nl_report_mode
 from attcon.train import train_experiment
@@ -423,6 +423,41 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(metrics["allocation_error_accuracy"], 1.0)
         self.assertEqual(metrics["uncertainty_content_joint_accuracy"], 1.0)
         self.assertEqual(metrics["joint_accuracy"], 1.0)
+
+    def test_self_state_diagnostics_exposes_stepwise_series(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        diagnostics = self_state_diagnostics(
+            model,
+            self.task_cfg,
+            batch_size=2,
+            device=torch.device("cpu"),
+            seed=11,
+        )
+        expected_keys = {
+            "inspection_coverage_by_step",
+            "found_state_rate_by_step",
+            "relevant_region_rate_by_step",
+            "unresolved_search_rate_by_step",
+            "wrong_candidate_history_rate_by_step",
+            "allocation_error_rate_by_step",
+            "self_model_mass_on_inspected_cells_by_step",
+            "self_model_mass_on_uninspected_cells_by_step",
+        }
+        self.assertEqual(set(diagnostics), expected_keys)
+        for key, values in diagnostics.items():
+            self.assertEqual(len(values), self.task_cfg.num_steps, key)
+            for value in values:
+                self.assertIsInstance(value, float, key)
+        bounded_series = (
+            "inspection_coverage_by_step",
+            "found_state_rate_by_step",
+            "relevant_region_rate_by_step",
+            "unresolved_search_rate_by_step",
+            "wrong_candidate_history_rate_by_step",
+            "allocation_error_rate_by_step",
+        )
+        for key in bounded_series:
+            self.assertTrue(all(0.0 <= value <= 1.0 for value in diagnostics[key]), key)
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
