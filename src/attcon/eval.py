@@ -2698,6 +2698,41 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def build_stage3_summary(report: dict[str, Any]) -> dict[str, Any]:
+    """Build a compact Stage 3-specific summary for easier downstream consumption."""
+
+    predictive_probe = report.get("predictive_probe", {})
+    intervention_test = report.get("intervention_test", {})
+    reduced_shaping_summary = report.get("reduced_shaping", {}).get("summary", {})
+    multi_seed = report.get("stage3_multi_seed", {})
+    return {
+        "single_run_supported": (
+            predictive_probe.get("supported", False)
+            and intervention_test.get("supported", False)
+            and reduced_shaping_summary.get("supported", False)
+        ),
+        "robust_supported": multi_seed.get("supported", False),
+        "predictive_probe_supported": predictive_probe.get("supported", False),
+        "intervention_supported": intervention_test.get("supported", False),
+        "reduced_shaping_supported": reduced_shaping_summary.get("supported", False),
+        "predictive_supported_fraction": multi_seed.get("predictive_supported_fraction", 0.0),
+        "intervention_supported_fraction": multi_seed.get("intervention_supported_fraction", 0.0),
+        "failure_reasons": multi_seed.get("failure_reasons", []),
+        "predictive_cross_entropy_advantage_min_gap": multi_seed.get(
+            "predictive_cross_entropy_advantage_min_gap", 0.0
+        ),
+        "predictive_top1_advantage_min_gap": multi_seed.get(
+            "predictive_top1_advantage_min_gap", 0.0
+        ),
+        "intervention_attention_change_kl_min_gap": multi_seed.get(
+            "intervention_attention_change_kl_min_gap", 0.0
+        ),
+        "intervention_alternate_target_gain_min_gap": multi_seed.get(
+            "intervention_alternate_target_gain_min_gap", 0.0
+        ),
+    }
+
+
 def save_probe_plots(
     model,
     output_dir: Path,
@@ -3273,6 +3308,7 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["artifacts"]["stage7_visual_report_metadata"] = stage7_visual_report_artifacts[
         "metadata_path"
     ]
+    report["stage3_summary"] = build_stage3_summary(report)
     report["stage7_visual_report_summary"] = load_stage7_visual_report_summary(
         stage7_visual_report_artifacts["metadata_path"]
     )

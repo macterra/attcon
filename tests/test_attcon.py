@@ -18,6 +18,7 @@ import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
+    build_stage3_summary,
     nl_report_metrics,
     run_ablations,
     self_model_diagnostics,
@@ -547,6 +548,32 @@ class AttentionControlTests(unittest.TestCase):
         stage6b = summary["structured_reportability_uncertainty_and_allocation_error"]
         self.assertTrue(stage6b["supported"])
 
+    def test_build_stage3_summary_separates_single_run_and_robust(self) -> None:
+        summary = build_stage3_summary(
+            {
+                "predictive_probe": {"supported": True},
+                "intervention_test": {"supported": True},
+                "reduced_shaping": {"summary": {"supported": True}},
+                "stage3_multi_seed": {
+                    "supported": False,
+                    "predictive_supported_fraction": 2.0 / 3.0,
+                    "intervention_supported_fraction": 1.0 / 3.0,
+                    "failure_reasons": [
+                        "predictive_probe_instability",
+                        "intervention_instability",
+                    ],
+                    "predictive_cross_entropy_advantage_min_gap": -0.01,
+                    "predictive_top1_advantage_min_gap": -0.25,
+                    "intervention_attention_change_kl_min_gap": -0.005,
+                    "intervention_alternate_target_gain_min_gap": -0.01,
+                },
+            }
+        )
+        self.assertTrue(summary["single_run_supported"])
+        self.assertFalse(summary["robust_supported"])
+        self.assertEqual(len(summary["failure_reasons"]), 2)
+        self.assertEqual(summary["predictive_supported_fraction"], 2.0 / 3.0)
+
     def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
@@ -955,6 +982,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("cue_switch", report)
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
+            self.assertIn("stage3_summary", report)
             self.assertIn("self_state_diagnostics", report)
             self.assertIn("self_model_diagnostics", report)
             self.assertIn("stage7_visual_report_summary", report)
