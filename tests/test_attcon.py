@@ -12,10 +12,11 @@ if str(SRC) not in sys.path:
 
 import torch
 
+import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import build_evidence_summary, run_ablations
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
-from attcon.nl_report import _extract_response_json, collect_nl_examples
+from attcon.nl_report import _extract_response_json, collect_nl_examples, run_nl_report_mode
 from attcon.train import train_experiment
 
 
@@ -342,6 +343,86 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertEqual(nl_summary["tokenized_allocation_error_accuracy_advantage"], 0.25)
         self.assertTrue(nl_summary["supported"])
+
+    def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        with torch.no_grad():
+            outputs = model(
+                batch.scene,
+                batch.cue,
+                target=batch.target,
+                target_pos=batch.target_pos,
+                num_steps=self.task_cfg.num_steps,
+            )
+        examples = [example for example in collect_nl_examples(model, self.task_cfg, batch, outputs) if example.step_index > 0]
+        calibration_examples = examples[:2]
+        evaluation_examples = examples[2:4]
+
+        def expected_payload(example):
+            return {
+                "natural_language_report": "faithful summary",
+                "search_type": example.cue,
+                "attended_cell": list(divmod(example.attended_cell, self.task_cfg.grid_size)),
+                "attended_visible_type": example.attended_visible_type,
+                "attended_digit": example.attended_digit,
+                "glimpse_digit": example.glimpse_digit,
+                "previous_attended_cell": list(divmod(example.prev_attended_cell, self.task_cfg.grid_size)),
+                "previous_attended_visible_type": example.prev_attended_visible_type,
+                "previous_attended_digit": example.prev_attended_digit,
+                "previous_glimpse_digit": example.prev_glimpse_digit,
+                "glimpse_target_match": example.glimpse_target_match,
+                "found_target": example.found_target,
+                "relevant_region_inspected": example.relevant_region_inspected,
+                "unresolved_search": example.unresolved_search,
+                "wrong_candidate_history": example.wrong_candidate_history,
+                "allocation_error": example.allocation_error,
+                "unresolved_rows": example.unresolved_rows,
+                "unresolved_cols": example.unresolved_cols,
+                "unresolved_count": example.unresolved_count,
+            }
+
+        class FakeResponse:
+            def __init__(self, payload) -> None:
+                self.output_text = ""
+                self.output = []
+                self.output_parsed = payload
+                self.status = "completed"
+
+        class FakeResponses:
+            def __init__(self, payloads) -> None:
+                self._payloads = payloads
+
+            def create(self, **kwargs):
+                return FakeResponse(self._payloads.pop(0))
+
+        class FakeOpenAI:
+            payloads = []
+
+            def __init__(self, **kwargs) -> None:
+                self.responses = FakeResponses(type(self).payloads)
+
+        original_openai = nl_report_module.OpenAI
+        nl_report_module.OpenAI = FakeOpenAI
+        FakeOpenAI.payloads = [expected_payload(example) for example in evaluation_examples]
+        try:
+            metrics = run_nl_report_mode(
+                mode="symbolic_state",
+                model_name="fake-model",
+                calibration_examples=calibration_examples,
+                evaluation_examples=evaluation_examples,
+                grid_size=self.task_cfg.grid_size,
+                max_output_tokens=128,
+            )
+        finally:
+            nl_report_module.OpenAI = original_openai
+
+        self.assertEqual(metrics["relevant_region_inspected_accuracy"], 1.0)
+        self.assertEqual(metrics["unresolved_search_accuracy"], 1.0)
+        self.assertEqual(metrics["wrong_candidate_history_accuracy"], 1.0)
+        self.assertEqual(metrics["allocation_error_accuracy"], 1.0)
+        self.assertEqual(metrics["uncertainty_content_joint_accuracy"], 1.0)
+        self.assertEqual(metrics["joint_accuracy"], 1.0)
 
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
