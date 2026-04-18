@@ -1703,6 +1703,87 @@ def save_self_state_plots(
     return [str(path)]
 
 
+def save_cue_switch_plots(
+    models: dict[str, Any],
+    output_dir: Path,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> list[str]:
+    """Render baseline vs recurrent attention around a cue switch."""
+
+    cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
+    if not cue_switch_cfg.get("enabled", False):
+        return []
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    switch_step = cue_switch_cfg.get("switch_step", task_cfg.num_steps // 2)
+    shown_steps = sorted({max(switch_step - 1, 0), switch_step})
+    generator = make_generator(seed, device)
+    batch = generate_batch(1, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    cue_before = batch.cue
+    cue_after = (cue_before + 1) % task_cfg.num_types
+    cue_seq = cue_before.unsqueeze(1).repeat(1, task_cfg.num_steps)
+    cue_seq[:, switch_step:] = cue_after.unsqueeze(1)
+    switched_target_pos, switched_target = _targets_for_cues(batch, cue_after)
+
+    outputs = {}
+    for name, model in models.items():
+        with torch.no_grad():
+            outputs[name] = model(
+                batch.scene,
+                cue_before,
+                cue_seq=cue_seq,
+                target=switched_target,
+                target_pos=switched_target_pos,
+                target_pos_seq=switched_target_pos.unsqueeze(1).repeat(1, task_cfg.num_steps),
+                num_steps=task_cfg.num_steps,
+            )
+
+    old_target_row, old_target_col = divmod(batch.target_pos[0].item(), task_cfg.grid_size)
+    new_target_row, new_target_col = divmod(switched_target_pos[0].item(), task_cfg.grid_size)
+    fig, axes = plt.subplots(len(outputs), len(shown_steps), figsize=(4 * len(shown_steps), 3.5 * len(outputs)))
+    if len(outputs) == 1:
+        axes = [axes]
+    if len(shown_steps) == 1:
+        axes = [[ax] for ax in axes]
+
+    for row_idx, (name, model_outputs) in enumerate(outputs.items()):
+        for col_idx, step_idx in enumerate(shown_steps):
+            ax = axes[row_idx][col_idx]
+            heatmap = model_outputs["attention_seq"][0, step_idx].reshape(
+                task_cfg.grid_size, task_cfg.grid_size
+            ).detach().cpu()
+            ax.imshow(heatmap, cmap="viridis")
+            ax.scatter(
+                old_target_col,
+                old_target_row,
+                s=160,
+                marker="o",
+                facecolors="none",
+                edgecolors="white",
+                linewidths=2,
+            )
+            ax.scatter(
+                new_target_col,
+                new_target_row,
+                s=140,
+                marker="x",
+                c="red",
+                linewidths=2,
+            )
+            ax.set_title(f"{name} / Step {step_idx + 1}")
+            ax.axis("off")
+
+    fig.suptitle("Cue-switch attention: white circle = old target, red X = switched target", fontsize=11)
+    fig.tight_layout()
+    path = output_dir / "cue_switch_comparison.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return [str(path)]
+
+
 def reduced_shaping_metrics(
     cfg: dict[str, Any],
     task_cfg: TaskConfig,
@@ -2332,10 +2413,19 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         report["self_state_diagnostics"],
         output_dir / "plots",
     )
+    cue_switch_plot_paths = save_cue_switch_plots(
+        {"baseline": models["static"], "recurrent": models["recurrent"]},
+        output_dir / "plots",
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9675,
+    )
     report["evidence"] = build_evidence_summary(report)
     report["artifacts"]["plots"] = plot_paths
     report["artifacts"]["intervention_plots"] = intervention_plot_paths
     report["artifacts"]["self_state_plots"] = self_state_plot_paths
+    report["artifacts"]["cue_switch_plots"] = cue_switch_plot_paths
     report["artifacts"]["checkpoint"] = str(checkpoint_path)
 
     report_path = output_dir / "evaluation_report.json"
