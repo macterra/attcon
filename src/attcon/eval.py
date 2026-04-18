@@ -1530,6 +1530,39 @@ def cue_switch_metrics(
     }
 
 
+def self_state_diagnostics(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Summarize how self-state signals evolve over time on a shared probe batch."""
+
+    outputs, _ = _probe_outputs(model, task_cfg, batch_size, device, seed)
+    inspection = outputs["inspection_seq"].float()
+    self_model = outputs["self_model_seq"].float()
+    found = outputs["found_state_seq"][..., 0].float()
+    relevant_region = outputs["relevant_region_seq"][..., 0].float()
+    unresolved_search = outputs["unresolved_search_seq"][..., 0].float()
+    wrong_candidate_history = outputs["wrong_candidate_history_seq"][..., 0].float()
+    allocation_error = outputs["allocation_error_seq"][..., 0].float()
+
+    inspected_mass = (self_model * inspection).sum(dim=-1)
+    uninspected_mass = (self_model * (1.0 - inspection)).sum(dim=-1)
+
+    return {
+        "inspection_coverage_by_step": inspection.mean(dim=(0, 2)).tolist(),
+        "found_state_rate_by_step": found.mean(dim=0).tolist(),
+        "relevant_region_rate_by_step": relevant_region.mean(dim=0).tolist(),
+        "unresolved_search_rate_by_step": unresolved_search.mean(dim=0).tolist(),
+        "wrong_candidate_history_rate_by_step": wrong_candidate_history.mean(dim=0).tolist(),
+        "allocation_error_rate_by_step": allocation_error.mean(dim=0).tolist(),
+        "self_model_mass_on_inspected_cells_by_step": inspected_mass.mean(dim=0).tolist(),
+        "self_model_mass_on_uninspected_cells_by_step": uninspected_mass.mean(dim=0).tolist(),
+    }
+
+
 def save_intervention_plots(
     model,
     output_dir: Path,
@@ -2140,6 +2173,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9738,
+    )
+    report["self_state_diagnostics"] = self_state_diagnostics(
+        models["recurrent"],
+        task_cfg,
+        eval_cfg["probe_scenes"],
+        device,
+        cfg["seed"] + 9739,
     )
     report["nl_report"] = nl_report_metrics(
         models["recurrent"],
