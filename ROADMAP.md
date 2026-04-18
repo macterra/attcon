@@ -319,7 +319,7 @@ Current assessment:
 
 Interpretation:
 
-This stage now has a meaningful foothold in the benchmark. The current evaluator includes native variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error, and the new wrong-candidate-history signal can outperform an observation-only baseline on positive-recall style reporting. That is enough to count as bounded positive evidence for Stage 6B, while still falling short of a broad or fully stable support claim.
+This stage now has a meaningful foothold in the benchmark. The current evaluator includes native variables for relevant-region inspection, unresolved search, current wrong-candidate pursuit, wrong-candidate history, revisit-under-unresolved-search, and allocation error. That finer split matters because it distinguishes an active local mistake from a cumulative search-history trace and from unresolved revisits. The current wrong-candidate and wrong-candidate-history signals now provide bounded positive evidence beyond observation-only reporting on some runs, while revisit-under-unresolved-search and allocation error remain weaker. That is enough to count as bounded positive evidence for Stage 6B, while still falling short of a broad or fully stable support claim.
 
 ## Stage 7: Faithful Natural-Language Reportability
 
@@ -370,8 +370,9 @@ Current status in this repo:
 - the harness compares symbolic internal-state serialization, tokenized internal-state reporting, and observation-only reporting
 - the current evaluation is stricter than a generic state-description task because it asks for current attended content and remembered previous attended content
 - evaluation is restricted to non-initial timesteps where previous-attention memory is genuinely required
-- the Stage 7 schema now also includes Stage 6B-style variables for relevant-region inspection, unresolved search, wrong-candidate history, and allocation error
+- the Stage 7 schema now also includes Stage 6B-style variables for relevant-region inspection, unresolved search, current wrong-candidate pursuit, wrong-candidate history, revisit-under-unresolved-search, and allocation error
 - the Stage 7 example format now also carries cue-history and inspection-history fields, and the evaluator can run dedicated cue-switch and intervention slices through the same NL reporting harness
+- the evaluator now emits Stage 7 visual report panels for default, cue-switch, and intervention slices that place scene-only, explicit symbolic, and minimal tokenized views side by side
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - the tokenized internal-state condition is still not successful enough to beat observation-only baselines on current attended location or remembered previous attended content
 
@@ -383,7 +384,7 @@ Current assessment:
 
 Interpretation:
 
-Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim. The reporting harness now covers the Stage 6B uncertainty/allocation-error variables too, and it can also evaluate cue-switch and intervention slices through the same interface, so the next failures or successes should be easier to interpret against the broader roadmap.
+Stage 7 remains open. The blocker currently appears representational rather than infrastructural: the tokenized interface is not yet faithful enough on current and remembered attended semantic content to support a clean natural-language claim. The reporting harness now covers the finer Stage 6B uncertainty/allocation-error variables too, and it can also evaluate cue-switch and intervention slices through the same interface. The new Stage 7 visual panels further reduce ambiguity about what each reporting interface receives, so the next failures or successes should be easier to interpret against the broader roadmap.
 
 ## Stage 8: Conservative Interpretation as Minimal Consciousness-Like Content
 
@@ -450,13 +451,13 @@ Near-term execution should stay attached to concrete repository changes:
 - [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
 The evaluator now includes a repeated-seed Stage 3 summary helper, but the broader claim is still open until those repeated-seed results are strong enough to count as support.
 - [x] update the preprint and any remaining prose so it matches the revised roadmap status labels
-- [ ] add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
+- [x] add finer Stage 6B reports that distinguish active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
 - [ ] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
 - [ ] evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
 - [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
-The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, and Stage 6B uncertainty diagnostics plots.
+The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, Stage 6B uncertainty diagnostics plots, and Stage 7 visual report panels.
 
 ## Current Status Snapshot
 
