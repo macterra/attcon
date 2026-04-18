@@ -50,11 +50,21 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "test_batches": 6,
             "epochs": 60,
             "learning_rate": 0.05,
+            "thresholds": {
+                "min_advantage_cross_entropy": 0.01,
+                "min_advantage_mse": 1e-5,
+                "min_advantage_top1_match": 0.05,
+            },
         },
         "intervention_test": {
             "enabled": True,
             "probe_scenes": 4,
             "step": 2,
+            "thresholds": {
+                "min_attention_change_kl": 0.01,
+                "min_original_target_attention_drop": 0.01,
+                "min_alternate_target_attention_gain": 0.01,
+            },
         },
         "cue_switch": {
             "enabled": True,
@@ -87,6 +97,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "reduced_shaping": {
             "enabled": True,
             "weights": [0.25, 0.0],
+            "thresholds": {
+                "min_accuracy": 0.15,
+                "min_temporal_reallocation": 0.05,
+                "min_target_attention_gain": 0.0,
+            },
         },
         "ablations": [
             "freeze_recurrence",

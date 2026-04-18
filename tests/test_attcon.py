@@ -275,11 +275,21 @@ class AttentionControlTests(unittest.TestCase):
                         "test_batches": 1,
                         "epochs": 10,
                         "learning_rate": 0.05,
+                        "thresholds": {
+                            "min_advantage_cross_entropy": 0.0,
+                            "min_advantage_mse": 0.0,
+                            "min_advantage_top1_match": 0.0,
+                        },
                     },
                     "intervention_test": {
                         "enabled": True,
                         "probe_scenes": 2,
                         "step": 1,
+                        "thresholds": {
+                            "min_attention_change_kl": 0.0,
+                            "min_original_target_attention_drop": 0.0,
+                            "min_alternate_target_attention_gain": 0.0,
+                        },
                     },
                     "cue_switch": {
                         "enabled": True,
@@ -306,6 +316,11 @@ class AttentionControlTests(unittest.TestCase):
                     "reduced_shaping": {
                         "enabled": True,
                         "weights": [0.0],
+                        "thresholds": {
+                            "min_accuracy": 0.0,
+                            "min_temporal_reallocation": 0.0,
+                            "min_target_attention_gain": -1.0,
+                        },
                     },
                     "ablations": ["freeze_recurrence"],
                 },
@@ -340,6 +355,17 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
             self.assertIn("reduced_shaping_resilience", report["evidence"])
+            explicit_attention = report["evidence"]["explicit_attention_modeling"]
+            self.assertIn("intervention_supported", explicit_attention)
+            self.assertIn("reduced_shaping_supported", explicit_attention)
+            self.assertEqual(
+                explicit_attention["supported"],
+                (
+                    report["predictive_probe"]["supported"]
+                    and report["intervention_test"]["supported"]
+                    and report["reduced_shaping"]["summary"]["supported"]
+                ),
+            )
             self.assertTrue(Path(report["artifacts"]["report"]).exists())
             self.assertTrue(report["artifacts"]["plots"])
 

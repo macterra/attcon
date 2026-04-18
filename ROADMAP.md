@@ -439,17 +439,20 @@ The intended dependency structure is:
 
 This should not be read as a simple victory ladder. Several stages can be implemented before they are supported, and later stages should inherit the uncertainty of earlier ones.
 
-## Immediate Checklist
+## Execution Checklist
 
-The highest-priority next experiments are:
+Near-term execution should stay attached to concrete repository changes:
 
-- set explicit quantitative claim thresholds for Stage 3 and evaluate them across multiple seeds
-- separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
-- add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
-- improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
-- add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
-- evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
-- add plots or diagnostics for switched-cue, self-state, and self-model trajectories
+- [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
+- [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
+- [ ] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
+- [ ] update the preprint and any remaining prose so it matches the revised roadmap status labels
+- [ ] add stronger allocation-error and uncertainty reports that distinguish missing the target from not yet having inspected the right region
+- [ ] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
+- [ ] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content become more faithful than observation-only baselines
+- [ ] evaluate natural-language reporting under cue switches and interventions once the tokenized condition is stable
+- [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
+- [ ] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
 
 ## Current Status Snapshot
 

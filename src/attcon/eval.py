@@ -500,8 +500,14 @@ def predictive_probe_metrics(
             "test_batches": 6,
             "epochs": 60,
             "learning_rate": 0.05,
+            "thresholds": {
+                "min_advantage_cross_entropy": 0.0,
+                "min_advantage_mse": 0.0,
+                "min_advantage_top1_match": 0.0,
+            },
         },
     )
+    thresholds = probe_cfg.get("thresholds", {})
     batch_size = cfg["training"]["batch_size"]
     train_state, train_obs, train_targets = _collect_probe_dataset(
         model,
@@ -537,19 +543,24 @@ def predictive_probe_metrics(
         learning_rate=probe_cfg["learning_rate"],
     )
 
+    cross_entropy_advantage = observation_probe["test_cross_entropy"] - controller_probe["test_cross_entropy"]
+    mse_advantage = observation_probe["test_mse"] - controller_probe["test_mse"]
+    top1_advantage = controller_probe["test_top1_match"] - observation_probe["test_top1_match"]
     return {
         "controller_state_probe": controller_probe,
         "observation_only_probe": observation_probe,
-        "controller_advantage_cross_entropy": (
-            observation_probe["test_cross_entropy"] - controller_probe["test_cross_entropy"]
-        ),
-        "controller_advantage_mse": observation_probe["test_mse"] - controller_probe["test_mse"],
-        "controller_advantage_top1_match": (
-            controller_probe["test_top1_match"] - observation_probe["test_top1_match"]
-        ),
+        "controller_advantage_cross_entropy": cross_entropy_advantage,
+        "controller_advantage_mse": mse_advantage,
+        "controller_advantage_top1_match": top1_advantage,
+        "thresholds": {
+            "min_advantage_cross_entropy": thresholds.get("min_advantage_cross_entropy", 0.0),
+            "min_advantage_mse": thresholds.get("min_advantage_mse", 0.0),
+            "min_advantage_top1_match": thresholds.get("min_advantage_top1_match", 0.0),
+        },
         "supported": (
-            controller_probe["test_cross_entropy"] < observation_probe["test_cross_entropy"]
-            and controller_probe["test_mse"] < observation_probe["test_mse"]
+            cross_entropy_advantage >= thresholds.get("min_advantage_cross_entropy", 0.0)
+            and mse_advantage >= thresholds.get("min_advantage_mse", 0.0)
+            and top1_advantage >= thresholds.get("min_advantage_top1_match", 0.0)
         ),
     }
 
@@ -1187,6 +1198,7 @@ def intervention_test_metrics(
     intervention_cfg = cfg["evaluation"].get("intervention_test", {})
     if not intervention_cfg.get("enabled", False):
         return {}
+    thresholds = intervention_cfg.get("thresholds", {})
 
     batch_size = intervention_cfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"])
     step = intervention_cfg.get("step", 2)
@@ -1230,19 +1242,33 @@ def intervention_test_metrics(
         2, alt_target_pos.unsqueeze(-1)
     ).mean().item()
 
+    attention_change_kl = symmetric_kl(base_step_attention, intervened_step_attention).mean().item()
+    original_target_attention_drop = base_target_attention - intervened_target_attention
+    alternate_target_attention_gain = intervened_alt_target_attention - base_alt_target_attention
     return {
         "step": step,
-        "attention_change_kl": symmetric_kl(base_step_attention, intervened_step_attention).mean().item(),
-        "original_target_attention_drop": base_target_attention - intervened_target_attention,
-        "alternate_target_attention_gain": intervened_alt_target_attention - base_alt_target_attention,
+        "attention_change_kl": attention_change_kl,
+        "original_target_attention_drop": original_target_attention_drop,
+        "alternate_target_attention_gain": alternate_target_attention_gain,
         "baseline_target_attention": base_target_attention,
         "intervened_target_attention": intervened_target_attention,
         "baseline_alternate_target_attention": base_alt_target_attention,
         "intervened_alternate_target_attention": intervened_alt_target_attention,
+        "thresholds": {
+            "min_attention_change_kl": thresholds.get("min_attention_change_kl", 0.0),
+            "min_original_target_attention_drop": thresholds.get(
+                "min_original_target_attention_drop", 0.0
+            ),
+            "min_alternate_target_attention_gain": thresholds.get(
+                "min_alternate_target_attention_gain", 0.0
+            ),
+        },
         "supported": (
-            intervened_alt_target_attention > base_alt_target_attention
-            and base_target_attention > intervened_target_attention
-            and symmetric_kl(base_step_attention, intervened_step_attention).mean().item() > 0.0
+            attention_change_kl >= thresholds.get("min_attention_change_kl", 0.0)
+            and original_target_attention_drop
+            >= thresholds.get("min_original_target_attention_drop", 0.0)
+            and alternate_target_attention_gain
+            >= thresholds.get("min_alternate_target_attention_gain", 0.0)
         ),
     }
 
@@ -1415,6 +1441,7 @@ def reduced_shaping_metrics(
     weights = reduced_cfg.get("weights", [])
     if not weights:
         return {}
+    thresholds = reduced_cfg.get("thresholds", {})
 
     shaping_dir = output_dir / "reduced_shaping"
     shaping_dir.mkdir(parents=True, exist_ok=True)
@@ -1482,10 +1509,17 @@ def reduced_shaping_metrics(
         "lowest_weight_accuracy": baseline_variant["accuracy"],
         "lowest_weight_temporal_reallocation": baseline_variant["temporal_reallocation"],
         "lowest_weight_target_attention_gain": baseline_variant["target_attention_gain"],
+        "thresholds": {
+            "min_accuracy": thresholds.get("min_accuracy", 0.1),
+            "min_temporal_reallocation": thresholds.get("min_temporal_reallocation", 0.0),
+            "min_target_attention_gain": thresholds.get("min_target_attention_gain", 0.0),
+        },
         "supported": (
-            baseline_variant["temporal_reallocation"] > 0.0
-            and baseline_variant["target_attention_gain"] > 0.0
-            and baseline_variant["accuracy"] > 0.1
+            baseline_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
+            and baseline_variant["temporal_reallocation"]
+            >= thresholds.get("min_temporal_reallocation", 0.0)
+            and baseline_variant["target_attention_gain"]
+            >= thresholds.get("min_target_attention_gain", 0.0)
         ),
     }
     return results
