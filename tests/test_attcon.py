@@ -25,6 +25,7 @@ from attcon.models import ModelConfig, RecurrentAttentionController, StaticAtten
 from attcon.nl_report import (
     _extract_response_json,
     collect_cue_switch_nl_examples,
+    collect_intervention_nl_examples,
     collect_nl_examples,
     run_nl_report_mode,
 )
@@ -341,6 +342,34 @@ class AttentionControlTests(unittest.TestCase):
                 example.cue != int(batch.cue[int(example.example_id.split("scene", 1)[1].split("_", 1)[0])].item())
                 for example in post_switch
             )
+        )
+
+    def test_collect_intervention_nl_examples_returns_aligned_pairs(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        result = collect_intervention_nl_examples(
+            model,
+            self.task_cfg,
+            batch,
+            intervention_step=1,
+        )
+
+        baseline_examples = result["baseline_examples"]
+        intervened_examples = result["intervened_examples"]
+        self.assertEqual(len(baseline_examples), 2 * self.task_cfg.num_steps)
+        self.assertEqual(len(intervened_examples), len(baseline_examples))
+        self.assertEqual(result["intervention_step"], 1)
+        self.assertGreater(result["delta_norm"], 0.0)
+        self.assertTrue(0.0 <= result["attention_change_fraction"] <= 1.0)
+        self.assertTrue(
+            all(example.example_id.startswith("baseline_intervention_") for example in baseline_examples)
+        )
+        self.assertTrue(
+            all(example.example_id.startswith("intervened_intervention_") for example in intervened_examples)
+        )
+        self.assertEqual(
+            [example.step_index for example in baseline_examples],
+            [example.step_index for example in intervened_examples],
         )
 
     def test_build_evidence_summary_surfaces_nl_uncertainty_metrics(self) -> None:
