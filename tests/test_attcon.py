@@ -14,7 +14,12 @@ import torch
 
 import attcon.nl_report as nl_report_module
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
-from attcon.eval import build_evidence_summary, run_ablations, self_state_diagnostics
+from attcon.eval import (
+    build_evidence_summary,
+    run_ablations,
+    self_state_diagnostics,
+    stage3_multi_seed_metrics,
+)
 from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
 from attcon.nl_report import _extract_response_json, collect_nl_examples, run_nl_report_mode
 from attcon.train import train_experiment
@@ -459,6 +464,57 @@ class AttentionControlTests(unittest.TestCase):
         for key in bounded_series:
             self.assertTrue(all(0.0 <= value <= 1.0 for value in diagnostics[key]), key)
 
+    def test_stage3_multi_seed_metrics_exposes_seed_runs(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "training": {
+                "batch_size": 4,
+            },
+            "evaluation": {
+                "probe_scenes": 2,
+                "predictive_probe": {
+                    "train_batches": 1,
+                    "test_batches": 1,
+                    "epochs": 2,
+                    "learning_rate": 0.05,
+                    "thresholds": {
+                        "min_advantage_cross_entropy": -1.0,
+                        "min_advantage_mse": -1.0,
+                        "min_advantage_top1_match": -1.0,
+                    },
+                },
+                "intervention_test": {
+                    "enabled": True,
+                    "probe_scenes": 2,
+                    "step": 1,
+                    "thresholds": {
+                        "min_attention_change_kl": -1.0,
+                        "min_original_target_attention_drop": -1.0,
+                        "min_alternate_target_attention_gain": -1.0,
+                    },
+                },
+                "stage3_multi_seed": {
+                    "enabled": True,
+                    "num_seeds": 2,
+                    "seed_stride": 10,
+                },
+            }
+        }
+        metrics = stage3_multi_seed_metrics(
+            model,
+            config,
+            self.task_cfg,
+            torch.device("cpu"),
+            seed=17,
+            reduced_shaping_summary={"supported": True},
+        )
+        self.assertEqual(metrics["num_seeds"], 2)
+        self.assertEqual(len(metrics["predictive_probe_runs"]), 2)
+        self.assertEqual(len(metrics["intervention_runs"]), 2)
+        self.assertTrue(metrics["reduced_shaping_supported"])
+        self.assertTrue(0.0 <= metrics["predictive_supported_fraction"] <= 1.0)
+        self.assertTrue(0.0 <= metrics["intervention_supported_fraction"] <= 1.0)
+
     def test_train_and_eval_smoke(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             config = {
@@ -557,6 +613,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("intervention_test", report)
             self.assertIn("reduced_shaping", report)
             self.assertIn("self_state_diagnostics", report)
+            self.assertIn("stage3_multi_seed", report)
             self.assertIn("controller_state_probe", report["predictive_probe"])
             self.assertIn("observation_only_probe", report["predictive_probe"])
             self.assertIn("current_search_type", report["report_probes"])
