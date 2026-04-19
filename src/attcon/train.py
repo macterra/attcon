@@ -37,6 +37,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "aux_loss_weight": 0.15,
         "attention_target_weight": 1.0,
         "stepwise_attention_target_weight": 0.25,
+        "cue_switch_transition_weight": 0.2,
         "attention_entropy_weight": 0.0,
         "self_model_weight": 0.1,
         "target_found_report_weight": 0.05,
@@ -216,6 +217,33 @@ def compute_stepwise_attention_target_loss(
     return -target_attention.clamp_min(1e-8).log().mean()
 
 
+def compute_cue_switch_transition_loss(
+    attention_seq: torch.Tensor,
+    *,
+    switch_mask: torch.Tensor,
+    switch_step: int,
+    old_target_pos: torch.Tensor,
+    new_target_pos: torch.Tensor,
+) -> torch.Tensor:
+    """Encourage post-switch attention to prefer the new target over the old one."""
+
+    if not bool(switch_mask.any()):
+        return torch.zeros((), device=attention_seq.device)
+
+    switched_attention = attention_seq[switch_mask, switch_step:]
+    switched_old_target = old_target_pos[switch_mask]
+    switched_new_target = new_target_pos[switch_mask]
+    new_target_attention = switched_attention.gather(
+        2,
+        switched_new_target[:, None, None].expand(-1, switched_attention.shape[1], 1),
+    ).squeeze(-1)
+    old_target_attention = switched_attention.gather(
+        2,
+        switched_old_target[:, None, None].expand(-1, switched_attention.shape[1], 1),
+    ).squeeze(-1)
+    return F.softplus(old_target_attention - new_target_attention).mean()
+
+
 def _targets_for_cues(batch, cues: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     """Recover target positions and digits for arbitrary cues on a fixed batch of scenes."""
 
@@ -263,6 +291,12 @@ def prepare_training_episode(
         "step_target_pos": step_target_pos,
         "final_target": final_target,
         "final_target_pos": final_target_pos,
+        "switch_mask": switch_mask if cue_switch_probability > 0.0 and task_cfg.num_steps > 1 else torch.zeros(
+            batch.scene.shape[0], dtype=torch.bool, device=device
+        ),
+        "switch_step": switch_step,
+        "old_target_pos": batch.target_pos,
+        "new_target_pos": step_target_pos[:, -1],
     }
 
 
@@ -374,6 +408,13 @@ def train_single_model(
             attention,
             episode["step_target_pos"],
         )
+        cue_switch_transition_loss = compute_cue_switch_transition_loss(
+            attention,
+            switch_mask=episode["switch_mask"],
+            switch_step=episode["switch_step"],
+            old_target_pos=episode["old_target_pos"],
+            new_target_pos=episode["new_target_pos"],
+        )
         attention_entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean()
         self_model_loss = torch.tensor(0.0, device=device)
         if "self_model_logits_seq" in outputs and "inspection_seq" in outputs:
@@ -420,6 +461,7 @@ def train_single_model(
             + train_cfg["aux_loss_weight"] * aux_loss
             + train_cfg["attention_target_weight"] * attention_target_loss
             + train_cfg.get("stepwise_attention_target_weight", 0.0) * stepwise_attention_target_loss
+            + train_cfg.get("cue_switch_transition_weight", 0.0) * cue_switch_transition_loss
             + train_cfg["attention_entropy_weight"] * attention_entropy
             + train_cfg.get("self_model_weight", 0.0) * self_model_loss
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
