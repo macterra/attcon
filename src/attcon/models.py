@@ -319,7 +319,9 @@ class RecurrentAttentionController(BaseAttentionModel):
             step_loss, step_confidence = self._compute_loss_proxy(step_logits, target)
             attended_cell = attention.argmax(dim=-1)
             attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
-            inspection_state_post = torch.maximum(inspection_state, attended_one_hot)
+            # Keep the explicit inspection trace graded so the recurrent summary carries
+            # smoother information about recent allocations than a single hard fixation.
+            inspection_state_post = torch.maximum(inspection_state, attention)
             found_state_post = torch.maximum(found_state, observed_glimpse[:, :1].detach())
             report_features = torch.cat([hidden_state, inspection_state, found_state], dim=-1)
             target_found_logits = self.target_found_head(
@@ -398,7 +400,7 @@ class RecurrentAttentionController(BaseAttentionModel):
             revisit_unresolved_seq.append(revisit_unresolved)
             allocation_error_seq.append(allocation_error)
 
-            previous_attention = attention.detach()
+            previous_attention = attention
             inspection_state = inspection_state_post
             found_state = found_state_post
             wrong_candidate_state = wrong_candidate_history
