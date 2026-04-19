@@ -36,6 +36,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "weight_decay": 0.0,
         "aux_loss_weight": 0.15,
         "attention_target_weight": 1.0,
+        "stepwise_attention_target_weight": 0.25,
         "attention_entropy_weight": 0.0,
         "self_model_weight": 0.1,
         "target_found_report_weight": 0.05,
@@ -202,6 +203,19 @@ def compute_attention_target_loss(
     return -target_attention.clamp_min(1e-8).log().mean()
 
 
+def compute_stepwise_attention_target_loss(
+    attention_seq: torch.Tensor,
+    target_pos_seq: torch.Tensor,
+) -> torch.Tensor:
+    """Encourage each timestep to keep mass on the currently relevant target cell."""
+
+    target_attention = attention_seq.gather(
+        2,
+        target_pos_seq.unsqueeze(-1),
+    ).squeeze(-1)
+    return -target_attention.clamp_min(1e-8).log().mean()
+
+
 def _targets_for_cues(batch, cues: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     """Recover target positions and digits for arbitrary cues on a fixed batch of scenes."""
 
@@ -356,6 +370,10 @@ def train_single_model(
         )
         attention = outputs["attention_seq"]
         attention_target_loss = compute_attention_target_loss(attention, episode["final_target_pos"])
+        stepwise_attention_target_loss = compute_stepwise_attention_target_loss(
+            attention,
+            episode["step_target_pos"],
+        )
         attention_entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean()
         self_model_loss = torch.tensor(0.0, device=device)
         if "self_model_logits_seq" in outputs and "inspection_seq" in outputs:
@@ -401,6 +419,7 @@ def train_single_model(
             final_loss
             + train_cfg["aux_loss_weight"] * aux_loss
             + train_cfg["attention_target_weight"] * attention_target_loss
+            + train_cfg.get("stepwise_attention_target_weight", 0.0) * stepwise_attention_target_loss
             + train_cfg["attention_entropy_weight"] * attention_entropy
             + train_cfg.get("self_model_weight", 0.0) * self_model_loss
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
