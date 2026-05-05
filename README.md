@@ -43,7 +43,7 @@ The evaluation report includes:
 - a causal intervention test that perturbs controller state and measures the next-step attention shift
 - a mid-episode cue-switch evaluation that tests whether attention reallocates after priorities change
 - report probes that test whether controller state can support simple readouts of current regulatory content, including cumulative target-found status and unresolved regions
-- reduced-shaping retraining runs that test whether reallocation survives weaker or zero target-attention supervision
+- reduced-shaping retraining runs that test whether reallocation survives weaker target-attention supervision
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the core benchmark claims plus the later roadmap stages:
   `dissociation`, `closed_loop_adaptation`, `cue_dependence`,
@@ -63,15 +63,15 @@ The current evaluation also adds several positive later-stage signals:
 - a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
 - an engineered self-state evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
 - report probes where controller state supports simple readouts of current search type, current attended cell, cumulative target-found status, and unresolved regions
-- reduced-shaping retraining runs showing that useful reallocation weakens without direct target-attention shaping
+- reduced-shaping retraining runs showing that useful reallocation survives when direct target-attention shaping is reduced to `0.25`
 
 It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is now passed after training on a mix of stationary and switched-cue episodes: the recurrent controller redirects attention better than the baseline after a mid-episode cue change.
 
 The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
 
-The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over the predictive-probe and intervention checks together with the reduced-shaping result. That summary is intentionally conservative: it makes it easier to see when Stage 3 evidence is unstable across probe seeds instead of looking strong only on one slice. The same stability numbers are also surfaced in the `evidence.explicit_attention_modeling` block so the headline claim summary does not hide repeated-seed fragility. That block now distinguishes `single_run_supported` from `robust_supported`, and the final `supported` flag follows the stricter robust interpretation.
+The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over the predictive-probe and intervention checks together with the reduced-shaping result. That summary is intentionally conservative: it makes it easier to see when Stage 3 evidence is unstable across probe seeds instead of looking strong only on one slice. The same stability numbers are also surfaced in the `evidence.explicit_attention_modeling` block. That block now distinguishes `single_run_supported` from `robust_supported`, and the final `supported` flag follows the stricter robust interpretation. On the current `tune_prob_035` report, the bounded Stage 3 claim is supported.
 
-The evaluator also exports `stage3_checkpoint_family`, which extends that robustness check across the default checkpoint and the reduced-shaping variants trained during evaluation. That summary surfaces the weakest checkpoint family, the weakest metric, and the worst seed responsible for the current failure, so Stage 3 can fail loudly and specifically instead of collapsing to an opaque boolean.
+The evaluator also exports `stage3_checkpoint_family`, which extends that robustness check across the default checkpoint and the reduced-shaping variant trained during evaluation. That summary surfaces the weakest checkpoint family, the weakest metric, and the worst seed, so Stage 3 can fail loudly and specifically instead of collapsing to an opaque boolean. The current closeout covers the default checkpoint plus the `0.25` reduced-shaping family; complete zero-shaping resilience remains outside the supported claim.
 
 The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
 

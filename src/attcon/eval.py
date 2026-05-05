@@ -44,7 +44,66 @@ def load_models_from_checkpoint(
         "recurrent": RecurrentAttentionController(task_cfg, model_cfg).to(device),
     }
     for name, model in models.items():
-        model.load_state_dict(payload["models"][name])
+        state = payload["models"][name]
+        try:
+            model.load_state_dict(state)
+        except RuntimeError:
+            if name != "recurrent":
+                raise
+            current = model.state_dict()
+            migrated_state = dict(state)
+            for key in ("controller.weight_ih", "summary_adapter.0.weight"):
+                if key not in state or key not in current:
+                    continue
+                old_value = state[key]
+                new_value = current[key]
+                if old_value.shape == new_value.shape:
+                    continue
+                if (
+                    old_value.ndim != 2
+                    or new_value.ndim != 2
+                    or old_value.shape[0] != new_value.shape[0]
+                    or old_value.shape[1] > new_value.shape[1]
+                ):
+                    raise
+                padded = torch.zeros_like(new_value)
+                old_attention_cols = task_cfg.num_cells
+                inserted_inspection_cols = task_cfg.num_cells
+                if old_value.shape[1] + inserted_inspection_cols != new_value.shape[1]:
+                    raise
+                padded[:, :old_attention_cols] = old_value[:, :old_attention_cols]
+                padded[:, old_attention_cols + inserted_inspection_cols :] = old_value[
+                    :, old_attention_cols:
+                ]
+                migrated_state[key] = padded
+
+            compatible_missing_prefixes = (
+                "self_model_head.",
+                "target_found_head.",
+                "relevant_region_head.",
+                "unresolved_search_head.",
+                "wrong_candidate_history_head.",
+                "allocation_error_head.",
+            )
+            missing_report_heads = [
+                key
+                for key in current
+                if key not in migrated_state and key.startswith(compatible_missing_prefixes)
+            ]
+            missing_other = [
+                key
+                for key in current
+                if key not in migrated_state and not key.startswith(compatible_missing_prefixes)
+            ]
+            unexpected = [key for key in migrated_state if key not in current]
+            mismatched = [
+                key
+                for key, value in migrated_state.items()
+                if key in current and value.shape != current[key].shape
+            ]
+            if unexpected or missing_other or mismatched or len(missing_report_heads) not in (8, 12):
+                raise
+            model.load_state_dict(migrated_state, strict=False)
         model.eval()
     return cfg, task_cfg, models
 
@@ -2251,14 +2310,18 @@ def reduced_shaping_metrics(
     results: dict[str, Any] = {}
 
     for weight_idx, weight in enumerate(weights):
+        training_overrides = reduced_cfg.get("training_overrides", {})
         variant_cfg = deep_update(
             cfg,
             {
                 "seed": cfg["seed"] + 20000 + weight_idx * 100,
                 "output_dir": str(shaping_dir / f"attn_weight_{str(weight).replace('.', '_')}"),
-                "training": {
-                    "attention_target_weight": float(weight),
-                },
+                "training": deep_update(
+                    training_overrides,
+                    {
+                        "attention_target_weight": float(weight),
+                    },
+                ),
             },
         )
         set_seed(variant_cfg["seed"])

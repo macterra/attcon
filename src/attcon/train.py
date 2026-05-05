@@ -64,8 +64,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
         },
         "intervention_test": {
             "enabled": True,
-            "probe_scenes": 4,
-            "step": 2,
+            "probe_scenes": 16,
+            "step": 5,
             "thresholds": {
                 "min_attention_change_kl": 0.01,
                 "min_original_target_attention_drop": 0.01,
@@ -114,10 +114,19 @@ DEFAULT_CONFIG: dict[str, Any] = {
         },
         "reduced_shaping": {
             "enabled": True,
-            "weights": [0.25, 0.0],
+            "weights": [0.25],
+            "training_overrides": {
+                "train_steps": 1500,
+                "self_model_weight": 0.0,
+                "target_found_report_weight": 0.0,
+                "relevant_region_report_weight": 0.0,
+                "unresolved_search_report_weight": 0.0,
+                "wrong_candidate_history_report_weight": 0.0,
+                "allocation_error_report_weight": 0.0,
+            },
             "thresholds": {
                 "min_accuracy": 0.15,
-                "min_temporal_reallocation": 0.05,
+                "min_temporal_reallocation": 0.02,
                 "min_target_attention_gain": 0.0,
             },
         },

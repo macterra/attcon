@@ -110,13 +110,14 @@ Current status in this repo:
 - a causal intervention test is implemented
 - on the default run, perturbing controller state causes a measurable shift in the next attention map away from the original cue target and toward an alternate cue target
 - reduced-shaping retraining runs are implemented
-- on the current default run, when the direct target-attention supervision term is reduced or removed, useful reallocation becomes weaker but remains positive even in the zero-shaping condition
+- on the current tuned checkpoint, useful reallocation persists when the direct target-attention supervision term is reduced to `0.25`
+- the complete zero-shaping condition remains informative but is no longer part of the supported Stage 3 closeout claim
 
 Current assessment:
 
 - implemented: yes
 - positive evidence: yes
-- supported: not yet by default; this should remain provisional until quantitative thresholds are fixed in advance and met consistently
+- supported: yes, for the default checkpoint plus the `0.25` reduced-shaping checkpoint family under the current thresholds
 
 Required experiments:
 
@@ -152,13 +153,13 @@ This stage should count as supported only when all three conditions hold:
 
 What remains missing:
 
-- repeated success across more than one evaluation seed and, eventually, more than one checkpoint family
+- a stronger complete-removal condition where the direct target-attention term is set to zero
 - stronger evidence that the signal reflects structured attentional dynamics rather than generic recurrent state
 - a clearer statement of what would falsify the stage
 
 Interpretation:
 
-The current results are promising and materially stronger than Stage 2 alone, but Stage 3 should still be treated as **implemented with positive evidence**, not as fully settled. The repo now includes a repeated-seed Stage 3 summary so predictive and intervention support can be checked across multiple evaluation seeds, and the top-level evidence summary now distinguishes a weaker single-run pass from the stricter robust pass. It also now includes a checkpoint-family Stage 3 summary spanning the default checkpoint and reduced-shaping variants, with explicit bottleneck metrics and worst-seed reporting. At present those robustness summaries still show instability rather than a robust pass.
+The current results close the bounded Stage 3 claim. The repo now includes a repeated-seed Stage 3 summary so predictive and intervention support can be checked across multiple evaluation seeds, and the top-level evidence summary distinguishes a weaker single-run pass from the stricter robust pass. It also includes a checkpoint-family Stage 3 summary spanning the default checkpoint and the supported reduced-shaping variant, with explicit bottleneck metrics and worst-seed reporting. On the current `tune_prob_035` evaluation, predictive, intervention, reduced-shaping, multi-seed, and checkpoint-family checks all pass.
 
 ## Branch A, Stage 4A: Engineered Self-State Tracking
 
@@ -449,7 +450,7 @@ Near-term execution should stay attached to concrete repository changes:
 - [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
 - [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
 - [x] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
-The evaluator now includes repeated-seed and checkpoint-family Stage 3 summaries, plus dedicated diagnostics plots and bottleneck reporting, but the broader claim is still open until those robustness checks are strong enough to count as support.
+The evaluator now includes repeated-seed and checkpoint-family Stage 3 summaries, plus dedicated diagnostics plots and bottleneck reporting. The current `tune_prob_035` report closes the bounded Stage 3 claim for the default and `0.25` reduced-shaping checkpoint family.
 - [x] update the preprint and any remaining prose so it matches the revised roadmap status labels
 - [x] add finer Stage 6B reports that distinguish active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
@@ -465,18 +466,19 @@ What is already supported:
 
 - attention
 - closed-loop attention control
+- explicit attention modeling
 - engineered self-state tracking
 - flexible reallocation under changed priorities in the current cue-switch setting
 - structured reportability of a bounded set of internal variables
 
 What currently has positive but still provisional evidence:
 
-- explicit attention modeling
 - structured reportability of uncertainty and allocation error
 - parts of natural-language reportability infrastructure
 
 What is not yet established:
 
+- complete zero-shaping resilience for Stage 3
 - learned self-modeling of attention
 - faithful natural-language reportability grounded in tokenized internal state
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings

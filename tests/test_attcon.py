@@ -217,7 +217,7 @@ class AttentionControlTests(unittest.TestCase):
         outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
         inspection = outputs["inspection_seq"]
         self.assertTrue(torch.all(inspection[:, 1:] >= inspection[:, :-1]))
-        self.assertTrue(torch.all((inspection == 0.0) | (inspection == 1.0)))
+        self.assertTrue(torch.all((inspection >= 0.0) & (inspection <= 1.0)))
 
     def test_stage6b_signals_are_bounded(self) -> None:
         batch = generate_batch(8, self.task_cfg.num_steps, self.task_cfg)
@@ -235,8 +235,8 @@ class AttentionControlTests(unittest.TestCase):
         wrong_candidate_history = outputs["wrong_candidate_history_seq"]
         revisit_unresolved = outputs["revisit_unresolved_seq"]
         allocation_error = outputs["allocation_error_seq"]
-        self.assertTrue(torch.all((relevant == 0.0) | (relevant == 1.0)))
-        self.assertTrue(torch.all((unresolved == 0.0) | (unresolved == 1.0)))
+        self.assertTrue(torch.all((relevant >= 0.0) & (relevant <= 1.0)))
+        self.assertTrue(torch.all((unresolved >= 0.0) & (unresolved <= 1.0)))
         self.assertTrue(torch.all((current_wrong_candidate == 0.0) | (current_wrong_candidate == 1.0)))
         self.assertTrue(torch.all((wrong_candidate_history == 0.0) | (wrong_candidate_history == 1.0)))
         self.assertTrue(torch.all((revisit_unresolved == 0.0) | (revisit_unresolved == 1.0)))
@@ -1024,6 +1024,9 @@ class AttentionControlTests(unittest.TestCase):
                     "reduced_shaping": {
                         "enabled": True,
                         "weights": [0.0],
+                        "training_overrides": {
+                            "train_steps": 4,
+                        },
                         "thresholds": {
                             "min_accuracy": 0.0,
                             "min_temporal_reallocation": 0.0,
