@@ -109,6 +109,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "dotenv_path": ".env",
             "calibration_examples": 4,
             "evaluation_examples": 4,
+            "translator_train_examples": 8,
             "probe_scenes": 2,
             "max_output_tokens": 2000,
         },

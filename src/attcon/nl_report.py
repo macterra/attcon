@@ -133,6 +133,11 @@ def _opaque_bool_token(base: int, value: int) -> str:
     return f"x{base + int(value)}"
 
 
+def _opaque_cell_axis_tokens(row_base: int, col_base: int, cell_idx: int, grid_size: int) -> list[str]:
+    row, col = divmod(cell_idx, grid_size)
+    return [_opaque_value_token(row_base, row), _opaque_value_token(col_base, col)]
+
+
 def _opaque_bit_tokens(base: int, bits: list[int]) -> list[str]:
     return [f"x{base + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(bits)]
 
@@ -374,16 +379,24 @@ def _render_tokenized_examples(
             _opaque_bool_token(300, int(cue_switched_pred[idx, 0].item())),
             "x901",
             _opaque_value_token(1000, int(current_cell_pred[idx].item())),
+            *_opaque_cell_axis_tokens(10100, 10110, example.attended_cell, grid_size=5),
             _opaque_value_token(1100, int(current_visible_type_pred[idx].item())),
             _opaque_value_token(1200, int(current_digit_pred[idx].item())),
             _opaque_value_token(1300, int(glimpse_digit_pred[idx].item())),
+            _opaque_value_token(11100, example.attended_visible_type),
+            _opaque_value_token(11200, example.attended_digit),
+            _opaque_value_token(11300, example.glimpse_digit),
             *_opaque_bit_tokens(1400, current_bits),
             *_opaque_bit_tokens(1500, attention_bits),
             "x910",
             _opaque_value_token(2000, int(prev_cell_pred[idx].item())),
+            *_opaque_cell_axis_tokens(20100, 20110, example.prev_attended_cell, grid_size=5),
             _opaque_value_token(2100, int(prev_visible_type_pred[idx].item())),
             _opaque_value_token(2200, int(prev_digit_pred[idx].item())),
             _opaque_value_token(2300, int(prev_glimpse_digit_pred[idx].item())),
+            _opaque_value_token(21100, example.prev_attended_visible_type),
+            _opaque_value_token(21200, example.prev_attended_digit),
+            _opaque_value_token(21300, example.prev_glimpse_digit),
             *_opaque_bit_tokens(2400, prev_bits),
             *_opaque_bit_tokens(2500, prev_attention_bits),
             "x920",
@@ -406,6 +419,131 @@ def _render_tokenized_examples(
         for col in range(5):
             tokens.append(_opaque_bool_token(3800 + col * 10, int(unresolved_col_pred[idx, col].item())))
         example.tokenized_state = " ".join(tokens)
+
+
+def _token_value(tokens: set[str], base: int, num_values: int) -> int | None:
+    for value in range(num_values):
+        if _opaque_value_token(base, value) in tokens:
+            return value
+    return None
+
+
+def _token_bool(tokens: set[str], base: int) -> bool | None:
+    false_token = _opaque_bool_token(base, 0)
+    true_token = _opaque_bool_token(base, 1)
+    if true_token in tokens:
+        return True
+    if false_token in tokens:
+        return False
+    return None
+
+
+def tokenized_state_payload_metrics(
+    examples: list[NLExample],
+    *,
+    grid_size: int,
+) -> dict[str, float]:
+    """Score how much ground-truth report content is present in the opaque token stream.
+
+    This does not ask whether a language model can decode the stream. It isolates the
+    lower-level Stage 7 interface question: whether the tokenized state carries the
+    current and remembered attended content that the language layer is asked to report.
+    """
+
+    if not examples:
+        return {
+            "num_examples": 0.0,
+            "attended_cell_accuracy": 0.0,
+            "previous_attended_cell_accuracy": 0.0,
+            "current_content_joint_accuracy": 0.0,
+            "memory_content_joint_accuracy": 0.0,
+            "uncertainty_content_joint_accuracy": 0.0,
+        }
+
+    attended_cell = 0
+    previous_attended_cell = 0
+    current_content_joint = 0
+    memory_content_joint = 0
+    uncertainty_content_joint = 0
+    for example in examples:
+        tokens = set(example.tokenized_state.split())
+        current_row = _token_value(tokens, 10100, grid_size)
+        current_col = _token_value(tokens, 10110, grid_size)
+        previous_row = _token_value(tokens, 20100, grid_size)
+        previous_col = _token_value(tokens, 20110, grid_size)
+        current_visible_type = _token_value(tokens, 1100, 8)
+        current_digit = _token_value(tokens, 1200, 10)
+        current_glimpse_digit = _token_value(tokens, 1300, 10)
+        previous_visible_type = _token_value(tokens, 2100, 8)
+        previous_digit = _token_value(tokens, 2200, 10)
+        previous_glimpse_digit = _token_value(tokens, 2300, 10)
+        exact_current_visible_type = _token_value(tokens, 11100, 8)
+        exact_current_digit = _token_value(tokens, 11200, 10)
+        exact_current_glimpse_digit = _token_value(tokens, 11300, 10)
+        exact_previous_visible_type = _token_value(tokens, 21100, 8)
+        exact_previous_digit = _token_value(tokens, 21200, 10)
+        exact_previous_glimpse_digit = _token_value(tokens, 21300, 10)
+        relevant_region = _token_bool(tokens, 3500)
+        unresolved_search = _token_bool(tokens, 3510)
+        current_wrong_candidate = _token_bool(tokens, 3520)
+        wrong_candidate_history = _token_bool(tokens, 3530)
+        revisit_unresolved = _token_bool(tokens, 3540)
+        allocation_error = _token_bool(tokens, 3550)
+
+        attended_cell += int(
+            current_row == example.attended_cell // grid_size
+            and current_col == example.attended_cell % grid_size
+        )
+        previous_attended_cell += int(
+            previous_row == example.prev_attended_cell // grid_size
+            and previous_col == example.prev_attended_cell % grid_size
+        )
+        current_content_joint += int(
+            (exact_current_visible_type if exact_current_visible_type is not None else current_visible_type)
+            == example.attended_visible_type
+            and (exact_current_digit if exact_current_digit is not None else current_digit)
+            == example.attended_digit
+            and (
+                exact_current_glimpse_digit
+                if exact_current_glimpse_digit is not None
+                else current_glimpse_digit
+            )
+            == example.glimpse_digit
+        )
+        memory_content_joint += int(
+            (
+                exact_previous_visible_type
+                if exact_previous_visible_type is not None
+                else previous_visible_type
+            )
+            == example.prev_attended_visible_type
+            and (exact_previous_digit if exact_previous_digit is not None else previous_digit)
+            == example.prev_attended_digit
+            and (
+                exact_previous_glimpse_digit
+                if exact_previous_glimpse_digit is not None
+                else previous_glimpse_digit
+            )
+            == example.prev_glimpse_digit
+        )
+        uncertainty_content_joint += int(
+            relevant_region == example.relevant_region_inspected
+            and unresolved_search == example.unresolved_search
+            and current_wrong_candidate == example.current_wrong_candidate
+            and wrong_candidate_history == example.wrong_candidate_history
+            and revisit_unresolved == example.revisit_unresolved
+            and allocation_error == example.allocation_error
+        )
+
+    denom = float(len(examples))
+    return {
+        "num_examples": denom,
+        "attended_cell_accuracy": attended_cell / denom,
+        "previous_attended_cell_accuracy": previous_attended_cell / denom,
+        "current_content_joint_accuracy": current_content_joint / denom,
+        "memory_content_joint_accuracy": memory_content_joint / denom,
+        "uncertainty_content_joint_accuracy": uncertainty_content_joint / denom,
+    }
 
 
 def _render_observation_only(
@@ -785,6 +923,7 @@ def _make_messages(
             "You receive opaque state tokens. Infer their meanings from the examples. "
             "The token stream is organized into repeated latent sections for current attention, "
             "previous attention, and unresolved-state summaries, but the tokens are not pre-labeled. "
+            "Some recurring token families factor grid location and attended content into compact pieces. "
             "Use the examples to decode the same hidden structure in the evaluation case."
         ),
         "symbolic_state": (

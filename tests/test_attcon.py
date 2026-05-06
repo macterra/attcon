@@ -33,6 +33,7 @@ from attcon.nl_report import (
     collect_intervention_nl_examples,
     collect_nl_examples,
     run_nl_report_mode,
+    tokenized_state_payload_metrics,
 )
 from attcon.train import train_experiment
 from attcon.train import load_config
@@ -294,6 +295,18 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("x910", token_list)
         self.assertIn("x920", token_list)
         self.assertIn("x930", token_list)
+        row, col = divmod(example.attended_cell, self.task_cfg.grid_size)
+        prev_row, prev_col = divmod(example.prev_attended_cell, self.task_cfg.grid_size)
+        self.assertIn(f"x{10100 + row}", token_list)
+        self.assertIn(f"x{10110 + col}", token_list)
+        self.assertIn(f"x{20100 + prev_row}", token_list)
+        self.assertIn(f"x{20110 + prev_col}", token_list)
+        self.assertIn(f"x{11100 + example.attended_visible_type}", token_list)
+        self.assertIn(f"x{11200 + example.attended_digit}", token_list)
+        self.assertIn(f"x{11300 + example.glimpse_digit}", token_list)
+        self.assertIn(f"x{21100 + example.prev_attended_visible_type}", token_list)
+        self.assertIn(f"x{21200 + example.prev_attended_digit}", token_list)
+        self.assertIn(f"x{21300 + example.prev_glimpse_digit}", token_list)
         self.assertIsInstance(example.unresolved_cells, list)
         self.assertIsInstance(example.unresolved_rows, list)
         self.assertIsInstance(example.unresolved_cols, list)
@@ -319,6 +332,22 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.inspected_count, int)
         self.assertIsInstance(example.previous_inspected_count, int)
         self.assertIsInstance(example.attended_cell_previously_inspected, bool)
+
+    def test_tokenized_state_payload_metrics_scores_factored_attention_locations(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        with torch.no_grad():
+            outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+        examples = collect_nl_examples(model, self.task_cfg, batch, outputs)
+
+        metrics = tokenized_state_payload_metrics(examples, grid_size=self.task_cfg.grid_size)
+
+        self.assertEqual(metrics["num_examples"], float(len(examples)))
+        self.assertEqual(metrics["attended_cell_accuracy"], 1.0)
+        self.assertEqual(metrics["previous_attended_cell_accuracy"], 1.0)
+        self.assertEqual(metrics["current_content_joint_accuracy"], 1.0)
+        self.assertEqual(metrics["memory_content_joint_accuracy"], 1.0)
+        self.assertTrue(0.0 <= metrics["uncertainty_content_joint_accuracy"] <= 1.0)
 
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
         class FakeContent:
@@ -811,6 +840,47 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(metrics["intervention_slice"]["skipped"])
         self.assertGreater(metrics["intervention_slice"]["delta_norm"], 0.0)
         self.assertTrue(0.0 <= metrics["intervention_slice"]["attention_change_fraction"] <= 1.0)
+
+    def test_nl_report_metrics_reports_token_payload_when_api_is_unavailable(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "evaluation": {
+                "probe_scenes": 2,
+                "nl_report": {
+                    "enabled": True,
+                    "calibration_examples": 1,
+                    "evaluation_examples": 1,
+                    "translator_train_examples": 1,
+                    "probe_scenes": 2,
+                    "max_output_tokens": 64,
+                },
+            }
+        }
+
+        original_openai = eval_module.OpenAI
+        original_api_key = os.environ.get("OPENAI_API_KEY")
+        eval_module.OpenAI = None
+        os.environ.pop("OPENAI_API_KEY", None)
+        try:
+            metrics = nl_report_metrics(
+                model,
+                config,
+                self.task_cfg,
+                torch.device("cpu"),
+                seed=29,
+            )
+        finally:
+            eval_module.OpenAI = original_openai
+            if original_api_key is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = original_api_key
+
+        self.assertTrue(metrics["skipped"])
+        self.assertEqual(metrics["reason"], "openai dependency is not installed")
+        self.assertIn("tokenized_state_payload", metrics)
+        self.assertEqual(metrics["tokenized_state_payload"]["attended_cell_accuracy"], 1.0)
+        self.assertEqual(metrics["tokenized_state_payload"]["previous_attended_cell_accuracy"], 1.0)
 
     def test_self_state_diagnostics_exposes_stepwise_series(self) -> None:
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)

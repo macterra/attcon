@@ -23,6 +23,7 @@ from .nl_report import (
     collect_nl_examples,
     load_dotenv,
     run_nl_report_mode,
+    tokenized_state_payload_metrics,
     _render_tokenized_examples,
 )
 from .train import deep_update, evaluate_model, load_config, make_generator, set_seed, train_single_model
@@ -1263,18 +1264,11 @@ def nl_report_metrics(
         return {}
 
     load_dotenv(nl_cfg.get("dotenv_path", ".env"))
+    api_skip_reason = ""
     if OpenAI is None:
-        return {
-            "enabled": True,
-            "skipped": True,
-            "reason": "openai dependency is not installed",
-        }
-    if not os.environ.get("OPENAI_API_KEY"):
-        return {
-            "enabled": True,
-            "skipped": True,
-            "reason": "OPENAI_API_KEY is not set",
-        }
+        api_skip_reason = "openai dependency is not installed"
+    elif not os.environ.get("OPENAI_API_KEY"):
+        api_skip_reason = "OPENAI_API_KEY is not set"
 
     batch_size = nl_cfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"])
     generator = make_generator(seed, device)
@@ -1314,6 +1308,22 @@ def nl_report_metrics(
         if not translator_examples:
             translator_examples = calibration_examples
         _render_tokenized_examples(translator_examples, calibration_examples + evaluation_examples)
+        tokenized_payload = tokenized_state_payload_metrics(
+            evaluation_examples,
+            grid_size=task_cfg.grid_size,
+        )
+        if api_skip_reason:
+            return {
+                "enabled": True,
+                "skipped": True,
+                "reason": api_skip_reason,
+                "model": model_name,
+                "slice": slice_name,
+                "calibration_examples": calibration_count,
+                "evaluation_examples": evaluation_count,
+                "translator_train_examples": len(translator_examples),
+                "tokenized_state_payload": tokenized_payload,
+            }
         try:
             results = {
                 mode: run_nl_report_mode(
@@ -1346,6 +1356,7 @@ def nl_report_metrics(
             "calibration_examples": calibration_count,
             "evaluation_examples": evaluation_count,
             "translator_train_examples": len(translator_examples),
+            "tokenized_state_payload": tokenized_payload,
             "tokenized_state": tokenized,
             "symbolic_state": symbolic,
             "observation_only": observation,
@@ -3015,6 +3026,18 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     natural_language_reportability = {
         "skipped": nl_report.get("skipped", not bool(nl_report)),
         "model": nl_report.get("model", ""),
+        "tokenized_payload_attended_cell_accuracy": nl_report.get(
+            "tokenized_state_payload", {}
+        ).get("attended_cell_accuracy", 0.0),
+        "tokenized_payload_previous_attended_cell_accuracy": nl_report.get(
+            "tokenized_state_payload", {}
+        ).get("previous_attended_cell_accuracy", 0.0),
+        "tokenized_payload_current_content_joint_accuracy": nl_report.get(
+            "tokenized_state_payload", {}
+        ).get("current_content_joint_accuracy", 0.0),
+        "tokenized_payload_memory_content_joint_accuracy": nl_report.get(
+            "tokenized_state_payload", {}
+        ).get("memory_content_joint_accuracy", 0.0),
         "tokenized_joint_accuracy": nl_report.get("tokenized_state", {}).get("joint_accuracy", 0.0),
         "observation_joint_accuracy": nl_report.get("observation_only", {}).get("joint_accuracy", 0.0),
         "tokenized_current_content_joint_accuracy_advantage": nl_report.get(

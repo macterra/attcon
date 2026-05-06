@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current tuned checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.348` vs. `0.230`), shows strong temporal reallocation (`0.677` vs. `0.000`), and achieves positive target-attention gain (`0.080` vs. `0.000`). Additional evaluations extend the benchmark beyond closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions and reduced-shaping tests now close the bounded Stage 3 explicit-attention-modeling claim, explicit inspected-state variables support bounded engineered self-state tracking of attention history, and structured probes support bounded reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now Stage 7 reportability of current and remembered attended contents: tokenized-state language reports still do not beat observation-only baselines, and a parallel VLM route may be more natural for the spatial form of the underlying internal state. The current repository therefore supports a meaningful Stage 2 benchmark, a bounded Stage 3 explicit-attention-modeling result, later bounded results around engineered self-state tracking and structured reportability, and an implemented but not yet successful Stage 7 harness, while stronger claims remain provisional or open. Recent additions make the later stages more inspectable: Stage 6B now distinguishes active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits, and the evaluator now emits Stage 7 visual report panels that place scene-only, explicit symbolic, and minimal tokenized state views side by side.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current tuned checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.348` vs. `0.230`), shows strong temporal reallocation (`0.677` vs. `0.000`), and achieves positive target-attention gain (`0.080` vs. `0.000`). Additional evaluations extend the benchmark beyond closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions and reduced-shaping tests now close the bounded Stage 3 explicit-attention-modeling claim, explicit inspected-state variables support bounded engineered self-state tracking of attention history, and structured probes support bounded reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now Stage 7 reportability of current and remembered attended contents: the tokenized-state interface now carries that content in a locally checkable opaque payload, but language reports still need to beat observation-only baselines. The current repository therefore supports a meaningful Stage 2 benchmark, a bounded Stage 3 explicit-attention-modeling result, later bounded results around engineered self-state tracking and structured reportability, and an implemented but not yet successful Stage 7 harness, while stronger claims remain provisional or open. Recent additions make the later stages more inspectable: Stage 6B now distinguishes active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits, and the evaluator now emits Stage 7 visual report panels that place scene-only, explicit symbolic, and minimal tokenized state views side by side.
 
 ## 1. Introduction
 
@@ -274,22 +274,21 @@ This system is still intentionally minimal.
 - Attention is soft rather than hard fixation.
 - Some checkpoint-level metrics vary across training recipes.
 - Stage 7 natural-language reporting still depends on an external language model and remains unstable enough that small evaluation slices are more reliable than large aggregate runs.
-- Tokenized internal-state reporting remains the current bottleneck.
+- Decoding tokenized internal-state reports remains the current Stage 7 bottleneck.
 - The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
 
 So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
 
 ## 8. Immediate Next Work
 
-The next highest-value experiments are now concentrated in Stage 6B, Stage 7, and strengthening the Stage 3 zero-shaping stress test:
+The next highest-value experiments are now concentrated in Stage 6B, Stage 7 language decoding, and strengthening the Stage 3 zero-shaping stress test:
 
 1. test whether Stage 3 can also survive complete removal of direct target-attention shaping,
 2. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
 3. continue documenting the now-completed split between Stage 6A-style structured reportability and Stage 6B-style uncertainty/allocation-error reportability across writeups and artifacts,
-4. improve the tokenized internal-state interface so current and remembered attended semantic content are easier to recover than from observation-only input,
-5. separate current-attention content tokens from memory-of-previous-attention tokens more sharply,
-6. test natural-language reporting under cue switches and controller interventions,
-7. add a VLM branch that reads minimally labeled visual internal-state renderings and compare it against scene-only and explicit-dump baselines.
+4. evaluate whether the improved opaque token payload lets language reports recover current and remembered attended semantic content more faithfully than observation-only input,
+5. test natural-language reporting under cue switches and controller interventions,
+6. add a VLM branch that reads minimally labeled visual internal-state renderings and compare it against scene-only and explicit-dump baselines.
 
 ## 9. Reproducibility
 
