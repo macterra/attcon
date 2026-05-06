@@ -1278,6 +1278,8 @@ def nl_report_metrics(
     translator_train_count = int(nl_cfg.get("translator_train_examples", 8))
     model_name = nl_cfg.get("model", "gpt-5-mini")
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
+    request_retries = int(nl_cfg.get("request_retries", 2))
+    retry_backoff_seconds = float(nl_cfg.get("retry_backoff_seconds", 2.0))
     modes = ("tokenized_state", "symbolic_state", "observation_only")
     required_examples = calibration_count + evaluation_count
 
@@ -1334,6 +1336,8 @@ def nl_report_metrics(
                     grid_size=task_cfg.grid_size,
                     max_output_tokens=max_output_tokens,
                     teaching_examples=translator_examples,
+                    request_retries=request_retries,
+                    retry_backoff_seconds=retry_backoff_seconds,
                 )
                 for mode in modes
             }
@@ -1343,6 +1347,11 @@ def nl_report_metrics(
                 "skipped": True,
                 "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
                 "model": model_name,
+                "slice": slice_name,
+                "calibration_examples": calibration_count,
+                "evaluation_examples": evaluation_count,
+                "translator_train_examples": len(translator_examples),
+                "tokenized_state_payload": tokenized_payload,
             }
 
         tokenized = results["tokenized_state"]

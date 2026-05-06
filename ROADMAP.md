@@ -375,7 +375,7 @@ Current status in this repo:
 - the Stage 7 example format now also carries cue-history and inspection-history fields, and the evaluator can run dedicated cue-switch and intervention slices through the same NL reporting harness
 - the evaluator now emits Stage 7 visual report panels for default, cue-switch, and intervention slices that place scene-only, explicit symbolic, and minimal tokenized views side by side
 - the tokenized interface now includes opaque factored row/column tokens plus opaque attended-content tokens for current and previous attention
-- the evaluator now reports a local `tokenized_state_payload` diagnostic, so the token interface can be checked even when the API language-report layer is skipped
+- the evaluator now reports a local `tokenized_state_payload` diagnostic, so the token interface can be checked even when the API language-report layer is skipped or fails
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - the local token payload now carries current and remembered attended location/content, but the tokenized language-report condition still needs to be re-evaluated against observation-only baselines
 

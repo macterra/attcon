@@ -882,6 +882,55 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(metrics["tokenized_state_payload"]["attended_cell_accuracy"], 1.0)
         self.assertEqual(metrics["tokenized_state_payload"]["previous_attended_cell_accuracy"], 1.0)
 
+    def test_nl_report_metrics_preserves_token_payload_when_language_request_fails(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "evaluation": {
+                "probe_scenes": 2,
+                "nl_report": {
+                    "enabled": True,
+                    "calibration_examples": 1,
+                    "evaluation_examples": 1,
+                    "translator_train_examples": 1,
+                    "probe_scenes": 2,
+                    "max_output_tokens": 64,
+                    "request_retries": 1,
+                },
+            }
+        }
+
+        original_openai = eval_module.OpenAI
+        original_run = eval_module.run_nl_report_mode
+        original_api_key = os.environ.get("OPENAI_API_KEY")
+
+        def failing_run_nl_report_mode(**kwargs):
+            raise RuntimeError("quota exhausted")
+
+        eval_module.OpenAI = object()
+        eval_module.run_nl_report_mode = failing_run_nl_report_mode
+        os.environ["OPENAI_API_KEY"] = "test-key"
+        try:
+            metrics = nl_report_metrics(
+                model,
+                config,
+                self.task_cfg,
+                torch.device("cpu"),
+                seed=31,
+            )
+        finally:
+            eval_module.OpenAI = original_openai
+            eval_module.run_nl_report_mode = original_run
+            if original_api_key is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = original_api_key
+
+        self.assertTrue(metrics["skipped"])
+        self.assertIn("quota exhausted", metrics["reason"])
+        self.assertIn("tokenized_state_payload", metrics)
+        self.assertEqual(metrics["tokenized_state_payload"]["current_content_joint_accuracy"], 1.0)
+        self.assertEqual(metrics["tokenized_state_payload"]["memory_content_joint_accuracy"], 1.0)
+
     def test_self_state_diagnostics_exposes_stepwise_series(self) -> None:
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
         diagnostics = self_state_diagnostics(

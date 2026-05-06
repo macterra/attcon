@@ -112,6 +112,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "translator_train_examples": 8,
             "probe_scenes": 2,
             "max_output_tokens": 2000,
+            "request_retries": 2,
+            "retry_backoff_seconds": 2.0,
         },
         "reduced_shaping": {
             "enabled": True,
