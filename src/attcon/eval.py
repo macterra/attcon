@@ -22,7 +22,9 @@ from .nl_report import (
     collect_intervention_nl_examples,
     collect_nl_examples,
     load_dotenv,
+    run_calibrated_token_report_mode,
     run_nl_report_mode,
+    run_observation_only_heuristic_report_mode,
     tokenized_state_payload_metrics,
     _render_tokenized_examples,
 )
@@ -1280,6 +1282,7 @@ def nl_report_metrics(
     max_output_tokens = int(nl_cfg.get("max_output_tokens", 240))
     request_retries = int(nl_cfg.get("request_retries", 2))
     retry_backoff_seconds = float(nl_cfg.get("retry_backoff_seconds", 2.0))
+    local_decoder_enabled = bool(nl_cfg.get("local_decoder", {}).get("enabled", False))
     modes = ("tokenized_state", "symbolic_state", "observation_only")
     required_examples = calibration_count + evaluation_count
 
@@ -1314,7 +1317,22 @@ def nl_report_metrics(
             evaluation_examples,
             grid_size=task_cfg.grid_size,
         )
-        if api_skip_reason:
+        if local_decoder_enabled:
+            results = {
+                "tokenized_state": run_calibrated_token_report_mode(
+                    evaluation_examples=evaluation_examples,
+                    grid_size=task_cfg.grid_size,
+                ),
+                "symbolic_state": run_calibrated_token_report_mode(
+                    evaluation_examples=evaluation_examples,
+                    grid_size=task_cfg.grid_size,
+                ),
+                "observation_only": run_observation_only_heuristic_report_mode(
+                    evaluation_examples=evaluation_examples,
+                    grid_size=task_cfg.grid_size,
+                ),
+            }
+        if api_skip_reason and not local_decoder_enabled:
             return {
                 "enabled": True,
                 "skipped": True,
@@ -1326,33 +1344,34 @@ def nl_report_metrics(
                 "translator_train_examples": len(translator_examples),
                 "tokenized_state_payload": tokenized_payload,
             }
-        try:
-            results = {
-                mode: run_nl_report_mode(
-                    mode=mode,
-                    model_name=model_name,
-                    calibration_examples=calibration_examples,
-                    evaluation_examples=evaluation_examples,
-                    grid_size=task_cfg.grid_size,
-                    max_output_tokens=max_output_tokens,
-                    teaching_examples=translator_examples,
-                    request_retries=request_retries,
-                    retry_backoff_seconds=retry_backoff_seconds,
-                )
-                for mode in modes
-            }
-        except Exception as exc:  # pragma: no cover - network/runtime behavior
-            return {
-                "enabled": True,
-                "skipped": True,
-                "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
-                "model": model_name,
-                "slice": slice_name,
-                "calibration_examples": calibration_count,
-                "evaluation_examples": evaluation_count,
-                "translator_train_examples": len(translator_examples),
-                "tokenized_state_payload": tokenized_payload,
-            }
+        if not local_decoder_enabled:
+            try:
+                results = {
+                    mode: run_nl_report_mode(
+                        mode=mode,
+                        model_name=model_name,
+                        calibration_examples=calibration_examples,
+                        evaluation_examples=evaluation_examples,
+                        grid_size=task_cfg.grid_size,
+                        max_output_tokens=max_output_tokens,
+                        teaching_examples=translator_examples,
+                        request_retries=request_retries,
+                        retry_backoff_seconds=retry_backoff_seconds,
+                    )
+                    for mode in modes
+                }
+            except Exception as exc:  # pragma: no cover - network/runtime behavior
+                return {
+                    "enabled": True,
+                    "skipped": True,
+                    "reason": f"nl_report request failed: {type(exc).__name__}: {exc}",
+                    "model": model_name,
+                    "slice": slice_name,
+                    "calibration_examples": calibration_count,
+                    "evaluation_examples": evaluation_count,
+                    "translator_train_examples": len(translator_examples),
+                    "tokenized_state_payload": tokenized_payload,
+                }
 
         tokenized = results["tokenized_state"]
         symbolic = results["symbolic_state"]
@@ -1361,6 +1380,7 @@ def nl_report_metrics(
             "enabled": True,
             "skipped": False,
             "model": model_name,
+            "local_decoder": local_decoder_enabled,
             "slice": slice_name,
             "calibration_examples": calibration_count,
             "evaluation_examples": evaluation_count,
@@ -3035,6 +3055,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     natural_language_reportability = {
         "skipped": nl_report.get("skipped", not bool(nl_report)),
         "model": nl_report.get("model", ""),
+        "local_decoder": nl_report.get("local_decoder", False),
         "tokenized_payload_attended_cell_accuracy": nl_report.get(
             "tokenized_state_payload", {}
         ).get("attended_cell_accuracy", 0.0),

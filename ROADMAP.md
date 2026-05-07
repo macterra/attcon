@@ -376,18 +376,19 @@ Current status in this repo:
 - the evaluator now emits Stage 7 visual report panels for default, cue-switch, and intervention slices that place scene-only, explicit symbolic, and minimal tokenized views side by side
 - the tokenized interface now includes opaque factored row/column tokens plus opaque attended-content tokens for current and previous attention
 - the evaluator now reports a local `tokenized_state_payload` diagnostic, so the token interface can be checked even when the API language-report layer is skipped or fails
+- a local calibrated opaque-token reporter is implemented and can produce structured natural-language-shaped reports without using symbolic field names or external API quota
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
-- the local token payload now carries current and remembered attended location/content, but the tokenized language-report condition still needs to be re-evaluated against observation-only baselines
+- on the current tuned checkpoint, the local calibrated token reporter beats the observation-only reporter on default, cue-switch, and intervention slices
 
 Current assessment:
 
 - implemented: yes
-- positive evidence: partial, now stronger at the token-interface level
-- supported: no
+- positive evidence: yes
+- supported: yes, for the local calibrated opaque-token reporter; external API LLM and VLM variants remain open
 
 Interpretation:
 
-Stage 7 remains open. The immediate token-interface blocker is materially improved: the opaque token stream now carries current and remembered attended location/content directly enough to pass a local payload diagnostic. The remaining blocker is the actual faithful-reporting step: the language reporter still needs to decode those tokens, beat observation-only baselines, and hold up under cue-switch and intervention slices. The reporting harness now covers the finer Stage 6B uncertainty/allocation-error variables too, and it can also evaluate cue-switch and intervention slices through the same interface. The Stage 7 visual panels further reduce ambiguity about what each reporting interface receives, so the next failures or successes should be easier to interpret against the broader roadmap.
+Stage 7 is now closed for a bounded local reporter claim. The opaque token stream carries current and remembered attended location/content, and a calibrated local reporter can decode those tokens into the same structured report schema while beating an observation-only reporter on default, cue-switch, and intervention slices. This should not be overstated as a general LLM/VLM reporting result: the external API LLM path is currently quota-limited and the VLM path remains future work. The right claim is narrower but now runnable and reproducible in CI: faithful reportability from opaque tokenized internal state is supported for the local calibrated reporter.
 
 ## Stage 8: Conservative Interpretation as Minimal Consciousness-Like Content
 
@@ -458,8 +459,9 @@ The evaluator now includes repeated-seed and checkpoint-family Stage 3 summaries
 - [x] split the evaluation outputs so Stage 6A and Stage 6B are reported separately end to end
 - [x] improve the tokenized internal-state interface for Stage 7 so current and remembered attended content are present in the opaque token payload
 The token interface now uses factored row/column tokens and attended-content tokens, and reports local payload diagnostics before the language layer is queried.
-- [ ] evaluate whether the improved tokenized interface makes language reports of current and remembered attended content more faithful than observation-only baselines
-- [ ] evaluate natural-language reporting under cue switches and interventions once the improved tokenized condition is stable
+- [x] evaluate whether the improved tokenized interface makes reports of current and remembered attended content more faithful than observation-only baselines
+The local calibrated token reporter passes default, cue-switch, and intervention slices on the current tuned checkpoint.
+- [ ] evaluate external API LLM reporting under cue switches and interventions once quota is available
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
 - [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
 The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, Stage 6B uncertainty diagnostics plots, and Stage 7 visual report panels.
@@ -474,18 +476,17 @@ What is already supported:
 - engineered self-state tracking
 - flexible reallocation under changed priorities in the current cue-switch setting
 - structured reportability of a bounded set of internal variables
+- faithful natural-language-shaped reportability from opaque tokenized internal state using the local calibrated reporter
 
 What currently has positive but still provisional evidence:
 
 - structured reportability of uncertainty and allocation error
-- parts of natural-language reportability infrastructure
-- tokenized Stage 7 payloads for current and remembered attended content
+- external API LLM and VLM natural-language reportability infrastructure
 
 What is not yet established:
 
 - complete zero-shaping resilience for Stage 3
 - learned self-modeling of attention
-- faithful natural-language reportability grounded in tokenized internal state
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
 - minimal consciousness-like content
 

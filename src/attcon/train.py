@@ -114,6 +114,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "max_output_tokens": 2000,
             "request_retries": 2,
             "retry_backoff_seconds": 2.0,
+            "local_decoder": {
+                "enabled": True,
+            },
         },
         "reduced_shaping": {
             "enabled": True,

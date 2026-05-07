@@ -32,7 +32,9 @@ from attcon.nl_report import (
     collect_cue_switch_nl_examples,
     collect_intervention_nl_examples,
     collect_nl_examples,
+    run_calibrated_token_report_mode,
     run_nl_report_mode,
+    run_observation_only_heuristic_report_mode,
     tokenized_state_payload_metrics,
 )
 from attcon.train import train_experiment
@@ -348,6 +350,36 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(metrics["current_content_joint_accuracy"], 1.0)
         self.assertEqual(metrics["memory_content_joint_accuracy"], 1.0)
         self.assertTrue(0.0 <= metrics["uncertainty_content_joint_accuracy"] <= 1.0)
+
+    def test_calibrated_token_reporter_beats_observation_only_on_stage7_content(self) -> None:
+        batch = generate_batch(3, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        with torch.no_grad():
+            outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+        examples = [
+            example
+            for example in collect_nl_examples(model, self.task_cfg, batch, outputs)
+            if example.step_index > 0
+        ]
+
+        tokenized = run_calibrated_token_report_mode(
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+        )
+        observation = run_observation_only_heuristic_report_mode(
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+        )
+
+        self.assertEqual(tokenized["attended_cell_accuracy"], 1.0)
+        self.assertEqual(tokenized["previous_attended_cell_accuracy"], 1.0)
+        self.assertEqual(tokenized["current_content_joint_accuracy"], 1.0)
+        self.assertEqual(tokenized["memory_content_joint_accuracy"], 1.0)
+        self.assertGreater(
+            tokenized["memory_content_joint_accuracy"],
+            observation["memory_content_joint_accuracy"],
+        )
+        self.assertGreater(tokenized["joint_accuracy"], observation["joint_accuracy"])
 
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
         class FakeContent:
@@ -928,6 +960,51 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(metrics["skipped"])
         self.assertIn("quota exhausted", metrics["reason"])
         self.assertIn("tokenized_state_payload", metrics)
+        self.assertEqual(metrics["tokenized_state_payload"]["current_content_joint_accuracy"], 1.0)
+        self.assertEqual(metrics["tokenized_state_payload"]["memory_content_joint_accuracy"], 1.0)
+
+    def test_nl_report_metrics_can_use_local_stage7_decoder_without_api(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "evaluation": {
+                "probe_scenes": 3,
+                "cue_switch": {"enabled": False},
+                "intervention_test": {"enabled": False},
+                "nl_report": {
+                    "enabled": True,
+                    "calibration_examples": 2,
+                    "evaluation_examples": 2,
+                    "translator_train_examples": 2,
+                    "probe_scenes": 3,
+                    "max_output_tokens": 64,
+                    "local_decoder": {"enabled": True},
+                },
+            }
+        }
+
+        original_openai = eval_module.OpenAI
+        original_api_key = os.environ.get("OPENAI_API_KEY")
+        eval_module.OpenAI = None
+        os.environ.pop("OPENAI_API_KEY", None)
+        try:
+            metrics = nl_report_metrics(
+                model,
+                config,
+                self.task_cfg,
+                torch.device("cpu"),
+                seed=37,
+            )
+        finally:
+            eval_module.OpenAI = original_openai
+            if original_api_key is None:
+                os.environ.pop("OPENAI_API_KEY", None)
+            else:
+                os.environ["OPENAI_API_KEY"] = original_api_key
+
+        self.assertFalse(metrics["skipped"])
+        self.assertTrue(metrics["local_decoder"])
+        self.assertTrue(metrics["content_supported"])
+        self.assertGreater(metrics["tokenized_memory_content_joint_accuracy_advantage"], 0.0)
         self.assertEqual(metrics["tokenized_state_payload"]["current_content_joint_accuracy"], 1.0)
         self.assertEqual(metrics["tokenized_state_payload"]["memory_content_joint_accuracy"], 1.0)
 

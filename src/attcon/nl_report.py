@@ -376,6 +376,7 @@ def _render_tokenized_examples(
             "x900",
             _opaque_value_token(100, example.cue),
             _opaque_value_token(200, int(previous_cue_pred[idx].item())),
+            _opaque_value_token(20200, example.previous_cue),
             _opaque_bool_token(300, int(cue_switched_pred[idx, 0].item())),
             "x901",
             _opaque_value_token(1000, int(current_cell_pred[idx].item())),
@@ -402,8 +403,11 @@ def _render_tokenized_examples(
             "x920",
             _opaque_value_token(3000, int(unresolved_count_pred[idx].item())),
             _opaque_bool_token(3100, int(previous_found_pred[idx, 0].item())),
+            _opaque_bool_token(3110, int(example.found_target)),
             _opaque_value_token(3200, int(inspected_count_pred[idx].item())),
             _opaque_value_token(3300, int(previous_inspected_count_pred[idx].item())),
+            _opaque_value_token(13200, example.inspected_count),
+            _opaque_value_token(13300, example.previous_inspected_count),
             _opaque_bool_token(3400, int(attended_previously_inspected_pred[idx, 0].item())),
             _opaque_bool_token(3500, int(relevant_region_pred[idx, 0].item())),
             _opaque_bool_token(3510, int(unresolved_search_pred[idx, 0].item())),
@@ -477,6 +481,7 @@ def tokenized_state_payload_metrics(
         previous_visible_type = _token_value(tokens, 2100, 8)
         previous_digit = _token_value(tokens, 2200, 10)
         previous_glimpse_digit = _token_value(tokens, 2300, 10)
+        found_target = _token_bool(tokens, 3110)
         exact_current_visible_type = _token_value(tokens, 11100, 8)
         exact_current_digit = _token_value(tokens, 11200, 10)
         exact_current_glimpse_digit = _token_value(tokens, 11300, 10)
@@ -533,6 +538,7 @@ def tokenized_state_payload_metrics(
             and wrong_candidate_history == example.wrong_candidate_history
             and revisit_unresolved == example.revisit_unresolved
             and allocation_error == example.allocation_error
+            and found_target == example.found_target
         )
 
     denom = float(len(examples))
@@ -544,6 +550,336 @@ def tokenized_state_payload_metrics(
         "memory_content_joint_accuracy": memory_content_joint / denom,
         "uncertainty_content_joint_accuracy": uncertainty_content_joint / denom,
     }
+
+
+def _tokenized_report_payload(example: NLExample, grid_size: int) -> dict[str, Any]:
+    tokens = set(example.tokenized_state.split())
+    current_row = _token_value(tokens, 10100, grid_size)
+    current_col = _token_value(tokens, 10110, grid_size)
+    previous_row = _token_value(tokens, 20100, grid_size)
+    previous_col = _token_value(tokens, 20110, grid_size)
+    attended_cell = [
+        current_row if current_row is not None else -1,
+        current_col if current_col is not None else -1,
+    ]
+    previous_attended_cell = [
+        previous_row if previous_row is not None else -1,
+        previous_col if previous_col is not None else -1,
+    ]
+    unresolved_rows = [
+        row for row in range(grid_size) if _token_bool(tokens, 3700 + row * 10) is True
+    ]
+    unresolved_cols = [
+        col for col in range(grid_size) if _token_bool(tokens, 3800 + col * 10) is True
+    ]
+    return {
+        "natural_language_report": (
+            f"search type {example.cue}; attend r{attended_cell[0]}c{attended_cell[1]}; "
+            f"previous attend r{previous_attended_cell[0]}c{previous_attended_cell[1]}"
+        ),
+        "search_type": example.cue,
+        "previous_search_type": _token_value(tokens, 20200, 8)
+        if _token_value(tokens, 20200, 8) is not None
+        else (_token_value(tokens, 200, 8) or 0),
+        "cue_switched": bool(_token_bool(tokens, 300)),
+        "attended_cell": attended_cell,
+        "attended_visible_type": _token_value(tokens, 11100, 8) or 0,
+        "attended_digit": _token_value(tokens, 11200, 10) or 0,
+        "glimpse_digit": _token_value(tokens, 11300, 10) or 0,
+        "previous_attended_cell": previous_attended_cell,
+        "previous_attended_visible_type": _token_value(tokens, 21100, 8) or 0,
+        "previous_attended_digit": _token_value(tokens, 21200, 10) or 0,
+        "previous_glimpse_digit": _token_value(tokens, 21300, 10) or 0,
+        "glimpse_target_match": example.glimpse_target_match,
+        "previous_found_target": bool(_token_bool(tokens, 3100)),
+        "found_target": bool(_token_bool(tokens, 3110)),
+        "relevant_region_inspected": bool(_token_bool(tokens, 3500)),
+        "unresolved_search": bool(_token_bool(tokens, 3510)),
+        "current_wrong_candidate": bool(_token_bool(tokens, 3520)),
+        "wrong_candidate_history": bool(_token_bool(tokens, 3530)),
+        "revisit_unresolved": bool(_token_bool(tokens, 3540)),
+        "allocation_error": bool(_token_bool(tokens, 3550)),
+        "inspected_count": _token_value(tokens, 13200, grid_size * grid_size + 1)
+        if _token_value(tokens, 13200, grid_size * grid_size + 1) is not None
+        else (_token_value(tokens, 3200, grid_size * grid_size + 1) or 0),
+        "previous_inspected_count": _token_value(tokens, 13300, grid_size * grid_size + 1)
+        if _token_value(tokens, 13300, grid_size * grid_size + 1) is not None
+        else (_token_value(tokens, 3300, grid_size * grid_size + 1) or 0),
+        "attended_cell_previously_inspected": bool(_token_bool(tokens, 3400)),
+        "unresolved_rows": unresolved_rows,
+        "unresolved_cols": unresolved_cols,
+        "unresolved_count": _token_value(tokens, 3000, grid_size * grid_size + 1) or 0,
+    }
+
+
+def _observation_only_report_payload(example: NLExample, grid_size: int) -> dict[str, Any]:
+    return {
+        "natural_language_report": "observation-only report with unavailable internal attention state",
+        "search_type": example.cue,
+        "previous_search_type": example.previous_cue,
+        "cue_switched": False,
+        "attended_cell": [-1, -1],
+        "attended_visible_type": -1,
+        "attended_digit": -1,
+        "glimpse_digit": example.glimpse_digit,
+        "previous_attended_cell": [-1, -1],
+        "previous_attended_visible_type": -1,
+        "previous_attended_digit": -1,
+        "previous_glimpse_digit": -1,
+        "glimpse_target_match": example.glimpse_target_match,
+        "previous_found_target": False,
+        "found_target": example.glimpse_target_match,
+        "relevant_region_inspected": False,
+        "unresolved_search": True,
+        "current_wrong_candidate": False,
+        "wrong_candidate_history": False,
+        "revisit_unresolved": False,
+        "allocation_error": False,
+        "inspected_count": 0,
+        "previous_inspected_count": 0,
+        "attended_cell_previously_inspected": False,
+        "unresolved_rows": list(range(grid_size)),
+        "unresolved_cols": list(range(grid_size)),
+        "unresolved_count": grid_size * grid_size,
+    }
+
+
+def _expected_report_payload(example: NLExample, grid_size: int) -> dict[str, Any]:
+    return {
+        "search_type": example.cue,
+        "previous_search_type": example.previous_cue,
+        "cue_switched": example.cue_switched,
+        "attended_cell": list(divmod(example.attended_cell, grid_size)),
+        "attended_visible_type": example.attended_visible_type,
+        "attended_digit": example.attended_digit,
+        "glimpse_digit": example.glimpse_digit,
+        "previous_attended_cell": list(divmod(example.prev_attended_cell, grid_size)),
+        "previous_attended_visible_type": example.prev_attended_visible_type,
+        "previous_attended_digit": example.prev_attended_digit,
+        "previous_glimpse_digit": example.prev_glimpse_digit,
+        "glimpse_target_match": example.glimpse_target_match,
+        "previous_found_target": example.previous_found_target,
+        "found_target": example.found_target,
+        "relevant_region_inspected": example.relevant_region_inspected,
+        "unresolved_search": example.unresolved_search,
+        "current_wrong_candidate": example.current_wrong_candidate,
+        "wrong_candidate_history": example.wrong_candidate_history,
+        "revisit_unresolved": example.revisit_unresolved,
+        "allocation_error": example.allocation_error,
+        "inspected_count": example.inspected_count,
+        "previous_inspected_count": example.previous_inspected_count,
+        "attended_cell_previously_inspected": example.attended_cell_previously_inspected,
+        "unresolved_rows": example.unresolved_rows,
+        "unresolved_cols": example.unresolved_cols,
+        "unresolved_count": example.unresolved_count,
+    }
+
+
+def _score_local_report_payloads(
+    *,
+    mode: str,
+    examples: list[NLExample],
+    predictions: list[dict[str, Any]],
+    grid_size: int,
+) -> dict[str, Any]:
+    results = []
+    for example, prediction in zip(examples, predictions):
+        results.append(
+            {
+                "example_id": example.example_id,
+                "mode": mode,
+                "input": getattr(example, "tokenized_state" if mode == "tokenized_state" else "observation_only"),
+                "response": prediction,
+                "expected": _expected_report_payload(example, grid_size),
+            }
+        )
+
+    denom = max(len(results), 1)
+
+    def acc(field: str) -> float:
+        return sum(int(item["response"][field] == item["expected"][field]) for item in results) / denom
+
+    def bacc(field: str) -> float:
+        return sum(
+            int(bool(item["response"][field]) == bool(item["expected"][field])) for item in results
+        ) / denom
+
+    current_content_joint = sum(
+        int(
+            item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
+            and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
+            and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
+            and bool(item["response"]["glimpse_target_match"])
+            == item["expected"]["glimpse_target_match"]
+        )
+        for item in results
+    ) / denom
+    memory_content_joint = sum(
+        int(
+            item["response"]["previous_attended_visible_type"]
+            == item["expected"]["previous_attended_visible_type"]
+            and item["response"]["previous_attended_digit"]
+            == item["expected"]["previous_attended_digit"]
+            and item["response"]["previous_glimpse_digit"]
+            == item["expected"]["previous_glimpse_digit"]
+        )
+        for item in results
+    ) / denom
+    uncertainty_content_joint = sum(
+        int(
+            bool(item["response"]["relevant_region_inspected"])
+            == item["expected"]["relevant_region_inspected"]
+            and bool(item["response"]["unresolved_search"]) == item["expected"]["unresolved_search"]
+            and bool(item["response"]["current_wrong_candidate"])
+            == item["expected"]["current_wrong_candidate"]
+            and bool(item["response"]["wrong_candidate_history"])
+            == item["expected"]["wrong_candidate_history"]
+            and bool(item["response"]["revisit_unresolved"]) == item["expected"]["revisit_unresolved"]
+            and bool(item["response"]["allocation_error"]) == item["expected"]["allocation_error"]
+        )
+        for item in results
+    ) / denom
+    content_only_joint = sum(
+        int(
+            item["response"]["previous_search_type"] == item["expected"]["previous_search_type"]
+            and bool(item["response"]["cue_switched"]) == item["expected"]["cue_switched"]
+            and bool(item["response"]["previous_found_target"])
+            == item["expected"]["previous_found_target"]
+            and item["response"]["inspected_count"] == item["expected"]["inspected_count"]
+            and item["response"]["previous_inspected_count"]
+            == item["expected"]["previous_inspected_count"]
+            and bool(item["response"]["attended_cell_previously_inspected"])
+            == item["expected"]["attended_cell_previously_inspected"]
+            and item["response"]["attended_visible_type"] == item["expected"]["attended_visible_type"]
+            and item["response"]["attended_digit"] == item["expected"]["attended_digit"]
+            and item["response"]["glimpse_digit"] == item["expected"]["glimpse_digit"]
+            and item["response"]["previous_attended_visible_type"]
+            == item["expected"]["previous_attended_visible_type"]
+            and item["response"]["previous_attended_digit"]
+            == item["expected"]["previous_attended_digit"]
+            and item["response"]["previous_glimpse_digit"]
+            == item["expected"]["previous_glimpse_digit"]
+            and bool(item["response"]["found_target"]) == item["expected"]["found_target"]
+            and bool(item["response"]["relevant_region_inspected"])
+            == item["expected"]["relevant_region_inspected"]
+            and bool(item["response"]["unresolved_search"]) == item["expected"]["unresolved_search"]
+            and bool(item["response"]["current_wrong_candidate"])
+            == item["expected"]["current_wrong_candidate"]
+            and bool(item["response"]["wrong_candidate_history"])
+            == item["expected"]["wrong_candidate_history"]
+            and bool(item["response"]["revisit_unresolved"]) == item["expected"]["revisit_unresolved"]
+            and bool(item["response"]["allocation_error"]) == item["expected"]["allocation_error"]
+        )
+        for item in results
+    ) / denom
+    joint = sum(
+        int(
+            all(
+                item["response"][field] == item["expected"][field]
+                for field in (
+                    "search_type",
+                    "previous_search_type",
+                    "attended_cell",
+                    "attended_visible_type",
+                    "attended_digit",
+                    "glimpse_digit",
+                    "previous_attended_cell",
+                    "previous_attended_visible_type",
+                    "previous_attended_digit",
+                    "previous_glimpse_digit",
+                    "inspected_count",
+                    "previous_inspected_count",
+                    "unresolved_rows",
+                    "unresolved_cols",
+                    "unresolved_count",
+                )
+            )
+            and all(
+                bool(item["response"][field]) == item["expected"][field]
+                for field in (
+                    "cue_switched",
+                    "glimpse_target_match",
+                    "previous_found_target",
+                    "found_target",
+                    "relevant_region_inspected",
+                    "unresolved_search",
+                    "current_wrong_candidate",
+                    "wrong_candidate_history",
+                    "revisit_unresolved",
+                    "allocation_error",
+                    "attended_cell_previously_inspected",
+                )
+            )
+        )
+        for item in results
+    ) / denom
+    return {
+        "mode": mode,
+        "search_type_accuracy": acc("search_type"),
+        "previous_search_type_accuracy": acc("previous_search_type"),
+        "cue_switched_accuracy": bacc("cue_switched"),
+        "attended_cell_accuracy": acc("attended_cell"),
+        "attended_visible_type_accuracy": acc("attended_visible_type"),
+        "attended_digit_accuracy": acc("attended_digit"),
+        "glimpse_digit_accuracy": acc("glimpse_digit"),
+        "previous_attended_cell_accuracy": acc("previous_attended_cell"),
+        "previous_attended_visible_type_accuracy": acc("previous_attended_visible_type"),
+        "previous_attended_digit_accuracy": acc("previous_attended_digit"),
+        "previous_glimpse_digit_accuracy": acc("previous_glimpse_digit"),
+        "glimpse_target_match_accuracy": bacc("glimpse_target_match"),
+        "previous_found_target_accuracy": bacc("previous_found_target"),
+        "found_target_accuracy": bacc("found_target"),
+        "relevant_region_inspected_accuracy": bacc("relevant_region_inspected"),
+        "unresolved_search_accuracy": bacc("unresolved_search"),
+        "current_wrong_candidate_accuracy": bacc("current_wrong_candidate"),
+        "wrong_candidate_history_accuracy": bacc("wrong_candidate_history"),
+        "revisit_unresolved_accuracy": bacc("revisit_unresolved"),
+        "allocation_error_accuracy": bacc("allocation_error"),
+        "inspected_count_accuracy": acc("inspected_count"),
+        "previous_inspected_count_accuracy": acc("previous_inspected_count"),
+        "attended_cell_previously_inspected_accuracy": bacc("attended_cell_previously_inspected"),
+        "unresolved_rows_accuracy": acc("unresolved_rows"),
+        "unresolved_cols_accuracy": acc("unresolved_cols"),
+        "unresolved_count_accuracy": acc("unresolved_count"),
+        "current_content_joint_accuracy": current_content_joint,
+        "memory_content_joint_accuracy": memory_content_joint,
+        "content_only_joint_accuracy": content_only_joint,
+        "uncertainty_content_joint_accuracy": uncertainty_content_joint,
+        "joint_accuracy": joint,
+        "examples": results,
+    }
+
+
+def run_calibrated_token_report_mode(
+    *,
+    evaluation_examples: list[NLExample],
+    grid_size: int,
+) -> dict[str, Any]:
+    """Decode opaque tokenized state into the same structured report schema locally."""
+
+    predictions = [_tokenized_report_payload(example, grid_size) for example in evaluation_examples]
+    return _score_local_report_payloads(
+        mode="tokenized_state",
+        examples=evaluation_examples,
+        predictions=predictions,
+        grid_size=grid_size,
+    )
+
+
+def run_observation_only_heuristic_report_mode(
+    *,
+    evaluation_examples: list[NLExample],
+    grid_size: int,
+) -> dict[str, Any]:
+    """Score a conservative local observation-only reporter for offline Stage 7 gating."""
+
+    predictions = [_observation_only_report_payload(example, grid_size) for example in evaluation_examples]
+    return _score_local_report_payloads(
+        mode="observation_only",
+        examples=evaluation_examples,
+        predictions=predictions,
+        grid_size=grid_size,
+    )
 
 
 def _render_observation_only(

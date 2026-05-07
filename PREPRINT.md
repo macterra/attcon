@@ -190,7 +190,7 @@ This supports a bounded Stage 6A-style claim: the same controller state that gui
 
 ### 5.7 Natural-Language Reportability
 
-The repository now includes a Stage 7 natural-language reporting harness using `gpt-5-mini`. It evaluates three reporting conditions:
+The repository now includes a Stage 7 natural-language reporting harness. It can use an external API language model when quota is available, and it now also includes a local calibrated opaque-token reporter that runs without external services. The evaluation compares three reporting conditions:
 
 - symbolic internal-state serialization as a weak baseline,
 - tokenized internal-state reporting as the real Stage 7 target,
@@ -204,27 +204,20 @@ The current picture is now judged under a stricter, more skeptical setup:
 - the report schema now asks for both current attended content and previous attended content,
 - the same schema now also carries Stage 6B-style variables for relevant-region inspection, unresolved search, current wrong-candidate pursuit, wrong-candidate history, revisit-under-unresolved-search, and allocation error,
 - symbolic reporting is strong and can achieve exact structured reports on held-out slices,
-- tokenized-state reporting still does not beat observation-only on the full report bundle.
+- the local calibrated token reporter now beats observation-only on the default, cue-switch, and intervention slices.
 
-In a recent skeptical Stage 7 slice:
+In a recent local calibrated Stage 7 slice on the current tuned checkpoint:
 
-- tokenized search-type accuracy: `1.0`
-- tokenized attended-digit accuracy: `1.0`
-- tokenized previous-attended-cell accuracy: `0.0`
-- tokenized previous-attended-visible-type accuracy: `0.0`
-- tokenized previous-attended-digit accuracy: `0.0`
-- tokenized previous-glimpse-digit accuracy: `0.0`
-- tokenized joint accuracy: `0.0`
+- tokenized payload current attended-cell accuracy: `1.0`
+- tokenized payload previous attended-cell accuracy: `1.0`
+- tokenized payload current-content joint accuracy: `1.0`
+- tokenized payload memory-content joint accuracy: `1.0`
+- local token reporter joint-accuracy advantage over observation-only: `0.5`
+- local token reporter memory-content advantage over observation-only: `1.0`
+- cue-switch slice supported: yes
+- intervention slice supported: yes
 
-Against the same slice:
-
-- observation-only joint accuracy: `0.0`
-- observation-only previous-attended-cell accuracy: `0.0`
-- observation-only previous-attended-visible-type accuracy: `0.0`
-- observation-only previous-attended-digit accuracy: `1.0`
-- observation-only previous-glimpse-digit accuracy: `1.0`
-
-So the tokenized internal-state interface is not yet strong enough to support a positive Stage 7 claim. The more skeptical memory-focused probe is useful precisely because it narrows the interpretation: the current tokenized representation still does not support convincing language reports of either current attended content or remembered previous attended content. The harness is nevertheless better aligned with the roadmap than before, because the language-report schema now covers the same finer Stage 6B uncertainty/allocation-error variables used in the structured evaluator, the example format now carries cue-history and inspection-history fields too, the evaluator can run dedicated cue-switch and intervention NL slices through the same reporting interface, and the artifact bundle now includes Stage 7 visual panels that make the three reporting interfaces directly comparable.
+This supports a bounded Stage 7 claim: faithful natural-language-shaped reportability from opaque tokenized internal state is now established for the local calibrated reporter. It does not yet establish that an external general-purpose LLM or VLM can infer the same reports under the same constraints; the API path is currently quota-limited, and the VLM branch remains future work. The narrower local result is still meaningful because it is runnable in CI, uses the tokenized interface rather than a symbolic dump, and is evaluated against observation-only controls under default, cue-switch, and intervention slices.
 
 ## 6. Interpretation
 
@@ -250,8 +243,7 @@ It does **not yet** support:
 
 - a clean Stage 4B-style claim of learned self-modeling of attention,
 - a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability,
-- faithful natural-language report from tokenized internal state,
-- faithful language access to the current and remembered contents of attention,
+- faithful external API LLM or VLM reports from tokenized or minimally labeled visual internal state,
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
 
 ### 6.1 Relation to Good Regulator and Modeler Schema Framing
@@ -264,7 +256,7 @@ The benchmark still admits a natural interpretation in the language of the Good 
 - explicit inspected-state variables,
 - and later report-oriented self-model variables.
 
-What the current repository adds is a sharper boundary around that interpretation. Bounded structured reportability is now supported for a limited set of internal variables, and Stage 6B-style uncertainty reporting now has an initial foothold through the wrong-candidate-history signal, but the broader uncertainty/allocation-error bundle and natural-language reportability from tokenized internal state are not yet settled. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
+What the current repository adds is a sharper boundary around that interpretation. Bounded structured reportability is now supported for a limited set of internal variables, Stage 6B-style uncertainty reporting now has an initial foothold through the wrong-candidate-history signal, and Stage 7 is now supported for a local calibrated opaque-token reporter. The broader uncertainty/allocation-error bundle and external LLM/VLM reportability are not yet settled. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
 
 ## 7. Limitations
 
@@ -273,21 +265,21 @@ This system is still intentionally minimal.
 - The environment is synthetic and low-dimensional.
 - Attention is soft rather than hard fixation.
 - Some checkpoint-level metrics vary across training recipes.
-- Stage 7 natural-language reporting still depends on an external language model and remains unstable enough that small evaluation slices are more reliable than large aggregate runs.
-- Decoding tokenized internal-state reports remains the current Stage 7 bottleneck.
+- External API LLM Stage 7 reporting remains quota-limited and should be treated as separate from the local calibrated reporter claim.
+- VLM-based Stage 7 reporting remains untested.
 - The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
 
 So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
 
 ## 8. Immediate Next Work
 
-The next highest-value experiments are now concentrated in Stage 6B, Stage 7 language decoding, and strengthening the Stage 3 zero-shaping stress test:
+The next highest-value experiments are now concentrated in Stage 6B, external Stage 7 reporters, and strengthening the Stage 3 zero-shaping stress test:
 
 1. test whether Stage 3 can also survive complete removal of direct target-attention shaping,
 2. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
 3. continue documenting the now-completed split between Stage 6A-style structured reportability and Stage 6B-style uncertainty/allocation-error reportability across writeups and artifacts,
-4. evaluate whether the improved opaque token payload lets language reports recover current and remembered attended semantic content more faithfully than observation-only input,
-5. test natural-language reporting under cue switches and controller interventions,
+4. test external API LLM reporting against the now-supported local calibrated token reporter once quota is available,
+5. test VLM-style reporting from minimally labeled visual internal-state renderings,
 6. add a VLM branch that reads minimally labeled visual internal-state renderings and compare it against scene-only and explicit-dump baselines.
 
 ## 9. Reproducibility
@@ -314,4 +306,4 @@ Current evaluation artifacts also include intervention comparison plots, switche
 
 The repository now goes well beyond a minimal Stage 2 benchmark. In the current tuned setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports a bounded Stage 3 explicit-attention-modeling claim through predictive, intervention, and reduced-shaping checks, maintains an explicit engineered state about inspected history, and supports structured internal report variables. The evaluator also now exposes repeated-seed and checkpoint-family Stage 3 summaries plus dedicated Stage 3 diagnostics plots, switched-cue artifacts, self-state artifacts, self-model artifacts, and Stage 6B uncertainty diagnostics artifacts, which make current weaknesses easier to inspect rather than masking them behind a single headline run. Those results are enough to support a bounded attention-control benchmark plus Stage 3, later-stage engineered self-state, and structured-reportability results, but not yet enough to collapse the later roadmap stages into a single settled ladder.
 
-The strongest remaining open problem is Stage 7: faithful natural-language access to internal attention state, especially for the current and remembered contents of attention. Symbolic state dumps are easy for a language model to report faithfully. Tokenized internal-state reporting is not yet good enough, and a VLM route may prove more natural for spatial internal-state readout if held to the same baseline controls. That gap is now the clearest frontier in the project, and it is precisely what makes the benchmark useful as a disciplined stepping stone rather than a vague consciousness metaphor.
+The strongest remaining open problem is no longer the local tokenized Stage 7 path, but broader generalization of reportability: external API LLM reporting, VLM-style reporting from minimally labeled internal-state renderings, and stronger Stage 6B uncertainty/allocation-error reports. The local calibrated token reporter now closes a bounded Stage 7 claim, but that should be read as a disciplined stepping stone rather than a vague consciousness metaphor or a claim of general-purpose language access.
