@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current tuned checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.348` vs. `0.230`), shows strong temporal reallocation (`0.677` vs. `0.000`), and achieves positive target-attention gain (`0.080` vs. `0.000`). Additional evaluations extend the benchmark beyond closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions and reduced-shaping tests now close the bounded Stage 3 explicit-attention-modeling claim, explicit inspected-state variables support bounded engineered self-state tracking of attention history, and structured probes support bounded reportability of search type, attended cell, target-found status, and unresolved regions. The strongest open problem is now Stage 7 reportability of current and remembered attended contents: the tokenized-state interface now carries that content in a locally checkable opaque payload, but language reports still need to beat observation-only baselines. The current repository therefore supports a meaningful Stage 2 benchmark, a bounded Stage 3 explicit-attention-modeling result, later bounded results around engineered self-state tracking and structured reportability, and an implemented but not yet successful Stage 7 harness, while stronger claims remain provisional or open. Recent additions make the later stages more inspectable: Stage 6B now distinguishes active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits, and the evaluator now emits Stage 7 visual report panels that place scene-only, explicit symbolic, and minimal tokenized state views side by side.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. On the current tuned checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.348` vs. `0.230`), shows strong temporal reallocation (`0.677` vs. `0.000`), and achieves positive target-attention gain (`0.080` vs. `0.000`). Additional evaluations extend the benchmark beyond closed-loop control alone: predictive probes show that controller state predicts the next attention map better than observation alone, causal interventions and reduced-shaping tests close the bounded Stage 3 explicit-attention-modeling claim, explicit inspected-state variables support bounded engineered self-state tracking of attention history, a hidden-state-only self-model feedback route closes a bounded Stage 4B learned-self-modeling claim on fresh checkpoints, and structured probes support bounded reportability of search type, attended cell, target-found status, and unresolved regions. The current repository therefore supports a meaningful Stage 2 benchmark, bounded Stage 3 and Stage 4B results, engineered self-state tracking, structured reportability, and a local calibrated Stage 7 reporter over opaque tokenized internal state. Stronger claims remain provisional or open. Recent additions make the later stages more inspectable: Stage 6B now distinguishes active wrong-candidate pursuit from cumulative wrong-candidate history and unresolved revisits, and the evaluator now emits Stage 7 visual report panels that place scene-only, explicit symbolic, and minimal tokenized state views side by side.
 
 ## 1. Introduction
 
@@ -14,7 +14,7 @@ We use a stricter criterion. A system exhibits attention control only if:
 2. it has a distinct controller with access to a representation of that allocation or its consequences, and
 3. it can modify future allocation on the basis of task demands, performance, or internal state.
 
-The goal of this project is not to solve a large-scale perceptual problem. The goal is to build the smallest credible setting in which the difference between **attending** and **controlling attention** can be measured directly, then extend that benchmark into a staged program about explicit attention modeling, engineered and learned self-state modeling, reportability, and eventually natural-language access to internal state.
+The goal of this project is not to solve a large-scale perceptual problem, nor to claim consciousness in the present toy system. The goal is to build the smallest credible setting in which the difference between **attending** and **controlling attention** can be measured directly, then use that setting as a methodology-development platform for explicit attention modeling, engineered and learned self-state modeling, reportability, and eventually broader consciousness-relevant tests.
 
 ## 2. Benchmark Setup
 
@@ -66,6 +66,8 @@ The current repository extends this controller with additional internal state us
 
 - an explicit inspected-cell state,
 - a native self-model head over inspected history,
+- a hidden-state-only self-model head,
+- a learned self-model feedback path into the attention policy,
 - a cumulative found-state variable,
 - a target-found report head.
 
@@ -80,7 +82,7 @@ Training uses:
 - final-step cross-entropy on digit prediction,
 - a small auxiliary loss on intermediate predictions,
 - a final-step target-attention loss that rewards placing mass on the true target cell,
-- auxiliary self-model and target-found reporting losses for the recurrent controller.
+- auxiliary self-model, hidden-self-model, self-model policy-feedback, and target-found reporting losses for the recurrent controller.
 
 The direct target-attention term makes the benchmark easier to interpret, but the repository now also includes reduced-shaping evaluations to test whether useful reallocation survives when that term is weakened. Complete removal remains a separate stress test rather than part of the current supported Stage 3 claim.
 
@@ -97,9 +99,12 @@ The current repository now evaluates a broader staged set of claims:
 - closed-loop attention control,
 - explicit attention modeling via predictive probes, intervention, and reduced-shaping checks,
 - engineered self-state tracking of attention history,
+- learned self-modeling of attention through a hidden-state-only self-model and policy-feedback route,
 - flexible cue-switch reallocation under changed priorities,
 - structured reportability of bounded internal content,
 - natural-language reportability.
+
+The revised roadmap treats those as one branch of a larger consciousness-relevant methodology rather than as a sufficient ladder. Serious consciousness evidence would also require comparator systems, cross-architecture and cross-benchmark replication, unity/binding tests, counterfactual-access tests, perturbational-complexity diagnostics, and convergence across multiple theory-derived evidence families.
 
 ## 5. Current Results
 
@@ -143,11 +148,11 @@ Causal intervention:
 
 Reduced-shaping condition:
 
-- at `attention_target_weight = 0.0`, accuracy remains `0.184`
-- temporal reallocation remains `0.484`
-- target-attention gain remains `0.0255`
+- at `attention_target_weight = 0.25`, accuracy remains `0.320`
+- temporal reallocation remains `0.0662`
+- target-attention gain remains `0.0448`
 
-Together, these results now support the bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation. In the revised roadmap and evaluator, this stage counts as supported only when predictive, intervention, and reduced-shaping thresholds are all met together and the repeated-seed robustness gate also passes. The evaluator explicitly distinguishes a weaker single-run pass from the stricter robust pass, and it also extends that robustness check across the default checkpoint and a reduced-shaping checkpoint family. On the current `tune_prob_035` report, the default and `0.25` reduced-shaping families both pass; complete zero-shaping resilience remains outside the supported claim.
+Together, these results now support the bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation under substantially reduced shaping. In the revised roadmap and evaluator, this stage counts as supported only when predictive, intervention, and reduced-shaping thresholds are all met together and the repeated-seed robustness gate also passes. The evaluator explicitly distinguishes a weaker single-run pass from the stricter robust pass, and it also extends that robustness check across the default checkpoint and a reduced-shaping checkpoint family. On the current `tune_prob_035` report, the default and `0.25` reduced-shaping families both pass; complete zero-shaping resilience remains outside the supported claim, so the shaping-objective alternative is weakened rather than fully eliminated.
 
 ### 5.4 Engineered Self-State Tracking
 
@@ -160,9 +165,31 @@ Current default results:
 - native target-inspected accuracy: `0.988`
 - native target-inspected positive recall: `0.721`
 
-This supports a bounded Stage 4A-style claim: the model contains an explicit internal variable about where it has already attended, and that variable supports more faithful reporting than observation-only baselines. The stronger Stage 4B-style claim, that the controller has learned and uses its own attentional self-model without relying mainly on an engineered scaffold, remains open.
+This supports a bounded Stage 4A-style claim: the model contains an explicit internal variable about where it has already attended, and that variable supports more faithful reporting than observation-only baselines. The stronger Stage 4B-style claim is handled separately below because it requires a hidden-state-only self-model and evidence that the learned self-model route can affect downstream attention.
 
-### 5.5 Flexible Reallocation Under Changed Priorities
+### 5.5 Learned Self-Modeling of Attention
+
+The recurrent controller now also has a hidden-state-only self-model head and a learned feedback path from that hidden self-model into the attention policy. This is deliberately separate from the scaffolded native self-model head that receives the explicit inspected-cell state.
+
+The Stage 4B evaluator asks four questions:
+
+- does hidden state alone predict inspected-cell history better than a previous-observation baseline?
+- does the hidden-state target-inspected readout improve over observation-only baselines using threshold-free BCE and score-separation metrics?
+- do hidden-state interventions along the hidden self-model readout direction move self-model report outputs?
+- do direct hidden-self-model overrides measurably affect attention through the learned policy-feedback path?
+
+In a fresh Stage 4B closeout probe trained with the self-model feedback objective:
+
+- hidden inspected-map BCE advantage over observation-only: `0.0178`
+- hidden target-inspected BCE advantage over observation-only: `0.0148`
+- hidden target-inspected score-separation advantage: `0.00918`
+- bidirectional self-model target gap under hidden-state intervention: `0.0613`
+- policy-feedback absolute mean: `0.0244`
+- policy-override bidirectional target-attention gap: `-0.000063`
+
+This closes a bounded engineering claim for fresh checkpoints trained with the feedback objective: the controller learns a hidden-state-only representation of its inspected history, that representation beats previous-observation baselines on held-out diagnostics, and interventions on the hidden self-model route affect both self-model report output and downstream attention. This should not be described as discovering emergent self-modeling in an otherwise unmodified controller. The objective deliberately trains a hidden self-model and a feedback route, so the result is closer to validating a learned regulatory architecture than to showing spontaneous self-model formation. For consciousness-relevant evidence, the stronger target is self-modeling that emerges under task objectives that do not directly reward self-modeling. Older checkpoints trained before this objective should not be read as Stage 4B-supported, and the result remains local to this benchmark rather than a general self-awareness claim.
+
+### 5.6 Flexible Reallocation Under Changed Priorities
 
 The current default training mixes stationary and switched-cue episodes, and the repository now evaluates mid-episode cue switching directly.
 
@@ -175,7 +202,7 @@ Current default results:
 
 This supports Stage 5 in the current benchmark: the recurrent controller can redirect attention under changed priorities better than the static baseline.
 
-### 5.6 Structured Reportability of Internal Content
+### 5.7 Structured Reportability of Internal Content
 
 The current report probes test whether controller state supports explicit readouts of its own regulatory state.
 
@@ -188,7 +215,7 @@ Current default results:
 
 This supports a bounded Stage 6A-style claim: the same controller state that guides attention also supports structured reports about current search type, attended cell, target-found state, and unresolved regions. The stronger Stage 6B-style target, reportability of uncertainty and allocation error, is now implemented as a distinct evaluation family. It remains provisional overall, but the evaluator now separates current wrong-candidate pursuit, cumulative wrong-candidate history, revisit-under-unresolved-search, and allocation error. That finer decomposition makes the positive result more interpretable: current wrong-candidate and wrong-candidate-history signals provide bounded positive evidence that some uncertainty-style report variables can beat observation-only baselines on positive-recall style reporting, while revisit-under-unresolved-search and allocation error remain weaker.
 
-### 5.7 Natural-Language Reportability
+### 5.8 Natural-Language Reportability
 
 The repository now includes a Stage 7 natural-language reporting harness. It can use an external API language model when quota is available, and it now also includes a local calibrated opaque-token reporter that runs without external services. The evaluation compares three reporting conditions:
 
@@ -217,7 +244,7 @@ In a recent local calibrated Stage 7 slice on the current tuned checkpoint:
 - cue-switch slice supported: yes
 - intervention slice supported: yes
 
-This supports a bounded Stage 7 claim: faithful natural-language-shaped reportability from opaque tokenized internal state is now established for the local calibrated reporter. It does not yet establish that an external general-purpose LLM or VLM can infer the same reports under the same constraints; the API path is currently quota-limited, and the VLM branch remains future work. The narrower local result is still meaningful because it is runnable in CI, uses the tokenized interface rather than a symbolic dump, and is evaluated against observation-only controls under default, cue-switch, and intervention slices.
+This supports a bounded Stage 7 claim: faithful natural-language-shaped reportability from opaque tokenized internal state is now established for the local calibrated reporter. That reporter is a learned decoder, not an off-the-shelf language interface. It does not yet establish that an external general-purpose LLM or VLM can infer the same reports under the same constraints; the API path is currently quota-limited, and the VLM branch remains future work. The narrower local result is still meaningful because it is runnable in CI, uses the tokenized interface rather than a symbolic dump, and is evaluated against observation-only controls under default, cue-switch, and intervention slices.
 
 ## 6. Interpretation
 
@@ -226,6 +253,7 @@ The main result is no longer just that recurrence is generally useful. The more 
 - closed-loop attention regulation,
 - explicit attention-dynamics probes,
 - bounded engineered self-state tracking of attentional history,
+- bounded learned self-modeling of attentional history through a hidden self-model feedback path,
 - flexible reallocation under changed priorities,
 - structured internal report variables.
 
@@ -236,17 +264,22 @@ The stronger claim should still be stated carefully. The current evidence suppor
 - recurrence improves attention regulation,
 - controller state predicts future allocation and can be probed and perturbed in ways consistent with a bounded Stage 3 explicit-attention-modeling claim,
 - the model tracks inspected history explicitly through an engineered self-state scaffold,
+- a separate hidden-state-only self-model route can learn inspected-history structure and causally feed into attention selection on fresh Stage 4B-trained checkpoints,
 - structured internal contents are available for bounded report,
 - changed-priority reallocation can be trained successfully.
 
 It does **not yet** support:
 
-- a clean Stage 4B-style claim of learned self-modeling of attention,
+- robust multi-checkpoint generalization of the Stage 4B learned-self-model claim beyond the fresh feedback-trained closeout setting,
+- self-modeling that emerges without a direct self-model objective,
 - a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability,
 - faithful external API LLM or VLM reports from tokenized or minimally labeled visual internal state,
+- unity/binding, counterfactual-access, or perturbational-complexity evidence,
+- cross-architecture or cross-benchmark replication,
+- multi-theory convergence across consciousness-theory branches,
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
 
-### 6.1 Relation to Good Regulator and Modeler Schema Framing
+### 6.1 Relation to Theory Families
 
 The benchmark still admits a natural interpretation in the language of the Good Regulator Theorem and modeler-schema ideas. On that framing, the most plausible candidate for consciousness-like content is not the raw scene representation or the raw attention mask. It is the controller state that carries forward:
 
@@ -256,7 +289,15 @@ The benchmark still admits a natural interpretation in the language of the Good 
 - explicit inspected-state variables,
 - and later report-oriented self-model variables.
 
-What the current repository adds is a sharper boundary around that interpretation. Bounded structured reportability is now supported for a limited set of internal variables, Stage 6B-style uncertainty reporting now has an initial foothold through the wrong-candidate-history signal, and Stage 7 is now supported for a local calibrated opaque-token reporter. The broader uncertainty/allocation-error bundle and external LLM/VLM reportability are not yet settled. That distinction is valuable: it prevents the project from overclaiming and keeps the theoretical interpretation tied to empirical tests.
+What the current repository adds is a sharper boundary around that interpretation. Bounded learned self-modeling is now supported for the hidden self-model feedback route, bounded structured reportability is supported for a limited set of internal variables, Stage 6B-style uncertainty reporting has an initial foothold through the wrong-candidate-history signal, and Stage 7 is supported for a local calibrated opaque-token reporter. The broader uncertainty/allocation-error bundle and external LLM/VLM reportability are not yet settled.
+
+For consciousness-relevant evidence, however, this single branch is insufficient. Higher-order and global-workspace-style framings would need evidence for self-representation or broad availability to multiple consumers; unity-oriented framings would need binding tests; perturbational framings would need rich recovery signatures. The current benchmark work is therefore one branch of a future convergence program, not a direct argument for consciousness-like content by itself.
+
+### 6.2 Philosophical Scope
+
+The bridge from bounded reportable regulatory state to consciousness-like content is conditional. This paper does not argue that Modeler Schema framing is preferable to higher-order thought theories, global workspace theories, integrated information theory, illusionism, or other competitors. A skeptical reader can accept every current engineering result and still conclude only that the benchmark contains sophisticated control with reportable internal state.
+
+The intended claim is narrower: the benchmark is a methodology platform for developing tests that could become consciousness-relevant if they converged across multiple theory-derived families. Current evidence is not yet at that level. Most later-stage results are bounded support, not robust support across multiple seeds, checkpoint families, negative controls, capacity-matched baselines, comparator systems, architectures, and benchmarks.
 
 ## 7. Limitations
 
@@ -265,6 +306,13 @@ This system is still intentionally minimal.
 - The environment is synthetic and low-dimensional.
 - Attention is soft rather than hard fixation.
 - Some checkpoint-level metrics vary across training recipes.
+- Current support labels are bounded benchmark claims rather than robust multi-seed, multi-checkpoint claims with capacity audits and negative controls.
+- The Stage 4B closeout applies to fresh checkpoints trained with the self-model feedback objective, not automatically to older checkpoints.
+- Supervised self-modeling is weak evidence for consciousness; the stronger target is self-model emergence without direct self-model rewards.
+- The current documentation still needs a full capacity audit for observation-only baselines before later-stage claims should be promoted to robust support.
+- Negative controls such as feedforward, shuffled-feedback, and high-capacity observation-only systems remain important next checks.
+- Comparator systems, cross-architecture replication, and cross-benchmark replication are not yet implemented.
+- Unity/binding, counterfactual-access, and perturbational-complexity branches remain roadmap items rather than current evidence.
 - External API LLM Stage 7 reporting remains quota-limited and should be treated as separate from the local calibrated reporter claim.
 - VLM-based Stage 7 reporting remains untested.
 - The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
@@ -273,14 +321,15 @@ So while the repository now supports much stronger claims than the original benc
 
 ## 8. Immediate Next Work
 
-The next highest-value experiments are now concentrated in Stage 6B, external Stage 7 reporters, and strengthening the Stage 3 zero-shaping stress test:
+The next highest-value experiments are now concentrated on turning the current attention-control methodology into a convergence-oriented program:
 
 1. test whether Stage 3 can also survive complete removal of direct target-attention shaping,
-2. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
-3. continue documenting the now-completed split between Stage 6A-style structured reportability and Stage 6B-style uncertainty/allocation-error reportability across writeups and artifacts,
-4. test external API LLM reporting against the now-supported local calibrated token reporter once quota is available,
-5. test VLM-style reporting from minimally labeled visual internal-state renderings,
-6. add a VLM branch that reads minimally labeled visual internal-state renderings and compare it against scene-only and explicit-dump baselines.
+2. rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling,
+3. add capacity-matched baseline audits, negative-control runs, and first-class comparator systems,
+4. add unity/binding, counterfactual-access, and perturbational-complexity branches,
+5. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
+6. replicate supported claims on a structurally different architecture and a second benchmark,
+7. test external API LLM and VLM reporting against the now-supported local calibrated token reporter once quota and infrastructure are available.
 
 ## 9. Reproducibility
 
@@ -304,6 +353,6 @@ Current evaluation artifacts also include intervention comparison plots, switche
 
 ## 10. Conclusion
 
-The repository now goes well beyond a minimal Stage 2 benchmark. In the current tuned setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports a bounded Stage 3 explicit-attention-modeling claim through predictive, intervention, and reduced-shaping checks, maintains an explicit engineered state about inspected history, and supports structured internal report variables. The evaluator also now exposes repeated-seed and checkpoint-family Stage 3 summaries plus dedicated Stage 3 diagnostics plots, switched-cue artifacts, self-state artifacts, self-model artifacts, and Stage 6B uncertainty diagnostics artifacts, which make current weaknesses easier to inspect rather than masking them behind a single headline run. Those results are enough to support a bounded attention-control benchmark plus Stage 3, later-stage engineered self-state, and structured-reportability results, but not yet enough to collapse the later roadmap stages into a single settled ladder.
+The repository now goes well beyond a minimal Stage 2 benchmark. In the current tuned setup, a recurrent attention controller outperforms a static baseline, shows strong temporal reallocation, supports a bounded Stage 3 explicit-attention-modeling claim through predictive, intervention, and reduced-shaping checks, maintains an explicit engineered state about inspected history, supports a bounded hidden-self-model feedback route for Stage 4B, and supports structured internal report variables. The evaluator also now exposes repeated-seed and checkpoint-family Stage 3 summaries plus dedicated Stage 3 diagnostics plots, switched-cue artifacts, self-state artifacts, self-model artifacts, and Stage 6B uncertainty diagnostics artifacts, which make current weaknesses easier to inspect rather than masking them behind a single headline run. Those results are enough to support a bounded attention-control methodology, but not enough to claim consciousness-relevant convergence.
 
-The strongest remaining open problem is no longer the local tokenized Stage 7 path, but broader generalization of reportability: external API LLM reporting, VLM-style reporting from minimally labeled internal-state renderings, and stronger Stage 6B uncertainty/allocation-error reports. The local calibrated token reporter now closes a bounded Stage 7 claim, but that should be read as a disciplined stepping stone rather than a vague consciousness metaphor or a claim of general-purpose language access.
+The strongest remaining open problem is no longer only the local tokenized Stage 7 path, but the broader convergence problem: comparator systems, emergent rather than supervised self-modeling, unity/binding, counterfactual access, perturbational dynamics, cross-architecture replication, cross-benchmark replication, and external LLM/VLM reportability. The local calibrated token reporter now closes a bounded Stage 7 claim, but that should be read as a disciplined stepping stone rather than a consciousness claim.
