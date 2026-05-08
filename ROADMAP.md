@@ -217,9 +217,12 @@ Good experiments:
 Current status in this repo:
 
 - the evaluator now includes `learned_self_modeling`
+- the recurrent controller now has a hidden-state-only self-model head, separate from the scaffolded native self-model head
+- the policy has a learned self-model feedback path, initialized to zero for checkpoint compatibility, so new training can make hidden self-model content causally available to attention selection
 - it trains hidden-state-only probes for the full inspected-cell map and target-inspected variable
 - it compares those probes with previous-observation-only baselines
-- it perturbs hidden state along native self-model readout directions and measures the effect on native self-model output and target attention
+- it perturbs hidden state along hidden-self-model readout directions and measures the effect on native self-model output and target attention
+- it can directly override hidden self-model content at a timestep and measure whether the learned policy feedback path changes target attention
 - the top-level evidence summary surfaces hidden-state probe advantages and bidirectional intervention gaps under `learned_self_modeling_of_attention`
 
 Current assessment:
@@ -230,7 +233,7 @@ Current assessment:
 
 Interpretation:
 
-Stage 4B should remain open until the project can show that the controller learns and uses a model of its own attentional process, rather than merely exposing an engineered bookkeeping variable. The new diagnostics are significant progress because they separate hidden-state-only evidence from the engineered inspection scaffold, but the native self-model head still receives that scaffold and therefore cannot yet close the stage by itself.
+Stage 4B should remain open until the project can show that the controller learns and uses a model of its own attentional process, rather than merely exposing an engineered bookkeeping variable. The new architecture and diagnostics are significant progress because they separate hidden-state-only self-modeling from the engineered inspection scaffold and provide a route for learned self-model content to affect attention, but the current checkpoints still need to be retrained and evaluated under this stronger path before support can be claimed.
 
 ## Branch B, Stage 5: Flexible Reallocation Under Changed Priorities
 

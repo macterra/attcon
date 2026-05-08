@@ -177,12 +177,15 @@ class RecurrentAttentionController(BaseAttentionModel):
             nn.Tanh(),
         )
         self.policy_head = nn.Linear(model_config.hidden_size, self.num_cells)
+        self.hidden_self_model_head = nn.Linear(model_config.hidden_size, self.num_cells)
+        self.policy_self_model_head = nn.Linear(self.num_cells, self.num_cells, bias=False)
         self.self_model_head = nn.Linear(model_config.hidden_size + self.num_cells, self.num_cells)
         self.target_found_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.relevant_region_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.unresolved_search_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.wrong_candidate_history_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 2, 1)
+        nn.init.zeros_(self.policy_self_model_head.weight)
 
     @property
     def summary_dim(self) -> int:
@@ -268,6 +271,8 @@ class RecurrentAttentionController(BaseAttentionModel):
         loss_seq = []
         controller_state_seq = [hidden_state]
         inspection_seq = []
+        hidden_self_model_logits_seq = []
+        policy_self_model_feedback_seq = []
         self_model_logits_seq = []
         target_found_logits_seq = []
         relevant_region_logits_seq = []
@@ -310,8 +315,18 @@ class RecurrentAttentionController(BaseAttentionModel):
                 if "delta" in intervention:
                     hidden_state = hidden_state + intervention["delta"]
 
+            hidden_self_model_logits = self.hidden_self_model_head(hidden_state)
+            hidden_self_model = torch.sigmoid(hidden_self_model_logits)
+            if step_idx == intervention.get("step") and "hidden_self_model_override" in intervention:
+                hidden_self_model = intervention["hidden_self_model_override"]
+                hidden_self_model_logits = torch.logit(
+                    hidden_self_model.clamp(1e-6, 1 - 1e-6)
+                )
             self_model_logits = self.self_model_head(torch.cat([hidden_state, inspection_state], dim=-1))
-            attention_logits = self.policy_head(hidden_state) / self.model_config.temperature
+            policy_self_model_feedback = self.policy_self_model_head(hidden_self_model)
+            attention_logits = (
+                self.policy_head(hidden_state) + policy_self_model_feedback
+            ) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
             hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
@@ -386,6 +401,8 @@ class RecurrentAttentionController(BaseAttentionModel):
             loss_seq.append(step_loss)
             controller_state_seq.append(hidden_state)
             inspection_seq.append(inspection_state)
+            hidden_self_model_logits_seq.append(hidden_self_model_logits)
+            policy_self_model_feedback_seq.append(policy_self_model_feedback)
             self_model_logits_seq.append(self_model_logits)
             target_found_logits_seq.append(target_found_logits)
             relevant_region_logits_seq.append(relevant_region_logits)
@@ -419,6 +436,9 @@ class RecurrentAttentionController(BaseAttentionModel):
             "loss_seq": torch.stack(loss_seq, dim=1),
             "controller_state_seq": torch.stack(controller_state_seq[:-1], dim=1),
             "inspection_seq": torch.stack(inspection_seq, dim=1),
+            "hidden_self_model_logits_seq": torch.stack(hidden_self_model_logits_seq, dim=1),
+            "hidden_self_model_seq": torch.sigmoid(torch.stack(hidden_self_model_logits_seq, dim=1)),
+            "policy_self_model_feedback_seq": torch.stack(policy_self_model_feedback_seq, dim=1),
             "self_model_logits_seq": torch.stack(self_model_logits_seq, dim=1),
             "self_model_seq": torch.sigmoid(torch.stack(self_model_logits_seq, dim=1)),
             "found_state_seq": torch.stack(found_state_seq, dim=1),

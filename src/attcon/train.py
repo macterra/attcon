@@ -40,6 +40,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "cue_switch_transition_weight": 0.2,
         "attention_entropy_weight": 0.0,
         "self_model_weight": 0.1,
+        "hidden_self_model_weight": 0.1,
         "target_found_report_weight": 0.05,
         "relevant_region_report_weight": 0.05,
         "unresolved_search_report_weight": 0.05,
@@ -136,6 +137,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "training_overrides": {
                 "train_steps": 1500,
                 "self_model_weight": 0.0,
+                "hidden_self_model_weight": 0.0,
                 "target_found_report_weight": 0.0,
                 "relevant_region_report_weight": 0.0,
                 "unresolved_search_report_weight": 0.0,
@@ -449,6 +451,12 @@ def train_single_model(
                 outputs["self_model_logits_seq"],
                 outputs["inspection_seq"].detach(),
             )
+        hidden_self_model_loss = torch.tensor(0.0, device=device)
+        if "hidden_self_model_logits_seq" in outputs and "inspection_seq" in outputs:
+            hidden_self_model_loss = F.binary_cross_entropy_with_logits(
+                outputs["hidden_self_model_logits_seq"],
+                outputs["inspection_seq"].detach(),
+            )
         target_found_report_loss = torch.tensor(0.0, device=device)
         if "target_found_logits_seq" in outputs and "observation_seq" in outputs:
             target_found_labels = (outputs["observation_seq"][..., :1] > 0.5).float()
@@ -491,6 +499,7 @@ def train_single_model(
             + train_cfg.get("cue_switch_transition_weight", 0.0) * cue_switch_transition_loss
             + train_cfg["attention_entropy_weight"] * attention_entropy
             + train_cfg.get("self_model_weight", 0.0) * self_model_loss
+            + train_cfg.get("hidden_self_model_weight", 0.0) * hidden_self_model_loss
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
             + train_cfg.get("relevant_region_report_weight", 0.0) * relevant_region_report_loss
             + train_cfg.get("unresolved_search_report_weight", 0.0) * unresolved_search_report_loss

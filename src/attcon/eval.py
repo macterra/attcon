@@ -81,6 +81,8 @@ def load_models_from_checkpoint(
                 migrated_state[key] = padded
 
             compatible_missing_prefixes = (
+                "hidden_self_model_head.",
+                "policy_self_model_head.",
                 "self_model_head.",
                 "target_found_head.",
                 "relevant_region_head.",
@@ -104,7 +106,7 @@ def load_models_from_checkpoint(
                 for key, value in migrated_state.items()
                 if key in current and value.shape != current[key].shape
             ]
-            if unexpected or missing_other or mismatched or len(missing_report_heads) not in (8, 12):
+            if unexpected or missing_other or mismatched or len(missing_report_heads) not in (3, 11, 15):
                 raise
             model.load_state_dict(migrated_state, strict=False)
         model.eval()
@@ -487,6 +489,13 @@ def _collect_learned_self_model_dataset(
     prev_observation_features = []
     inspection_labels = []
     target_inspected_labels = []
+    total_hidden_cell_matches = 0.0
+    total_hidden_cell_count = 0
+    total_hidden_target_matches = 0.0
+    total_hidden_target_count = 0
+    total_hidden_target_positive_hits = 0.0
+    total_hidden_target_positive_count = 0.0
+    total_hidden_bce = 0.0
     for batch_idx in range(num_batches):
         generator = make_generator(seed + batch_idx, device)
         batch = generate_batch(
@@ -506,8 +515,28 @@ def _collect_learned_self_model_dataset(
             )
         prev_observation = torch.zeros_like(outputs["observation_seq"])
         prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
+        inspection_true = outputs["inspection_seq"]
+        hidden_inspection_pred = outputs.get("hidden_self_model_seq")
         target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
-        target_true = outputs["inspection_seq"].gather(2, target_pos).squeeze(-1)
+        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        if hidden_inspection_pred is not None:
+            hidden_target_pred = hidden_inspection_pred.gather(2, target_pos).squeeze(-1)
+            total_hidden_cell_matches += (
+                (hidden_inspection_pred >= 0.5) == inspection_true.bool()
+            ).float().sum().item()
+            total_hidden_cell_count += inspection_true.numel()
+            total_hidden_target_matches += (
+                (hidden_target_pred >= 0.5) == target_true.bool()
+            ).float().sum().item()
+            total_hidden_target_count += target_true.numel()
+            total_hidden_target_positive_hits += (
+                ((hidden_target_pred >= 0.5) & target_true.bool()).float().sum().item()
+            )
+            total_hidden_target_positive_count += target_true.float().sum().item()
+            total_hidden_bce += torch.nn.functional.binary_cross_entropy(
+                hidden_inspection_pred,
+                inspection_true,
+            ).item()
         hidden_features.append(
             outputs["controller_state_seq"].reshape(
                 -1,
@@ -518,12 +547,25 @@ def _collect_learned_self_model_dataset(
         inspection_labels.append(outputs["inspection_seq"].reshape(-1, outputs["inspection_seq"].shape[-1]))
         target_inspected_labels.append(target_true.reshape(-1))
 
-    return {
+    dataset = {
         "hidden_features": torch.cat(hidden_features, dim=0),
         "prev_observation_features": torch.cat(prev_observation_features, dim=0),
         "inspection_labels": torch.cat(inspection_labels, dim=0),
         "target_inspected_labels": torch.cat(target_inspected_labels, dim=0),
     }
+    if total_hidden_cell_count:
+        dataset.update(
+            {
+                "native_hidden_cell_accuracy": total_hidden_cell_matches
+                / max(total_hidden_cell_count, 1),
+                "native_hidden_target_accuracy": total_hidden_target_matches
+                / max(total_hidden_target_count, 1),
+                "native_hidden_target_positive_recall": total_hidden_target_positive_hits
+                / max(total_hidden_target_positive_count, 1.0),
+                "native_hidden_cell_bce": total_hidden_bce / max(num_batches, 1),
+            }
+        )
+    return dataset
 
 
 def _learned_self_model_intervention(
@@ -557,7 +599,7 @@ def _learned_self_model_intervention(
         )
         hidden = base["controller_state_seq"][:, step]
         hidden_dim = hidden.shape[-1]
-        hidden_weights = model.self_model_head.weight[:, :hidden_dim]
+        hidden_weights = model.hidden_self_model_head.weight
         directions = hidden_weights[batch.target_pos]
         directions = directions / directions.norm(dim=-1, keepdim=True).clamp_min(1e-6)
         delta = directions * hidden.std(dim=-1, keepdim=True).clamp_min(1e-3) * scale
@@ -577,6 +619,33 @@ def _learned_self_model_intervention(
             num_steps=task_cfg.num_steps,
             intervention={"step": step, "state_override": hidden - delta},
         )
+        hidden_self_model = base["hidden_self_model_seq"][:, step]
+        override_delta = 0.25 * scale
+        pos_hidden_self_model = hidden_self_model.clone()
+        neg_hidden_self_model = hidden_self_model.clone()
+        batch_index = torch.arange(batch.scene.shape[0], device=device)
+        pos_hidden_self_model[batch_index, batch.target_pos] = (
+            pos_hidden_self_model[batch_index, batch.target_pos] + override_delta
+        ).clamp_max(1.0)
+        neg_hidden_self_model[batch_index, batch.target_pos] = (
+            neg_hidden_self_model[batch_index, batch.target_pos] - override_delta
+        ).clamp_min(0.0)
+        policy_pos = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            intervention={"step": step, "hidden_self_model_override": pos_hidden_self_model},
+        )
+        policy_neg = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            intervention={"step": step, "hidden_self_model_override": neg_hidden_self_model},
+        )
 
     target_index = batch.target_pos[:, None]
     base_target_self = base["self_model_seq"][:, step].gather(1, target_index)
@@ -585,10 +654,16 @@ def _learned_self_model_intervention(
     base_target_attention = base["attention_seq"][:, step].gather(1, target_index)
     pos_target_attention = pos["attention_seq"][:, step].gather(1, target_index)
     neg_target_attention = neg["attention_seq"][:, step].gather(1, target_index)
+    base_policy_feedback = base["policy_self_model_feedback_seq"][:, step]
+    policy_pos_target_attention = policy_pos["attention_seq"][:, step].gather(1, target_index)
+    policy_neg_target_attention = policy_neg["attention_seq"][:, step].gather(1, target_index)
+    policy_pos_target_hidden_self = policy_pos["hidden_self_model_seq"][:, step].gather(1, target_index)
+    policy_neg_target_hidden_self = policy_neg["hidden_self_model_seq"][:, step].gather(1, target_index)
     inspection_target = base["inspection_seq"][:, step].gather(1, target_index)
     return {
         "step": float(step),
         "scale": float(scale),
+        "policy_feedback_abs_mean": base_policy_feedback.abs().mean().item(),
         "target_inspection_rate": inspection_target.mean().item(),
         "positive_self_model_target_delta": (pos_target_self - base_target_self).mean().item(),
         "negative_self_model_target_delta": (neg_target_self - base_target_self).mean().item(),
@@ -596,6 +671,24 @@ def _learned_self_model_intervention(
         "positive_target_attention_delta": (pos_target_attention - base_target_attention).mean().item(),
         "negative_target_attention_delta": (neg_target_attention - base_target_attention).mean().item(),
         "bidirectional_target_attention_gap": (pos_target_attention - neg_target_attention).mean().item(),
+        "policy_override_positive_hidden_self_model_target_delta": (
+            policy_pos_target_hidden_self - hidden_self_model.gather(1, target_index)
+        ).mean().item(),
+        "policy_override_negative_hidden_self_model_target_delta": (
+            policy_neg_target_hidden_self - hidden_self_model.gather(1, target_index)
+        ).mean().item(),
+        "policy_override_bidirectional_hidden_self_model_target_gap": (
+            policy_pos_target_hidden_self - policy_neg_target_hidden_self
+        ).mean().item(),
+        "policy_override_positive_target_attention_delta": (
+            policy_pos_target_attention - base_target_attention
+        ).mean().item(),
+        "policy_override_negative_target_attention_delta": (
+            policy_neg_target_attention - base_target_attention
+        ).mean().item(),
+        "policy_override_bidirectional_target_attention_gap": (
+            policy_pos_target_attention - policy_neg_target_attention
+        ).mean().item(),
     }
 
 
@@ -1184,6 +1277,10 @@ def learned_self_model_metrics(
         )
         and intervention["bidirectional_self_model_target_gap"] > 0.0
     )
+    policy_feedback_evidence = (
+        intervention["policy_feedback_abs_mean"] > 1e-6
+        and abs(intervention["policy_override_bidirectional_target_attention_gap"]) > 1e-4
+    )
     supported = (
         hidden_cell_bce_advantage > 0.01
         and hidden_target_bce_advantage > 0.01
@@ -1192,10 +1289,19 @@ def learned_self_model_metrics(
         and intervention["bidirectional_self_model_target_gap"] > 0.01
         and intervention["positive_self_model_target_delta"] > 0.0
         and intervention["negative_self_model_target_delta"] < 0.0
-        and intervention["bidirectional_target_attention_gap"] > 0.0
+        and policy_feedback_evidence
     )
 
     return {
+        "native_hidden_cell_report": {
+            "cell_accuracy": test.get("native_hidden_cell_accuracy", 0.0),
+            "cell_bce": test.get("native_hidden_cell_bce", 0.0),
+            "target_accuracy": test.get("native_hidden_target_accuracy", 0.0),
+            "target_positive_recall": test.get(
+                "native_hidden_target_positive_recall",
+                0.0,
+            ),
+        },
         "hidden_cell_probe": hidden_cell_probe,
         "observation_cell_probe": observation_cell_probe,
         "hidden_cell_accuracy_advantage": hidden_cell_accuracy_advantage,
@@ -1206,13 +1312,15 @@ def learned_self_model_metrics(
         "hidden_target_bce_advantage": hidden_target_bce_advantage,
         "hidden_target_positive_recall_advantage": hidden_target_positive_recall_advantage,
         "hidden_self_model_intervention": intervention,
+        "policy_feedback_evidence": policy_feedback_evidence,
         "positive_evidence": positive_evidence,
         "supported": supported,
         "note": (
             "This diagnostic excludes the engineered inspection-state input from the probe "
-            "features and perturbs hidden state along native self-model readout directions. "
-            "It is progress toward Stage 4B, but the native self-model head still receives "
-            "the engineered inspection scaffold."
+            "features, evaluates a hidden-state-only self-model head, and tests whether "
+            "hidden self-model overrides can affect attention through the learned policy "
+            "feedback path. It is progress toward Stage 4B, but current checkpoints must "
+            "learn and robustly use this path before the stronger claim is supported."
         ),
     }
 
@@ -3271,6 +3379,15 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "bidirectional_target_attention_gap": learned_intervention.get(
             "bidirectional_target_attention_gap", 0.0
+        ),
+        "policy_feedback_abs_mean": learned_intervention.get(
+            "policy_feedback_abs_mean", 0.0
+        ),
+        "policy_override_bidirectional_target_attention_gap": learned_intervention.get(
+            "policy_override_bidirectional_target_attention_gap", 0.0
+        ),
+        "policy_feedback_evidence": learned_self_model.get(
+            "policy_feedback_evidence", False
         ),
         "note": learned_self_model.get(
             "note",

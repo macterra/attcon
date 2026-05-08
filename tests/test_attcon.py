@@ -99,6 +99,14 @@ class AttentionControlTests(unittest.TestCase):
             (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
         )
         self.assertEqual(
+            recurrent_outputs["hidden_self_model_seq"].shape,
+            (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
+        )
+        self.assertEqual(
+            recurrent_outputs["policy_self_model_feedback_seq"].shape,
+            (4, self.task_cfg.num_steps, self.task_cfg.num_cells),
+        )
+        self.assertEqual(
             recurrent_outputs["found_state_seq"].shape,
             (4, self.task_cfg.num_steps, 1),
         )
@@ -222,6 +230,36 @@ class AttentionControlTests(unittest.TestCase):
         inspection = outputs["inspection_seq"]
         self.assertTrue(torch.all(inspection[:, 1:] >= inspection[:, :-1]))
         self.assertTrue(torch.all((inspection >= 0.0) & (inspection <= 1.0)))
+
+    def test_hidden_self_model_policy_feedback_can_control_attention(self) -> None:
+        batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        with torch.no_grad():
+            model.policy_head.weight.zero_()
+            model.policy_head.bias.zero_()
+            model.policy_self_model_head.weight.zero_()
+            model.policy_self_model_head.weight[0, 0] = 8.0
+        low_override = torch.zeros(2, self.task_cfg.num_cells)
+        high_override = torch.zeros(2, self.task_cfg.num_cells)
+        high_override[:, 0] = 1.0
+        low = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            num_steps=self.task_cfg.num_steps,
+            intervention={"step": 0, "hidden_self_model_override": low_override},
+        )
+        high = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            num_steps=self.task_cfg.num_steps,
+            intervention={"step": 0, "hidden_self_model_override": high_override},
+        )
+        self.assertGreater(
+            high["attention_seq"][:, 0, 0].mean().item(),
+            low["attention_seq"][:, 0, 0].mean().item(),
+        )
 
     def test_stage6b_signals_are_bounded(self) -> None:
         batch = generate_batch(8, self.task_cfg.num_steps, self.task_cfg)
@@ -584,7 +622,10 @@ class AttentionControlTests(unittest.TestCase):
                     "hidden_self_model_intervention": {
                         "bidirectional_self_model_target_gap": 0.04,
                         "bidirectional_target_attention_gap": 0.01,
+                        "policy_feedback_abs_mean": 0.03,
+                        "policy_override_bidirectional_target_attention_gap": 0.02,
                     },
+                    "policy_feedback_evidence": True,
                     "positive_evidence": True,
                     "supported": False,
                     "note": "test note",
@@ -645,6 +686,9 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(stage4b["hidden_cell_bce_advantage"], 0.04)
         self.assertEqual(stage4b["hidden_target_bce_advantage"], 0.02)
         self.assertEqual(stage4b["bidirectional_self_model_target_gap"], 0.04)
+        self.assertEqual(stage4b["policy_feedback_abs_mean"], 0.03)
+        self.assertEqual(stage4b["policy_override_bidirectional_target_attention_gap"], 0.02)
+        self.assertTrue(stage4b["policy_feedback_evidence"])
 
     def test_build_stage3_summary_separates_single_run_and_robust(self) -> None:
         summary = build_stage3_summary(
@@ -1129,6 +1173,7 @@ class AttentionControlTests(unittest.TestCase):
             seed=17,
         )
         self.assertIn("hidden_cell_probe", metrics)
+        self.assertIn("native_hidden_cell_report", metrics)
         self.assertIn("observation_cell_probe", metrics)
         self.assertIn("hidden_target_probe", metrics)
         self.assertIn("observation_target_probe", metrics)
@@ -1146,6 +1191,8 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(intervention["scale"], 1.0)
         self.assertIn("bidirectional_self_model_target_gap", intervention)
         self.assertIn("bidirectional_target_attention_gap", intervention)
+        self.assertIn("policy_feedback_abs_mean", intervention)
+        self.assertIn("policy_override_bidirectional_target_attention_gap", intervention)
 
     def test_stage3_multi_seed_metrics_exposes_seed_runs(self) -> None:
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
