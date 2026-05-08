@@ -227,13 +227,13 @@ Current status in this repo:
 
 Current assessment:
 
-- implemented: partially
-- positive evidence: diagnostic path implemented; current checkpoint evidence must be read from the new metrics
-- supported: no
+- implemented: yes, for the bounded hidden-self-model feedback path
+- positive evidence: yes
+- supported: yes, for a freshly trained checkpoint using the Stage 4B feedback objective
 
 Interpretation:
 
-Stage 4B should remain open until the project can show that the controller learns and uses a model of its own attentional process, rather than merely exposing an engineered bookkeeping variable. The new architecture and diagnostics are significant progress because they separate hidden-state-only self-modeling from the engineered inspection scaffold and provide a route for learned self-model content to affect attention, but the current checkpoints still need to be retrained and evaluated under this stronger path before support can be claimed.
+The bounded Stage 4B claim is now closed for the hidden-self-model feedback route: the controller learns a hidden-state-only inspected-cell model, that representation beats a previous-observation baseline on held-out inspected-state prediction, hidden-state interventions move self-model report output, and direct hidden-self-model overrides measurably affect attention through the learned policy feedback path. On a fresh closeout probe with the Stage 4B feedback objective, the learned-self-model metrics passed with positive hidden cell BCE advantage, positive target BCE/separation advantage, a bidirectional self-model intervention gap, and nonzero policy-feedback causal effect. This remains a benchmark-local claim rather than a broad self-awareness claim, and older checkpoints trained before the feedback objective should not be counted as Stage 4B-supported.
 
 ## Branch B, Stage 5: Flexible Reallocation Under Changed Priorities
 

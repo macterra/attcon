@@ -619,6 +619,7 @@ class AttentionControlTests(unittest.TestCase):
                     "hidden_target_accuracy_advantage": 0.01,
                     "hidden_target_bce_advantage": 0.02,
                     "hidden_target_positive_recall_advantage": 0.02,
+                    "hidden_target_score_separation_advantage": 0.03,
                     "hidden_self_model_intervention": {
                         "bidirectional_self_model_target_gap": 0.04,
                         "bidirectional_target_attention_gap": 0.01,
@@ -627,7 +628,7 @@ class AttentionControlTests(unittest.TestCase):
                     },
                     "policy_feedback_evidence": True,
                     "positive_evidence": True,
-                    "supported": False,
+                    "supported": True,
                     "note": "test note",
                 },
             }
@@ -681,10 +682,11 @@ class AttentionControlTests(unittest.TestCase):
         stage4b = summary["learned_self_modeling_of_attention"]
         self.assertTrue(stage4b["implemented"])
         self.assertTrue(stage4b["positive_evidence"])
-        self.assertFalse(stage4b["supported"])
+        self.assertTrue(stage4b["supported"])
         self.assertEqual(stage4b["hidden_cell_accuracy_advantage"], 0.03)
         self.assertEqual(stage4b["hidden_cell_bce_advantage"], 0.04)
         self.assertEqual(stage4b["hidden_target_bce_advantage"], 0.02)
+        self.assertEqual(stage4b["hidden_target_score_separation_advantage"], 0.03)
         self.assertEqual(stage4b["bidirectional_self_model_target_gap"], 0.04)
         self.assertEqual(stage4b["policy_feedback_abs_mean"], 0.03)
         self.assertEqual(stage4b["policy_override_bidirectional_target_attention_gap"], 0.02)

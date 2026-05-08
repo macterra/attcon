@@ -40,7 +40,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "cue_switch_transition_weight": 0.2,
         "attention_entropy_weight": 0.0,
         "self_model_weight": 0.1,
-        "hidden_self_model_weight": 0.1,
+        "hidden_self_model_weight": 0.5,
+        "self_model_policy_feedback_weight": 1.0,
+        "self_model_policy_feedback_scale": 4.0,
         "target_found_report_weight": 0.05,
         "relevant_region_report_weight": 0.05,
         "unresolved_search_report_weight": 0.05,
@@ -138,6 +140,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
                 "train_steps": 1500,
                 "self_model_weight": 0.0,
                 "hidden_self_model_weight": 0.0,
+                "self_model_policy_feedback_weight": 0.0,
                 "target_found_report_weight": 0.0,
                 "relevant_region_report_weight": 0.0,
                 "unresolved_search_report_weight": 0.0,
@@ -457,6 +460,17 @@ def train_single_model(
                 outputs["hidden_self_model_logits_seq"],
                 outputs["inspection_seq"].detach(),
             )
+        self_model_policy_feedback_loss = torch.tensor(0.0, device=device)
+        if "policy_self_model_feedback_seq" in outputs and "inspection_seq" in outputs:
+            feedback_target = -outputs["inspection_seq"].detach()
+            feedback_target = feedback_target * train_cfg.get(
+                "self_model_policy_feedback_scale",
+                1.0,
+            )
+            self_model_policy_feedback_loss = F.mse_loss(
+                outputs["policy_self_model_feedback_seq"],
+                feedback_target,
+            )
         target_found_report_loss = torch.tensor(0.0, device=device)
         if "target_found_logits_seq" in outputs and "observation_seq" in outputs:
             target_found_labels = (outputs["observation_seq"][..., :1] > 0.5).float()
@@ -500,6 +514,8 @@ def train_single_model(
             + train_cfg["attention_entropy_weight"] * attention_entropy
             + train_cfg.get("self_model_weight", 0.0) * self_model_loss
             + train_cfg.get("hidden_self_model_weight", 0.0) * hidden_self_model_loss
+            + train_cfg.get("self_model_policy_feedback_weight", 0.0)
+            * self_model_policy_feedback_loss
             + train_cfg.get("target_found_report_weight", 0.0) * target_found_report_loss
             + train_cfg.get("relevant_region_report_weight", 0.0) * relevant_region_report_loss
             + train_cfg.get("unresolved_search_report_weight", 0.0) * unresolved_search_report_loss

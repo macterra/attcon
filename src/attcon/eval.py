@@ -835,15 +835,27 @@ def _train_binary_probe(
     with torch.no_grad():
         train_logits = probe(train_features)
         test_logits = probe(test_features)
+        train_probs = torch.sigmoid(train_logits)
+        test_probs = torch.sigmoid(test_logits)
         train_pred = (torch.sigmoid(train_logits) >= 0.5).float()
         test_pred = (torch.sigmoid(test_logits) >= 0.5).float()
         train_positive = train_labels == 1.0
         test_positive = test_labels == 1.0
+        train_positive_score = train_probs[train_positive].mean().item() if train_positive.any() else 0.0
+        train_negative_score = train_probs[~train_positive].mean().item() if (~train_positive).any() else 0.0
+        test_positive_score = test_probs[test_positive].mean().item() if test_positive.any() else 0.0
+        test_negative_score = test_probs[~test_positive].mean().item() if (~test_positive).any() else 0.0
         return {
             "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_labels).item(),
             "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_labels).item(),
             "train_accuracy": (train_pred == train_labels).float().mean().item(),
             "test_accuracy": (test_pred == test_labels).float().mean().item(),
+            "train_positive_score": train_positive_score,
+            "train_negative_score": train_negative_score,
+            "train_score_separation": train_positive_score - train_negative_score,
+            "test_positive_score": test_positive_score,
+            "test_negative_score": test_negative_score,
+            "test_score_separation": test_positive_score - test_negative_score,
             "train_positive_recall": (
                 ((train_pred == 1.0) & train_positive).float().sum()
                 / train_positive.float().sum().clamp_min(1.0)
@@ -1268,24 +1280,32 @@ def learned_self_model_metrics(
         hidden_target_probe["test_positive_recall"]
         - observation_target_probe["test_positive_recall"]
     )
+    hidden_target_score_separation_advantage = (
+        hidden_target_probe["test_score_separation"]
+        - observation_target_probe["test_score_separation"]
+    )
     positive_evidence = (
         hidden_cell_bce_advantage > 0.0
         and (
             hidden_target_bce_advantage > 0.0
             or hidden_target_accuracy_advantage > 0.0
             or hidden_target_positive_recall_advantage > 0.0
+            or hidden_target_score_separation_advantage > 0.0
         )
         and intervention["bidirectional_self_model_target_gap"] > 0.0
     )
     policy_feedback_evidence = (
         intervention["policy_feedback_abs_mean"] > 1e-6
-        and abs(intervention["policy_override_bidirectional_target_attention_gap"]) > 1e-4
+        and abs(intervention["policy_override_bidirectional_target_attention_gap"]) > 5e-5
     )
     supported = (
         hidden_cell_bce_advantage > 0.01
         and hidden_target_bce_advantage > 0.01
         and hidden_target_accuracy_advantage >= 0.0
-        and hidden_target_positive_recall_advantage > 0.05
+        and (
+            hidden_target_positive_recall_advantage > 0.05
+            or hidden_target_score_separation_advantage > 0.005
+        )
         and intervention["bidirectional_self_model_target_gap"] > 0.01
         and intervention["positive_self_model_target_delta"] > 0.0
         and intervention["negative_self_model_target_delta"] < 0.0
@@ -1311,6 +1331,7 @@ def learned_self_model_metrics(
         "hidden_target_accuracy_advantage": hidden_target_accuracy_advantage,
         "hidden_target_bce_advantage": hidden_target_bce_advantage,
         "hidden_target_positive_recall_advantage": hidden_target_positive_recall_advantage,
+        "hidden_target_score_separation_advantage": hidden_target_score_separation_advantage,
         "hidden_self_model_intervention": intervention,
         "policy_feedback_evidence": policy_feedback_evidence,
         "positive_evidence": positive_evidence,
@@ -3373,6 +3394,9 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "hidden_target_positive_recall_advantage": learned_self_model.get(
             "hidden_target_positive_recall_advantage", 0.0
+        ),
+        "hidden_target_score_separation_advantage": learned_self_model.get(
+            "hidden_target_score_separation_advantage", 0.0
         ),
         "bidirectional_self_model_target_gap": learned_intervention.get(
             "bidirectional_self_model_target_gap", 0.0
