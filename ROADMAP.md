@@ -210,18 +210,27 @@ Needed capabilities:
 Good experiments:
 
 - the model must state whether it has already inspected the relevant region, and that answer must depend on internal attention history rather than final task success alone
+- hidden-state-only probes should predict inspected-cell state better than previous-observation baselines
 - interventions on the learned self-model representation should alter both report and downstream reallocation
 - the same representation should generalize to changed task conditions rather than only to the original benchmark regime
+
+Current status in this repo:
+
+- the evaluator now includes `learned_self_modeling`
+- it trains hidden-state-only probes for the full inspected-cell map and target-inspected variable
+- it compares those probes with previous-observation-only baselines
+- it perturbs hidden state along native self-model readout directions and measures the effect on native self-model output and target attention
+- the top-level evidence summary surfaces hidden-state probe advantages and bidirectional intervention gaps under `learned_self_modeling_of_attention`
 
 Current assessment:
 
 - implemented: partially
-- positive evidence: not enough yet
+- positive evidence: diagnostic path implemented; current checkpoint evidence must be read from the new metrics
 - supported: no
 
 Interpretation:
 
-Stage 4B should remain open until the project can show that the controller learns and uses a model of its own attentional process, rather than merely exposing an engineered bookkeeping variable.
+Stage 4B should remain open until the project can show that the controller learns and uses a model of its own attentional process, rather than merely exposing an engineered bookkeeping variable. The new diagnostics are significant progress because they separate hidden-state-only evidence from the engineered inspection scaffold, but the native self-model head still receives that scaffold and therefore cannot yet close the stage by itself.
 
 ## Branch B, Stage 5: Flexible Reallocation Under Changed Priorities
 

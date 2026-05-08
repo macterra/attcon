@@ -20,6 +20,7 @@ from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
     build_stage3_summary,
+    learned_self_model_metrics,
     nl_report_metrics,
     run_ablations,
     self_model_diagnostics,
@@ -574,6 +575,20 @@ class AttentionControlTests(unittest.TestCase):
                     },
                     "supported": True,
                 },
+                "learned_self_modeling": {
+                    "hidden_cell_accuracy_advantage": 0.03,
+                    "hidden_cell_bce_advantage": 0.04,
+                    "hidden_target_accuracy_advantage": 0.01,
+                    "hidden_target_bce_advantage": 0.02,
+                    "hidden_target_positive_recall_advantage": 0.02,
+                    "hidden_self_model_intervention": {
+                        "bidirectional_self_model_target_gap": 0.04,
+                        "bidirectional_target_attention_gap": 0.01,
+                    },
+                    "positive_evidence": True,
+                    "supported": False,
+                    "note": "test note",
+                },
             }
         )
         nl_summary = summary["natural_language_reportability"]
@@ -622,6 +637,14 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(explicit_attention["supported"])
         stage6b = summary["structured_reportability_uncertainty_and_allocation_error"]
         self.assertTrue(stage6b["supported"])
+        stage4b = summary["learned_self_modeling_of_attention"]
+        self.assertTrue(stage4b["implemented"])
+        self.assertTrue(stage4b["positive_evidence"])
+        self.assertFalse(stage4b["supported"])
+        self.assertEqual(stage4b["hidden_cell_accuracy_advantage"], 0.03)
+        self.assertEqual(stage4b["hidden_cell_bce_advantage"], 0.04)
+        self.assertEqual(stage4b["hidden_target_bce_advantage"], 0.02)
+        self.assertEqual(stage4b["bidirectional_self_model_target_gap"], 0.04)
 
     def test_build_stage3_summary_separates_single_run_and_robust(self) -> None:
         summary = build_stage3_summary(
@@ -1077,6 +1100,53 @@ class AttentionControlTests(unittest.TestCase):
         for key in bounded_series:
             self.assertTrue(all(0.0 <= value <= 1.0 for value in diagnostics[key]), key)
 
+    def test_learned_self_model_metrics_exposes_probe_and_intervention(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        config = {
+            "training": {
+                "batch_size": 4,
+            },
+            "evaluation": {
+                "learned_self_modeling": {
+                    "enabled": True,
+                    "train_batches": 2,
+                    "test_batches": 1,
+                    "epochs": 4,
+                    "learning_rate": 0.05,
+                    "intervention": {
+                        "probe_scenes": 2,
+                        "step": 1,
+                        "scale": 1.0,
+                    },
+                },
+            },
+        }
+        metrics = learned_self_model_metrics(
+            model,
+            config,
+            self.task_cfg,
+            torch.device("cpu"),
+            seed=17,
+        )
+        self.assertIn("hidden_cell_probe", metrics)
+        self.assertIn("observation_cell_probe", metrics)
+        self.assertIn("hidden_target_probe", metrics)
+        self.assertIn("observation_target_probe", metrics)
+        self.assertIn("hidden_self_model_intervention", metrics)
+        self.assertIsInstance(metrics["positive_evidence"], bool)
+        self.assertIsInstance(metrics["supported"], bool)
+        self.assertTrue(
+            0.0 <= metrics["hidden_cell_probe"]["test_cell_accuracy"] <= 1.0
+        )
+        self.assertTrue(
+            0.0 <= metrics["hidden_target_probe"]["test_accuracy"] <= 1.0
+        )
+        intervention = metrics["hidden_self_model_intervention"]
+        self.assertEqual(intervention["step"], 1.0)
+        self.assertEqual(intervention["scale"], 1.0)
+        self.assertIn("bidirectional_self_model_target_gap", intervention)
+        self.assertIn("bidirectional_target_attention_gap", intervention)
+
     def test_stage3_multi_seed_metrics_exposes_seed_runs(self) -> None:
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
         config = {
@@ -1207,6 +1277,18 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "learned_self_modeling": {
+                        "enabled": True,
+                        "train_batches": 2,
+                        "test_batches": 1,
+                        "epochs": 10,
+                        "learning_rate": 0.05,
+                        "intervention": {
+                            "probe_scenes": 2,
+                            "step": 1,
+                            "scale": 1.0,
+                        },
+                    },
                     "uncertainty_report_probes": {
                         "enabled": True,
                         "train_batches": 2,
@@ -1240,6 +1322,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("predictive_probe", report)
             self.assertIn("report_probes", report)
             self.assertIn("self_modeling", report)
+            self.assertIn("learned_self_modeling", report)
             self.assertIn("uncertainty_report_probes", report)
             self.assertIn("nl_report", report)
             self.assertIn("cue_switch", report)
@@ -1256,6 +1339,11 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("current_search_type", report["report_probes"])
             self.assertIn("target_inspected_report", report["self_modeling"])
             self.assertIn("observation_only_probe", report["self_modeling"]["native_cell_report"])
+            self.assertIn("hidden_cell_probe", report["learned_self_modeling"])
+            self.assertIn(
+                "hidden_self_model_intervention",
+                report["learned_self_modeling"],
+            )
             self.assertIn(
                 "relevant_region_inspected",
                 report["uncertainty_report_probes"],

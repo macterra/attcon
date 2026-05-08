@@ -96,6 +96,18 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "learned_self_modeling": {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+            "intervention": {
+                "probe_scenes": 16,
+                "step": 2,
+                "scale": 2.0,
+            },
+        },
         "uncertainty_report_probes": {
             "enabled": True,
             "train_batches": 12,

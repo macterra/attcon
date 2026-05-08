@@ -43,6 +43,7 @@ The evaluation report includes:
 - a causal intervention test that perturbs controller state and measures the next-step attention shift
 - a mid-episode cue-switch evaluation that tests whether attention reallocates after priorities change
 - report probes that test whether controller state can support simple readouts of current regulatory content, including cumulative target-found status and unresolved regions
+- learned-self-model diagnostics that compare hidden-state-only probes against observation-only baselines and perturb hidden state along native self-model readout directions
 - reduced-shaping retraining runs that test whether reallocation survives weaker target-attention supervision
 - ablations over recurrence and feedback channels
 - an `evidence` summary for the core benchmark claims plus the later roadmap stages:
@@ -74,6 +75,8 @@ The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over
 The evaluator also exports `stage3_checkpoint_family`, which extends that robustness check across the default checkpoint and the reduced-shaping variant trained during evaluation. That summary surfaces the weakest checkpoint family, the weakest metric, and the worst seed, so Stage 3 can fail loudly and specifically instead of collapsing to an opaque boolean. The current closeout covers the default checkpoint plus the `0.25` reduced-shaping family; complete zero-shaping resilience remains outside the supported claim.
 
 The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
+
+Stage 4B now has a first diagnostic path rather than only a placeholder. The evaluator reports `learned_self_modeling`, which asks whether controller hidden state alone predicts inspected-cell state better than a previous-observation baseline and whether hidden-state perturbations along native self-model readout directions move self-report outputs. This is progress toward learned self-modeling, but the supported claim remains open because the native head still receives the engineered inspected-state scaffold.
 
 The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, now separates `current_wrong_candidate`, `wrong_candidate_history`, `revisit_unresolved`, and `allocation_error`. That gives the repo a finer distinction between active pursuit of a wrong candidate, cumulative wrong-candidate memory, and revisits during unresolved search. The overall Stage 6B bundle is still provisional rather than broadly settled, but it now has bounded positive evidence with a more interpretable internal decomposition.
 

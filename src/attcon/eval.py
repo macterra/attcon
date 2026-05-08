@@ -473,6 +473,132 @@ def _collect_self_model_dataset(
     }
 
 
+def _collect_learned_self_model_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+) -> dict[str, torch.Tensor]:
+    """Collect hidden-state-only self-model targets for Stage 4B diagnostics."""
+
+    hidden_features = []
+    prev_observation_features = []
+    inspection_labels = []
+    target_inspected_labels = []
+    for batch_idx in range(num_batches):
+        generator = make_generator(seed + batch_idx, device)
+        batch = generate_batch(
+            batch_size,
+            task_cfg.num_steps,
+            task_cfg,
+            generator=generator,
+            device=device,
+        )
+        with torch.no_grad():
+            outputs = model(
+                batch.scene,
+                batch.cue,
+                target=batch.target,
+                target_pos=batch.target_pos,
+                num_steps=task_cfg.num_steps,
+            )
+        prev_observation = torch.zeros_like(outputs["observation_seq"])
+        prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
+        target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
+        target_true = outputs["inspection_seq"].gather(2, target_pos).squeeze(-1)
+        hidden_features.append(
+            outputs["controller_state_seq"].reshape(
+                -1,
+                outputs["controller_state_seq"].shape[-1],
+            )
+        )
+        prev_observation_features.append(prev_observation.reshape(-1, prev_observation.shape[-1]))
+        inspection_labels.append(outputs["inspection_seq"].reshape(-1, outputs["inspection_seq"].shape[-1]))
+        target_inspected_labels.append(target_true.reshape(-1))
+
+    return {
+        "hidden_features": torch.cat(hidden_features, dim=0),
+        "prev_observation_features": torch.cat(prev_observation_features, dim=0),
+        "inspection_labels": torch.cat(inspection_labels, dim=0),
+        "target_inspected_labels": torch.cat(target_inspected_labels, dim=0),
+    }
+
+
+def _learned_self_model_intervention(
+    model,
+    task_cfg: TaskConfig,
+    *,
+    batch_size: int,
+    device: torch.device,
+    seed: int,
+    step: int,
+    scale: float,
+) -> dict[str, float]:
+    """Perturb hidden state along native self-model directions and measure coupled effects."""
+
+    generator = make_generator(seed, device)
+    batch = generate_batch(
+        batch_size,
+        task_cfg.num_steps,
+        task_cfg,
+        generator=generator,
+        device=device,
+    )
+    step = max(0, min(step, task_cfg.num_steps - 1))
+    with torch.no_grad():
+        base = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+        )
+        hidden = base["controller_state_seq"][:, step]
+        hidden_dim = hidden.shape[-1]
+        hidden_weights = model.self_model_head.weight[:, :hidden_dim]
+        directions = hidden_weights[batch.target_pos]
+        directions = directions / directions.norm(dim=-1, keepdim=True).clamp_min(1e-6)
+        delta = directions * hidden.std(dim=-1, keepdim=True).clamp_min(1e-3) * scale
+        pos = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            intervention={"step": step, "state_override": hidden + delta},
+        )
+        neg = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            intervention={"step": step, "state_override": hidden - delta},
+        )
+
+    target_index = batch.target_pos[:, None]
+    base_target_self = base["self_model_seq"][:, step].gather(1, target_index)
+    pos_target_self = pos["self_model_seq"][:, step].gather(1, target_index)
+    neg_target_self = neg["self_model_seq"][:, step].gather(1, target_index)
+    base_target_attention = base["attention_seq"][:, step].gather(1, target_index)
+    pos_target_attention = pos["attention_seq"][:, step].gather(1, target_index)
+    neg_target_attention = neg["attention_seq"][:, step].gather(1, target_index)
+    inspection_target = base["inspection_seq"][:, step].gather(1, target_index)
+    return {
+        "step": float(step),
+        "scale": float(scale),
+        "target_inspection_rate": inspection_target.mean().item(),
+        "positive_self_model_target_delta": (pos_target_self - base_target_self).mean().item(),
+        "negative_self_model_target_delta": (neg_target_self - base_target_self).mean().item(),
+        "bidirectional_self_model_target_gap": (pos_target_self - neg_target_self).mean().item(),
+        "positive_target_attention_delta": (pos_target_attention - base_target_attention).mean().item(),
+        "negative_target_attention_delta": (neg_target_attention - base_target_attention).mean().item(),
+        "bidirectional_target_attention_gap": (pos_target_attention - neg_target_attention).mean().item(),
+    }
+
+
 def _train_attention_probe(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
@@ -938,6 +1064,155 @@ def self_model_metrics(
             and test["native_cell_accuracy"] > 0.95
             and test["native_target_positive_recall"] >= observation_probe["test_positive_recall"]
             and test["native_target_positive_recall"] > 0.5
+        ),
+    }
+
+
+def learned_self_model_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Evaluate hidden-state-only evidence for learned attention self-modeling."""
+
+    learned_cfg = cfg["evaluation"].get(
+        "learned_self_modeling",
+        {
+            "enabled": True,
+            "train_batches": 12,
+            "test_batches": 6,
+            "epochs": 60,
+            "learning_rate": 0.05,
+            "intervention": {
+                "probe_scenes": 16,
+                "step": 2,
+                "scale": 2.0,
+            },
+        },
+    )
+    if not learned_cfg.get("enabled", False):
+        return {}
+
+    batch_size = cfg["training"]["batch_size"]
+    train = _collect_learned_self_model_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        learned_cfg["train_batches"],
+        device,
+        seed,
+    )
+    test = _collect_learned_self_model_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        learned_cfg["test_batches"],
+        device,
+        seed + 1000,
+    )
+
+    epochs = learned_cfg["epochs"]
+    learning_rate = learned_cfg["learning_rate"]
+    hidden_cell_probe = _train_multilabel_probe(
+        train["hidden_features"],
+        train["inspection_labels"],
+        test["hidden_features"],
+        test["inspection_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    observation_cell_probe = _train_multilabel_probe(
+        train["prev_observation_features"],
+        train["inspection_labels"],
+        test["prev_observation_features"],
+        test["inspection_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    hidden_target_probe = _train_binary_probe(
+        train["hidden_features"],
+        train["target_inspected_labels"],
+        test["hidden_features"],
+        test["target_inspected_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    observation_target_probe = _train_binary_probe(
+        train["prev_observation_features"],
+        train["target_inspected_labels"],
+        test["prev_observation_features"],
+        test["target_inspected_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+
+    intervention_cfg = learned_cfg.get("intervention", {})
+    intervention = _learned_self_model_intervention(
+        model,
+        task_cfg,
+        batch_size=intervention_cfg.get("probe_scenes", batch_size),
+        device=device,
+        seed=seed + 2000,
+        step=intervention_cfg.get("step", min(2, task_cfg.num_steps - 1)),
+        scale=intervention_cfg.get("scale", 2.0),
+    )
+
+    hidden_cell_accuracy_advantage = (
+        hidden_cell_probe["test_cell_accuracy"] - observation_cell_probe["test_cell_accuracy"]
+    )
+    hidden_cell_bce_advantage = (
+        observation_cell_probe["test_bce"] - hidden_cell_probe["test_bce"]
+    )
+    hidden_target_accuracy_advantage = (
+        hidden_target_probe["test_accuracy"] - observation_target_probe["test_accuracy"]
+    )
+    hidden_target_bce_advantage = (
+        observation_target_probe["test_bce"] - hidden_target_probe["test_bce"]
+    )
+    hidden_target_positive_recall_advantage = (
+        hidden_target_probe["test_positive_recall"]
+        - observation_target_probe["test_positive_recall"]
+    )
+    positive_evidence = (
+        hidden_cell_bce_advantage > 0.0
+        and (
+            hidden_target_bce_advantage > 0.0
+            or hidden_target_accuracy_advantage > 0.0
+            or hidden_target_positive_recall_advantage > 0.0
+        )
+        and intervention["bidirectional_self_model_target_gap"] > 0.0
+    )
+    supported = (
+        hidden_cell_bce_advantage > 0.01
+        and hidden_target_bce_advantage > 0.01
+        and hidden_target_accuracy_advantage >= 0.0
+        and hidden_target_positive_recall_advantage > 0.05
+        and intervention["bidirectional_self_model_target_gap"] > 0.01
+        and intervention["positive_self_model_target_delta"] > 0.0
+        and intervention["negative_self_model_target_delta"] < 0.0
+        and intervention["bidirectional_target_attention_gap"] > 0.0
+    )
+
+    return {
+        "hidden_cell_probe": hidden_cell_probe,
+        "observation_cell_probe": observation_cell_probe,
+        "hidden_cell_accuracy_advantage": hidden_cell_accuracy_advantage,
+        "hidden_cell_bce_advantage": hidden_cell_bce_advantage,
+        "hidden_target_probe": hidden_target_probe,
+        "observation_target_probe": observation_target_probe,
+        "hidden_target_accuracy_advantage": hidden_target_accuracy_advantage,
+        "hidden_target_bce_advantage": hidden_target_bce_advantage,
+        "hidden_target_positive_recall_advantage": hidden_target_positive_recall_advantage,
+        "hidden_self_model_intervention": intervention,
+        "positive_evidence": positive_evidence,
+        "supported": supported,
+        "note": (
+            "This diagnostic excludes the engineered inspection-state input from the probe "
+            "features and perturbs hidden state along native self-model readout directions. "
+            "It is progress toward Stage 4B, but the native self-model head still receives "
+            "the engineered inspection scaffold."
         ),
     }
 
@@ -2927,6 +3202,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
 
     report_probes = report.get("report_probes", {})
     self_model = report.get("self_modeling", {})
+    learned_self_model = report.get("learned_self_modeling", {})
     uncertainty_reports = report.get("uncertainty_report_probes", {})
     structured_reportability = {
         "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
@@ -2970,13 +3246,39 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": self_model.get("supported", False),
     }
 
+    learned_intervention = learned_self_model.get("hidden_self_model_intervention", {})
     learned_self_modeling_of_attention = {
-        "implemented": bool(self_model),
-        "positive_evidence": False,
-        "supported": False,
-        "note": (
-            "The current benchmark exposes an engineered inspected-state scaffold. "
-            "That supports engineered self-state tracking, but not a stronger learned self-model claim."
+        "implemented": bool(learned_self_model),
+        "positive_evidence": learned_self_model.get("positive_evidence", False),
+        "supported": learned_self_model.get("supported", False),
+        "hidden_cell_accuracy_advantage": learned_self_model.get(
+            "hidden_cell_accuracy_advantage", 0.0
+        ),
+        "hidden_cell_bce_advantage": learned_self_model.get(
+            "hidden_cell_bce_advantage", 0.0
+        ),
+        "hidden_target_accuracy_advantage": learned_self_model.get(
+            "hidden_target_accuracy_advantage", 0.0
+        ),
+        "hidden_target_bce_advantage": learned_self_model.get(
+            "hidden_target_bce_advantage", 0.0
+        ),
+        "hidden_target_positive_recall_advantage": learned_self_model.get(
+            "hidden_target_positive_recall_advantage", 0.0
+        ),
+        "bidirectional_self_model_target_gap": learned_intervention.get(
+            "bidirectional_self_model_target_gap", 0.0
+        ),
+        "bidirectional_target_attention_gap": learned_intervention.get(
+            "bidirectional_target_attention_gap", 0.0
+        ),
+        "note": learned_self_model.get(
+            "note",
+            (
+                "The benchmark still exposes an engineered inspected-state scaffold. "
+                "Hidden-state-only probes and hidden-state interventions are required "
+                "before a stronger learned self-model claim can be supported."
+            ),
         ),
     }
 
@@ -3602,6 +3904,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9735,
+    )
+    report["learned_self_modeling"] = learned_self_model_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9736,
     )
     report["uncertainty_report_probes"] = uncertainty_report_metrics(
         models["recurrent"],
