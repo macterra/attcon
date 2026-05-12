@@ -24,7 +24,7 @@ This roadmap does not aim to establish:
 - open-ended self-awareness outside this benchmark
 - consciousness in the current toy system
 
-The narrower near-term goal is to accumulate bounded evidence for increasingly rich attentional regulation, self-modeling, reportability, unity, counterfactual access, and perturbation response signatures. The larger goal requires convergence across those families rather than a single-theory bridge.
+The narrower near-term goal is to accumulate bounded evidence for increasingly rich attentional regulation, self-modeling, reportability, unity, counterfactual access, higher-order state representation, broadcast dynamics, and perturbation response signatures. The larger goal requires convergence across those families rather than a single-theory bridge.
 
 ## Claim Status Conventions
 
@@ -40,6 +40,8 @@ In practice this roadmap now distinguishes two levels of support:
 
 - `bounded support`: a clearly scoped benchmark claim passes the implemented thresholds, often on the current tuned checkpoint or a specific fresh-training recipe
 - `robust support`: the same claim survives multiple seeds, checkpoint families, explicit stress tests, comparator systems, and where relevant cross-architecture and cross-benchmark replication
+
+Some sections also include a `consciousness-evidence status` note. That is not a third support tier. It is an interpretive warning about whether a technically supported benchmark result should count as an input to Stage 8. A result can have bounded engineering support while still having no consciousness-evidence status if it depends on direct supervision, symbolic scaffolding, or benchmark-specific shortcuts.
 
 Only robust support should be treated as strong evidence for Stage 8. No stage in the current repo yet meets that robust-support bar, because the capacity audits and negative-control runs below have not been completed. Current `supported` labels should therefore be read as bounded engineering/evaluation milestones rather than settled philosophical premises.
 
@@ -81,6 +83,8 @@ To move a stage from bounded to robust support, the repo should show all of the 
 - replication on at least one structurally different architecture for claims meant to support Stage 8
 - replication on at least one benchmark with different surface task structure for claims meant to support Stage 8
 
+For newly proposed branches that are not implemented yet, the first target is bounded support under their own claim thresholds. The bounded-to-robust ladder above applies only after a branch has a concrete implementation, baseline suite, and initial positive result; it should not be read as a requirement to jump directly from proposal to robust Stage 8 evidence.
+
 ## Negative Controls
 
 The staged criteria should fail in systems that merely solve the task without using reportable regulatory state. For a consciousness-evidence roadmap, comparator systems are first-class evidence rather than only failure-mode protection. If the criteria cannot distinguish the target system from systems that should not be consciousness candidates, the criteria are not measuring the intended target.
@@ -99,13 +103,13 @@ If any of these controls pass a later-stage claim under the same thresholds, the
 
 ## Global Falsifier
 
-The whole consciousness-evidence program should be downgraded, even if several bounded stages pass, if any of the following occur:
+The whole consciousness-evidence program should be downgraded, even if several bounded stages pass, if any of the following occur. These failures are not symmetric:
 
-- comparator systems that should fail pass the same convergence criteria
-- a sufficiently large feedforward or observation-only system satisfies the roadmap without recurrent regulatory state
-- results fail to replicate across structurally different architectures or benchmarks
-- the only positive theory branch is Modeler Schema/self-modeling, with no support from access, binding, broadcast, or perturbational families
-- supervised self-model objectives are required for every self-modeling result, with no emergence under task objectives that do not directly reward self-modeling
+- fatal for the current criteria: comparator systems that should fail pass the same convergence criteria, showing that the criteria do not discriminate intended candidates from deliberately inappropriate ones
+- fatal for the recurrent-control interpretation: a sufficiently large feedforward or observation-only system satisfies the roadmap without recurrent regulatory state, showing that the claimed mechanism is unnecessary
+- fatal for any Stage 8 claim in this program: results fail to replicate across structurally different architectures or benchmarks
+- degrading but recoverable: the only positive theory branch is Modeler Schema/self-modeling, with no support from access, binding, broadcast, or perturbational families
+- degrading but recoverable: supervised self-model objectives are required for every self-modeling result, with no emergence under task objectives that do not directly reward self-modeling
 
 Per-stage falsifiers are not enough. A project aimed at consciousness-relevant evidence needs this global falsifier because otherwise failures can always be absorbed by rescoping individual stages.
 
@@ -120,6 +124,8 @@ Stages 1 through 3 are the attention-control foundation. After that, the roadmap
 - Stage 6B asks whether uncertainty and allocation error are also reportable
 - Branch C asks whether multi-feature contents are bound into unified accessible representations
 - Branch D asks whether unattended content remains counterfactually available for report or action on demand
+- Branch E asks whether the system has higher-order representations of its own first-order content-bearing states
+- Branch F asks whether selected contents become broadly available through broadcast-like or ignition-like dynamics
 - a perturbational branch asks whether state perturbations produce rich but recoverable dynamics rather than trivial collapse or rigid reset
 
 Stage 4A is foundational for instrumentation and for the engineered self-state branch, but it is not load-bearing for the Stage 8 convergence argument. For that argument, Stage 4A is a scaffold and diagnostic aid; the learned-regulatory-model burden sits on Stage 4B.
@@ -389,6 +395,8 @@ Stage 5 should also be downgraded if the apparent flexibility is explained by a 
 
 This stage depends on progress from Stage 4A and Stage 5, and is strengthened by progress on Stage 4B.
 
+Stage 6A is a reportability branch, not a standalone consciousness endpoint. It can support Stage 8 only when paired with non-reportability evidence such as binding, broadcast dynamics, perturbational complexity, or higher-order access-state tests.
+
 Question:
 
 Are there structured internal contents available for report that reflect the controller’s regulatory state?
@@ -425,6 +433,8 @@ Alternative-explanation falsifier:
 Stage 6A should also be downgraded if reports are better explained as task-label reconstruction than regulatory-state access. A decisive warning sign would be reports remaining accurate when controller state is replaced by matched task metadata, but failing when observation and internal state are put under counterfactual tension.
 
 ## Stage 6B: Structured Reportability of Uncertainty and Allocation Error
+
+Stage 6B is a reportability branch, not a standalone consciousness endpoint. It strengthens the access/report side of the roadmap, but it cannot by itself satisfy the Stage 8 convergence threshold.
 
 Question:
 
@@ -476,6 +486,20 @@ Good experiments:
 - intervene on one feature dimension and test whether bound content changes coherently or fragments
 - include false-binding lures where independent feature recovery is insufficient
 
+Benchmark implication:
+
+The current `5x5` attention-control toy is not rich enough by itself to close this branch. Branch C requires benchmark-side extensions: independently recombinable attributes, held-out conjunction splits, explicit false-binding lures, and evaluation episodes where feature identity and inspection history can be placed under tension.
+
+Claim threshold:
+
+Branch C should count as supported only if all of the following hold:
+
+- bound-content probes beat independent feature-probe recombination under matched capacity
+- held-out conjunction reports preserve the correct object/location/cue/inspection binding by a predeclared margin
+- false-binding lures fail for observation-only and independent-feature baselines more often than for the integrated-state route
+- feature-dimension interventions produce coherent changes to the bound content rather than isolated feature flips
+- the result survives at least one benchmark variant with different surface attributes
+
 Current assessment:
 
 - implemented: no
@@ -504,6 +528,20 @@ Good experiments:
 - compare recurrent internal-state access against scene-only, observation-only, and symbolic-dump baselines
 - use counterfactual interventions where observation suggests one answer while internal access should support another
 
+Benchmark implication:
+
+The current benchmark would need explicit query-change and alternative-target conditions before this branch can be tested fairly. In particular, it needs episodes where non-current contents can be task-relevant without having just been attended, and where the requested report/action target can change while the current attention fixation is held fixed.
+
+Claim threshold:
+
+Branch D should count as supported only if all of the following hold:
+
+- the system retrieves or acts on non-current task-relevant contents above scene-only and observation-only baselines
+- unavailable, merely visible, previously attended, and counterfactually accessible contents separate in probe and behavior metrics
+- access remains reliable under cue/query switches that hold current attention fixed
+- counterfactual observation/internal-state tension favors the internal-access prediction rather than post-hoc scene reconstruction
+- symbolic dumps do not explain the result, and matched comparator systems fail in predicted ways
+
 Current assessment:
 
 - implemented: no
@@ -531,17 +569,116 @@ Good experiments:
 - compare against feedforward, frozen-feedback, shuffled-feedback, and over-regularized recurrent controls
 - distinguish rich recovery from mere return to a fixed attractor
 
+Claim threshold:
+
+The perturbational branch should count as supported only if all of the following hold:
+
+- perturbations produce recoverable but nontrivial trajectories rather than immediate collapse, rigid reset, or unstructured noise
+- recovery depends on integrated controller state and degrades under frozen-feedback, shuffled-feedback, and over-regularized controls
+- trajectory-complexity metrics predict task-relevant recovery better than perturbation magnitude alone
+- the relevant dynamics are localized enough to connect back to attention, access, or self-model content rather than only to generic recurrent activity
+- the effect survives multiple perturbation magnitudes and at least one architecture or benchmark variant
+
 Current assessment:
 
 - implemented: no
 - positive evidence: no
 - supported: no
 
+## Branch E: Higher-Order State Representation
+
+Question:
+
+Does the system represent its own content-bearing first-order states as states it has, rather than merely encoding task features or producing report labels?
+
+Why this matters:
+
+HOT-style theories require more than first-order task content. They require some representation of the system's own representational condition. In this roadmap, that means testing whether internal access to a content is itself modeled and can be used for control or report.
+
+Good experiments:
+
+- train or probe for higher-order variables such as "this location-content representation is currently available," "this content was inferred rather than inspected," or "this report would be based on memory rather than current fixation"
+- test whether those higher-order variables predict report confidence, reinspection, and correction behavior better than first-order content probes alone
+- intervene on the higher-order representation while holding first-order content fixed, then measure report, confidence, and reallocation
+- include lure conditions where first-order content is present but access status is wrong or stale
+
+Benchmark implication:
+
+Branch E needs benchmark and probe extensions that can separate first-order content from access status. The current task can expose inspected history and current content, but HOT-style tests need stale-access, inferred-content, and wrong-access lures where the object content is present while the system's relation to that content is manipulated independently.
+
+Claim threshold:
+
+Branch E should count as supported only if all of the following hold:
+
+- higher-order state probes beat first-order-content-only and observation-only baselines by a predeclared margin
+- interventions on higher-order state alter access-sensitive report or control while preserving first-order content
+- lure conditions separate content possession from representation of access, inspection, or confidence
+- the result appears without direct supervision of the exact higher-order labels used for evaluation, or else is marked as engineering support only
+- matched comparator systems do not recover the same access-sensitive behavior from report templates alone
+
+Current assessment:
+
+- implemented: no
+- positive evidence: no
+- supported: no
+
+Consciousness-evidence role:
+
+Branch E gives the HOT-style family an explicit experimental target. It overlaps with Stage 4B but is not identical to it: Stage 4B asks whether the system models its attentional regulation, while Branch E asks whether the system models first-order content states as available, inspected, inferred, uncertain, or report-grounding states.
+
+Convergence-counting rule:
+
+A single result should not count for both Stage 4B and Branch E merely because it involves self-state. To count as Stage 4B, the result must show a learned regulatory model of the system's own attention or access state that guides control. To count as Branch E, the result must additionally separate first-order content from higher-order access, confidence, inference, or report-grounding status. The broader Stage 8 convergence-counting rule below governs whether one experiment can contribute to multiple families.
+
+## Branch F: Broadcast and Ignition Dynamics
+
+Question:
+
+Do selected contents become broadly available to multiple downstream consumers through a broadcast-like transition, rather than remaining locally useful to a single decoder or behavior head?
+
+Why this matters:
+
+GWT-style theories emphasize global availability. A content that can drive only one specialized probe is weaker evidence than a content that becomes available to report, reallocation, uncertainty estimation, memory, and task action through a shared internal event or state transition.
+
+Good experiments:
+
+- define multiple downstream consumers, such as action selection, structured report, uncertainty report, reallocation policy, memory update, and natural-language-shaped report
+- test whether the same selected content becomes available to those consumers over the same time window
+- look for nonlinear or ignition-like transitions in availability as cue strength, evidence quality, or recurrent access varies
+- intervene on the candidate broadcast subspace and measure coordinated degradation across consumers
+- compare against independent-head systems where each consumer receives a private shortcut
+
+Benchmark implication:
+
+Branch F requires architecture and evaluation work beyond the current single-purpose controller reports. It needs multiple downstream consumers with separable interfaces, plus ablation conditions that distinguish a shared broadcast state from private shortcuts into each head.
+
+Claim threshold:
+
+Branch F should count as supported only if all of the following hold:
+
+- a shared internal content representation predicts multiple downstream consumers better than private head-specific representations alone
+- availability rises in a temporally aligned window across action, report, memory, and regulation consumers
+- interventions on the candidate broadcast state produce coordinated, content-specific effects across consumers
+- independent-head, feedforward, and observation-only comparators fail to reproduce the same coordinated availability under matched capacity
+- the broadcast-like signature survives at least one task condition with changed cue strength or evidence ambiguity
+
+Current assessment:
+
+- implemented: no
+- positive evidence: no
+- supported: no
+
+Consciousness-evidence role:
+
+Branch F gives the GWT-style family an explicit experimental target. It should not be inferred from ordinary reportability alone; the branch requires broad downstream availability and coordinated intervention effects.
+
 ## Stage 7: Faithful Natural-Language Reportability
 
 Question:
 
 Can the system express its internal attentional and self-model state in flexible natural language, grounded in the actual controller state rather than post-hoc guessing?
+
+Stage 7 is a reportability endpoint, not the apex of the roadmap. It can support Stage 8 only when paired with non-reportability evidence such as binding, counterfactual access, higher-order access-state representation, broadcast dynamics, or perturbational complexity.
 
 Why this matters:
 
@@ -638,9 +775,19 @@ Theory-derived evidence families:
 - Perturbational complexity: internal perturbations produce rich but recoverable dynamics with theory-relevant structure
 - Reportability: language-shaped or otherwise flexible reports remain faithful under intervention and conflict tests
 
+For convergence accounting, the families should be partitioned explicitly:
+
+- access/report families: Stage 6A, Stage 6B, Stage 7, Branch D, and Branch E when it tests access-status or report-grounding representations
+- non-reportability families: Branch C, Branch F, the perturbational branch, and Branch E when it tests higher-order content representation without relying on report-grounding or access-status readouts
+- bridging but not independently sufficient: Stage 4B, because self-modeling is accessed through probes or reports and can otherwise be double-counted with HOT-style or reportability evidence
+
+Stage 4B can strengthen a Stage 8 package, but it should not be one of the two minimum required convergence families. It is best treated as a bridge condition: useful background for interpreting self-model and access evidence, not an independent consciousness-evidence endpoint by itself.
+
 Claim threshold:
 
-Stage 8 should require convergent positive evidence across at least two, and preferably three or more, theory-derived families. The Modeler Schema branch alone is not enough. Reportability alone is not enough. A single benchmark and single architecture are not enough.
+Stage 8 should require convergent positive evidence across at least two theory-derived families, and the two families should not both be report-adjacent. At minimum, convergence should include one access/report family and one non-reportability family such as unity/binding, perturbational complexity, higher-order access-state representation, or broadcast dynamics. Three or more families would be materially stronger because it would reduce dependence on any one theory's preferred interpretation and make comparator success harder to explain away.
+
+The Modeler Schema branch alone is not enough. Reportability alone is not enough. Modeler Schema plus reportability is useful but still too close to one interpretive route unless at least one non-self-model, non-reportability family also passes. A single benchmark and single architecture are not enough.
 
 At minimum, a Stage 8 package would need:
 
@@ -648,9 +795,19 @@ At minimum, a Stage 8 package would need:
 - emergent or task-induced self-modeling not directly supervised as self-modeling
 - at least one non-reportability endpoint, such as unity/binding or perturbational complexity
 - at least one access/report endpoint, such as structured reportability, counterfactual access, or language-shaped reporting
+- if HOT-style evidence is counted, explicit higher-order state-representation tests rather than merely successful self-report
+- if GWT-style evidence is counted, explicit broadcast/ignition tests rather than merely successful downstream decoding
 - comparator systems that fail in predicted ways
 - replication across a structurally different architecture
 - replication on at least one benchmark with different surface task structure
+
+Content-identity criterion:
+
+For convergence to mean more than "several tests pass on the same system," the branches must be linked to the same internal contents. Two branch results count as pointing to the same content only when their probes or interventions identify overlapping representational information about the same target feature bundle, in a compatible time window, and with cross-validated causal overlap. Operationally, this means at least one of the following should hold: a shared subspace supports both branch readouts; interventions along one branch's content direction predictably alter the other branch's content-specific behavior; or time-locked trajectories show the same object/location/cue/access-status bundle becoming available across branches. Mere co-occurrence at the checkpoint or run level is not enough.
+
+Convergence-counting rule:
+
+No single experiment should count toward multiple convergence families unless it contains distinct analyses and interventions satisfying each family's threshold. This matters especially for reportability-adjacent interfaces: Stage 6A, Stage 6B, Branch D, Branch E, and Stage 7 can all read out related internal contents, but Stage 8 convergence requires separable evidence rather than relabeling one result several ways.
 
 Current assessment:
 
@@ -663,6 +820,10 @@ Philosophical bridge:
 Stage 8 remains philosophical, but it should not be a take-it-or-leave-it Modeler Schema premise. A critical reader can reject one theory-derived branch and still engage with the others. Conversely, if only one branch succeeds, a critic can reasonably dismiss the consciousness interpretation without dismissing the engineering results.
 
 The conservative Stage 8 claim should therefore be phrased as convergence, not proof: if several independent theory-derived tests point to the same internal contents, and if comparator systems fail while cross-architecture and cross-benchmark replications hold, then the system becomes a more defensible minimal consciousness-like candidate. That still would not settle subjective experience.
+
+Methodology-development limit:
+
+In the current `5x5` benchmark, even a clean Stage 8-style package would not justify saying that this toy system is conscious or is a serious consciousness candidate. The strongest honest closure would be: the methodology can produce convergent, theory-diverse, comparator-resistant evidence in a toy setting. A system-level consciousness-candidate claim would require larger, richer systems and benchmarks where the contents, access demands, and behavioral stakes are not artifacts of this small environment.
 
 Positive update limit:
 
@@ -690,23 +851,30 @@ If consciousness-relevant content requires integrated structure or rich recovery
 
 No single theory family owns the argument. The empirical program becomes consciousness-relevant only to the extent that distinct theory-derived tests converge.
 
-## Structure Summary
+## Evidence-Family Summary
 
-The intended dependency structure is:
+The intended dependency structure is partly staged and partly branch-based.
+
+Sequential foundation:
 
 1. Stage 1: attention
 2. Stage 2: attention control
 3. Stage 3: explicit attention modeling
-4. Branch A, Stage 4A: engineered self-state tracking
-5. Branch A, Stage 4B: learned self-modeling of attention, with consciousness-relevant support requiring emergence without direct self-model rewards
-6. Branch B, Stage 5: flexible reallocation under changed priorities
-7. Stage 6A: structured reportability of internal state
-8. Stage 6B: structured reportability of uncertainty and allocation error
-9. Branch C: unity and binding
-10. Branch D: counterfactual access beyond current attention
-11. Perturbational complexity branch
-12. Stage 7: faithful natural-language reportability as one endpoint
-13. Stage 8: multi-theory convergence
+
+Theory-derived branches and endpoints:
+
+- Branch A, Stage 4A: engineered self-state tracking
+- Branch A, Stage 4B: learned self-modeling of attention, with consciousness-relevant support requiring emergence without direct self-model rewards
+- Branch B, Stage 5: flexible reallocation under changed priorities
+- Stage 6A: structured reportability of internal state
+- Stage 6B: structured reportability of uncertainty and allocation error
+- Branch C: unity and binding
+- Branch D: counterfactual access beyond current attention
+- Branch E: higher-order state representation
+- Branch F: broadcast and ignition dynamics
+- Perturbational complexity branch
+- Stage 7: faithful natural-language reportability as one endpoint
+- Stage 8: multi-theory convergence
 
 This should not be read as a simple victory ladder. Several stages can be implemented before they are supported, and later stages should inherit the uncertainty of earlier ones.
 
@@ -720,6 +888,8 @@ For this reason, the current status snapshot separates bounded support from robu
 
 Near-term execution should stay attached to concrete repository changes:
 
+Completed groundwork:
+
 - [x] separate engineered self-state tracking claims from stronger learned self-modeling claims in reporting and writeups
 - [x] add explicit quantitative Stage 3 claim thresholds to config and evaluation logic
 - [x] evaluate those Stage 3 thresholds across multiple seeds instead of a single default run
@@ -731,19 +901,34 @@ The evaluator now includes repeated-seed and checkpoint-family Stage 3 summaries
 The token interface now uses factored row/column tokens and attended-content tokens, and reports local payload diagnostics before the language layer is queried.
 - [x] evaluate whether the improved tokenized interface makes reports of current and remembered attended content more faithful than observation-only baselines
 The local calibrated token reporter passes default, cue-switch, and intervention slices on the current tuned checkpoint.
+- [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
+The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, Stage 6B uncertainty diagnostics plots, and Stage 7 visual report panels.
+
+Immediate engineering and audit work:
+
 - [ ] evaluate external API LLM reporting under cue switches and interventions once quota is available
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
 - [ ] add matched-capacity baseline audits for Stage 4B, Stage 6, and Stage 7 probes
 - [ ] add explicit negative-control runs for feedforward, shuffled-feedback, and high-capacity observation-only systems
 - [ ] add first-class comparator runs for static/feedforward, matched transformer, large-LM-without-loop, and trivial-regulator systems
 - [ ] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling
-- [ ] add Branch C unity/binding experiments with multi-feature conjunction lures
+
+Branch builds:
+
+- [ ] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
+- [ ] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests
+- [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
+- [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
+- [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
+- [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
+- [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests
 - [ ] add perturbational-complexity diagnostics over controller and self-model state
+
+Cross-system replication:
+
 - [ ] replicate supported claims on a structurally different controller architecture
 - [ ] replicate supported claims on a second benchmark with different surface task structure
-- [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
-The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, Stage 6B uncertainty diagnostics plots, and Stage 7 visual report panels.
 
 ## Current Status Snapshot
 
@@ -773,6 +958,8 @@ What is not yet established:
 - learned self-modeling of attention without the dedicated self-model feedback objective
 - unity/binding evidence
 - counterfactual access beyond current attention
+- higher-order state-representation evidence
+- broadcast/ignition evidence
 - perturbational-complexity evidence
 - multi-theory convergence across consciousness-theory branches
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
