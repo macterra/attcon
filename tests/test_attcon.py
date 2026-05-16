@@ -20,6 +20,7 @@ from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
     build_stage3_summary,
+    _capacity_matched_features,
     learned_self_model_metrics,
     nl_report_metrics,
     run_ablations,
@@ -260,6 +261,15 @@ class AttentionControlTests(unittest.TestCase):
             high["attention_seq"][:, 0, 0].mean().item(),
             low["attention_seq"][:, 0, 0].mean().item(),
         )
+
+    def test_capacity_matched_features_lift_to_requested_dim(self) -> None:
+        features = torch.randn(5, 3)
+        lifted = _capacity_matched_features(features, 8, seed=11)
+        repeated = _capacity_matched_features(features, 8, seed=11)
+
+        self.assertEqual(lifted.shape, (5, 8))
+        self.assertTrue(torch.allclose(lifted, repeated))
+        self.assertTrue(torch.allclose(lifted[:, :3], features))
 
     def test_stage6b_signals_are_bounded(self) -> None:
         batch = generate_batch(8, self.task_cfg.num_steps, self.task_cfg)

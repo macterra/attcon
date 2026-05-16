@@ -4,7 +4,7 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Priority 1: Tighten Existing Claims
 
-- [ ] Run matched-capacity baseline audits for Stage 4B hidden self-model probes.
+- [x] Run matched-capacity baseline audits for Stage 4B hidden self-model probes.
 - [ ] Run matched-capacity baseline audits for Stage 6A and Stage 6B report probes.
 - [ ] Run matched-capacity baseline audits for the Stage 7 local opaque-token reporter.
 - [ ] Add explicit negative-control runs for feedforward, shuffled-feedback, and high-capacity observation-only systems.

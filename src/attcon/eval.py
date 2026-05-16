@@ -766,12 +766,41 @@ def _train_multilabel_probe(
         test_logits = probe(test_features)
         train_pred = (torch.sigmoid(train_logits) >= 0.5).float()
         test_pred = (torch.sigmoid(test_logits) >= 0.5).float()
-        return {
-            "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_targets).item(),
-            "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_targets).item(),
-            "train_cell_accuracy": (train_pred == train_targets).float().mean().item(),
-            "test_cell_accuracy": (test_pred == test_targets).float().mean().item(),
-        }
+    return {
+        "train_bce": torch.nn.functional.binary_cross_entropy_with_logits(train_logits, train_targets).item(),
+        "test_bce": torch.nn.functional.binary_cross_entropy_with_logits(test_logits, test_targets).item(),
+        "train_cell_accuracy": (train_pred == train_targets).float().mean().item(),
+        "test_cell_accuracy": (test_pred == test_targets).float().mean().item(),
+    }
+
+
+def _capacity_matched_features(
+    features: torch.Tensor,
+    matched_dim: int,
+    *,
+    seed: int,
+) -> torch.Tensor:
+    """Lift or truncate features to a fixed probe input dimension.
+
+    The lift is deterministic and untrained. It gives lower-dimensional baselines
+    the same linear-probe parameter count without leaking target labels.
+    """
+
+    if features.shape[-1] == matched_dim:
+        return features
+    if features.shape[-1] > matched_dim:
+        return features[..., :matched_dim]
+
+    generator = make_generator(seed, features.device)
+    projection = torch.randn(
+        features.shape[-1],
+        matched_dim - features.shape[-1],
+        generator=generator,
+        device=features.device,
+    )
+    projection = projection / max(features.shape[-1], 1) ** 0.5
+    lifted = torch.tanh(features @ projection)
+    return torch.cat([features, lifted], dim=-1)
 
 
 def _train_classification_probe(
@@ -1252,6 +1281,33 @@ def learned_self_model_metrics(
         epochs=epochs,
         learning_rate=learning_rate,
     )
+    matched_dim = train["hidden_features"].shape[-1]
+    matched_train_obs = _capacity_matched_features(
+        train["prev_observation_features"],
+        matched_dim,
+        seed=seed + 3100,
+    )
+    matched_test_obs = _capacity_matched_features(
+        test["prev_observation_features"],
+        matched_dim,
+        seed=seed + 3100,
+    )
+    matched_observation_cell_probe = _train_multilabel_probe(
+        matched_train_obs,
+        train["inspection_labels"],
+        matched_test_obs,
+        test["inspection_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    matched_observation_target_probe = _train_binary_probe(
+        matched_train_obs,
+        train["target_inspected_labels"],
+        matched_test_obs,
+        test["target_inspected_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
 
     intervention_cfg = learned_cfg.get("intervention", {})
     intervention = _learned_self_model_intervention(
@@ -1270,11 +1326,25 @@ def learned_self_model_metrics(
     hidden_cell_bce_advantage = (
         observation_cell_probe["test_bce"] - hidden_cell_probe["test_bce"]
     )
+    matched_hidden_cell_bce_advantage = (
+        matched_observation_cell_probe["test_bce"] - hidden_cell_probe["test_bce"]
+    )
+    matched_hidden_cell_accuracy_advantage = (
+        hidden_cell_probe["test_cell_accuracy"]
+        - matched_observation_cell_probe["test_cell_accuracy"]
+    )
     hidden_target_accuracy_advantage = (
         hidden_target_probe["test_accuracy"] - observation_target_probe["test_accuracy"]
     )
     hidden_target_bce_advantage = (
         observation_target_probe["test_bce"] - hidden_target_probe["test_bce"]
+    )
+    matched_hidden_target_accuracy_advantage = (
+        hidden_target_probe["test_accuracy"]
+        - matched_observation_target_probe["test_accuracy"]
+    )
+    matched_hidden_target_bce_advantage = (
+        matched_observation_target_probe["test_bce"] - hidden_target_probe["test_bce"]
     )
     hidden_target_positive_recall_advantage = (
         hidden_target_probe["test_positive_recall"]
@@ -1324,14 +1394,33 @@ def learned_self_model_metrics(
         },
         "hidden_cell_probe": hidden_cell_probe,
         "observation_cell_probe": observation_cell_probe,
+        "capacity_matched_observation_cell_probe": matched_observation_cell_probe,
         "hidden_cell_accuracy_advantage": hidden_cell_accuracy_advantage,
         "hidden_cell_bce_advantage": hidden_cell_bce_advantage,
+        "capacity_matched_hidden_cell_accuracy_advantage": matched_hidden_cell_accuracy_advantage,
+        "capacity_matched_hidden_cell_bce_advantage": matched_hidden_cell_bce_advantage,
         "hidden_target_probe": hidden_target_probe,
         "observation_target_probe": observation_target_probe,
+        "capacity_matched_observation_target_probe": matched_observation_target_probe,
         "hidden_target_accuracy_advantage": hidden_target_accuracy_advantage,
         "hidden_target_bce_advantage": hidden_target_bce_advantage,
+        "capacity_matched_hidden_target_accuracy_advantage": matched_hidden_target_accuracy_advantage,
+        "capacity_matched_hidden_target_bce_advantage": matched_hidden_target_bce_advantage,
         "hidden_target_positive_recall_advantage": hidden_target_positive_recall_advantage,
         "hidden_target_score_separation_advantage": hidden_target_score_separation_advantage,
+        "capacity_audit": {
+            "matched_input_dim": matched_dim,
+            "baseline_source": "previous_observation_features",
+            "baseline_lift": "deterministic_tanh_random_projection",
+            "hidden_cell_bce_advantage": matched_hidden_cell_bce_advantage,
+            "hidden_cell_accuracy_advantage": matched_hidden_cell_accuracy_advantage,
+            "hidden_target_bce_advantage": matched_hidden_target_bce_advantage,
+            "hidden_target_accuracy_advantage": matched_hidden_target_accuracy_advantage,
+            "passed": (
+                matched_hidden_cell_bce_advantage > 0.0
+                and matched_hidden_target_bce_advantage > 0.0
+            ),
+        },
         "hidden_self_model_intervention": intervention,
         "policy_feedback_evidence": policy_feedback_evidence,
         "positive_evidence": positive_evidence,
