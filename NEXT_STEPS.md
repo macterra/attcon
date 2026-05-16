@@ -10,7 +10,7 @@ This checklist turns the revised roadmap into a working execution order. The goa
 - [x] Add explicit negative-control runs for feedforward, shuffled-feedback, and high-capacity observation-only systems.
 - [x] Add first-class comparator runs for static/feedforward, matched transformer, large-LM-without-loop, and trivial-regulator systems.
 - [x] Re-test Stage 3 under complete zero target-attention shaping.
-- [ ] Document which bounded claims survive the audits and which need downgrading.
+- [x] Document which bounded claims survive the audits and which need downgrading.
 
 ## Priority 2: Rebuild Stage 4B for Emergence
 
