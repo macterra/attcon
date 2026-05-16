@@ -14,6 +14,8 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Priority 2: Rebuild Stage 4B for Emergence
 
+GitHub issue: [#4](https://github.com/macterra/attcon/issues/4)
+
 - [ ] Define a Stage 4B training condition with no direct self-model objective.
 - [ ] Train fresh checkpoints under the task-only or indirectly induced self-modeling objective.
 - [ ] Evaluate hidden-state inspected-map and target-inspected probes against previous-observation baselines.
@@ -23,6 +25,8 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Priority 3: Finish Stage 7 Variants
 
+GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
+
 - [ ] Evaluate external API LLM reporting under default, cue-switch, and intervention slices once quota is available.
 - [ ] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings.
 - [ ] Compare VLM reports against scene-only and explicit symbolic-dump baselines.
@@ -30,6 +34,8 @@ This checklist turns the revised roadmap into a working execution order. The goa
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the main Stage 7 claim.
 
 ## Priority 4: Build New Theory Branches
+
+GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 
 - [ ] Extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C.
 - [ ] Add Branch C unity/binding experiments with bound-content probes and intervention tests.
@@ -43,12 +49,16 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Priority 5: Replicate Across Systems
 
+GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
+
 - [ ] Replicate supported claims on a structurally different controller architecture.
 - [ ] Replicate supported claims on a second benchmark with different surface task structure.
 - [ ] Re-run comparator and negative-control suites on the replicated systems.
 - [ ] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches.
 
 ## Stage 8 Gate
+
+GitHub issue: [#8](https://github.com/macterra/attcon/issues/8)
 
 Do not claim Stage 8 support until all of the following are true:
 
