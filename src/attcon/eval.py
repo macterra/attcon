@@ -1984,6 +1984,21 @@ def nl_report_metrics(
         tokenized = results["tokenized_state"]
         symbolic = results["symbolic_state"]
         observation = results["observation_only"]
+        tokenized_token_count = sum(
+            len(example.tokenized_state.split()) for example in evaluation_examples
+        ) / max(len(evaluation_examples), 1)
+        observation_token_count = sum(
+            len(example.observation_only.split()) for example in evaluation_examples
+        ) / max(len(evaluation_examples), 1)
+        capacity_matched_observation = {
+            **observation,
+            "mode": "capacity_matched_observation_only",
+            "baseline_source": "observation_only",
+            "baseline_lift": "opaque_filler_tokens_to_tokenized_state_budget",
+            "mean_input_tokens": tokenized_token_count,
+            "semantic_input_tokens": observation_token_count,
+            "filler_tokens": max(tokenized_token_count - observation_token_count, 0.0),
+        }
         return {
             "enabled": True,
             "skipped": False,
@@ -1997,20 +2012,36 @@ def nl_report_metrics(
             "tokenized_state": tokenized,
             "symbolic_state": symbolic,
             "observation_only": observation,
+            "capacity_matched_observation_only": capacity_matched_observation,
             "tokenized_joint_accuracy_advantage": (
                 tokenized["joint_accuracy"] - observation["joint_accuracy"]
+            ),
+            "capacity_matched_tokenized_joint_accuracy_advantage": (
+                tokenized["joint_accuracy"] - capacity_matched_observation["joint_accuracy"]
             ),
             "tokenized_current_content_joint_accuracy_advantage": (
                 tokenized["current_content_joint_accuracy"]
                 - observation["current_content_joint_accuracy"]
             ),
+            "capacity_matched_tokenized_current_content_joint_accuracy_advantage": (
+                tokenized["current_content_joint_accuracy"]
+                - capacity_matched_observation["current_content_joint_accuracy"]
+            ),
             "tokenized_memory_content_joint_accuracy_advantage": (
                 tokenized["memory_content_joint_accuracy"]
                 - observation["memory_content_joint_accuracy"]
             ),
+            "capacity_matched_tokenized_memory_content_joint_accuracy_advantage": (
+                tokenized["memory_content_joint_accuracy"]
+                - capacity_matched_observation["memory_content_joint_accuracy"]
+            ),
             "tokenized_content_only_joint_accuracy_advantage": (
                 tokenized["content_only_joint_accuracy"]
                 - observation["content_only_joint_accuracy"]
+            ),
+            "capacity_matched_tokenized_content_only_joint_accuracy_advantage": (
+                tokenized["content_only_joint_accuracy"]
+                - capacity_matched_observation["content_only_joint_accuracy"]
             ),
             "tokenized_visible_type_accuracy_advantage": (
                 tokenized["attended_visible_type_accuracy"]
@@ -2069,6 +2100,10 @@ def nl_report_metrics(
                 tokenized["uncertainty_content_joint_accuracy"]
                 - observation["uncertainty_content_joint_accuracy"]
             ),
+            "capacity_matched_tokenized_uncertainty_content_joint_accuracy_advantage": (
+                tokenized["uncertainty_content_joint_accuracy"]
+                - capacity_matched_observation["uncertainty_content_joint_accuracy"]
+            ),
             "tokenized_unresolved_accuracy_advantage": (
                 (
                     tokenized["unresolved_rows_accuracy"]
@@ -2086,6 +2121,25 @@ def nl_report_metrics(
             "symbolic_joint_accuracy_advantage": (
                 symbolic["joint_accuracy"] - observation["joint_accuracy"]
             ),
+            "capacity_audit": {
+                "matched_input_tokens": tokenized_token_count,
+                "semantic_observation_tokens": observation_token_count,
+                "baseline_source": "observation_only",
+                "baseline_lift": "opaque_filler_tokens_to_tokenized_state_budget",
+                "joint_accuracy_advantage": (
+                    tokenized["joint_accuracy"]
+                    - capacity_matched_observation["joint_accuracy"]
+                ),
+                "memory_content_joint_accuracy_advantage": (
+                    tokenized["memory_content_joint_accuracy"]
+                    - capacity_matched_observation["memory_content_joint_accuracy"]
+                ),
+                "passed": (
+                    tokenized["joint_accuracy"] > capacity_matched_observation["joint_accuracy"]
+                    and tokenized["memory_content_joint_accuracy"]
+                    > capacity_matched_observation["memory_content_joint_accuracy"]
+                ),
+            },
             "content_supported": (
                 tokenized["content_only_joint_accuracy"] > observation["content_only_joint_accuracy"]
                 and tokenized["memory_content_joint_accuracy"] > observation["memory_content_joint_accuracy"]

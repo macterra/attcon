@@ -455,6 +455,38 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertGreater(tokenized["joint_accuracy"], observation["joint_accuracy"])
 
+    def test_nl_report_metrics_include_capacity_audit_for_local_reporter(self) -> None:
+        batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        cfg = {
+            "training": {"batch_size": 4},
+            "evaluation": {
+                "probe_scenes": 4,
+                "cue_switch": {"enabled": False},
+                "intervention_test": {"enabled": False},
+                "nl_report": {
+                    "enabled": True,
+                    "model": "local-calibrated-token-decoder",
+                    "calibration_examples": 2,
+                    "evaluation_examples": 2,
+                    "translator_train_examples": 2,
+                    "probe_scenes": 4,
+                    "local_decoder": {"enabled": True},
+                },
+            },
+        }
+        del batch
+
+        metrics = nl_report_metrics(model, cfg, self.task_cfg, torch.device("cpu"), seed=41)
+
+        self.assertFalse(metrics.get("skipped", False))
+        self.assertIn("capacity_audit", metrics)
+        self.assertIn("capacity_matched_observation_only", metrics)
+        self.assertEqual(
+            metrics["capacity_audit"]["matched_input_tokens"],
+            metrics["capacity_matched_observation_only"]["mean_input_tokens"],
+        )
+
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
         class FakeContent:
             def __init__(self, *, text=None, parsed=None) -> None:
