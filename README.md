@@ -14,7 +14,7 @@ The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each 
 
 ## Repository Guide
 
-- [SPEC.md](/home/david/dev/attcon/SPEC.md): original conceptual spec and motivation
+- [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
 - [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml): default experiment config
 - [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py): training entrypoint
 - [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py): evaluation, ablations, and reporting
