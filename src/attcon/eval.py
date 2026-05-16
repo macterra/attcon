@@ -740,6 +740,55 @@ def _train_attention_probe(
     }
 
 
+def _train_mlp_attention_probe(
+    train_features: torch.Tensor,
+    train_targets: torch.Tensor,
+    test_features: torch.Tensor,
+    test_targets: torch.Tensor,
+    *,
+    hidden_dim: int,
+    epochs: int,
+    learning_rate: float,
+) -> dict[str, float]:
+    """Fit a higher-capacity observation-only probe for negative-control audits."""
+
+    probe = nn.Sequential(
+        nn.Linear(train_features.shape[-1], hidden_dim),
+        nn.ReLU(),
+        nn.Linear(hidden_dim, train_targets.shape[-1]),
+    ).to(train_features.device)
+    optimizer = torch.optim.Adam(probe.parameters(), lr=learning_rate)
+
+    for _ in range(epochs):
+        logits = probe(train_features)
+        loss = -(train_targets * torch.log_softmax(logits, dim=-1)).sum(dim=-1).mean()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        train_logits = probe(train_features)
+        test_logits = probe(test_features)
+        train_probs = torch.softmax(train_logits, dim=-1)
+        test_probs = torch.softmax(test_logits, dim=-1)
+        return {
+            "train_cross_entropy": (
+                -(train_targets * torch.log_softmax(train_logits, dim=-1)).sum(dim=-1).mean().item()
+            ),
+            "test_cross_entropy": (
+                -(test_targets * torch.log_softmax(test_logits, dim=-1)).sum(dim=-1).mean().item()
+            ),
+            "train_mse": (train_probs - train_targets).pow(2).mean().item(),
+            "test_mse": (test_probs - test_targets).pow(2).mean().item(),
+            "train_top1_match": (
+                train_probs.argmax(dim=-1) == train_targets.argmax(dim=-1)
+            ).float().mean().item(),
+            "test_top1_match": (
+                test_probs.argmax(dim=-1) == test_targets.argmax(dim=-1)
+            ).float().mean().item(),
+        }
+
+
 def _train_multilabel_probe(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
@@ -2370,6 +2419,124 @@ def cue_switch_metrics(
         "switch_target_gain": after_new_target - after_old_target,
         "switch_accuracy": final_accuracy,
     }
+
+
+def negative_control_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Run controls that should not satisfy the recurrent-control interpretation."""
+
+    control_cfg = cfg["evaluation"].get(
+        "negative_controls",
+        {
+            "enabled": True,
+            "high_capacity_observation_probe": {
+                "train_batches": 12,
+                "test_batches": 6,
+                "epochs": 60,
+                "learning_rate": 0.03,
+                "hidden_dim": 128,
+            },
+        },
+    )
+    if not control_cfg.get("enabled", False):
+        return {}
+
+    batch_size = cfg["training"]["batch_size"]
+    test_batches = cfg["evaluation"]["test_batches"]
+    probe_scenes = cfg["evaluation"]["probe_scenes"]
+    controls: dict[str, Any] = {}
+    for idx, name in enumerate(("feedforward_summary", "shuffle_feedback")):
+        ablation = {name: True}
+        metrics = evaluate_model(
+            model,
+            cfg,
+            task_cfg,
+            device,
+            num_batches=test_batches,
+            seed=seed + idx * 100,
+            ablation=ablation,
+        )
+        metrics.update(
+            trajectory_metrics(
+                lambda scene, cue, target=None, target_pos=None, num_steps=None: model(
+                    scene,
+                    cue,
+                    target=target,
+                    target_pos=target_pos,
+                    num_steps=num_steps,
+                    ablation=ablation,
+                ),
+                task_cfg,
+                probe_scenes,
+                device,
+                seed + 50 + idx * 100,
+            )
+        )
+        controls[name] = metrics
+
+    probe_cfg = control_cfg.get("high_capacity_observation_probe", {})
+    train_state, train_obs, train_targets = _collect_probe_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        probe_cfg.get("train_batches", 12),
+        device,
+        seed + 300,
+    )
+    test_state, test_obs, test_targets = _collect_probe_dataset(
+        model,
+        task_cfg,
+        batch_size,
+        probe_cfg.get("test_batches", 6),
+        device,
+        seed + 1300,
+    )
+    del train_state, test_state
+    high_capacity_probe = _train_mlp_attention_probe(
+        train_obs,
+        train_targets,
+        test_obs,
+        test_targets,
+        hidden_dim=probe_cfg.get("hidden_dim", 128),
+        epochs=probe_cfg.get("epochs", 60),
+        learning_rate=probe_cfg.get("learning_rate", 0.03),
+    )
+    controller_reference = predictive_probe_metrics(
+        model,
+        cfg,
+        task_cfg,
+        device,
+        seed + 2300,
+    )
+    controls["high_capacity_observation_only"] = {
+        "probe": high_capacity_probe,
+        "controller_reference": controller_reference["controller_state_probe"],
+        "test_cross_entropy_gap_vs_controller": (
+            high_capacity_probe["test_cross_entropy"]
+            - controller_reference["controller_state_probe"]["test_cross_entropy"]
+        ),
+        "test_top1_gap_vs_controller": (
+            controller_reference["controller_state_probe"]["test_top1_match"]
+            - high_capacity_probe["test_top1_match"]
+        ),
+        "failed_as_intended": (
+            high_capacity_probe["test_cross_entropy"]
+            > controller_reference["controller_state_probe"]["test_cross_entropy"]
+            and high_capacity_probe["test_top1_match"]
+            < controller_reference["controller_state_probe"]["test_top1_match"]
+        ),
+    }
+    controls["failed_as_intended"] = (
+        controls["feedforward_summary"]["accuracy"] < 0.95
+        and controls["shuffle_feedback"]["accuracy"] < 0.95
+        and controls["high_capacity_observation_only"]["failed_as_intended"]
+    )
+    return controls
 
 
 def self_state_diagnostics(
@@ -4338,6 +4505,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9740,
+    )
+    report["negative_controls"] = negative_control_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9745,
     )
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
     if cue_switch_cfg.get("enabled", False):

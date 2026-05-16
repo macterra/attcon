@@ -118,6 +118,16 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "epochs": 60,
             "learning_rate": 0.05,
         },
+        "negative_controls": {
+            "enabled": True,
+            "high_capacity_observation_probe": {
+                "train_batches": 12,
+                "test_batches": 6,
+                "epochs": 60,
+                "learning_rate": 0.03,
+                "hidden_dim": 128,
+            },
+        },
         "nl_report": {
             "enabled": False,
             "model": "gpt-5-mini",

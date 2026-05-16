@@ -214,6 +214,13 @@ class RecurrentAttentionController(BaseAttentionModel):
             previous_loss = torch.zeros_like(previous_loss)
         if ablation.get("zero_prev_confidence"):
             previous_confidence = torch.zeros_like(previous_confidence)
+        if ablation.get("shuffle_feedback"):
+            perm = torch.randperm(previous_attention.shape[0], device=previous_attention.device)
+            previous_attention = previous_attention[perm]
+            inspection_state = inspection_state[perm]
+            previous_observation = previous_observation[perm]
+            previous_loss = previous_loss[perm]
+            previous_confidence = previous_confidence[perm]
         return torch.cat(
             [
                 previous_attention,

@@ -23,6 +23,7 @@ from attcon.eval import (
     _capacity_matched_features,
     learned_self_model_metrics,
     nl_report_metrics,
+    negative_control_metrics,
     report_probe_metrics,
     run_ablations,
     self_model_diagnostics,
@@ -192,6 +193,20 @@ class AttentionControlTests(unittest.TestCase):
             )
         )
 
+    def test_shuffle_feedback_ablation_runs(self) -> None:
+        batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+
+        outputs = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            num_steps=self.task_cfg.num_steps,
+            ablation={"shuffle_feedback": True},
+        )
+
+        self.assertEqual(outputs["attention_seq"].shape, (4, self.task_cfg.num_steps, self.task_cfg.num_cells))
+
     def test_probe_expansion_covers_all_cues(self) -> None:
         batch = generate_batch(3, self.task_cfg.num_steps, self.task_cfg)
         expanded = expand_cues_for_probe(batch, self.task_cfg.num_types)
@@ -322,6 +337,39 @@ class AttentionControlTests(unittest.TestCase):
             "capacity_matched_observation_probe",
             metrics["current_attended_cell"],
         )
+
+    def test_negative_control_metrics_include_required_controls(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        cfg = {
+            "training": {"batch_size": 4},
+            "evaluation": {
+                "test_batches": 1,
+                "probe_scenes": 2,
+                "predictive_probe": {
+                    "train_batches": 1,
+                    "test_batches": 1,
+                    "epochs": 1,
+                    "learning_rate": 0.01,
+                    "thresholds": {},
+                },
+                "negative_controls": {
+                    "enabled": True,
+                    "high_capacity_observation_probe": {
+                        "train_batches": 1,
+                        "test_batches": 1,
+                        "epochs": 1,
+                        "learning_rate": 0.01,
+                        "hidden_dim": 8,
+                    },
+                },
+            },
+        }
+
+        metrics = negative_control_metrics(model, cfg, self.task_cfg, torch.device("cpu"), seed=51)
+
+        self.assertIn("feedforward_summary", metrics)
+        self.assertIn("shuffle_feedback", metrics)
+        self.assertIn("high_capacity_observation_only", metrics)
 
     def test_collect_nl_examples_exports_structured_state(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
