@@ -154,7 +154,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         },
         "reduced_shaping": {
             "enabled": True,
-            "weights": [0.25],
+            "weights": [0.25, 0.0],
             "training_overrides": {
                 "train_steps": 1500,
                 "self_model_weight": 0.0,

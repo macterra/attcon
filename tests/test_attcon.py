@@ -78,6 +78,7 @@ class AttentionControlTests(unittest.TestCase):
             self.assertGreaterEqual(cfg["evaluation"]["stage3_multi_seed"]["num_seeds"], 3, path.name)
             self.assertIn("thresholds", cfg["evaluation"]["predictive_probe"], path.name)
             self.assertIn("thresholds", cfg["evaluation"]["intervention_test"], path.name)
+            self.assertIn(0.0, cfg["evaluation"]["reduced_shaping"]["weights"], path.name)
 
     def test_model_shapes(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)

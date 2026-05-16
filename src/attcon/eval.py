@@ -3399,23 +3399,42 @@ def reduced_shaping_metrics(
         )
         results[str(weight)] = variant_report
 
-    baseline_weight_key = str(min(weights))
-    baseline_variant = results[baseline_weight_key]
+    lowest_weight_key = str(min(weights))
+    lowest_variant = results[lowest_weight_key]
+    zero_variant = results.get("0.0")
+    zero_supported = False
+    if zero_variant is not None:
+        zero_supported = (
+            zero_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
+            and zero_variant["temporal_reallocation"]
+            >= thresholds.get("min_temporal_reallocation", 0.0)
+            and zero_variant["target_attention_gain"]
+            >= thresholds.get("min_target_attention_gain", 0.0)
+        )
     results["summary"] = {
-        "lowest_weight": float(baseline_weight_key),
-        "lowest_weight_accuracy": baseline_variant["accuracy"],
-        "lowest_weight_temporal_reallocation": baseline_variant["temporal_reallocation"],
-        "lowest_weight_target_attention_gain": baseline_variant["target_attention_gain"],
+        "lowest_weight": float(lowest_weight_key),
+        "lowest_weight_accuracy": lowest_variant["accuracy"],
+        "lowest_weight_temporal_reallocation": lowest_variant["temporal_reallocation"],
+        "lowest_weight_target_attention_gain": lowest_variant["target_attention_gain"],
+        "zero_weight_tested": zero_variant is not None,
+        "zero_weight_accuracy": zero_variant["accuracy"] if zero_variant is not None else 0.0,
+        "zero_weight_temporal_reallocation": (
+            zero_variant["temporal_reallocation"] if zero_variant is not None else 0.0
+        ),
+        "zero_weight_target_attention_gain": (
+            zero_variant["target_attention_gain"] if zero_variant is not None else 0.0
+        ),
+        "zero_weight_supported": zero_supported,
         "thresholds": {
             "min_accuracy": thresholds.get("min_accuracy", 0.1),
             "min_temporal_reallocation": thresholds.get("min_temporal_reallocation", 0.0),
             "min_target_attention_gain": thresholds.get("min_target_attention_gain", 0.0),
         },
         "supported": (
-            baseline_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
-            and baseline_variant["temporal_reallocation"]
+            lowest_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
+            and lowest_variant["temporal_reallocation"]
             >= thresholds.get("min_temporal_reallocation", 0.0)
-            and baseline_variant["target_attention_gain"]
+            and lowest_variant["target_attention_gain"]
             >= thresholds.get("min_target_attention_gain", 0.0)
         ),
     }
@@ -4048,6 +4067,15 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "lowest_weight_target_attention_gain": reduced_shaping_summary.get(
             "lowest_weight_target_attention_gain", 0.0
         ),
+        "zero_weight_tested": reduced_shaping_summary.get("zero_weight_tested", False),
+        "zero_weight_accuracy": reduced_shaping_summary.get("zero_weight_accuracy", 0.0),
+        "zero_weight_temporal_reallocation": reduced_shaping_summary.get(
+            "zero_weight_temporal_reallocation", 0.0
+        ),
+        "zero_weight_target_attention_gain": reduced_shaping_summary.get(
+            "zero_weight_target_attention_gain", 0.0
+        ),
+        "zero_weight_supported": reduced_shaping_summary.get("zero_weight_supported", False),
         "supported": reduced_shaping_summary.get("supported", False),
     }
 
