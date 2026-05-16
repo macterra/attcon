@@ -166,6 +166,136 @@ class StaticAttentionBaseline(BaseAttentionModel):
         }
 
 
+class MatchedTransformerController(BaseAttentionModel):
+    """Matched-capacity non-recurrent transformer comparator."""
+
+    def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
+        super().__init__(task_config, model_config)
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=model_config.scene_embedding_dim,
+            nhead=4,
+            dim_feedforward=max(model_config.hidden_size * 2, 64),
+            batch_first=True,
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=1)
+        self.transformer_summary = _mlp(
+            task_config.num_cells * model_config.scene_embedding_dim + model_config.cue_embedding_dim,
+            max(model_config.hidden_size, 64),
+            model_config.hidden_size,
+        )
+        self.attention_head = nn.Linear(model_config.hidden_size, self.num_cells)
+
+    def forward(
+        self,
+        scene: torch.Tensor,
+        cue: torch.Tensor,
+        cue_seq: torch.Tensor | None = None,
+        target: torch.Tensor | None = None,
+        target_pos: torch.Tensor | None = None,
+        target_pos_seq: torch.Tensor | None = None,
+        num_steps: int | None = None,
+        **_: Any,
+    ) -> dict[str, torch.Tensor]:
+        steps = num_steps or self.task_config.num_steps
+        cue_seq = cue.unsqueeze(1).repeat(1, steps) if cue_seq is None else cue_seq
+        _, hidden_features = self.split_scene(scene)
+        visible = scene[..., : self.visible_dim]
+        visible_emb = self.visible_encoder(visible)
+        transformed = self.transformer(visible_emb)
+
+        logits_seq = []
+        attention_seq = []
+        confidence_seq = []
+        loss_seq = []
+        controller_state_seq = []
+        observation_seq = []
+
+        for step_idx in range(steps):
+            step_cue = cue_seq[:, step_idx]
+            cue_emb = self.cue_embedding(step_cue)
+            state = self.transformer_summary(
+                torch.cat([transformed.reshape(scene.shape[0], -1), cue_emb], dim=-1)
+            )
+            attention_logits = self.attention_head(state) / self.model_config.temperature
+            attention = torch.softmax(attention_logits, dim=-1)
+            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
+            logits = self.task_head(torch.cat([observed_glimpse, state], dim=-1))
+            loss_proxy, confidence = self._compute_loss_proxy(logits, target)
+
+            logits_seq.append(logits)
+            attention_seq.append(attention)
+            confidence_seq.append(confidence)
+            loss_seq.append(loss_proxy)
+            controller_state_seq.append(state)
+            observation_seq.append(observed_glimpse)
+
+        stacked_logits = torch.stack(logits_seq, dim=1)
+        return {
+            "logits": stacked_logits[:, -1],
+            "logits_seq": stacked_logits,
+            "attention_seq": torch.stack(attention_seq, dim=1),
+            "observation_seq": torch.stack(observation_seq, dim=1),
+            "confidence_seq": torch.stack(confidence_seq, dim=1),
+            "loss_seq": torch.stack(loss_seq, dim=1),
+            "controller_state_seq": torch.stack(controller_state_seq, dim=1),
+        }
+
+
+class TrivialUniformRegulator(BaseAttentionModel):
+    """Absurd-comparator regulator with fixed uniform attention."""
+
+    def forward(
+        self,
+        scene: torch.Tensor,
+        cue: torch.Tensor,
+        cue_seq: torch.Tensor | None = None,
+        target: torch.Tensor | None = None,
+        target_pos: torch.Tensor | None = None,
+        target_pos_seq: torch.Tensor | None = None,
+        num_steps: int | None = None,
+        **_: Any,
+    ) -> dict[str, torch.Tensor]:
+        steps = num_steps or self.task_config.num_steps
+        cue_seq = cue.unsqueeze(1).repeat(1, steps) if cue_seq is None else cue_seq
+        state, hidden_features = self.initial_state(scene, cue)
+        attention = torch.full(
+            (scene.shape[0], self.num_cells),
+            1.0 / self.num_cells,
+            device=scene.device,
+        )
+
+        logits_seq = []
+        attention_seq = []
+        confidence_seq = []
+        loss_seq = []
+        observation_seq = []
+        controller_state_seq = []
+        for step_idx in range(steps):
+            step_cue = cue_seq[:, step_idx]
+            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
+            logits = self.task_head(torch.cat([observed_glimpse, state], dim=-1))
+            loss_proxy, confidence = self._compute_loss_proxy(logits, target)
+            logits_seq.append(logits)
+            attention_seq.append(attention)
+            confidence_seq.append(confidence)
+            loss_seq.append(loss_proxy)
+            observation_seq.append(observed_glimpse)
+            controller_state_seq.append(state)
+
+        stacked_logits = torch.stack(logits_seq, dim=1)
+        return {
+            "logits": stacked_logits[:, -1],
+            "logits_seq": stacked_logits,
+            "attention_seq": torch.stack(attention_seq, dim=1),
+            "observation_seq": torch.stack(observation_seq, dim=1),
+            "confidence_seq": torch.stack(confidence_seq, dim=1),
+            "loss_seq": torch.stack(loss_seq, dim=1),
+            "controller_state_seq": torch.stack(controller_state_seq, dim=1),
+        }
+
+
 class RecurrentAttentionController(BaseAttentionModel):
     """Recurrent controller that reallocates attention from prior internal summaries."""
 

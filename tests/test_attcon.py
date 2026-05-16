@@ -21,6 +21,7 @@ from attcon.eval import (
     build_stage3_checkpoint_family_summary,
     build_stage3_summary,
     _capacity_matched_features,
+    comparator_system_metrics,
     learned_self_model_metrics,
     nl_report_metrics,
     negative_control_metrics,
@@ -30,7 +31,13 @@ from attcon.eval import (
     self_state_diagnostics,
     stage3_multi_seed_metrics,
 )
-from attcon.models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
+from attcon.models import (
+    MatchedTransformerController,
+    ModelConfig,
+    RecurrentAttentionController,
+    StaticAttentionBaseline,
+    TrivialUniformRegulator,
+)
 from attcon.nl_report import (
     _extract_response_json,
     collect_cue_switch_nl_examples,
@@ -87,6 +94,13 @@ class AttentionControlTests(unittest.TestCase):
             )
             self.assertEqual(outputs["confidence_seq"].shape, (4, self.task_cfg.num_steps, 1))
             self.assertEqual(outputs["loss_seq"].shape, (4, self.task_cfg.num_steps, 1))
+        for model in (
+            MatchedTransformerController(self.task_cfg, self.model_cfg),
+            TrivialUniformRegulator(self.task_cfg, self.model_cfg),
+        ):
+            outputs = model(batch.scene, batch.cue, target=batch.target, num_steps=self.task_cfg.num_steps)
+            self.assertEqual(outputs["logits"].shape, (4, self.task_cfg.digit_vocab_size))
+            self.assertEqual(outputs["attention_seq"].shape, (4, self.task_cfg.num_steps, self.task_cfg.num_cells))
         recurrent_outputs = recurrent_model(
             batch.scene,
             batch.cue,
@@ -370,6 +384,74 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("feedforward_summary", metrics)
         self.assertIn("shuffle_feedback", metrics)
         self.assertIn("high_capacity_observation_only", metrics)
+
+    def test_comparator_system_metrics_include_required_comparators(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            models = {
+                "static": StaticAttentionBaseline(self.task_cfg, self.model_cfg),
+                "recurrent": RecurrentAttentionController(self.task_cfg, self.model_cfg),
+            }
+            cfg = {
+                "seed": 7,
+                "model": {
+                    "hidden_size": self.model_cfg.hidden_size,
+                    "cue_embedding_dim": self.model_cfg.cue_embedding_dim,
+                    "scene_embedding_dim": self.model_cfg.scene_embedding_dim,
+                    "temperature": self.model_cfg.temperature,
+                },
+                "training": {
+                    "batch_size": 4,
+                    "train_steps": 1,
+                    "val_batches": 1,
+                    "val_interval": 1,
+                    "log_interval": 1,
+                    "learning_rate": 0.001,
+                    "weight_decay": 0.0,
+                    "aux_loss_weight": 0.0,
+                    "attention_target_weight": 0.0,
+                    "stepwise_attention_target_weight": 0.0,
+                    "cue_switch_transition_weight": 0.0,
+                    "attention_entropy_weight": 0.0,
+                    "self_model_weight": 0.0,
+                    "hidden_self_model_weight": 0.0,
+                    "self_model_policy_feedback_weight": 0.0,
+                    "target_found_report_weight": 0.0,
+                    "relevant_region_report_weight": 0.0,
+                    "unresolved_search_report_weight": 0.0,
+                    "wrong_candidate_history_report_weight": 0.0,
+                    "allocation_error_report_weight": 0.0,
+                    "cue_switch_probability": 0.0,
+                    "cue_switch_step": 1,
+                },
+                "evaluation": {
+                    "test_batches": 1,
+                    "probe_scenes": 1,
+                    "comparator_systems": {
+                        "enabled": True,
+                        "matched_transformer": {
+                            "train_steps": 1,
+                            "val_batches": 1,
+                            "val_interval": 1,
+                            "log_interval": 1,
+                        },
+                    },
+                },
+            }
+
+            metrics = comparator_system_metrics(
+                models,
+                cfg,
+                self.task_cfg,
+                torch.device("cpu"),
+                seed=61,
+                output_dir=Path(tmpdir),
+                nl_report={"observation_only": {"joint_accuracy": 0.25}},
+            )
+
+        self.assertIn("static_feedforward", metrics)
+        self.assertIn("matched_transformer", metrics)
+        self.assertIn("large_lm_without_loop_proxy", metrics)
+        self.assertIn("trivial_uniform_regulator", metrics)
 
     def test_collect_nl_examples_exports_structured_state(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)

@@ -15,7 +15,13 @@ from torch import nn
 import torch
 
 from .data import TaskConfig, expand_cues_for_probe, generate_batch
-from .models import ModelConfig, RecurrentAttentionController, StaticAttentionBaseline
+from .models import (
+    MatchedTransformerController,
+    ModelConfig,
+    RecurrentAttentionController,
+    StaticAttentionBaseline,
+    TrivialUniformRegulator,
+)
 from .nl_report import (
     OpenAI,
     collect_cue_switch_nl_examples,
@@ -2539,6 +2545,146 @@ def negative_control_metrics(
     return controls
 
 
+def comparator_system_metrics(
+    models: dict[str, Any],
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+    output_dir: Path,
+    *,
+    nl_report: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Evaluate first-class comparator systems against the target controller."""
+
+    comparator_cfg = cfg["evaluation"].get("comparator_systems", {"enabled": True})
+    if not comparator_cfg.get("enabled", False):
+        return {}
+
+    test_batches = cfg["evaluation"]["test_batches"]
+    probe_scenes = cfg["evaluation"]["probe_scenes"]
+    comparators: dict[str, Any] = {}
+
+    comparators["static_feedforward"] = evaluate_model(
+        models["static"],
+        cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed,
+    )
+    comparators["static_feedforward"].update(
+        trajectory_metrics(models["static"], task_cfg, probe_scenes, device, seed + 10)
+    )
+
+    feedforward_ablation = {"feedforward_summary": True}
+    comparators["recurrent_feedforward_summary"] = evaluate_model(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed + 100,
+        ablation=feedforward_ablation,
+    )
+    comparators["recurrent_feedforward_summary"].update(
+        trajectory_metrics(
+            lambda scene, cue, target=None, target_pos=None, num_steps=None: models["recurrent"](
+                scene,
+                cue,
+                target=target,
+                target_pos=target_pos,
+                num_steps=num_steps,
+                ablation=feedforward_ablation,
+            ),
+            task_cfg,
+            probe_scenes,
+            device,
+            seed + 110,
+        )
+    )
+
+    transformer_cfg = comparator_cfg.get("matched_transformer", {})
+    transformer_output = output_dir / "comparators" / "matched_transformer"
+    transformer_output.mkdir(parents=True, exist_ok=True)
+    transformer_train_cfg = deep_update(
+        cfg,
+        {
+            "seed": seed + 200,
+            "output_dir": str(transformer_output),
+            "training": transformer_cfg,
+        },
+    )
+    transformer = MatchedTransformerController(task_cfg, ModelConfig.from_dict(cfg["model"])).to(device)
+    _, transformer_state = train_single_model(
+        "matched_transformer",
+        transformer,
+        transformer_train_cfg,
+        task_cfg,
+        device,
+        transformer_output,
+    )
+    transformer.load_state_dict(transformer_state["model_state_dict"])
+    transformer.eval()
+    comparators["matched_transformer"] = evaluate_model(
+        transformer,
+        transformer_train_cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed + 300,
+    )
+    comparators["matched_transformer"].update(
+        trajectory_metrics(transformer, task_cfg, probe_scenes, device, seed + 310)
+    )
+
+    trivial = TrivialUniformRegulator(task_cfg, ModelConfig.from_dict(cfg["model"])).to(device)
+    comparators["trivial_uniform_regulator"] = evaluate_model(
+        trivial,
+        cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed + 400,
+    )
+    comparators["trivial_uniform_regulator"].update(
+        trajectory_metrics(trivial, task_cfg, probe_scenes, device, seed + 410)
+    )
+
+    observation_report = (nl_report or {}).get("observation_only", {})
+    comparators["large_lm_without_loop_proxy"] = {
+        "proxy": "stage7_observation_only_reporter",
+        "joint_accuracy": observation_report.get("joint_accuracy", 0.0),
+        "memory_content_joint_accuracy": observation_report.get(
+            "memory_content_joint_accuracy",
+            0.0,
+        ),
+        "note": (
+            "This proxy has language-shaped report behavior but no embodied attention-control "
+            "loop or controller-state access."
+        ),
+    }
+    recurrent_accuracy = evaluate_model(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed + 500,
+    )["accuracy"]
+    comparators["target_recurrent_accuracy"] = recurrent_accuracy
+    comparators["failed_as_intended"] = all(
+        comparators[name]["accuracy"] < recurrent_accuracy
+        for name in (
+            "static_feedforward",
+            "recurrent_feedforward_summary",
+            "matched_transformer",
+            "trivial_uniform_regulator",
+        )
+    )
+    return comparators
+
+
 def self_state_diagnostics(
     model,
     task_cfg: TaskConfig,
@@ -4512,6 +4658,15 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9745,
+    )
+    report["comparator_systems"] = comparator_system_metrics(
+        models,
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9747,
+        output_dir,
+        nl_report=report["nl_report"],
     )
     cue_switch_cfg = cfg["evaluation"].get("cue_switch", {})
     if cue_switch_cfg.get("enabled", False):

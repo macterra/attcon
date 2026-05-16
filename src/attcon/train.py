@@ -128,6 +128,15 @@ DEFAULT_CONFIG: dict[str, Any] = {
                 "hidden_dim": 128,
             },
         },
+        "comparator_systems": {
+            "enabled": True,
+            "matched_transformer": {
+                "train_steps": 300,
+                "val_batches": 10,
+                "val_interval": 100,
+                "log_interval": 100,
+            },
+        },
         "nl_report": {
             "enabled": False,
             "model": "gpt-5-mini",
