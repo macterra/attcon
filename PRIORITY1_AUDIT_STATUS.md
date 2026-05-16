@@ -33,6 +33,8 @@ The tracked smoke artifact shows the new audit keys and the stricter claim bound
 - Stage 7: memory-content advantage is positive, but `passed: false` because the stricter joint matched-token-budget threshold is not met.
 - Negative controls: `failed_as_intended: true` at smoke scale.
 
+Stage 6B separates the four gated audit signals from informational signals in the smoke artifact. The `passed` flag is computed only from `current_wrong_candidate`, `wrong_candidate_history`, `revisit_unresolved`, and `allocation_error`.
+
 These are sanity-check outputs only. They are useful for verifying that the instrumentation runs and exposes the right fields; they are not a replacement for a full regenerated evaluation report.
 
 ## Current Claim Boundary

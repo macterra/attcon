@@ -1096,6 +1096,7 @@ def report_probe_metrics(
 ) -> dict[str, Any]:
     """Test whether controller state can support simple report-like readouts."""
 
+    set_seed(seed)
     probe_cfg = cfg["evaluation"].get(
         "report_probes",
         {
@@ -1394,6 +1395,7 @@ def learned_self_model_metrics(
 ) -> dict[str, Any]:
     """Evaluate hidden-state-only evidence for learned attention self-modeling."""
 
+    set_seed(seed)
     learned_cfg = cfg["evaluation"].get(
         "learned_self_modeling",
         {
@@ -1645,6 +1647,7 @@ def uncertainty_report_metrics(
 ) -> dict[str, Any]:
     """Evaluate Stage 6B-style native uncertainty and allocation-error reports."""
 
+    set_seed(seed)
     probe_cfg = cfg["evaluation"].get(
         "uncertainty_report_probes",
         {
@@ -1765,11 +1768,15 @@ def uncertainty_report_metrics(
         "allocation_error_native",
         "allocation_error_labels",
     )
-    capacity_audit_signals = (
+    gated_capacity_audit_signals = (
         current_wrong_candidate,
         wrong_candidate_history,
         revisit_unresolved,
         allocation_error,
+    )
+    informational_capacity_audit_signals = (
+        relevant_region,
+        unresolved_search,
     )
     return {
         "relevant_region_inspected": relevant_region,
@@ -1789,22 +1796,19 @@ def uncertainty_report_metrics(
             "passed": all(
                 signal["probe_capacity_matched_native_positive_recall_advantage"]
                 >= min_positive_recall_advantage
-                for signal in capacity_audit_signals
+                for signal in gated_capacity_audit_signals
             ),
             "nonnegative_directional_effect": all(
                 signal["probe_capacity_matched_native_positive_recall_advantage"] >= 0.0
-                for signal in capacity_audit_signals
+                for signal in gated_capacity_audit_signals
             ),
-            "positive_recall_advantages": {
+            "gated_positive_recall_advantages": {
                 signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
-                for signal in (
-                    relevant_region,
-                    unresolved_search,
-                    current_wrong_candidate,
-                    wrong_candidate_history,
-                    revisit_unresolved,
-                    allocation_error,
-                )
+                for signal in gated_capacity_audit_signals
+            },
+            "informational_positive_recall_advantages": {
+                signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
+                for signal in informational_capacity_audit_signals
             },
         },
         "supported": (
@@ -2007,6 +2011,7 @@ def nl_report_metrics(
 ) -> dict[str, Any]:
     """Evaluate natural-language reporting from tokenized internal state."""
 
+    set_seed(seed)
     nl_cfg = cfg["evaluation"].get(
         "nl_report",
         {
@@ -2546,6 +2551,7 @@ def negative_control_metrics(
 ) -> dict[str, Any]:
     """Run controls that should not satisfy the recurrent-control interpretation."""
 
+    set_seed(seed)
     control_cfg = cfg["evaluation"].get(
         "negative_controls",
         {
