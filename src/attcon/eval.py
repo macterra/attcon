@@ -1008,6 +1008,17 @@ def report_probe_metrics(
 
     epochs = probe_cfg["epochs"]
     learning_rate = probe_cfg["learning_rate"]
+    matched_dim = train["state_features"].shape[-1]
+    matched_train_obs = _capacity_matched_features(
+        train["observation_features"],
+        matched_dim,
+        seed=seed + 3200,
+    )
+    matched_test_obs = _capacity_matched_features(
+        test["observation_features"],
+        matched_dim,
+        seed=seed + 3200,
+    )
 
     cue_state = _train_classification_probe(
         train["state_features"],
@@ -1022,6 +1033,15 @@ def report_probe_metrics(
         train["observation_features"],
         train["cue_labels"],
         test["observation_features"],
+        test["cue_labels"],
+        num_classes=task_cfg.num_types,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    cue_obs_matched = _train_classification_probe(
+        matched_train_obs,
+        train["cue_labels"],
+        matched_test_obs,
         test["cue_labels"],
         num_classes=task_cfg.num_types,
         epochs=epochs,
@@ -1045,10 +1065,27 @@ def report_probe_metrics(
         epochs=epochs,
         learning_rate=learning_rate,
     )
+    attended_obs_matched = _train_classification_probe(
+        matched_train_obs,
+        train["attended_cell_labels"],
+        matched_test_obs,
+        test["attended_cell_labels"],
+        num_classes=task_cfg.num_cells,
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
     found_obs = _train_binary_probe(
         train["observation_features"],
         train["found_target_labels"],
         test["observation_features"],
+        test["found_target_labels"],
+        epochs=epochs,
+        learning_rate=learning_rate,
+    )
+    found_obs_matched = _train_binary_probe(
+        matched_train_obs,
+        train["found_target_labels"],
+        matched_test_obs,
         test["found_target_labels"],
         epochs=epochs,
         learning_rate=learning_rate,
@@ -1095,19 +1132,44 @@ def report_probe_metrics(
         "current_search_type": {
             "controller_state_probe": cue_state,
             "observation_only_probe": cue_obs,
+            "capacity_matched_observation_probe": cue_obs_matched,
             "controller_accuracy_advantage": cue_state["test_accuracy"] - cue_obs["test_accuracy"],
+            "capacity_matched_controller_accuracy_advantage": (
+                cue_state["test_accuracy"] - cue_obs_matched["test_accuracy"]
+            ),
         },
         "current_attended_cell": {
             "controller_state_probe": attended_state,
             "observation_only_probe": attended_obs,
+            "capacity_matched_observation_probe": attended_obs_matched,
             "controller_accuracy_advantage": attended_state["test_accuracy"] - attended_obs["test_accuracy"],
+            "capacity_matched_controller_accuracy_advantage": (
+                attended_state["test_accuracy"] - attended_obs_matched["test_accuracy"]
+            ),
         },
         "target_found_in_glimpse": {
             "controller_state_probe": found_state,
             "observation_only_probe": found_obs,
+            "capacity_matched_observation_probe": found_obs_matched,
             "controller_accuracy_advantage": found_state["test_accuracy"] - found_obs["test_accuracy"],
+            "capacity_matched_controller_accuracy_advantage": (
+                found_state["test_accuracy"] - found_obs_matched["test_accuracy"]
+            ),
             "controller_positive_recall_advantage": (
                 found_state["test_positive_recall"] - found_obs["test_positive_recall"]
+            ),
+            "capacity_matched_controller_positive_recall_advantage": (
+                found_state["test_positive_recall"] - found_obs_matched["test_positive_recall"]
+            ),
+        },
+        "capacity_audit": {
+            "matched_input_dim": matched_dim,
+            "baseline_source": "observation_features",
+            "baseline_lift": "deterministic_tanh_random_projection",
+            "passed": (
+                cue_state["test_accuracy"] > cue_obs_matched["test_accuracy"]
+                and attended_state["test_accuracy"] > attended_obs_matched["test_accuracy"]
+                and found_state["test_positive_recall"] > found_obs_matched["test_positive_recall"]
             ),
         },
         "supported": (
@@ -1466,6 +1528,17 @@ def uncertainty_report_metrics(
     )
     epochs = probe_cfg["epochs"]
     learning_rate = probe_cfg["learning_rate"]
+    matched_dim = train["state_features"].shape[-1]
+    matched_train_prev_obs = _capacity_matched_features(
+        train["prev_observation_features"],
+        matched_dim,
+        seed=seed + 3300,
+    )
+    matched_test_prev_obs = _capacity_matched_features(
+        test["prev_observation_features"],
+        matched_dim,
+        seed=seed + 3300,
+    )
 
     def _native_binary_report(native_scores: torch.Tensor, labels: torch.Tensor) -> dict[str, float]:
         native_pred = (native_scores >= 0.5).float()
@@ -1492,15 +1565,31 @@ def uncertainty_report_metrics(
             epochs=epochs,
             learning_rate=learning_rate,
         )
+        matched_observation_probe = _train_binary_probe(
+            matched_train_prev_obs,
+            train[label_key],
+            matched_test_prev_obs,
+            test[label_key],
+            epochs=epochs,
+            learning_rate=learning_rate,
+        )
         native_report = _native_binary_report(test[native_key], test[label_key])
         return {
             "native_report": native_report,
             "observation_only_probe": observation_probe,
+            "capacity_matched_observation_probe": matched_observation_probe,
             "native_accuracy_advantage": (
                 native_report["test_accuracy"] - observation_probe["test_accuracy"]
             ),
+            "capacity_matched_native_accuracy_advantage": (
+                native_report["test_accuracy"] - matched_observation_probe["test_accuracy"]
+            ),
             "native_positive_recall_advantage": (
                 native_report["test_positive_recall"] - observation_probe["test_positive_recall"]
+            ),
+            "capacity_matched_native_positive_recall_advantage": (
+                native_report["test_positive_recall"]
+                - matched_observation_probe["test_positive_recall"]
             ),
             "name": name,
         }
@@ -1535,6 +1624,12 @@ def uncertainty_report_metrics(
         "allocation_error_native",
         "allocation_error_labels",
     )
+    capacity_audit_signals = (
+        current_wrong_candidate,
+        wrong_candidate_history,
+        revisit_unresolved,
+        allocation_error,
+    )
     return {
         "relevant_region_inspected": relevant_region,
         "unresolved_search": unresolved_search,
@@ -1542,6 +1637,26 @@ def uncertainty_report_metrics(
         "wrong_candidate_history": wrong_candidate_history,
         "revisit_unresolved": revisit_unresolved,
         "allocation_error": allocation_error,
+        "capacity_audit": {
+            "matched_input_dim": matched_dim,
+            "baseline_source": "prev_observation_features",
+            "baseline_lift": "deterministic_tanh_random_projection",
+            "passed": all(
+                signal["capacity_matched_native_positive_recall_advantage"] >= 0.0
+                for signal in capacity_audit_signals
+            ),
+            "positive_recall_advantages": {
+                signal["name"]: signal["capacity_matched_native_positive_recall_advantage"]
+                for signal in (
+                    relevant_region,
+                    unresolved_search,
+                    current_wrong_candidate,
+                    wrong_candidate_history,
+                    revisit_unresolved,
+                    allocation_error,
+                )
+            },
+        },
         "supported": (
             wrong_candidate_history["native_positive_recall_advantage"] > 0.0
             and current_wrong_candidate["native_positive_recall_advantage"] >= 0.0

@@ -23,6 +23,7 @@ from attcon.eval import (
     _capacity_matched_features,
     learned_self_model_metrics,
     nl_report_metrics,
+    report_probe_metrics,
     run_ablations,
     self_model_diagnostics,
     self_state_diagnostics,
@@ -297,6 +298,30 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(torch.all(current_wrong_candidate <= wrong_candidate_history))
         self.assertTrue(torch.all(revisit_unresolved <= unresolved))
         self.assertLess(allocation_error.float().mean().item(), 0.95)
+
+    def test_report_probe_metrics_include_capacity_audit(self) -> None:
+        model = RecurrentAttentionController(self.task_cfg, self.model_cfg)
+        cfg = {
+            "training": {"batch_size": 4},
+            "evaluation": {
+                "report_probes": {
+                    "enabled": True,
+                    "train_batches": 1,
+                    "test_batches": 1,
+                    "epochs": 1,
+                    "learning_rate": 0.01,
+                }
+            },
+        }
+
+        metrics = report_probe_metrics(model, cfg, self.task_cfg, torch.device("cpu"), seed=31)
+
+        self.assertIn("capacity_audit", metrics)
+        self.assertEqual(metrics["capacity_audit"]["matched_input_dim"], self.model_cfg.hidden_size)
+        self.assertIn(
+            "capacity_matched_observation_probe",
+            metrics["current_attended_cell"],
+        )
 
     def test_collect_nl_examples_exports_structured_state(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
