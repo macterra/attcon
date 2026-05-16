@@ -54,6 +54,8 @@ def load_models_from_checkpoint(
     }
     for name, model in models.items():
         state = payload["models"][name]
+        migrated = False
+        missing_report_heads: list[str] = []
         try:
             model.load_state_dict(state)
         except RuntimeError:
@@ -114,8 +116,25 @@ def load_models_from_checkpoint(
             ]
             if unexpected or missing_other or mismatched or len(missing_report_heads) not in (3, 11, 15):
                 raise
+            if not cfg.get("evaluation", {}).get("allow_stale_checkpoint", False):
+                raise RuntimeError(
+                    "checkpoint requires report-head migration; rerun with "
+                    "--allow-stale-checkpoint for probe-only diagnostics, or use a "
+                    "checkpoint trained with the current model heads"
+                )
             model.load_state_dict(migrated_state, strict=False)
+            migrated = True
         model.eval()
+        cfg.setdefault("_checkpoint_migration", {})[name] = {
+            "migrated": migrated,
+            "missing_report_heads": missing_report_heads,
+            "claim_limit": (
+                "checkpoint lacks currently instrumented report/self-model heads; "
+                "probe-only diagnostics may run, but trained-head claims are disabled"
+            )
+            if migrated
+            else "",
+        }
     return cfg, task_cfg, models
 
 
@@ -280,6 +299,41 @@ def _collect_probe_dataset(
         torch.cat(observation_features, dim=0),
         torch.cat(next_attention_targets, dim=0),
     )
+
+
+def _collect_temporal_observation_probe_dataset(
+    model,
+    task_cfg: TaskConfig,
+    batch_size: int,
+    num_batches: int,
+    device: torch.device,
+    seed: int,
+    *,
+    window: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Collect previous-observation windows for high-capacity observation controls."""
+
+    window = max(int(window), 1)
+    features = []
+    next_attention_targets = []
+    for batch_idx in range(num_batches):
+        outputs, _ = _probe_outputs(model, task_cfg, batch_size, device, seed + batch_idx)
+        observation = outputs["observation_seq"]
+        attention = outputs["attention_seq"]
+        padded = torch.zeros(
+            observation.shape[0],
+            window - 1,
+            observation.shape[-1],
+            device=device,
+        )
+        padded_observation = torch.cat([padded, observation[:, :-1]], dim=1)
+        windows = []
+        for step_idx in range(task_cfg.num_steps - 1):
+            windows.append(padded_observation[:, step_idx : step_idx + window].reshape(observation.shape[0], -1))
+        features.append(torch.stack(windows, dim=1).reshape(-1, window * observation.shape[-1]))
+        next_attention_targets.append(attention[:, 1:].reshape(-1, attention.shape[-1]))
+
+    return torch.cat(features, dim=0), torch.cat(next_attention_targets, dim=0)
 
 
 def _collect_report_probe_dataset(
@@ -829,16 +883,17 @@ def _train_multilabel_probe(
     }
 
 
-def _capacity_matched_features(
+def _probe_capacity_matched_features(
     features: torch.Tensor,
     matched_dim: int,
     *,
     seed: int,
 ) -> torch.Tensor:
-    """Lift or truncate features to a fixed probe input dimension.
+    """Lift or truncate features to a fixed linear-probe input dimension.
 
     The lift is deterministic and untrained. It gives lower-dimensional baselines
-    the same linear-probe parameter count without leaking target labels.
+    the same linear-probe parameter count without adding task information. This
+    is a probe-capacity match, not a full baseline-processing-capacity match.
     """
 
     if features.shape[-1] == matched_dim:
@@ -1063,13 +1118,16 @@ def report_probe_metrics(
 
     epochs = probe_cfg["epochs"]
     learning_rate = probe_cfg["learning_rate"]
+    audit_cfg = probe_cfg.get("capacity_audit", {})
+    min_accuracy_advantage = audit_cfg.get("min_accuracy_advantage", 0.01)
+    min_positive_recall_advantage = audit_cfg.get("min_positive_recall_advantage", 0.01)
     matched_dim = train["state_features"].shape[-1]
-    matched_train_obs = _capacity_matched_features(
+    matched_train_obs = _probe_capacity_matched_features(
         train["observation_features"],
         matched_dim,
         seed=seed + 3200,
     )
-    matched_test_obs = _capacity_matched_features(
+    matched_test_obs = _probe_capacity_matched_features(
         test["observation_features"],
         matched_dim,
         seed=seed + 3200,
@@ -1187,44 +1245,52 @@ def report_probe_metrics(
         "current_search_type": {
             "controller_state_probe": cue_state,
             "observation_only_probe": cue_obs,
-            "capacity_matched_observation_probe": cue_obs_matched,
+            "probe_capacity_matched_observation_probe": cue_obs_matched,
             "controller_accuracy_advantage": cue_state["test_accuracy"] - cue_obs["test_accuracy"],
-            "capacity_matched_controller_accuracy_advantage": (
+            "probe_capacity_matched_controller_accuracy_advantage": (
                 cue_state["test_accuracy"] - cue_obs_matched["test_accuracy"]
             ),
         },
         "current_attended_cell": {
             "controller_state_probe": attended_state,
             "observation_only_probe": attended_obs,
-            "capacity_matched_observation_probe": attended_obs_matched,
+            "probe_capacity_matched_observation_probe": attended_obs_matched,
             "controller_accuracy_advantage": attended_state["test_accuracy"] - attended_obs["test_accuracy"],
-            "capacity_matched_controller_accuracy_advantage": (
+            "probe_capacity_matched_controller_accuracy_advantage": (
                 attended_state["test_accuracy"] - attended_obs_matched["test_accuracy"]
             ),
         },
         "target_found_in_glimpse": {
             "controller_state_probe": found_state,
             "observation_only_probe": found_obs,
-            "capacity_matched_observation_probe": found_obs_matched,
+            "probe_capacity_matched_observation_probe": found_obs_matched,
             "controller_accuracy_advantage": found_state["test_accuracy"] - found_obs["test_accuracy"],
-            "capacity_matched_controller_accuracy_advantage": (
+            "probe_capacity_matched_controller_accuracy_advantage": (
                 found_state["test_accuracy"] - found_obs_matched["test_accuracy"]
             ),
             "controller_positive_recall_advantage": (
                 found_state["test_positive_recall"] - found_obs["test_positive_recall"]
             ),
-            "capacity_matched_controller_positive_recall_advantage": (
+            "probe_capacity_matched_controller_positive_recall_advantage": (
                 found_state["test_positive_recall"] - found_obs_matched["test_positive_recall"]
             ),
         },
         "capacity_audit": {
             "matched_input_dim": matched_dim,
+            "scope": "linear_probe_input_dim_only",
             "baseline_source": "observation_features",
             "baseline_lift": "deterministic_tanh_random_projection",
+            "thresholds": {
+                "min_accuracy_advantage": min_accuracy_advantage,
+                "min_positive_recall_advantage": min_positive_recall_advantage,
+            },
             "passed": (
-                cue_state["test_accuracy"] > cue_obs_matched["test_accuracy"]
-                and attended_state["test_accuracy"] > attended_obs_matched["test_accuracy"]
-                and found_state["test_positive_recall"] > found_obs_matched["test_positive_recall"]
+                cue_state["test_accuracy"] - cue_obs_matched["test_accuracy"]
+                >= min_accuracy_advantage
+                and attended_state["test_accuracy"] - attended_obs_matched["test_accuracy"]
+                >= min_accuracy_advantage
+                and found_state["test_positive_recall"] - found_obs_matched["test_positive_recall"]
+                >= min_positive_recall_advantage
             ),
         },
         "supported": (
@@ -1366,6 +1432,11 @@ def learned_self_model_metrics(
 
     epochs = learned_cfg["epochs"]
     learning_rate = learned_cfg["learning_rate"]
+    audit_cfg = learned_cfg.get("capacity_audit", {})
+    min_cell_bce_advantage = audit_cfg.get("min_cell_bce_advantage", 0.01)
+    min_target_bce_advantage = audit_cfg.get("min_target_bce_advantage", 0.01)
+    recurrent_migration = cfg.get("_checkpoint_migration", {}).get("recurrent", {})
+    stale_checkpoint = bool(recurrent_migration.get("migrated", False))
     hidden_cell_probe = _train_multilabel_probe(
         train["hidden_features"],
         train["inspection_labels"],
@@ -1399,12 +1470,12 @@ def learned_self_model_metrics(
         learning_rate=learning_rate,
     )
     matched_dim = train["hidden_features"].shape[-1]
-    matched_train_obs = _capacity_matched_features(
+    matched_train_obs = _probe_capacity_matched_features(
         train["prev_observation_features"],
         matched_dim,
         seed=seed + 3100,
     )
-    matched_test_obs = _capacity_matched_features(
+    matched_test_obs = _probe_capacity_matched_features(
         test["prev_observation_features"],
         matched_dim,
         seed=seed + 3100,
@@ -1486,6 +1557,8 @@ def learned_self_model_metrics(
         and abs(intervention["policy_override_bidirectional_target_attention_gap"]) > 5e-5
     )
     supported = (
+        not stale_checkpoint
+        and
         hidden_cell_bce_advantage > 0.01
         and hidden_target_bce_advantage > 0.01
         and hidden_target_accuracy_advantage >= 0.0
@@ -1511,29 +1584,40 @@ def learned_self_model_metrics(
         },
         "hidden_cell_probe": hidden_cell_probe,
         "observation_cell_probe": observation_cell_probe,
-        "capacity_matched_observation_cell_probe": matched_observation_cell_probe,
+        "probe_capacity_matched_observation_cell_probe": matched_observation_cell_probe,
         "hidden_cell_accuracy_advantage": hidden_cell_accuracy_advantage,
         "hidden_cell_bce_advantage": hidden_cell_bce_advantage,
-        "capacity_matched_hidden_cell_accuracy_advantage": matched_hidden_cell_accuracy_advantage,
-        "capacity_matched_hidden_cell_bce_advantage": matched_hidden_cell_bce_advantage,
+        "probe_capacity_matched_hidden_cell_accuracy_advantage": matched_hidden_cell_accuracy_advantage,
+        "probe_capacity_matched_hidden_cell_bce_advantage": matched_hidden_cell_bce_advantage,
         "hidden_target_probe": hidden_target_probe,
         "observation_target_probe": observation_target_probe,
-        "capacity_matched_observation_target_probe": matched_observation_target_probe,
+        "probe_capacity_matched_observation_target_probe": matched_observation_target_probe,
         "hidden_target_accuracy_advantage": hidden_target_accuracy_advantage,
         "hidden_target_bce_advantage": hidden_target_bce_advantage,
-        "capacity_matched_hidden_target_accuracy_advantage": matched_hidden_target_accuracy_advantage,
-        "capacity_matched_hidden_target_bce_advantage": matched_hidden_target_bce_advantage,
+        "probe_capacity_matched_hidden_target_accuracy_advantage": matched_hidden_target_accuracy_advantage,
+        "probe_capacity_matched_hidden_target_bce_advantage": matched_hidden_target_bce_advantage,
         "hidden_target_positive_recall_advantage": hidden_target_positive_recall_advantage,
         "hidden_target_score_separation_advantage": hidden_target_score_separation_advantage,
         "capacity_audit": {
             "matched_input_dim": matched_dim,
+            "scope": "linear_probe_input_dim_only",
             "baseline_source": "previous_observation_features",
             "baseline_lift": "deterministic_tanh_random_projection",
+            "thresholds": {
+                "min_cell_bce_advantage": min_cell_bce_advantage,
+                "min_target_bce_advantage": min_target_bce_advantage,
+            },
+            "checkpoint_migration": recurrent_migration,
             "hidden_cell_bce_advantage": matched_hidden_cell_bce_advantage,
             "hidden_cell_accuracy_advantage": matched_hidden_cell_accuracy_advantage,
             "hidden_target_bce_advantage": matched_hidden_target_bce_advantage,
             "hidden_target_accuracy_advantage": matched_hidden_target_accuracy_advantage,
             "passed": (
+                not stale_checkpoint
+                and matched_hidden_cell_bce_advantage >= min_cell_bce_advantage
+                and matched_hidden_target_bce_advantage >= min_target_bce_advantage
+            ),
+            "probe_effect_positive": (
                 matched_hidden_cell_bce_advantage > 0.0
                 and matched_hidden_target_bce_advantage > 0.0
             ),
@@ -1583,13 +1667,15 @@ def uncertainty_report_metrics(
     )
     epochs = probe_cfg["epochs"]
     learning_rate = probe_cfg["learning_rate"]
+    audit_cfg = probe_cfg.get("capacity_audit", {})
+    min_positive_recall_advantage = audit_cfg.get("min_positive_recall_advantage", 0.01)
     matched_dim = train["state_features"].shape[-1]
-    matched_train_prev_obs = _capacity_matched_features(
+    matched_train_prev_obs = _probe_capacity_matched_features(
         train["prev_observation_features"],
         matched_dim,
         seed=seed + 3300,
     )
-    matched_test_prev_obs = _capacity_matched_features(
+    matched_test_prev_obs = _probe_capacity_matched_features(
         test["prev_observation_features"],
         matched_dim,
         seed=seed + 3300,
@@ -1632,17 +1718,17 @@ def uncertainty_report_metrics(
         return {
             "native_report": native_report,
             "observation_only_probe": observation_probe,
-            "capacity_matched_observation_probe": matched_observation_probe,
+            "probe_capacity_matched_observation_probe": matched_observation_probe,
             "native_accuracy_advantage": (
                 native_report["test_accuracy"] - observation_probe["test_accuracy"]
             ),
-            "capacity_matched_native_accuracy_advantage": (
+            "probe_capacity_matched_native_accuracy_advantage": (
                 native_report["test_accuracy"] - matched_observation_probe["test_accuracy"]
             ),
             "native_positive_recall_advantage": (
                 native_report["test_positive_recall"] - observation_probe["test_positive_recall"]
             ),
-            "capacity_matched_native_positive_recall_advantage": (
+            "probe_capacity_matched_native_positive_recall_advantage": (
                 native_report["test_positive_recall"]
                 - matched_observation_probe["test_positive_recall"]
             ),
@@ -1694,14 +1780,23 @@ def uncertainty_report_metrics(
         "allocation_error": allocation_error,
         "capacity_audit": {
             "matched_input_dim": matched_dim,
+            "scope": "linear_probe_input_dim_only",
             "baseline_source": "prev_observation_features",
             "baseline_lift": "deterministic_tanh_random_projection",
+            "thresholds": {
+                "min_positive_recall_advantage": min_positive_recall_advantage,
+            },
             "passed": all(
-                signal["capacity_matched_native_positive_recall_advantage"] >= 0.0
+                signal["probe_capacity_matched_native_positive_recall_advantage"]
+                >= min_positive_recall_advantage
+                for signal in capacity_audit_signals
+            ),
+            "nonnegative_directional_effect": all(
+                signal["probe_capacity_matched_native_positive_recall_advantage"] >= 0.0
                 for signal in capacity_audit_signals
             ),
             "positive_recall_advantages": {
-                signal["name"]: signal["capacity_matched_native_positive_recall_advantage"]
+                signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
                 for signal in (
                     relevant_region,
                     unresolved_search,
@@ -1946,6 +2041,9 @@ def nl_report_metrics(
     request_retries = int(nl_cfg.get("request_retries", 2))
     retry_backoff_seconds = float(nl_cfg.get("retry_backoff_seconds", 2.0))
     local_decoder_enabled = bool(nl_cfg.get("local_decoder", {}).get("enabled", False))
+    nl_audit_cfg = nl_cfg.get("capacity_audit", {})
+    min_joint_advantage = nl_audit_cfg.get("min_joint_accuracy_advantage", 0.01)
+    min_memory_advantage = nl_audit_cfg.get("min_memory_content_joint_accuracy_advantage", 0.01)
     modes = ("tokenized_state", "symbolic_state", "observation_only")
     required_examples = calibration_count + evaluation_count
 
@@ -2045,9 +2143,9 @@ def nl_report_metrics(
         observation_token_count = sum(
             len(example.observation_only.split()) for example in evaluation_examples
         ) / max(len(evaluation_examples), 1)
-        capacity_matched_observation = {
+        probe_capacity_matched_observation = {
             **observation,
-            "mode": "capacity_matched_observation_only",
+            "mode": "probe_capacity_matched_observation_only",
             "baseline_source": "observation_only",
             "baseline_lift": "opaque_filler_tokens_to_tokenized_state_budget",
             "mean_input_tokens": tokenized_token_count,
@@ -2067,36 +2165,36 @@ def nl_report_metrics(
             "tokenized_state": tokenized,
             "symbolic_state": symbolic,
             "observation_only": observation,
-            "capacity_matched_observation_only": capacity_matched_observation,
+            "probe_capacity_matched_observation_only": probe_capacity_matched_observation,
             "tokenized_joint_accuracy_advantage": (
                 tokenized["joint_accuracy"] - observation["joint_accuracy"]
             ),
-            "capacity_matched_tokenized_joint_accuracy_advantage": (
-                tokenized["joint_accuracy"] - capacity_matched_observation["joint_accuracy"]
+            "probe_capacity_matched_tokenized_joint_accuracy_advantage": (
+                tokenized["joint_accuracy"] - probe_capacity_matched_observation["joint_accuracy"]
             ),
             "tokenized_current_content_joint_accuracy_advantage": (
                 tokenized["current_content_joint_accuracy"]
                 - observation["current_content_joint_accuracy"]
             ),
-            "capacity_matched_tokenized_current_content_joint_accuracy_advantage": (
+            "probe_capacity_matched_tokenized_current_content_joint_accuracy_advantage": (
                 tokenized["current_content_joint_accuracy"]
-                - capacity_matched_observation["current_content_joint_accuracy"]
+                - probe_capacity_matched_observation["current_content_joint_accuracy"]
             ),
             "tokenized_memory_content_joint_accuracy_advantage": (
                 tokenized["memory_content_joint_accuracy"]
                 - observation["memory_content_joint_accuracy"]
             ),
-            "capacity_matched_tokenized_memory_content_joint_accuracy_advantage": (
+            "probe_capacity_matched_tokenized_memory_content_joint_accuracy_advantage": (
                 tokenized["memory_content_joint_accuracy"]
-                - capacity_matched_observation["memory_content_joint_accuracy"]
+                - probe_capacity_matched_observation["memory_content_joint_accuracy"]
             ),
             "tokenized_content_only_joint_accuracy_advantage": (
                 tokenized["content_only_joint_accuracy"]
                 - observation["content_only_joint_accuracy"]
             ),
-            "capacity_matched_tokenized_content_only_joint_accuracy_advantage": (
+            "probe_capacity_matched_tokenized_content_only_joint_accuracy_advantage": (
                 tokenized["content_only_joint_accuracy"]
-                - capacity_matched_observation["content_only_joint_accuracy"]
+                - probe_capacity_matched_observation["content_only_joint_accuracy"]
             ),
             "tokenized_visible_type_accuracy_advantage": (
                 tokenized["attended_visible_type_accuracy"]
@@ -2155,9 +2253,9 @@ def nl_report_metrics(
                 tokenized["uncertainty_content_joint_accuracy"]
                 - observation["uncertainty_content_joint_accuracy"]
             ),
-            "capacity_matched_tokenized_uncertainty_content_joint_accuracy_advantage": (
+            "probe_capacity_matched_tokenized_uncertainty_content_joint_accuracy_advantage": (
                 tokenized["uncertainty_content_joint_accuracy"]
-                - capacity_matched_observation["uncertainty_content_joint_accuracy"]
+                - probe_capacity_matched_observation["uncertainty_content_joint_accuracy"]
             ),
             "tokenized_unresolved_accuracy_advantage": (
                 (
@@ -2179,20 +2277,32 @@ def nl_report_metrics(
             "capacity_audit": {
                 "matched_input_tokens": tokenized_token_count,
                 "semantic_observation_tokens": observation_token_count,
+                "scope": "matched_token_budget_only",
                 "baseline_source": "observation_only",
                 "baseline_lift": "opaque_filler_tokens_to_tokenized_state_budget",
+                "thresholds": {
+                    "min_joint_accuracy_advantage": min_joint_advantage,
+                    "min_memory_content_joint_accuracy_advantage": min_memory_advantage,
+                },
                 "joint_accuracy_advantage": (
                     tokenized["joint_accuracy"]
-                    - capacity_matched_observation["joint_accuracy"]
+                    - probe_capacity_matched_observation["joint_accuracy"]
                 ),
                 "memory_content_joint_accuracy_advantage": (
                     tokenized["memory_content_joint_accuracy"]
-                    - capacity_matched_observation["memory_content_joint_accuracy"]
+                    - probe_capacity_matched_observation["memory_content_joint_accuracy"]
                 ),
                 "passed": (
-                    tokenized["joint_accuracy"] > capacity_matched_observation["joint_accuracy"]
+                    tokenized["joint_accuracy"] - probe_capacity_matched_observation["joint_accuracy"]
+                    >= min_joint_advantage
                     and tokenized["memory_content_joint_accuracy"]
-                    > capacity_matched_observation["memory_content_joint_accuracy"]
+                    - probe_capacity_matched_observation["memory_content_joint_accuracy"]
+                    >= min_memory_advantage
+                ),
+                "nonnegative_directional_effect": (
+                    tokenized["joint_accuracy"] >= probe_capacity_matched_observation["joint_accuracy"]
+                    and tokenized["memory_content_joint_accuracy"]
+                    >= probe_capacity_matched_observation["memory_content_joint_accuracy"]
                 ),
             },
             "content_supported": (
@@ -2446,7 +2556,9 @@ def negative_control_metrics(
                 "epochs": 60,
                 "learning_rate": 0.03,
                 "hidden_dim": 128,
+                "observation_window": 3,
             },
+            "min_accuracy_drop": 0.02,
         },
     )
     if not control_cfg.get("enabled", False):
@@ -2456,6 +2568,15 @@ def negative_control_metrics(
     test_batches = cfg["evaluation"]["test_batches"]
     probe_scenes = cfg["evaluation"]["probe_scenes"]
     controls: dict[str, Any] = {}
+    recurrent_reference = evaluate_model(
+        model,
+        cfg,
+        task_cfg,
+        device,
+        num_batches=test_batches,
+        seed=seed + 900,
+    )
+    min_accuracy_drop = control_cfg.get("min_accuracy_drop", 0.02)
     for idx, name in enumerate(("feedforward_summary", "shuffle_feedback")):
         ablation = {name: True}
         metrics = evaluate_model(
@@ -2484,25 +2605,33 @@ def negative_control_metrics(
             )
         )
         controls[name] = metrics
+        controls[name]["accuracy_drop_vs_recurrent"] = (
+            recurrent_reference["accuracy"] - metrics["accuracy"]
+        )
+        controls[name]["failed_as_intended"] = (
+            controls[name]["accuracy_drop_vs_recurrent"] >= min_accuracy_drop
+        )
 
     probe_cfg = control_cfg.get("high_capacity_observation_probe", {})
-    train_state, train_obs, train_targets = _collect_probe_dataset(
+    observation_window = probe_cfg.get("observation_window", 3)
+    train_obs, train_targets = _collect_temporal_observation_probe_dataset(
         model,
         task_cfg,
         batch_size,
         probe_cfg.get("train_batches", 12),
         device,
         seed + 300,
+        window=observation_window,
     )
-    test_state, test_obs, test_targets = _collect_probe_dataset(
+    test_obs, test_targets = _collect_temporal_observation_probe_dataset(
         model,
         task_cfg,
         batch_size,
         probe_cfg.get("test_batches", 6),
         device,
         seed + 1300,
+        window=observation_window,
     )
-    del train_state, test_state
     high_capacity_probe = _train_mlp_attention_probe(
         train_obs,
         train_targets,
@@ -2521,6 +2650,7 @@ def negative_control_metrics(
     )
     controls["high_capacity_observation_only"] = {
         "probe": high_capacity_probe,
+        "observation_window": observation_window,
         "controller_reference": controller_reference["controller_state_probe"],
         "test_cross_entropy_gap_vs_controller": (
             high_capacity_probe["test_cross_entropy"]
@@ -2538,10 +2668,12 @@ def negative_control_metrics(
         ),
     }
     controls["failed_as_intended"] = (
-        controls["feedforward_summary"]["accuracy"] < 0.95
-        and controls["shuffle_feedback"]["accuracy"] < 0.95
+        controls["feedforward_summary"]["failed_as_intended"]
+        and controls["shuffle_feedback"]["failed_as_intended"]
         and controls["high_capacity_observation_only"]["failed_as_intended"]
     )
+    controls["recurrent_reference"] = recurrent_reference
+    controls["thresholds"] = {"min_accuracy_drop": min_accuracy_drop}
     return controls
 
 
@@ -2605,6 +2737,23 @@ def comparator_system_metrics(
     )
 
     transformer_cfg = comparator_cfg.get("matched_transformer", {})
+    transformer_training_overrides = dict(transformer_cfg)
+    if transformer_training_overrides.pop("match_recurrent_training", True):
+        transformer_training_overrides = {
+            **{
+                key: cfg["training"][key]
+                for key in (
+                    "train_steps",
+                    "val_batches",
+                    "val_interval",
+                    "log_interval",
+                    "learning_rate",
+                    "weight_decay",
+                )
+                if key in cfg["training"]
+            },
+            **transformer_training_overrides,
+        }
     transformer_output = output_dir / "comparators" / "matched_transformer"
     transformer_output.mkdir(parents=True, exist_ok=True)
     transformer_train_cfg = deep_update(
@@ -2612,7 +2761,7 @@ def comparator_system_metrics(
         {
             "seed": seed + 200,
             "output_dir": str(transformer_output),
-            "training": transformer_cfg,
+            "training": transformer_training_overrides,
         },
     )
     transformer = MatchedTransformerController(task_cfg, ModelConfig.from_dict(cfg["model"])).to(device)
@@ -2637,6 +2786,14 @@ def comparator_system_metrics(
     comparators["matched_transformer"].update(
         trajectory_metrics(transformer, task_cfg, probe_scenes, device, seed + 310)
     )
+    comparators["matched_transformer"]["training_budget"] = {
+        "train_steps": transformer_train_cfg["training"]["train_steps"],
+        "reference_recurrent_train_steps": cfg["training"].get("train_steps", 0),
+        "matched_to_recurrent": (
+            transformer_train_cfg["training"]["train_steps"]
+            == cfg["training"].get("train_steps", 0)
+        ),
+    }
 
     trivial = TrivialUniformRegulator(task_cfg, ModelConfig.from_dict(cfg["model"])).to(device)
     comparators["trivial_uniform_regulator"] = evaluate_model(
@@ -2654,14 +2811,16 @@ def comparator_system_metrics(
     observation_report = (nl_report or {}).get("observation_only", {})
     comparators["large_lm_without_loop_proxy"] = {
         "proxy": "stage7_observation_only_reporter",
+        "independent_comparator": False,
+        "double_counts_stage7_observation_only": True,
         "joint_accuracy": observation_report.get("joint_accuracy", 0.0),
         "memory_content_joint_accuracy": observation_report.get(
             "memory_content_joint_accuracy",
             0.0,
         ),
         "note": (
-            "This proxy has language-shaped report behavior but no embodied attention-control "
-            "loop or controller-state access."
+            "This is a bookkeeping proxy for no-loop language-shaped reporting, not an "
+            "independent comparator run; do not count it separately from Stage 7 observation-only."
         ),
     }
     recurrent_accuracy = evaluate_model(
@@ -4871,11 +5030,21 @@ def main() -> None:
     parser.add_argument("--config", type=str, default="configs/minimal.yaml")
     parser.add_argument("--checkpoint", type=str, required=True)
     parser.add_argument("--device", type=str, default=None)
+    parser.add_argument(
+        "--allow-stale-checkpoint",
+        action="store_true",
+        help=(
+            "Allow migration of checkpoints missing current report/self-model heads. "
+            "Migrated checkpoints are limited to probe-only diagnostics."
+        ),
+    )
     args = parser.parse_args()
 
     config = load_config(args.config)
     if args.device:
         config["device"] = args.device
+    if args.allow_stale_checkpoint:
+        config.setdefault("evaluation", {})["allow_stale_checkpoint"] = True
     run_ablations(config, args.checkpoint)
 
 

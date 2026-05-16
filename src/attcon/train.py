@@ -52,6 +52,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "cue_switch_step": 3,
     },
     "evaluation": {
+        "allow_stale_checkpoint": False,
         "test_batches": 40,
         "probe_scenes": 4,
         "predictive_probe": {
@@ -120,21 +121,20 @@ DEFAULT_CONFIG: dict[str, Any] = {
         },
         "negative_controls": {
             "enabled": True,
+            "min_accuracy_drop": 0.02,
             "high_capacity_observation_probe": {
                 "train_batches": 12,
                 "test_batches": 6,
                 "epochs": 60,
                 "learning_rate": 0.03,
                 "hidden_dim": 128,
+                "observation_window": 3,
             },
         },
         "comparator_systems": {
             "enabled": True,
             "matched_transformer": {
-                "train_steps": 300,
-                "val_batches": 10,
-                "val_interval": 100,
-                "log_interval": 100,
+                "match_recurrent_training": True,
             },
         },
         "nl_report": {

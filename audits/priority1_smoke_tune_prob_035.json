@@ -1,0 +1,180 @@
+{
+  "artifact_type": "priority1_smoke_audit",
+  "checkpoint": "outputs/tune_prob_035/experiment.pt",
+  "config_base": "configs/tune_prob_035.yaml",
+  "full_evaluation_report": false,
+  "probe_batches_reduced": true,
+  "allow_stale_checkpoint": true,
+  "checkpoint_migration": {
+    "static": {
+      "migrated": false,
+      "missing_report_heads": [],
+      "claim_limit": ""
+    },
+    "recurrent": {
+      "migrated": true,
+      "missing_report_heads": [
+        "hidden_self_model_head.weight",
+        "hidden_self_model_head.bias",
+        "policy_self_model_head.weight",
+        "self_model_head.weight",
+        "self_model_head.bias",
+        "target_found_head.weight",
+        "target_found_head.bias",
+        "relevant_region_head.weight",
+        "relevant_region_head.bias",
+        "unresolved_search_head.weight",
+        "unresolved_search_head.bias",
+        "wrong_candidate_history_head.weight",
+        "wrong_candidate_history_head.bias",
+        "allocation_error_head.weight",
+        "allocation_error_head.bias"
+      ],
+      "claim_limit": "checkpoint lacks currently instrumented report/self-model heads; probe-only diagnostics may run, but trained-head claims are disabled"
+    }
+  },
+  "stage4b": {
+    "matched_input_dim": 32,
+    "scope": "linear_probe_input_dim_only",
+    "baseline_source": "previous_observation_features",
+    "baseline_lift": "deterministic_tanh_random_projection",
+    "thresholds": {
+      "min_cell_bce_advantage": 0.01,
+      "min_target_bce_advantage": 0.01
+    },
+    "checkpoint_migration": {
+      "migrated": true,
+      "missing_report_heads": [
+        "hidden_self_model_head.weight",
+        "hidden_self_model_head.bias",
+        "policy_self_model_head.weight",
+        "self_model_head.weight",
+        "self_model_head.bias",
+        "target_found_head.weight",
+        "target_found_head.bias",
+        "relevant_region_head.weight",
+        "relevant_region_head.bias",
+        "unresolved_search_head.weight",
+        "unresolved_search_head.bias",
+        "wrong_candidate_history_head.weight",
+        "wrong_candidate_history_head.bias",
+        "allocation_error_head.weight",
+        "allocation_error_head.bias"
+      ],
+      "claim_limit": "checkpoint lacks currently instrumented report/self-model heads; probe-only diagnostics may run, but trained-head claims are disabled"
+    },
+    "hidden_cell_bce_advantage": 0.25253961980342865,
+    "hidden_cell_accuracy_advantage": -0.00041666626930236816,
+    "hidden_target_bce_advantage": 0.22990496456623077,
+    "hidden_target_accuracy_advantage": 0.0,
+    "passed": false,
+    "probe_effect_positive": true
+  },
+  "stage6a": {
+    "matched_input_dim": 32,
+    "scope": "linear_probe_input_dim_only",
+    "baseline_source": "observation_features",
+    "baseline_lift": "deterministic_tanh_random_projection",
+    "thresholds": {
+      "min_accuracy_advantage": 0.01,
+      "min_positive_recall_advantage": 0.01
+    },
+    "passed": false
+  },
+  "stage6b": {
+    "matched_input_dim": 32,
+    "scope": "linear_probe_input_dim_only",
+    "baseline_source": "prev_observation_features",
+    "baseline_lift": "deterministic_tanh_random_projection",
+    "thresholds": {
+      "min_positive_recall_advantage": 0.01
+    },
+    "passed": true,
+    "nonnegative_directional_effect": true,
+    "positive_recall_advantages": {
+      "relevant_region_inspected": -0.25,
+      "unresolved_search": -0.9637681171298027,
+      "current_wrong_candidate": 1.0,
+      "wrong_candidate_history": 0.18897637724876404,
+      "revisit_unresolved": 0.8818897604942322,
+      "allocation_error": 1.0
+    }
+  },
+  "stage7": {
+    "matched_input_tokens": 71.0,
+    "semantic_observation_tokens": 45.0,
+    "scope": "matched_token_budget_only",
+    "baseline_source": "observation_only",
+    "baseline_lift": "opaque_filler_tokens_to_tokenized_state_budget",
+    "thresholds": {
+      "min_joint_accuracy_advantage": 0.01,
+      "min_memory_content_joint_accuracy_advantage": 0.01
+    },
+    "joint_accuracy_advantage": 0.0,
+    "memory_content_joint_accuracy_advantage": 1.0,
+    "passed": false,
+    "nonnegative_directional_effect": true
+  },
+  "negative_controls": {
+    "feedforward_summary": {
+      "loss": 2.1660349369049072,
+      "accuracy": 0.1875,
+      "target_attention": 0.04440750181674957,
+      "attention_entropy": 2.525810956954956,
+      "trajectory_divergence": 0.2918682924161355,
+      "reallocation_divergence": 0.01096999691799283,
+      "temporal_reallocation": 2.186624526977539,
+      "target_attention_gain": -0.09926949068903923,
+      "probe_target_attention_first": 0.125,
+      "probe_target_attention_final": 0.02573050931096077,
+      "accuracy_drop_vs_recurrent": 0.125,
+      "failed_as_intended": true
+    },
+    "shuffle_feedback": {
+      "loss": 2.237593412399292,
+      "accuracy": 0.3125,
+      "target_attention": 0.057291001081466675,
+      "attention_entropy": 1.266116976737976,
+      "trajectory_divergence": 0.1560919570426146,
+      "reallocation_divergence": 0.015370013347516457,
+      "temporal_reallocation": 0.8075171709060669,
+      "target_attention_gain": 0.041988290732784775,
+      "probe_target_attention_first": 1.1356303397658252e-10,
+      "probe_target_attention_final": 0.04198829084634781,
+      "accuracy_drop_vs_recurrent": 0.0,
+      "failed_as_intended": false
+    },
+    "high_capacity_observation_only": {
+      "probe": {
+        "train_cross_entropy": 2.7805445194244385,
+        "test_cross_entropy": 2.844520092010498,
+        "train_mse": 0.012789136730134487,
+        "test_mse": 0.012100351974368095,
+        "train_top1_match": 0.48750001192092896,
+        "test_top1_match": 0.4749999940395355
+      },
+      "observation_window": 3,
+      "controller_reference": {
+        "train_cross_entropy": 1.7519190311431885,
+        "test_cross_entropy": 1.7611254453659058,
+        "train_mse": 0.00181723409332335,
+        "test_mse": 0.0017980614211410284,
+        "train_top1_match": 0.7096354365348816,
+        "test_top1_match": 0.7020833492279053
+      },
+      "test_cross_entropy_gap_vs_controller": 1.0833946466445923,
+      "test_top1_gap_vs_controller": 0.22708335518836975,
+      "failed_as_intended": true
+    },
+    "failed_as_intended": false,
+    "recurrent_reference": {
+      "loss": 1.8891996145248413,
+      "accuracy": 0.3125,
+      "target_attention": 0.08589944243431091,
+      "attention_entropy": 1.3238519430160522
+    },
+    "thresholds": {
+      "min_accuracy_drop": 0.02
+    }
+  }
+}

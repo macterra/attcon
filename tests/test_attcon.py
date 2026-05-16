@@ -20,7 +20,7 @@ from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
     build_stage3_summary,
-    _capacity_matched_features,
+    _probe_capacity_matched_features,
     comparator_system_metrics,
     learned_self_model_metrics,
     nl_report_metrics,
@@ -293,10 +293,10 @@ class AttentionControlTests(unittest.TestCase):
             low["attention_seq"][:, 0, 0].mean().item(),
         )
 
-    def test_capacity_matched_features_lift_to_requested_dim(self) -> None:
+    def test_probe_capacity_matched_features_lift_to_requested_dim(self) -> None:
         features = torch.randn(5, 3)
-        lifted = _capacity_matched_features(features, 8, seed=11)
-        repeated = _capacity_matched_features(features, 8, seed=11)
+        lifted = _probe_capacity_matched_features(features, 8, seed=11)
+        repeated = _probe_capacity_matched_features(features, 8, seed=11)
 
         self.assertEqual(lifted.shape, (5, 8))
         self.assertTrue(torch.allclose(lifted, repeated))
@@ -349,7 +349,7 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIn("capacity_audit", metrics)
         self.assertEqual(metrics["capacity_audit"]["matched_input_dim"], self.model_cfg.hidden_size)
         self.assertIn(
-            "capacity_matched_observation_probe",
+            "probe_capacity_matched_observation_probe",
             metrics["current_attended_cell"],
         )
 
@@ -612,10 +612,10 @@ class AttentionControlTests(unittest.TestCase):
 
         self.assertFalse(metrics.get("skipped", False))
         self.assertIn("capacity_audit", metrics)
-        self.assertIn("capacity_matched_observation_only", metrics)
+        self.assertIn("probe_capacity_matched_observation_only", metrics)
         self.assertEqual(
             metrics["capacity_audit"]["matched_input_tokens"],
-            metrics["capacity_matched_observation_only"]["mean_input_tokens"],
+            metrics["probe_capacity_matched_observation_only"]["mean_input_tokens"],
         )
 
     def test_extract_response_json_accepts_multiple_sdk_shapes(self) -> None:
