@@ -3499,7 +3499,10 @@ def reduced_shaping_metrics(
                 "training": deep_update(
                     training_overrides,
                     {
+                        # Reduce both the final-step and stepwise attention shaping together,
+                        # otherwise full-strength stepwise supervision masks the reduction.
                         "attention_target_weight": float(weight),
+                        "stepwise_attention_target_weight": float(weight),
                     },
                 ),
             },

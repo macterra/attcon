@@ -233,10 +233,19 @@ def compute_batch_metrics(outputs: dict[str, torch.Tensor], batch) -> dict[str, 
         2, batch.target_pos[:, None, None].expand(-1, attention.shape[1], 1)
     ).mean().item()
     entropy = -(attention * attention.clamp_min(1e-8).log()).sum(dim=-1).mean().item()
+    # For a discrete-attention searcher, mean target_attention understates success:
+    # the controller reads the target on a single decisive fixation and carries the
+    # digit forward. target_inspected_rate measures whether the argmax fixation ever
+    # landed on the true target during the episode.
+    fixated_cell = attention.argmax(dim=-1)
+    target_inspected_rate = (
+        (fixated_cell == batch.target_pos[:, None]).any(dim=1).float().mean().item()
+    )
 
     return {
         "accuracy": accuracy,
         "target_attention": target_attention,
+        "target_inspected_rate": target_inspected_rate,
         "attention_entropy": entropy,
     }
 
@@ -368,6 +377,7 @@ def evaluate_model(
     total_loss = 0.0
     total_accuracy = 0.0
     total_target_attention = 0.0
+    total_target_inspected_rate = 0.0
     total_attention_entropy = 0.0
 
     with torch.no_grad():
@@ -392,6 +402,7 @@ def evaluate_model(
             total_loss += loss.item()
             total_accuracy += metrics["accuracy"]
             total_target_attention += metrics["target_attention"]
+            total_target_inspected_rate += metrics["target_inspected_rate"]
             total_attention_entropy += metrics["attention_entropy"]
 
     scale = 1.0 / num_batches
@@ -399,6 +410,7 @@ def evaluate_model(
         "loss": total_loss * scale,
         "accuracy": total_accuracy * scale,
         "target_attention": total_target_attention * scale,
+        "target_inspected_rate": total_target_inspected_rate * scale,
         "attention_entropy": total_attention_entropy * scale,
     }
 

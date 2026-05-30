@@ -28,10 +28,30 @@ class ModelConfig:
     cue_embedding_dim: int = 8
     scene_embedding_dim: int = 16
     temperature: float = 0.6
+    hard_attention: bool = False
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "ModelConfig":
         return cls(**values)
+
+
+def _glimpse_weights(attention: torch.Tensor, hard: bool) -> torch.Tensor:
+    """Weights used to read content from the scene, given the soft attention policy.
+
+    Soft attention spreads mass over every same-type cell, so the glimpse averages
+    their digits and the controller can never recover the single target digit. With
+    ``hard`` the glimpse instead reads the single most-attended cell (clean evidence)
+    via a straight-through estimator, while the stored ``attention`` policy stays soft
+    so divergence/probe metrics remain graded and meaningful. This decouples *where*
+    the controller points (analysable) from *what* it reads (one clean cell), matching
+    the original spec ("inspect one or two cells per timestep").
+    """
+
+    if not hard:
+        return attention
+    index = attention.argmax(dim=-1, keepdim=True)
+    hard_select = torch.zeros_like(attention).scatter_(-1, index, 1.0)
+    return hard_select + attention - attention.detach()
 
 
 class BaseAttentionModel(nn.Module):
@@ -141,7 +161,8 @@ class StaticAttentionBaseline(BaseAttentionModel):
             static_state, hidden_features = self.initial_state(scene, step_cue)
             attention_logits = self.attention_head(static_state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
-            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            glimpse_weights = _glimpse_weights(attention, self.model_config.hard_attention)
+            hidden_glimpse = torch.sum(glimpse_weights.unsqueeze(-1) * hidden_features, dim=1)
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             logits = self.task_head(torch.cat([observed_glimpse, static_state], dim=-1))
             loss_proxy, confidence = self._compute_loss_proxy(logits, target)
@@ -218,7 +239,8 @@ class MatchedTransformerController(BaseAttentionModel):
             )
             attention_logits = self.attention_head(state) / self.model_config.temperature
             attention = torch.softmax(attention_logits, dim=-1)
-            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            glimpse_weights = _glimpse_weights(attention, self.model_config.hard_attention)
+            hidden_glimpse = torch.sum(glimpse_weights.unsqueeze(-1) * hidden_features, dim=1)
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             logits = self.task_head(torch.cat([observed_glimpse, state], dim=-1))
             loss_proxy, confidence = self._compute_loss_proxy(logits, target)
@@ -461,19 +483,19 @@ class RecurrentAttentionController(BaseAttentionModel):
                 )
             self_model_logits = self.self_model_head(torch.cat([hidden_state, inspection_state], dim=-1))
             policy_self_model_feedback = self.policy_self_model_head(hidden_self_model)
-            attention_logits = (
-                self.policy_head(hidden_state) + policy_self_model_feedback
-            ) / self.model_config.temperature
-            attention = torch.softmax(attention_logits, dim=-1)
-            hidden_glimpse = torch.sum(attention.unsqueeze(-1) * hidden_features, dim=1)
+            attention_logits = self.policy_head(hidden_state) + policy_self_model_feedback
+            attention = torch.softmax(attention_logits / self.model_config.temperature, dim=-1)
+            glimpse_weights = _glimpse_weights(attention, self.model_config.hard_attention)
+            hidden_glimpse = torch.sum(glimpse_weights.unsqueeze(-1) * hidden_features, dim=1)
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             step_logits = self.task_head(torch.cat([observed_glimpse, hidden_state], dim=-1))
             step_loss, step_confidence = self._compute_loss_proxy(step_logits, target)
             attended_cell = attention.argmax(dim=-1)
             attended_one_hot = F.one_hot(attended_cell, num_classes=self.num_cells).float()
-            # Keep the explicit inspection trace graded so the recurrent summary carries
-            # smoother information about recent allocations than a single hard fixation.
-            inspection_state_post = torch.maximum(inspection_state, attention)
+            # In hard mode the inspection trace is the clean set of fixated cells; in soft
+            # mode keep it graded so the recurrent summary carries smoother allocation info.
+            fixation = attended_one_hot if self.model_config.hard_attention else attention
+            inspection_state_post = torch.maximum(inspection_state, fixation)
             found_state_post = torch.maximum(found_state, observed_glimpse[:, :1].detach())
             report_features = torch.cat([hidden_state, inspection_state, found_state], dim=-1)
             target_found_logits = self.target_found_head(
