@@ -318,9 +318,13 @@ Current status in this repo:
 
 Current assessment:
 
-- implemented: yes, for the bounded hidden-self-model feedback path
-- positive evidence: yes
-- supported: bounded engineering support, for a freshly trained checkpoint using the Stage 4B feedback objective
+- implemented: yes, for the hidden-self-model feedback path (available but disabled in the base config)
+- positive evidence: not on the current base checkpoint
+- supported: no. The base config disables the Stage 4B causal policy-feedback path because, with the
+  discrete glimpse readout, that path destabilises base-task learning. `learned_self_modeling` is
+  therefore not supported on the base checkpoint. The architecture can still learn a hidden self-model
+  under the dedicated objective, but that is now studied as its own experiment rather than baked into
+  the base benchmark.
 - consciousness-evidence status: not supported until comparable self-modeling appears without a direct self-model objective and survives comparator tests
 
 Interpretation:
@@ -932,20 +936,30 @@ Cross-system replication:
 
 ## Current Status Snapshot
 
-Bounded support:
+Benchmark foundation note: the controller uses a **discrete glimpse readout** (soft attention
+policy, but each glimpse reads the single most-attended cell). Under the earlier fully-soft
+recipe the recurrent controller did not learn the task (it collapsed to uniform attention and
+lost to the static baseline), so every "supported" label from that era was a probe artifact.
+The dispositions below are from the regenerated discrete-attention full eval
+(`audits/post_rehab_full_eval_tune_prob_035_summary.json`).
+
+Bounded support (real, capacity-audited, comparator-resistant on the current checkpoint):
 
 - attention
-- closed-loop attention control
-- explicit attention modeling, with a known `0.25` reduced-shaping weakness
-- engineered self-state tracking, as a bounded Stage 4A scaffold
-- Stage 4B: bounded engineering support for hidden-self-model feedback on a fresh checkpoint trained with the feedback objective; consciousness-relevant self-model emergence is not established
+- closed-loop attention control (recurrent acc `0.44` vs static `0.17`; all negative controls
+  and comparators fail as intended, including `shuffle_feedback` accuracy drop `0.27`)
+- explicit attention modeling — **robust** across seeds and the default + `0.25` reduced-shaping
+  checkpoint family; complete zero-shaping is a known weakness (collapses to `~0.19` ≈ static)
+- engineered self-state tracking (Stage 4A; native cell accuracy `~0.99`)
 - flexible reallocation under changed priorities in the current cue-switch setting
-- structured reportability of a bounded set of internal variables
-- faithful natural-language-shaped reportability from opaque tokenized internal state using the local calibrated reporter
+- structured reportability of a bounded set of internal variables (Stage 6A; capacity audit passes)
+- faithful natural-language-shaped reportability from opaque tokenized internal state using the
+  local calibrated reporter (Stage 7; capacity audit passes)
 
 Positive but still provisional evidence:
 
-- structured reportability of uncertainty and allocation error
+- structured reportability of uncertainty and allocation error (Stage 6B): positive controller-state
+  recall advantage on all four gated signals, but the accuracy-guarded capacity audit does not pass
 - external API LLM and VLM natural-language reportability infrastructure
 
 What is not yet established:

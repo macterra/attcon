@@ -2,6 +2,16 @@
 
 This checklist turns the revised roadmap into a working execution order. The goal is to move from bounded benchmark support toward robust, comparator-resistant evidence without blurring the current claim boundaries.
 
+> **Post-rehab note.** The Priority 1 audit machinery below was originally exercised on a
+> non-functional checkpoint (under the old fully-soft recipe the recurrent controller collapsed
+> to uniform attention and lost to the static baseline). After the discrete-glimpse fix, the
+> audits, negative controls, and comparator suite were re-run on a model that actually does the
+> task: dissociation/Stage 3/Stage 4A/Stage 5/Stage 6A/Stage 7 are genuinely supported (Stage 3
+> robustly), Stage 6B is bounded/provisional, and all negative controls + comparators fail as
+> intended. See `audits/post_rehab_full_eval_tune_prob_035_summary.json` and
+> `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore now genuinely validated,
+> not artifacts. Remaining open work below (Priorities 2-5) is unchanged.
+
 ## Priority 1: Tighten Existing Claims
 
 - [x] Run matched-capacity baseline audits for Stage 4B hidden self-model probes.

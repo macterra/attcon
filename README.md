@@ -12,6 +12,20 @@ The current implementation trains and compares:
 
 The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each scene contains visible cell types plus hidden target/digit information that only becomes useful through attention.
 
+## Benchmark Mechanism (discrete glimpse)
+
+The controller's attention policy is a soft distribution (so divergence and probe
+metrics stay graded), but each glimpse **reads the single most-attended cell** through a
+straight-through estimator (`model.hard_attention`). This matters: with a fully soft
+glimpse the readout averages the digits of every same-type cell, diluting the per-cell
+target evidence below what the controller can localise, and the task does not train (the
+recurrent controller collapses to uniform attention and loses to the static baseline).
+Reading one cell per step — as the original spec intended ("inspect one or two cells per
+timestep") — makes the closed-loop search learnable. Because a discrete searcher reads
+the target on a single decisive fixation and carries the digit forward, mean
+`target_attention` understates success, so the eval also reports `target_inspected_rate`
+(did the argmax fixation ever land on the true target).
+
 ## Repository Guide
 
 - [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
@@ -56,36 +70,35 @@ The evaluation report includes:
 
 ## Current Result Shape
 
-On the current default run, the recurrent controller outperforms the static baseline and stronger non-recurrent ablations, while also showing positive temporal reallocation and cue sensitivity.
+On the current discrete-attention checkpoint (`configs/tune_prob_035.yaml`, 5000 steps),
+the recurrent controller solves the search task and clearly beats the static baseline and
+the non-recurrent ablations. Representative numbers from a regenerated full eval
+(`audits/post_rehab_full_eval_tune_prob_035_summary.json`):
 
-The current evaluation also adds several positive later-stage signals:
+- recurrent accuracy `0.44` vs static `0.17` (chance `0.10`); `target_inspected_rate` `0.39` vs `0.08`
+- all negative controls fail as intended, including `shuffle_feedback` (accuracy drop `0.27`) and `feedforward_summary` (`0.21`); the matched-transformer and trivial-regulator comparators also fail as intended
 
-- a predictive probe where controller state predicts the next attention map better than the current observation summary alone
-- a causal intervention test where controller-state perturbations shift the next attention map in a systematic, cue-like direction
-- an engineered self-state evaluation where the recurrent controller maintains an explicit inspected-cell state and reports it more accurately than an observation-only probe
-- report probes where controller state supports simple readouts of current search type, current attended cell, cumulative target-found status, and unresolved regions
-- reduced-shaping retraining runs showing that useful reallocation survives when direct target-attention shaping is reduced to `0.25`
+Honest current status by stage (discrete-attention checkpoint):
 
-It also includes a Stage 5-style cue-switch test. On the current default checkpoint, that test is now passed after training on a mix of stationary and switched-cue episodes: the recurrent controller redirects attention better than the baseline after a mid-episode cue change.
+- **Stage 2 / 3** (closed-loop control, explicit attention modeling): supported, and Stage 3 is **robust** — the predictive-probe and intervention checks pass on every seed (`stage3_multi_seed` 1.0/1.0) and the `stage3_checkpoint_family` verdict is `robust` across the default and `0.25` reduced-shaping checkpoints.
+- **Stage 4A** (engineered self-state tracking): supported; the native self-state head reports the explicit inspected-cell map at `~0.99` cell accuracy.
+- **Stage 4B** (learned self-model feedback): **not** part of the base config — the destabilising policy-feedback path is disabled, and learned-self-model *emergence* is studied as its own experiment.
+- **Stage 5** (cue-switch reallocation): supported (recurrent switch accuracy `0.25` vs baseline `0.0`).
+- **Stage 6A** (structured reportability): supported, capacity audit passes — controller state beats a capacity-matched observation probe on current search type and current attended cell.
+- **Stage 6B** (uncertainty / allocation-error reportability): **bounded / provisional**. Controller state beats the capacity-matched observation baseline on positive *recall* for all four gated signals, but the stricter accuracy-guarded capacity audit does not pass (`revisit_unresolved` and `allocation_error` have marginally negative accuracy advantage). 6B is now probed against controller state directly (it previously had no state probe and leaked ground-truth labels).
+- **Stage 7** (faithful NL reportability): supported for the local calibrated opaque-token reporter, capacity audit passes; external API LLM and VLM routes remain open.
+- **reduced-shaping resilience**: holds at weight `0.25` (acc `0.34`, clearly above static); complete **zero-shaping collapses to `~0.19`** (≈ static), so complete zero-shaping is *not* supported (a known weakness; the `0.15` accuracy threshold is too lenient and is flagged for calibration).
 
-The earlier cue-switch tuning exposed a real tradeoff, but the current default checkpoint now recovers both signals: `cue_switch_adaptation` and `reduced_shaping_resilience` are both supported in the latest report.
+> Note: the pre-rehab soft-attention checkpoints/reports described a non-functional model
+> (recurrent collapsed to uniform attention and lost to the baseline); every "supported"
+> label from that era was a probe artifact and has been superseded by the discrete-attention
+> rehab.
 
-The evaluator now also reports `stage3_multi_seed`, a repeated-seed summary over the predictive-probe and intervention checks together with the reduced-shaping result. That summary is intentionally conservative: it makes it easier to see when Stage 3 evidence is unstable across probe seeds instead of looking strong only on one slice. The same stability numbers are also surfaced in the `evidence.explicit_attention_modeling` block. That block now distinguishes `single_run_supported` from `robust_supported`, and the final `supported` flag follows the stricter robust interpretation. On the current `tune_prob_035` report, the bounded Stage 3 claim is supported.
+The eval artifacts also include intervention, switched-cue, self-state, self-model, Stage 6B
+uncertainty, and Stage 7 visual-report plots, plus Stage 3 repeated-seed and checkpoint-family
+diagnostics.
 
-The evaluator also exports `stage3_checkpoint_family`, which extends that robustness check across the default checkpoint and the reduced-shaping variant trained during evaluation. That summary surfaces the weakest checkpoint family, the weakest metric, and the worst seed, so Stage 3 can fail loudly and specifically instead of collapsing to an opaque boolean. The current closeout covers the default checkpoint plus the `0.25` reduced-shaping family; complete zero-shaping resilience remains outside the supported claim.
-
-The current Stage 4A-style result is stronger than the earlier decoder-only report probes. The recurrent model exposes an explicit inspected-cell memory and a native self-state report head, and the evaluation report tracks this as `engineered_self_state_tracking`.
-
-Stage 4B now has a bounded supported path. The recurrent controller includes a hidden-state-only self-model head and a learned self-model feedback path into the attention policy. The evaluator reports `learned_self_modeling`, which asks whether controller hidden state alone predicts inspected-cell state better than a previous-observation baseline, whether hidden-state perturbations move self-report outputs, and whether direct hidden-self-model overrides alter attention through the policy feedback path. Fresh checkpoints trained with the Stage 4B feedback objective can now satisfy those support criteria; older checkpoints trained before that objective should not be read as Stage 4B-supported.
-
-The current Stage 6A-style result is also now positive. The latest report tracks this as `structured_reportability`, with positive advantages for search type, attended cell, cumulative target-found status, and unresolved-region reporting. The stricter Stage 6B-style category, `structured_reportability_uncertainty_and_allocation_error`, now separates `current_wrong_candidate`, `wrong_candidate_history`, `revisit_unresolved`, and `allocation_error`. That gives the repo a finer distinction between active pursuit of a wrong candidate, cumulative wrong-candidate memory, and revisits during unresolved search. The overall Stage 6B bundle is still provisional rather than broadly settled, but it now has bounded positive evidence with a more interpretable internal decomposition.
-
-The Stage 7 natural-language harness now exposes the same Stage 6B variables in its schema and metrics: `relevant_region_inspected`, `unresolved_search`, `current_wrong_candidate`, `wrong_candidate_history`, `revisit_unresolved`, and `allocation_error` are present in the symbolic baseline, the tokenized internal-state interface, and the observation-only control. The tokenized interface now also includes opaque factored row/column tokens plus opaque attended-content tokens for current and previous attention, and the evaluator reports a local `tokenized_state_payload` diagnostic even when the API language layer is skipped or fails. The current bounded Stage 7 claim is supported for the local calibrated opaque-token reporter, including default, cue-switch, and intervention slices; external API LLM and VLM routes remain open.
-
-The eval artifacts now also include intervention comparison plots, switched-cue comparison plots, self-state trajectory plots, self-model trajectory plots, Stage 6B uncertainty-report comparison plots, and Stage 7 visual report panels for default, cue-switch, and intervention slices. Those new Stage 7 panels place scene-only information next to explicit symbolic dumps and minimal tokenized state views, which makes it easier to inspect the reporting interfaces without reading raw JSON arrays.
-Stage 3 now also has its own repeated-seed diagnostics plot plus a checkpoint-family diagnostics plot, which makes predictive and intervention instability visible without reading the raw seed table.
-
-The exact numbers depend on the saved checkpoint in `outputs/minimal`, but the intended workflow is:
+The exact numbers depend on the saved checkpoint, but the intended workflow is:
 
 1. train both baseline and recurrent models
 2. run ablations
