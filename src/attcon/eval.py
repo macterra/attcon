@@ -1701,6 +1701,19 @@ def uncertainty_report_metrics(
         }
 
     def _compare_binary(name: str, native_key: str, label_key: str) -> dict[str, Any]:
+        # The gated reportability test mirrors Stage 6A: does the controller STATE linearly
+        # encode the uncertainty/allocation-error variable better than a capacity-matched
+        # observation baseline? The "native_report" score is kept only as an informational
+        # field -- for some variables it is a ground-truth computed signal (circular) or an
+        # untrained head, so it must NOT gate the claim.
+        state_probe = _train_binary_probe(
+            train["state_features"],
+            train[label_key],
+            test["state_features"],
+            test[label_key],
+            epochs=epochs,
+            learning_rate=learning_rate,
+        )
         observation_probe = _train_binary_probe(
             train["prev_observation_features"],
             train[label_key],
@@ -1719,15 +1732,24 @@ def uncertainty_report_metrics(
         )
         native_report = _native_binary_report(test[native_key], test[label_key])
         return {
+            "controller_state_probe": state_probe,
             "native_report": native_report,
             "observation_only_probe": observation_probe,
             "probe_capacity_matched_observation_probe": matched_observation_probe,
-            "native_accuracy_advantage": (
-                native_report["test_accuracy"] - observation_probe["test_accuracy"]
+            "controller_accuracy_advantage": (
+                state_probe["test_accuracy"] - observation_probe["test_accuracy"]
             ),
-            "probe_capacity_matched_native_accuracy_advantage": (
-                native_report["test_accuracy"] - matched_observation_probe["test_accuracy"]
+            "probe_capacity_matched_controller_accuracy_advantage": (
+                state_probe["test_accuracy"] - matched_observation_probe["test_accuracy"]
             ),
+            "controller_positive_recall_advantage": (
+                state_probe["test_positive_recall"] - observation_probe["test_positive_recall"]
+            ),
+            "probe_capacity_matched_controller_positive_recall_advantage": (
+                state_probe["test_positive_recall"]
+                - matched_observation_probe["test_positive_recall"]
+            ),
+            # Informational only (see note above); does not gate support.
             "native_positive_recall_advantage": (
                 native_report["test_positive_recall"] - observation_probe["test_positive_recall"]
             ),
@@ -1793,29 +1815,41 @@ def uncertainty_report_metrics(
             "thresholds": {
                 "min_positive_recall_advantage": min_positive_recall_advantage,
             },
+            # Gate on the controller-STATE probe beating the capacity-matched observation
+            # baseline on positive recall, with a non-negative accuracy advantage so a
+            # predict-all-positive probe cannot pass on recall alone.
             "passed": all(
-                signal["probe_capacity_matched_native_positive_recall_advantage"]
+                signal["probe_capacity_matched_controller_positive_recall_advantage"]
                 >= min_positive_recall_advantage
+                and signal["probe_capacity_matched_controller_accuracy_advantage"] >= 0.0
                 for signal in gated_capacity_audit_signals
             ),
             "nonnegative_directional_effect": all(
-                signal["probe_capacity_matched_native_positive_recall_advantage"] >= 0.0
+                signal["probe_capacity_matched_controller_positive_recall_advantage"] >= 0.0
                 for signal in gated_capacity_audit_signals
             ),
-            "gated_positive_recall_advantages": {
-                signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
+            "gated_controller_positive_recall_advantages": {
+                signal["name"]: signal["probe_capacity_matched_controller_positive_recall_advantage"]
                 for signal in gated_capacity_audit_signals
             },
-            "informational_positive_recall_advantages": {
+            "gated_controller_accuracy_advantages": {
+                signal["name"]: signal["probe_capacity_matched_controller_accuracy_advantage"]
+                for signal in gated_capacity_audit_signals
+            },
+            "informational_native_positive_recall_advantages": {
                 signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
-                for signal in informational_capacity_audit_signals
+                for signal in (*gated_capacity_audit_signals, *informational_capacity_audit_signals)
             },
         },
         "supported": (
-            wrong_candidate_history["native_positive_recall_advantage"] > 0.0
-            and current_wrong_candidate["native_positive_recall_advantage"] >= 0.0
-            and revisit_unresolved["native_positive_recall_advantage"] >= 0.0
-            and allocation_error["native_positive_recall_advantage"] >= 0.0
+            current_wrong_candidate["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= min_positive_recall_advantage
+            and wrong_candidate_history["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= min_positive_recall_advantage
+            and revisit_unresolved["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= 0.0
+            and allocation_error["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= 0.0
         ),
     }
 
@@ -4181,49 +4215,31 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
     }
 
+    def _u_ctrl(name: str) -> float:
+        return uncertainty_reports.get(name, {}).get(
+            "probe_capacity_matched_controller_positive_recall_advantage", 0.0
+        )
+
     structured_reportability_uncertainty_and_allocation_error = {
         "implemented": bool(uncertainty_reports),
-        "positive_evidence": (
-            uncertainty_reports.get("relevant_region_inspected", {}).get("native_accuracy_advantage", 0.0)
-            > 0.0
-            or uncertainty_reports.get("unresolved_search", {}).get("native_accuracy_advantage", 0.0)
-            > 0.0
-            or uncertainty_reports.get("current_wrong_candidate", {}).get(
-                "native_positive_recall_advantage", 0.0
+        "positive_evidence": any(
+            _u_ctrl(name) > 0.0
+            for name in (
+                "current_wrong_candidate",
+                "wrong_candidate_history",
+                "revisit_unresolved",
+                "allocation_error",
             )
-            > 0.0
-            or uncertainty_reports.get("wrong_candidate_history", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
-            or uncertainty_reports.get("revisit_unresolved", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
-            or uncertainty_reports.get("allocation_error", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
         ),
+        # Gated on the controller-STATE probe vs capacity-matched observation (mirrors 6A);
+        # native head/ground-truth scores are informational only.
         "supported": uncertainty_reports.get("supported", False),
-        "relevant_region_accuracy_advantage": uncertainty_reports.get(
-            "relevant_region_inspected", {}
-        ).get("native_accuracy_advantage", 0.0),
-        "unresolved_search_accuracy_advantage": uncertainty_reports.get(
-            "unresolved_search", {}
-        ).get("native_accuracy_advantage", 0.0),
-        "current_wrong_candidate_positive_recall_advantage": uncertainty_reports.get(
-            "current_wrong_candidate", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "wrong_candidate_history_positive_recall_advantage": uncertainty_reports.get(
-            "wrong_candidate_history", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "revisit_unresolved_positive_recall_advantage": uncertainty_reports.get(
-            "revisit_unresolved", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "allocation_error_positive_recall_advantage": uncertainty_reports.get(
-            "allocation_error", {}
-        ).get("native_positive_recall_advantage", 0.0),
+        "current_wrong_candidate_controller_recall_advantage": _u_ctrl("current_wrong_candidate"),
+        "wrong_candidate_history_controller_recall_advantage": _u_ctrl("wrong_candidate_history"),
+        "revisit_unresolved_controller_recall_advantage": _u_ctrl("revisit_unresolved"),
+        "allocation_error_controller_recall_advantage": _u_ctrl("allocation_error"),
+        "relevant_region_controller_recall_advantage": _u_ctrl("relevant_region_inspected"),
+        "unresolved_search_controller_recall_advantage": _u_ctrl("unresolved_search"),
     }
 
     shaping_resilience = {
