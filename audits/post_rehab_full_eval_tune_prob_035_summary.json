@@ -1,9 +1,9 @@
 {
-  "note": "Post-rehab full evaluation on the discrete-attention (hard_attention) checkpoint. Supersedes the pre-rehab soft-attention summaries, which were computed on a non-functional model (recurrent collapsed to uniform attention, lost to baseline).",
+  "note": "Post-rehab consolidation full eval on the discrete-attention checkpoint. Supersedes pre-rehab soft-attention summaries (computed on a non-functional model).",
   "config_base": "configs/tune_prob_035.yaml",
   "checkpoint": "outputs/tune_prob_035/experiment.pt",
   "report_path": "outputs/tune_prob_035/evaluation_report.json",
-  "report_sha256": "5bd6eae54381b65505576035440991606bbbba2072c2854e1df73b86ef0b8ea8",
+  "report_sha256": "04d79e56b947d7d80b982b3aa64927eba4cd325f68e707a9d7be8d113ef66549",
   "recurrent_accuracy": 0.44179687500000003,
   "static_accuracy": 0.16660156250000002,
   "recurrent_target_inspected_rate": 0.38691406250000004,
@@ -18,6 +18,7 @@
     "explicit_attention_modeling": true,
     "learned_self_modeling_of_attention": false,
     "natural_language_reportability": true,
+    "perturbational_complexity": true,
     "reduced_shaping_resilience": true,
     "structured_reportability": true,
     "structured_reportability_uncertainty_and_allocation_error": true
@@ -27,7 +28,20 @@
     "intervention_supported": true,
     "multi_seed_supported": true,
     "checkpoint_family_verdict": "robust",
-    "note": "robust across seeds and the default + 0.25 reduced-shaping checkpoint family"
+    "zero_shaping_stress_supported": false,
+    "note": "robust across seeds and the default + 0.25 reduced-shaping checkpoint family; complete zero-shaping is a separate failing stress test"
+  },
+  "stage4a": {
+    "supported": true,
+    "native_cell_accuracy": 0.9890625
+  },
+  "stage4b": {
+    "supported": false,
+    "disposition": "Not supported in base config (causal feedback path disabled). Emergence is Phase 3."
+  },
+  "stage5_cue_switch": {
+    "recurrent_switch_accuracy": 0.25,
+    "baseline_switch_accuracy": 0.0
   },
   "stage6a": {
     "supported": true,
@@ -48,19 +62,7 @@
       "revisit_unresolved": -0.003038167953491211,
       "allocation_error": -0.002278625965118408
     },
-    "disposition": "bounded positive: controller state beats capacity-matched observation on positive recall for all four gated signals, but revisit/allocation_error have marginally negative accuracy advantage, so the stricter capacity audit does not pass. Provisional, not robust."
-  },
-  "stage4a": {
-    "supported": true,
-    "native_cell_accuracy": 0.9890625
-  },
-  "stage4b": {
-    "supported": false,
-    "disposition": "Not supported in the base config (Stage 4B causal feedback path disabled). Learned-self-model emergence is studied separately (roadmap Phase 3)."
-  },
-  "stage5_cue_switch": {
-    "recurrent_switch_accuracy": 0.25,
-    "baseline_switch_accuracy": 0.0
+    "disposition": "bounded positive: controller state beats capacity-matched observation on positive recall for all four gated signals, but revisit/allocation_error have marginally negative accuracy advantage, so the stricter capacity audit does not pass. Provisional."
   },
   "stage7": {
     "supported": true,
@@ -70,23 +72,21 @@
   "reduced_shaping": {
     "weight_0_25_accuracy": 0.3365234375,
     "weight_0_0_accuracy": 0.18671875000000002,
-    "disposition": "Bounded resilience at weight 0.25 (acc clearly above static); complete zero-shaping collapses to ~static accuracy, so complete zero-shaping is NOT supported (known weakness). The current min_accuracy=0.15 threshold is too lenient and is flagged for calibration."
+    "bounded_supported": true,
+    "zero_weight_supported": false,
+    "disposition": "Bounded resilience at weight 0.25 (acc 0.34 > static); complete zero-shaping collapses to ~static (0.19) and is NOT supported. min_accuracy threshold raised to 0.25 (above static)."
+  },
+  "perturbational_complexity": {
+    "supported": true,
+    "recurrent_recovery_ratio": 0.4195,
+    "recurrent_attention_propagation": 0.6559,
+    "feedforward_attention_propagation": 0.129,
+    "disposition": "First non-reportability evidence family. Rich-but-recoverable dynamics: perturbation propagates to later attention far more than a no-recurrence control, and the state partially recovers unlike a frozen-state control. Bounded support, single checkpoint."
   },
   "negative_controls": {
     "failed_as_intended": true,
     "shuffle_feedback_accuracy_drop": 0.2697265625,
     "feedforward_summary_accuracy_drop": 0.21425781249999998
   },
-  "comparators_failed_as_intended": true,
-  "perturbational_complexity": {
-    "supported": true,
-    "rich_but_recoverable": true,
-    "integration_exceeds_feedforward": true,
-    "recovery_exceeds_freeze": true,
-    "recurrent_recovery_ratio": 0.4195,
-    "recurrent_attention_propagation": 0.6559,
-    "feedforward_attention_propagation": 0.129,
-    "freeze_recovery_ratio": 0.0,
-    "disposition": "First non-reportability evidence family. Perturbing the recurrent controller state produces rich-but-recoverable dynamics: the perturbation propagates to later attention (KL 0.66) far more than under a no-recurrence feedforward control (0.13), while the state trajectory partially recovers (0.42) unlike the rigid frozen-state control (0.0). Bounded support on a single checkpoint."
-  }
+  "comparators_failed_as_intended": true
 }

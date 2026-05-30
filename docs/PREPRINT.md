@@ -271,18 +271,17 @@ The stronger claim should still be stated carefully. The current evidence suppor
 
 - recurrence improves attention regulation,
 - controller state predicts future allocation and can be probed and perturbed in ways consistent with a bounded Stage 3 explicit-attention-modeling claim,
-- the model tracks inspected history explicitly through an engineered self-state scaffold,
-- a separate hidden-state-only self-model route can learn inspected-history structure and causally feed into attention selection on fresh Stage 4B-trained checkpoints,
-- structured internal contents are available for bounded report,
-- changed-priority reallocation can be trained successfully.
+- the model tracks inspected history explicitly through an engineered self-state scaffold (Stage 4A),
+- structured internal contents are available for bounded report (Stage 6A, capacity-audited),
+- changed-priority reallocation can be trained successfully (Stage 5),
+- a first non-reportability evidence family: perturbing the recurrent state produces rich-but-recoverable dynamics that propagate far more than a no-recurrence control and recover unlike a frozen-state control (perturbational branch, bounded support).
 
 It does **not yet** support:
 
-- robust multi-checkpoint generalization of the Stage 4B learned-self-model claim beyond the fresh feedback-trained closeout setting,
-- self-modeling that emerges without a direct self-model objective,
-- a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability,
+- the Stage 4B learned-self-model *causal feedback* claim (the path is disabled in the base config because it destabilises the discrete-glimpse base task) or self-modeling that emerges without a direct self-model objective,
+- a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability (positive controller-state recall advantage but not a clean accuracy-guarded capacity audit),
 - faithful external API LLM or VLM reports from tokenized or minimally labeled visual internal state,
-- unity/binding, counterfactual-access, or perturbational-complexity evidence,
+- unity/binding or counterfactual-access evidence, or robust (multi-seed, cross-system) perturbational complexity beyond the current bounded result,
 - cross-architecture or cross-benchmark replication,
 - multi-theory convergence across consciousness-theory branches,
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
