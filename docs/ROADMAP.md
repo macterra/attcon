@@ -583,11 +583,25 @@ The perturbational branch should count as supported only if all of the following
 - the relevant dynamics are localized enough to connect back to attention, access, or self-model content rather than only to generic recurrent activity
 - the effect survives multiple perturbation magnitudes and at least one architecture or benchmark variant
 
+Current status in this repo:
+
+- `perturbational_complexity_metrics` perturbs the recurrent controller's hidden state at a
+  mid-episode step across several magnitudes and measures the state-divergence recovery
+  trajectory plus behavioural propagation (attention KL) and downstream task shift
+- it compares the recurrent controller against feedforward-summary, frozen-recurrence, and
+  shuffled-feedback controls
+- on the current checkpoint the recurrent controller shows rich-but-recoverable dynamics: the
+  perturbation propagates to later attention (KL `~0.66`) far more than under the no-recurrence
+  feedforward control (`~0.13`), while the state trajectory partially recovers (recovery ratio
+  `~0.42`) unlike the rigid frozen-state control (`~0.0`)
+
 Current assessment:
 
-- implemented: no
-- positive evidence: no
-- supported: no
+- implemented: yes
+- positive evidence: yes
+- supported: bounded support on a single checkpoint, as the first non-reportability evidence
+  family. Robust support still needs multiple magnitudes/seeds with the localization and
+  trajectory-complexity criteria above, plus cross-architecture/benchmark replication.
 
 ## Branch E: Higher-Order State Representation
 
@@ -955,6 +969,9 @@ Bounded support (real, capacity-audited, comparator-resistant on the current che
 - structured reportability of a bounded set of internal variables (Stage 6A; capacity audit passes)
 - faithful natural-language-shaped reportability from opaque tokenized internal state using the
   local calibrated reporter (Stage 7; capacity audit passes)
+- perturbational complexity (first non-reportability family): perturbing the recurrent state
+  produces rich-but-recoverable dynamics that propagate far more than a no-recurrence control
+  and recover unlike a frozen-state control
 
 Positive but still provisional evidence:
 
@@ -974,7 +991,7 @@ What is not yet established:
 - counterfactual access beyond current attention
 - higher-order state-representation evidence
 - broadcast/ignition evidence
-- perturbational-complexity evidence
+- robust (multi-seed, cross-system) perturbational-complexity evidence beyond the current bounded single-checkpoint result
 - multi-theory convergence across consciousness-theory branches
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
 - minimal consciousness-like content

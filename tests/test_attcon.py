@@ -1612,6 +1612,11 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
             self.assertIn("reduced_shaping_resilience", report["evidence"])
+            self.assertIn("perturbational", report)
+            self.assertIn("perturbational_complexity", report["evidence"])
+            self.assertIn("conditions", report["perturbational"])
+            for cond in ("recurrent", "feedforward_summary", "freeze_recurrence"):
+                self.assertIn(cond, report["perturbational"]["conditions"])
             explicit_attention = report["evidence"]["explicit_attention_modeling"]
             self.assertIn("intervention_supported", explicit_attention)
             self.assertIn("reduced_shaping_supported", explicit_attention)

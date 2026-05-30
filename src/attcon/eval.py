@@ -2513,6 +2513,171 @@ def intervention_test_metrics(
     }
 
 
+def _perturbational_response(
+    model,
+    batch,
+    task_cfg: TaskConfig,
+    device: torch.device,
+    *,
+    step: int,
+    noise: torch.Tensor,
+    ablation: dict[str, bool] | None,
+) -> dict[str, float]:
+    """Perturb controller hidden state at one step and measure the recovery trajectory."""
+
+    with torch.no_grad():
+        base = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            ablation=ablation,
+        )
+        perturbed = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            ablation=ablation,
+            intervention={"step": step, "delta": noise},
+        )
+
+    base_states = base["controller_state_seq"]
+    pert_states = perturbed["controller_state_seq"]
+    # State-divergence trajectory from the perturbed step to the end of the episode. The
+    # perturbation (added at `step`) first appears in the stored state at index step+1, so
+    # recovery is measured from the divergence PEAK rather than the perturbed-step value
+    # (which is still ~0) to avoid dividing by a near-zero immediate effect.
+    divergence = (pert_states - base_states).norm(dim=-1).mean(dim=0)  # (steps,)
+    post = divergence[step:]
+    peak = post.max().item()
+    final = post[-1].item()
+    immediate = post[0].item()
+    recovery_ratio = (peak - final) / max(peak, 1e-6)
+    # Behavioural propagation: how much the perturbation moves attention on later steps.
+    base_attn = base["attention_seq"]
+    pert_attn = perturbed["attention_seq"]
+    if step + 1 < task_cfg.num_steps:
+        attention_propagation = symmetric_kl(
+            base_attn[:, step + 1 :], pert_attn[:, step + 1 :]
+        ).mean().item()
+    else:
+        attention_propagation = 0.0
+    # Downstream integration: change in the final task prediction distribution.
+    base_probs = torch.softmax(base["logits_seq"][:, -1], dim=-1)
+    pert_probs = torch.softmax(perturbed["logits_seq"][:, -1], dim=-1)
+    task_shift = (pert_probs - base_probs).abs().sum(dim=-1).mean().item() / 2.0
+    return {
+        "immediate_divergence": immediate,
+        "final_divergence": final,
+        "peak_divergence": peak,
+        "recovery_ratio": recovery_ratio,
+        "attention_propagation": attention_propagation,
+        "task_distribution_shift": task_shift,
+    }
+
+
+def perturbational_complexity_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Stage-independent (non-reportability) perturbational-complexity branch.
+
+    Perturbs controller hidden state with noise at one step and asks whether the recurrent
+    controller produces rich-but-recoverable dynamics (the perturbation propagates to later
+    behaviour but the state trajectory partially recovers), and whether that integrated
+    response degrades under feedforward / frozen / shuffled-feedback controls.
+    """
+
+    pcfg = cfg["evaluation"].get("perturbational", {"enabled": True})
+    if not pcfg.get("enabled", False):
+        return {}
+
+    set_seed(seed)
+    generator = make_generator(seed, device)
+    batch_size = pcfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"]) * task_cfg.num_types
+    magnitudes = pcfg.get("magnitudes", [0.5, 1.0, 2.0])
+    step = pcfg.get("step", max(task_cfg.num_steps // 2, 1))
+    min_recovery = pcfg.get("min_recovery_ratio", 0.1)
+    min_propagation = pcfg.get("min_attention_propagation", 0.05)
+
+    batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    with torch.no_grad():
+        base = model(
+            batch.scene, batch.cue, target=batch.target, target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+        )
+    hidden_std = base["controller_state_seq"][:, step].std(dim=-1, keepdim=True).clamp_min(1e-3)
+    hidden_dim = base["controller_state_seq"].shape[-1]
+
+    conditions = {
+        "recurrent": None,
+        "feedforward_summary": {"feedforward_summary": True},
+        "freeze_recurrence": {"freeze_recurrence": True},
+        "shuffle_feedback": {"shuffle_feedback": True},
+    }
+    per_condition: dict[str, Any] = {}
+    for name, ablation in conditions.items():
+        per_magnitude = []
+        for magnitude in magnitudes:
+            unit = torch.randn(batch_size, hidden_dim, generator=generator, device=device)
+            noise = unit * hidden_std * float(magnitude)
+            response = _perturbational_response(
+                model, batch, task_cfg, device, step=step, noise=noise, ablation=ablation
+            )
+            response["magnitude"] = float(magnitude)
+            per_magnitude.append(response)
+        per_condition[name] = {
+            "per_magnitude": per_magnitude,
+            "mean_recovery_ratio": sum(r["recovery_ratio"] for r in per_magnitude) / len(per_magnitude),
+            "mean_attention_propagation": sum(r["attention_propagation"] for r in per_magnitude) / len(per_magnitude),
+            "mean_task_distribution_shift": sum(r["task_distribution_shift"] for r in per_magnitude) / len(per_magnitude),
+        }
+
+    rec = per_condition["recurrent"]
+    ff = per_condition["feedforward_summary"]
+    freeze = per_condition["freeze_recurrence"]
+    # Rich-but-recoverable: the perturbation propagates to later behaviour (non-trivial) and the
+    # state trajectory partially recovers (not a rigid reset and not unrecoverable collapse).
+    rich_but_recoverable = (
+        rec["mean_recovery_ratio"] >= min_recovery
+        and rec["mean_recovery_ratio"] < 0.999
+        and rec["mean_attention_propagation"] >= min_propagation
+    )
+    # Integration depends on the recurrent state: the no-recurrence (feedforward) control
+    # propagates the perturbation far less, while the frozen-state control cannot recover.
+    integration_exceeds_feedforward = (
+        rec["mean_attention_propagation"] > ff["mean_attention_propagation"]
+    )
+    recovery_exceeds_freeze = rec["mean_recovery_ratio"] > freeze["mean_recovery_ratio"]
+    return {
+        "step": step,
+        "magnitudes": list(magnitudes),
+        "conditions": per_condition,
+        "thresholds": {
+            "min_recovery_ratio": min_recovery,
+            "min_attention_propagation": min_propagation,
+        },
+        "rich_but_recoverable": rich_but_recoverable,
+        "integration_exceeds_feedforward": integration_exceeds_feedforward,
+        "recovery_exceeds_freeze": recovery_exceeds_freeze,
+        "recurrent_mean_recovery_ratio": rec["mean_recovery_ratio"],
+        "recurrent_mean_attention_propagation": rec["mean_attention_propagation"],
+        "feedforward_mean_attention_propagation": ff["mean_attention_propagation"],
+        "freeze_mean_recovery_ratio": freeze["mean_recovery_ratio"],
+        "supported": (
+            rich_but_recoverable
+            and integration_exceeds_feedforward
+            and recovery_exceeds_freeze
+        ),
+    }
+
+
 def _targets_for_cues(batch, cues: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     """Recover target positions and digits for arbitrary cues on a fixed batch of scenes."""
 
@@ -4377,6 +4542,24 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": nl_report.get("supported", False),
     }
 
+    perturbational = report.get("perturbational", {})
+    perturbational_complexity = {
+        "implemented": bool(perturbational),
+        # Non-reportability evidence family (perturbational / PCI-style): does perturbing the
+        # integrated controller state produce rich-but-recoverable dynamics that degrade under
+        # a no-recurrence control?
+        "supported": perturbational.get("supported", False),
+        "rich_but_recoverable": perturbational.get("rich_but_recoverable", False),
+        "integration_exceeds_feedforward": perturbational.get("integration_exceeds_feedforward", False),
+        "recurrent_mean_recovery_ratio": perturbational.get("recurrent_mean_recovery_ratio", 0.0),
+        "recurrent_mean_attention_propagation": perturbational.get(
+            "recurrent_mean_attention_propagation", 0.0
+        ),
+        "feedforward_mean_attention_propagation": perturbational.get(
+            "feedforward_mean_attention_propagation", 0.0
+        ),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
@@ -4392,6 +4575,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "natural_language_reportability": natural_language_reportability,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
+        "perturbational_complexity": perturbational_complexity,
     }
 
 
@@ -4917,6 +5101,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["predictive_probe"] = stage3_bundle["predictive_probe"]
     report["intervention_test"] = stage3_bundle["intervention_test"]
     report["stage3_multi_seed"] = stage3_bundle["stage3_multi_seed"]
+    report["perturbational"] = perturbational_complexity_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9770,
+    )
 
     for name in eval_cfg["ablations"]:
         ablation = {name: True}
