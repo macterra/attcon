@@ -977,6 +977,12 @@ Positive but still provisional evidence:
 
 - structured reportability of uncertainty and allocation error (Stage 6B): positive controller-state
   recall advantage on all four gated signals, but the accuracy-guarded capacity audit does not pass
+- Stage 4B emergence (`scripts/stage4b_emergence.py`): a weak cell-level inspection-history self-model
+  emerges from the search task alone (raw hidden state beats a previous-observation baseline on the
+  inspection map, BCE advantage `~+0.09`), and the dedicated self-model objective adds almost nothing
+  to it (`~+0.005`), so the representation is task-induced, not supervision-induced. But target-level
+  inspection is not encoded better than observation, so emergence is partial and weak. This is bounded
+  evidence against the "supervised self-model required everywhere" global falsifier, not a strong claim.
 - external API LLM and VLM natural-language reportability infrastructure
 
 What is not yet established:

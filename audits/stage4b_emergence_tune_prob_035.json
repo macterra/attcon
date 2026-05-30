@@ -1,0 +1,19 @@
+{
+  "task_only_recurrent_accuracy": 0.525,
+  "emergent_self_model_probe": {
+    "hidden_cell_accuracy_advantage": 0.009461820125579834,
+    "hidden_cell_bce_advantage": 0.0867161750793457,
+    "hidden_target_accuracy_advantage": -0.07530385255813599,
+    "hidden_target_positive_recall_advantage": -0.2721145749092102
+  },
+  "supervised_base_self_model_probe": {
+    "hidden_cell_accuracy_advantage": 0.011909723281860352,
+    "hidden_cell_bce_advantage": 0.09129413962364197,
+    "hidden_target_accuracy_advantage": -0.0607638955116272,
+    "hidden_target_positive_recall_advantage": -0.2644003629684448
+  },
+  "interpretation": "Nuanced. A WEAK cell-level inspection-history self-model emerges from the search task alone: the raw hidden state beats a previous-observation baseline on the full inspection map (BCE advantage ~+0.09; accuracy advantage only ~+0.01, near noise). The dedicated self-model objective adds almost nothing to this representation (supervision_cell_bce_advantage_gain ~0), so it is task-induced rather than supervision-induced -- the positive direction for the global falsifier. However TARGET-level inspection is NOT encoded better than observation in either model (negative advantage), so the emergent self-model is partial and weak. Bounded evidence against the \"supervised self-model required everywhere\" falsifier, not a strong emergence claim.",
+  "cell_inspection_self_model_emerges_task_only": true,
+  "target_inspection_self_model_emerges_task_only": false,
+  "supervision_cell_bce_advantage_gain": 0.004577964544296265
+}
