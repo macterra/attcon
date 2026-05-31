@@ -1532,6 +1532,14 @@ class AttentionControlTests(unittest.TestCase):
                         "epochs": 10,
                         "learning_rate": 0.05,
                     },
+                    "noise_floor": {
+                        "enabled": True,
+                        "train_batches": 2,
+                        "test_batches": 1,
+                        "epochs": 5,
+                        "learning_rate": 0.05,
+                        "permutations": 2,
+                    },
                     "self_modeling": {
                         "enabled": True,
                         "train_batches": 2,
@@ -1632,6 +1640,13 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("conditions", report["perturbational"])
             for cond in ("recurrent", "feedforward_summary", "freeze_recurrence"):
                 self.assertIn(cond, report["perturbational"]["conditions"])
+            self.assertIn("noise_floor", report)
+            self.assertIn("current_attended_cell", report["noise_floor"])
+            self.assertIn(
+                "permuted_label_advantage_p95",
+                report["noise_floor"]["current_attended_cell"],
+            )
+            self.assertTrue(report["evidence"]["structured_reportability"]["noise_floor_enabled"])
             explicit_attention = report["evidence"]["explicit_attention_modeling"]
             self.assertIn("intervention_supported", explicit_attention)
             self.assertIn("reduced_shaping_supported", explicit_attention)

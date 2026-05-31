@@ -34,7 +34,11 @@ Tracked artifacts:
 - **Stage 4B learned self-model feedback**: not supported in the base config (feedback path off
   by design; emergence is Phase 3).
 - **Stage 5 cue-switch**: supported (recurrent switch accuracy `0.25` vs baseline `0.0`).
-- **Stage 6A structured reportability**: supported, capacity audit passes.
+- **Stage 6A structured reportability**: supported, capacity audit passes. An empirical
+  permuted-label noise floor (`noise_floor_metrics`) now backs the strong report signals: the
+  real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above
+  the permuted-label p95 floor (`~0.004`, `~0.003`), so the claim is significant rather than a
+  probe-capacity artifact. This replaces the hardcoded directional thresholds for those signals.
 - **Stage 6B uncertainty / allocation error**: bounded / provisional. Positive controller-state
   recall advantage on all four gated signals; the accuracy-guarded capacity audit does not pass
   (`revisit_unresolved`, `allocation_error` have marginally negative accuracy advantage).
