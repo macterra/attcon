@@ -318,9 +318,13 @@ Current status in this repo:
 
 Current assessment:
 
-- implemented: yes, for the bounded hidden-self-model feedback path
-- positive evidence: yes
-- supported: bounded engineering support, for a freshly trained checkpoint using the Stage 4B feedback objective
+- implemented: yes, for the hidden-self-model feedback path (available but disabled in the base config)
+- positive evidence: not on the current base checkpoint
+- supported: no. The base config disables the Stage 4B causal policy-feedback path because, with the
+  discrete glimpse readout, that path destabilises base-task learning. `learned_self_modeling` is
+  therefore not supported on the base checkpoint. The architecture can still learn a hidden self-model
+  under the dedicated objective, but that is now studied as its own experiment rather than baked into
+  the base benchmark.
 - consciousness-evidence status: not supported until comparable self-modeling appears without a direct self-model objective and survives comparator tests
 
 Interpretation:
@@ -579,11 +583,25 @@ The perturbational branch should count as supported only if all of the following
 - the relevant dynamics are localized enough to connect back to attention, access, or self-model content rather than only to generic recurrent activity
 - the effect survives multiple perturbation magnitudes and at least one architecture or benchmark variant
 
+Current status in this repo:
+
+- `perturbational_complexity_metrics` perturbs the recurrent controller's hidden state at a
+  mid-episode step across several magnitudes and measures the state-divergence recovery
+  trajectory plus behavioural propagation (attention KL) and downstream task shift
+- it compares the recurrent controller against feedforward-summary, frozen-recurrence, and
+  shuffled-feedback controls
+- on the current checkpoint the recurrent controller shows rich-but-recoverable dynamics: the
+  perturbation propagates to later attention (KL `~0.66`) far more than under the no-recurrence
+  feedforward control (`~0.13`), while the state trajectory partially recovers (recovery ratio
+  `~0.42`) unlike the rigid frozen-state control (`~0.0`)
+
 Current assessment:
 
-- implemented: no
-- positive evidence: no
-- supported: no
+- implemented: yes
+- positive evidence: yes
+- supported: bounded support on a single checkpoint, as the first non-reportability evidence
+  family. Robust support still needs multiple magnitudes/seeds with the localization and
+  trajectory-complexity criteria above, plus cross-architecture/benchmark replication.
 
 ## Branch E: Higher-Order State Representation
 
@@ -932,20 +950,39 @@ Cross-system replication:
 
 ## Current Status Snapshot
 
-Bounded support:
+Benchmark foundation note: the controller uses a **discrete glimpse readout** (soft attention
+policy, but each glimpse reads the single most-attended cell). Under the earlier fully-soft
+recipe the recurrent controller did not learn the task (it collapsed to uniform attention and
+lost to the static baseline), so every "supported" label from that era was a probe artifact.
+The dispositions below are from the regenerated discrete-attention full eval
+(`audits/post_rehab_full_eval_tune_prob_035_summary.json`).
+
+Bounded support (real, capacity-audited, comparator-resistant on the current checkpoint):
 
 - attention
-- closed-loop attention control
-- explicit attention modeling, with a known `0.25` reduced-shaping weakness
-- engineered self-state tracking, as a bounded Stage 4A scaffold
-- Stage 4B: bounded engineering support for hidden-self-model feedback on a fresh checkpoint trained with the feedback objective; consciousness-relevant self-model emergence is not established
+- closed-loop attention control (recurrent acc `0.44` vs static `0.17`; all negative controls
+  and comparators fail as intended, including `shuffle_feedback` accuracy drop `0.27`)
+- explicit attention modeling — **robust** across seeds and the default + `0.25` reduced-shaping
+  checkpoint family; complete zero-shaping is a known weakness (collapses to `~0.19` ≈ static)
+- engineered self-state tracking (Stage 4A; native cell accuracy `~0.99`)
 - flexible reallocation under changed priorities in the current cue-switch setting
-- structured reportability of a bounded set of internal variables
-- faithful natural-language-shaped reportability from opaque tokenized internal state using the local calibrated reporter
+- structured reportability of a bounded set of internal variables (Stage 6A; capacity audit passes)
+- faithful natural-language-shaped reportability from opaque tokenized internal state using the
+  local calibrated reporter (Stage 7; capacity audit passes)
+- perturbational complexity (first non-reportability family): perturbing the recurrent state
+  produces rich-but-recoverable dynamics that propagate far more than a no-recurrence control
+  and recover unlike a frozen-state control
 
 Positive but still provisional evidence:
 
-- structured reportability of uncertainty and allocation error
+- structured reportability of uncertainty and allocation error (Stage 6B): positive controller-state
+  recall advantage on all four gated signals, but the accuracy-guarded capacity audit does not pass
+- Stage 4B emergence (`scripts/stage4b_emergence.py`): a weak cell-level inspection-history self-model
+  emerges from the search task alone (raw hidden state beats a previous-observation baseline on the
+  inspection map, BCE advantage `~+0.09`), and the dedicated self-model objective adds almost nothing
+  to it (`~+0.005`), so the representation is task-induced, not supervision-induced. But target-level
+  inspection is not encoded better than observation, so emergence is partial and weak. This is bounded
+  evidence against the "supervised self-model required everywhere" global falsifier, not a strong claim.
 - external API LLM and VLM natural-language reportability infrastructure
 
 What is not yet established:
@@ -960,7 +997,7 @@ What is not yet established:
 - counterfactual access beyond current attention
 - higher-order state-representation evidence
 - broadcast/ignition evidence
-- perturbational-complexity evidence
+- robust (multi-seed, cross-system) perturbational-complexity evidence beyond the current bounded single-checkpoint result
 - multi-theory convergence across consciousness-theory branches
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
 - minimal consciousness-like content

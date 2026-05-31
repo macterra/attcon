@@ -1,0 +1,92 @@
+{
+  "note": "Post-rehab consolidation full eval on the discrete-attention checkpoint. Supersedes pre-rehab soft-attention summaries (computed on a non-functional model).",
+  "config_base": "configs/tune_prob_035.yaml",
+  "checkpoint": "outputs/tune_prob_035/experiment.pt",
+  "report_path": "outputs/tune_prob_035/evaluation_report.json",
+  "report_sha256": "04d79e56b947d7d80b982b3aa64927eba4cd325f68e707a9d7be8d113ef66549",
+  "recurrent_accuracy": 0.44179687500000003,
+  "static_accuracy": 0.16660156250000002,
+  "recurrent_target_inspected_rate": 0.38691406250000004,
+  "static_target_inspected_rate": 0.07773437500000001,
+  "evidence_supported": {
+    "causal_attention_intervention": true,
+    "closed_loop_adaptation": true,
+    "cue_dependence": true,
+    "cue_switch_adaptation": true,
+    "dissociation": true,
+    "engineered_self_state_tracking": true,
+    "explicit_attention_modeling": true,
+    "learned_self_modeling_of_attention": false,
+    "natural_language_reportability": true,
+    "perturbational_complexity": true,
+    "reduced_shaping_resilience": true,
+    "structured_reportability": true,
+    "structured_reportability_uncertainty_and_allocation_error": true
+  },
+  "stage3": {
+    "predictive_supported": true,
+    "intervention_supported": true,
+    "multi_seed_supported": true,
+    "checkpoint_family_verdict": "robust",
+    "zero_shaping_stress_supported": false,
+    "note": "robust across seeds and the default + 0.25 reduced-shaping checkpoint family; complete zero-shaping is a separate failing stress test"
+  },
+  "stage4a": {
+    "supported": true,
+    "native_cell_accuracy": 0.9890625
+  },
+  "stage4b": {
+    "supported": false,
+    "disposition": "Not supported in base config (causal feedback path disabled). Emergence is Phase 3."
+  },
+  "stage5_cue_switch": {
+    "recurrent_switch_accuracy": 0.25,
+    "baseline_switch_accuracy": 0.0
+  },
+  "stage6a": {
+    "supported": true,
+    "capacity_audit_passed": true
+  },
+  "stage6b": {
+    "supported_by_recall": true,
+    "capacity_audit_passed": false,
+    "gated_controller_recall_advantages": {
+      "current_wrong_candidate": 0.2016708254814148,
+      "wrong_candidate_history": 0.03333330154418945,
+      "revisit_unresolved": 0.061484407633543015,
+      "allocation_error": 0.15428900718688965
+    },
+    "gated_controller_accuracy_advantages": {
+      "current_wrong_candidate": 0.05164933204650879,
+      "wrong_candidate_history": 0.013834655284881592,
+      "revisit_unresolved": -0.003038167953491211,
+      "allocation_error": -0.002278625965118408
+    },
+    "disposition": "bounded positive: controller state beats capacity-matched observation on positive recall for all four gated signals, but revisit/allocation_error have marginally negative accuracy advantage, so the stricter capacity audit does not pass. Provisional."
+  },
+  "stage7": {
+    "supported": true,
+    "content_supported": true,
+    "capacity_audit_passed": true
+  },
+  "reduced_shaping": {
+    "weight_0_25_accuracy": 0.3365234375,
+    "weight_0_0_accuracy": 0.18671875000000002,
+    "bounded_supported": true,
+    "zero_weight_supported": false,
+    "disposition": "Bounded resilience at weight 0.25 (acc 0.34 > static); complete zero-shaping collapses to ~static (0.19) and is NOT supported. min_accuracy threshold raised to 0.25 (above static)."
+  },
+  "perturbational_complexity": {
+    "supported": true,
+    "recurrent_recovery_ratio": 0.4195,
+    "recurrent_attention_propagation": 0.6559,
+    "feedforward_attention_propagation": 0.129,
+    "disposition": "First non-reportability evidence family. Rich-but-recoverable dynamics: perturbation propagates to later attention far more than a no-recurrence control, and the state partially recovers unlike a frozen-state control. Bounded support, single checkpoint."
+  },
+  "negative_controls": {
+    "failed_as_intended": true,
+    "shuffle_feedback_accuracy_drop": 0.2697265625,
+    "feedforward_summary_accuracy_drop": 0.21425781249999998
+  },
+  "comparators_failed_as_intended": true
+}

@@ -13,25 +13,30 @@ model:
   hidden_size: 32
   cue_embedding_dim: 8
   scene_embedding_dim: 16
-  temperature: 0.25
+  temperature: 1.0
+  # Discrete (straight-through top-1) glimpse readout; see configs/minimal.yaml.
+  hard_attention: true
 
 training:
   batch_size: 128
-  train_steps: 500
+  train_steps: 5000
   val_batches: 20
-  val_interval: 100
-  log_interval: 25
+  val_interval: 500
+  log_interval: 100
   learning_rate: 0.001
   weight_decay: 0.0
   aux_loss_weight: 0.15
-  attention_target_weight: 1.0
-  stepwise_attention_target_weight: 0.25
+  attention_target_weight: 3.0
+  stepwise_attention_target_weight: 3.0
   cue_switch_transition_weight: 0.2
   attention_entropy_weight: 0.0
   cue_switch_probability: 0.35
   cue_switch_step: 3
+  # Stage 4A engineered self-state native report head (see configs/minimal.yaml).
+  self_model_weight: 0.5
   hidden_self_model_weight: 0.5
-  self_model_policy_feedback_weight: 1.0
+  # Stage 4B causal feedback path studied separately; off in the base config.
+  self_model_policy_feedback_weight: 0.0
   self_model_policy_feedback_scale: 4.0
 
 evaluation:
@@ -58,6 +63,13 @@ evaluation:
     enabled: true
     num_seeds: 3
     seed_stride: 100
+  perturbational:
+    enabled: true
+    probe_scenes: 16
+    step: 2
+    magnitudes: [0.5, 1.0, 2.0]
+    min_recovery_ratio: 0.1
+    min_attention_propagation: 0.05
   cue_switch:
     enabled: true
     probe_scenes: 4
@@ -104,7 +116,7 @@ evaluation:
     enabled: true
     weights: [0.25, 0.0]
     training_overrides:
-      train_steps: 1500
+      train_steps: 3000
       self_model_weight: 0.0
       target_found_report_weight: 0.0
       relevant_region_report_weight: 0.0
@@ -112,7 +124,7 @@ evaluation:
       wrong_candidate_history_report_weight: 0.0
       allocation_error_report_weight: 0.0
     thresholds:
-      min_accuracy: 0.15
+      min_accuracy: 0.25
       min_temporal_reallocation: 0.02
       min_target_attention_gain: 0.0
   ablations:

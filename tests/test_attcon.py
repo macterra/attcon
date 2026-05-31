@@ -933,7 +933,7 @@ class AttentionControlTests(unittest.TestCase):
                     "intervention_alternate_target_gain_min_gap": -0.01,
                 },
                 "reduced_shaping": {
-                    "0.0": {
+                    "0.25": {
                         "stage3": {
                             "stage3_summary": {
                                 "single_run_supported": False,
@@ -947,7 +947,18 @@ class AttentionControlTests(unittest.TestCase):
                                 "intervention_alternate_target_gain_min_gap": -0.03,
                             }
                         }
-                    }
+                    },
+                    # Complete zero-shaping is a stress test excluded from the verdict.
+                    "0.0": {
+                        "stage3": {
+                            "stage3_summary": {
+                                "single_run_supported": False,
+                                "robust_supported": False,
+                                "failure_reasons": ["reduced_shaping_failed"],
+                                "bottleneck_gap": -0.9,
+                            }
+                        }
+                    },
                 },
             }
         )
@@ -957,10 +968,14 @@ class AttentionControlTests(unittest.TestCase):
         self.assertFalse(summary["supported"])
         self.assertEqual(summary["verdict"], "checkpoint_fragile")
         self.assertIn("intervention_instability", summary["failure_reasons"])
-        self.assertEqual(summary["bottleneck_family"], "reduced_shaping_0.0")
+        self.assertEqual(summary["bottleneck_family"], "reduced_shaping_0.25")
         self.assertEqual(summary["bottleneck_metric"], "predictive_top1_advantage_min_gap")
         self.assertEqual(summary["families"][0]["family"], "default")
-        self.assertEqual(summary["families"][1]["family"], "reduced_shaping_0.0")
+        self.assertEqual(summary["families"][1]["family"], "reduced_shaping_0.25")
+        # The zero-shaping family is tracked as a stress test, not a verdict family.
+        self.assertEqual(len(summary["stress_test_families"]), 1)
+        self.assertEqual(summary["stress_test_families"][0]["family"], "reduced_shaping_0.0")
+        self.assertFalse(summary["zero_shaping_stress_supported"])
 
     def test_run_nl_report_mode_scores_stage6b_fields(self) -> None:
         batch = generate_batch(2, self.task_cfg.num_steps, self.task_cfg)
@@ -1612,6 +1627,11 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("cue_switch_adaptation", report["evidence"])
             self.assertIn("causal_attention_intervention", report["evidence"])
             self.assertIn("reduced_shaping_resilience", report["evidence"])
+            self.assertIn("perturbational", report)
+            self.assertIn("perturbational_complexity", report["evidence"])
+            self.assertIn("conditions", report["perturbational"])
+            for cond in ("recurrent", "feedforward_summary", "freeze_recurrence"):
+                self.assertIn(cond, report["perturbational"]["conditions"])
             explicit_attention = report["evidence"]["explicit_attention_modeling"]
             self.assertIn("intervention_supported", explicit_attention)
             self.assertIn("reduced_shaping_supported", explicit_attention)

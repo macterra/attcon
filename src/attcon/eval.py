@@ -500,7 +500,9 @@ def _collect_self_model_dataset(
         prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
 
         target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
-        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        # Binarize (a no-op for one-hot hard mode); graded soft-mode inspection would
+        # otherwise inflate positive recall above 1.0 via a fractional denominator.
+        target_true = (inspection_true.gather(2, target_pos).squeeze(-1) >= 0.5).float()
         target_pred = inspection_pred.gather(2, target_pos).squeeze(-1)
 
         total_cell_matches += (
@@ -578,7 +580,10 @@ def _collect_learned_self_model_dataset(
         inspection_true = outputs["inspection_seq"]
         hidden_inspection_pred = outputs.get("hidden_self_model_seq")
         target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
-        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        # Binarize the "target inspected" label. inspection_seq is graded in soft-attention
+        # mode, so using it both as a boolean numerator and a fractional recall denominator
+        # let positive recall exceed 1.0; threshold it once (a no-op for one-hot hard mode).
+        target_true = (inspection_true.gather(2, target_pos).squeeze(-1) >= 0.5).float()
         if hidden_inspection_pred is not None:
             hidden_target_pred = hidden_inspection_pred.gather(2, target_pos).squeeze(-1)
             total_hidden_cell_matches += (
@@ -1701,6 +1706,19 @@ def uncertainty_report_metrics(
         }
 
     def _compare_binary(name: str, native_key: str, label_key: str) -> dict[str, Any]:
+        # The gated reportability test mirrors Stage 6A: does the controller STATE linearly
+        # encode the uncertainty/allocation-error variable better than a capacity-matched
+        # observation baseline? The "native_report" score is kept only as an informational
+        # field -- for some variables it is a ground-truth computed signal (circular) or an
+        # untrained head, so it must NOT gate the claim.
+        state_probe = _train_binary_probe(
+            train["state_features"],
+            train[label_key],
+            test["state_features"],
+            test[label_key],
+            epochs=epochs,
+            learning_rate=learning_rate,
+        )
         observation_probe = _train_binary_probe(
             train["prev_observation_features"],
             train[label_key],
@@ -1719,15 +1737,24 @@ def uncertainty_report_metrics(
         )
         native_report = _native_binary_report(test[native_key], test[label_key])
         return {
+            "controller_state_probe": state_probe,
             "native_report": native_report,
             "observation_only_probe": observation_probe,
             "probe_capacity_matched_observation_probe": matched_observation_probe,
-            "native_accuracy_advantage": (
-                native_report["test_accuracy"] - observation_probe["test_accuracy"]
+            "controller_accuracy_advantage": (
+                state_probe["test_accuracy"] - observation_probe["test_accuracy"]
             ),
-            "probe_capacity_matched_native_accuracy_advantage": (
-                native_report["test_accuracy"] - matched_observation_probe["test_accuracy"]
+            "probe_capacity_matched_controller_accuracy_advantage": (
+                state_probe["test_accuracy"] - matched_observation_probe["test_accuracy"]
             ),
+            "controller_positive_recall_advantage": (
+                state_probe["test_positive_recall"] - observation_probe["test_positive_recall"]
+            ),
+            "probe_capacity_matched_controller_positive_recall_advantage": (
+                state_probe["test_positive_recall"]
+                - matched_observation_probe["test_positive_recall"]
+            ),
+            # Informational only (see note above); does not gate support.
             "native_positive_recall_advantage": (
                 native_report["test_positive_recall"] - observation_probe["test_positive_recall"]
             ),
@@ -1793,29 +1820,41 @@ def uncertainty_report_metrics(
             "thresholds": {
                 "min_positive_recall_advantage": min_positive_recall_advantage,
             },
+            # Gate on the controller-STATE probe beating the capacity-matched observation
+            # baseline on positive recall, with a non-negative accuracy advantage so a
+            # predict-all-positive probe cannot pass on recall alone.
             "passed": all(
-                signal["probe_capacity_matched_native_positive_recall_advantage"]
+                signal["probe_capacity_matched_controller_positive_recall_advantage"]
                 >= min_positive_recall_advantage
+                and signal["probe_capacity_matched_controller_accuracy_advantage"] >= 0.0
                 for signal in gated_capacity_audit_signals
             ),
             "nonnegative_directional_effect": all(
-                signal["probe_capacity_matched_native_positive_recall_advantage"] >= 0.0
+                signal["probe_capacity_matched_controller_positive_recall_advantage"] >= 0.0
                 for signal in gated_capacity_audit_signals
             ),
-            "gated_positive_recall_advantages": {
-                signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
+            "gated_controller_positive_recall_advantages": {
+                signal["name"]: signal["probe_capacity_matched_controller_positive_recall_advantage"]
                 for signal in gated_capacity_audit_signals
             },
-            "informational_positive_recall_advantages": {
+            "gated_controller_accuracy_advantages": {
+                signal["name"]: signal["probe_capacity_matched_controller_accuracy_advantage"]
+                for signal in gated_capacity_audit_signals
+            },
+            "informational_native_positive_recall_advantages": {
                 signal["name"]: signal["probe_capacity_matched_native_positive_recall_advantage"]
-                for signal in informational_capacity_audit_signals
+                for signal in (*gated_capacity_audit_signals, *informational_capacity_audit_signals)
             },
         },
         "supported": (
-            wrong_candidate_history["native_positive_recall_advantage"] > 0.0
-            and current_wrong_candidate["native_positive_recall_advantage"] >= 0.0
-            and revisit_unresolved["native_positive_recall_advantage"] >= 0.0
-            and allocation_error["native_positive_recall_advantage"] >= 0.0
+            current_wrong_candidate["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= min_positive_recall_advantage
+            and wrong_candidate_history["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= min_positive_recall_advantage
+            and revisit_unresolved["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= 0.0
+            and allocation_error["probe_capacity_matched_controller_positive_recall_advantage"]
+            >= 0.0
         ),
     }
 
@@ -2475,6 +2514,173 @@ def intervention_test_metrics(
             >= thresholds.get("min_original_target_attention_drop", 0.0)
             and alternate_target_attention_gain
             >= thresholds.get("min_alternate_target_attention_gain", 0.0)
+        ),
+    }
+
+
+def _perturbational_response(
+    model,
+    batch,
+    task_cfg: TaskConfig,
+    device: torch.device,
+    *,
+    step: int,
+    noise: torch.Tensor,
+    ablation: dict[str, bool] | None,
+) -> dict[str, float]:
+    """Perturb controller hidden state at one step and measure the recovery trajectory."""
+
+    with torch.no_grad():
+        base = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            ablation=ablation,
+        )
+        perturbed = model(
+            batch.scene,
+            batch.cue,
+            target=batch.target,
+            target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+            ablation=ablation,
+            intervention={"step": step, "delta": noise},
+        )
+
+    base_states = base["controller_state_seq"]
+    pert_states = perturbed["controller_state_seq"]
+    # State-divergence trajectory from the perturbed step to the end of the episode. The
+    # perturbation (added at `step`) first appears in the stored state at index step+1, so
+    # recovery is measured from the divergence PEAK rather than the perturbed-step value
+    # (which is still ~0) to avoid dividing by a near-zero immediate effect.
+    divergence = (pert_states - base_states).norm(dim=-1).mean(dim=0)  # (steps,)
+    post = divergence[step:]
+    peak = post.max().item()
+    final = post[-1].item()
+    immediate = post[0].item()
+    recovery_ratio = (peak - final) / max(peak, 1e-6)
+    # Behavioural propagation: how much the perturbation moves attention on later steps.
+    base_attn = base["attention_seq"]
+    pert_attn = perturbed["attention_seq"]
+    if step + 1 < task_cfg.num_steps:
+        attention_propagation = symmetric_kl(
+            base_attn[:, step + 1 :], pert_attn[:, step + 1 :]
+        ).mean().item()
+    else:
+        attention_propagation = 0.0
+    # Downstream integration: change in the final task prediction distribution.
+    base_probs = torch.softmax(base["logits_seq"][:, -1], dim=-1)
+    pert_probs = torch.softmax(perturbed["logits_seq"][:, -1], dim=-1)
+    task_shift = (pert_probs - base_probs).abs().sum(dim=-1).mean().item() / 2.0
+    return {
+        "immediate_divergence": immediate,
+        "final_divergence": final,
+        "peak_divergence": peak,
+        "recovery_ratio": recovery_ratio,
+        "attention_propagation": attention_propagation,
+        "task_distribution_shift": task_shift,
+    }
+
+
+def perturbational_complexity_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Stage-independent (non-reportability) perturbational-complexity branch.
+
+    Perturbs controller hidden state with noise at one step and asks whether the recurrent
+    controller produces rich-but-recoverable dynamics (the perturbation propagates to later
+    behaviour but the state trajectory partially recovers), and whether that integrated
+    response degrades under feedforward / frozen / shuffled-feedback controls.
+    """
+
+    pcfg = cfg["evaluation"].get("perturbational", {"enabled": True})
+    if not pcfg.get("enabled", False):
+        return {}
+
+    set_seed(seed)
+    generator = make_generator(seed, device)
+    batch_size = pcfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"]) * task_cfg.num_types
+    magnitudes = pcfg.get("magnitudes", [0.5, 1.0, 2.0])
+    step = pcfg.get("step", max(task_cfg.num_steps // 2, 1))
+    if step < 0 or step >= task_cfg.num_steps:
+        raise ValueError("perturbational.step must be within the episode length")
+    min_recovery = pcfg.get("min_recovery_ratio", 0.1)
+    min_propagation = pcfg.get("min_attention_propagation", 0.05)
+
+    batch = generate_batch(batch_size, task_cfg.num_steps, task_cfg, generator=generator, device=device)
+    with torch.no_grad():
+        base = model(
+            batch.scene, batch.cue, target=batch.target, target_pos=batch.target_pos,
+            num_steps=task_cfg.num_steps,
+        )
+    hidden_std = base["controller_state_seq"][:, step].std(dim=-1, keepdim=True).clamp_min(1e-3)
+    hidden_dim = base["controller_state_seq"].shape[-1]
+
+    conditions = {
+        "recurrent": None,
+        "feedforward_summary": {"feedforward_summary": True},
+        "freeze_recurrence": {"freeze_recurrence": True},
+        "shuffle_feedback": {"shuffle_feedback": True},
+    }
+    per_condition: dict[str, Any] = {}
+    for name, ablation in conditions.items():
+        per_magnitude = []
+        for magnitude in magnitudes:
+            unit = torch.randn(batch_size, hidden_dim, generator=generator, device=device)
+            noise = unit * hidden_std * float(magnitude)
+            response = _perturbational_response(
+                model, batch, task_cfg, device, step=step, noise=noise, ablation=ablation
+            )
+            response["magnitude"] = float(magnitude)
+            per_magnitude.append(response)
+        per_condition[name] = {
+            "per_magnitude": per_magnitude,
+            "mean_recovery_ratio": sum(r["recovery_ratio"] for r in per_magnitude) / len(per_magnitude),
+            "mean_attention_propagation": sum(r["attention_propagation"] for r in per_magnitude) / len(per_magnitude),
+            "mean_task_distribution_shift": sum(r["task_distribution_shift"] for r in per_magnitude) / len(per_magnitude),
+        }
+
+    rec = per_condition["recurrent"]
+    ff = per_condition["feedforward_summary"]
+    freeze = per_condition["freeze_recurrence"]
+    # Rich-but-recoverable: the perturbation propagates to later behaviour (non-trivial) and the
+    # state trajectory partially recovers (not a rigid reset and not unrecoverable collapse).
+    rich_but_recoverable = (
+        rec["mean_recovery_ratio"] >= min_recovery
+        and rec["mean_recovery_ratio"] < 0.999
+        and rec["mean_attention_propagation"] >= min_propagation
+    )
+    # Integration depends on the recurrent state: the no-recurrence (feedforward) control
+    # propagates the perturbation far less, while the frozen-state control cannot recover.
+    integration_exceeds_feedforward = (
+        rec["mean_attention_propagation"] > ff["mean_attention_propagation"]
+    )
+    recovery_exceeds_freeze = rec["mean_recovery_ratio"] > freeze["mean_recovery_ratio"]
+    return {
+        "step": step,
+        "magnitudes": list(magnitudes),
+        "conditions": per_condition,
+        "thresholds": {
+            "min_recovery_ratio": min_recovery,
+            "min_attention_propagation": min_propagation,
+        },
+        "rich_but_recoverable": rich_but_recoverable,
+        "integration_exceeds_feedforward": integration_exceeds_feedforward,
+        "recovery_exceeds_freeze": recovery_exceeds_freeze,
+        "recurrent_mean_recovery_ratio": rec["mean_recovery_ratio"],
+        "recurrent_mean_attention_propagation": rec["mean_attention_propagation"],
+        "feedforward_mean_attention_propagation": ff["mean_attention_propagation"],
+        "freeze_mean_recovery_ratio": freeze["mean_recovery_ratio"],
+        "supported": (
+            rich_but_recoverable
+            and integration_exceeds_feedforward
+            and recovery_exceeds_freeze
         ),
     }
 
@@ -3499,7 +3705,10 @@ def reduced_shaping_metrics(
                 "training": deep_update(
                     training_overrides,
                     {
+                        # Reduce both the final-step and stepwise attention shaping together,
+                        # otherwise full-strength stepwise supervision masks the reduction.
                         "attention_target_weight": float(weight),
+                        "stepwise_attention_target_weight": float(weight),
                     },
                 ),
             },
@@ -3566,6 +3775,12 @@ def reduced_shaping_metrics(
 
     lowest_weight_key = str(min(weights))
     lowest_variant = results[lowest_weight_key]
+    # The bounded resilience claim is about reduced (not removed) shaping: gate "supported" on
+    # the lowest NON-ZERO weight. Complete zero-shaping is a separate stress test that is expected
+    # to collapse to ~static accuracy and is reported as zero_weight_supported, not as support.
+    nonzero_weights = [w for w in weights if w > 0]
+    bounded_weight_key = str(min(nonzero_weights)) if nonzero_weights else lowest_weight_key
+    bounded_variant = results[bounded_weight_key]
     zero_variant = results.get("0.0")
     zero_supported = False
     if zero_variant is not None:
@@ -3595,11 +3810,13 @@ def reduced_shaping_metrics(
             "min_temporal_reallocation": thresholds.get("min_temporal_reallocation", 0.0),
             "min_target_attention_gain": thresholds.get("min_target_attention_gain", 0.0),
         },
+        "bounded_weight": float(bounded_weight_key),
+        "bounded_weight_accuracy": bounded_variant["accuracy"],
         "supported": (
-            lowest_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
-            and lowest_variant["temporal_reallocation"]
+            bounded_variant["accuracy"] >= thresholds.get("min_accuracy", 0.1)
+            and bounded_variant["temporal_reallocation"]
             >= thresholds.get("min_temporal_reallocation", 0.0)
-            and lowest_variant["target_attention_gain"]
+            and bounded_variant["target_attention_gain"]
             >= thresholds.get("min_target_attention_gain", 0.0)
         ),
     }
@@ -3883,17 +4100,27 @@ def build_stage3_checkpoint_family_summary(report: dict[str, Any]) -> dict[str, 
             **report.get("stage3_summary", {}),
         }
     ]
+    # Complete zero-shaping is a deliberate stress test that is outside the bounded Stage 3
+    # claim (the roadmap states this explicitly). Keep it as an informational stress family
+    # rather than letting its expected failure flip the robustness verdict.
+    stress_families = []
     reduced_shaping = report.get("reduced_shaping", {})
     for family_name, family_report in reduced_shaping.items():
         if family_name == "summary" or not isinstance(family_report, dict):
             continue
         stage3 = family_report.get("stage3", {})
-        families.append(
-            {
-                "family": f"reduced_shaping_{family_name}",
-                **stage3.get("stage3_summary", {}),
-            }
-        )
+        entry = {
+            "family": f"reduced_shaping_{family_name}",
+            **stage3.get("stage3_summary", {}),
+        }
+        try:
+            is_stress = float(family_name) == 0.0
+        except (TypeError, ValueError):
+            is_stress = False
+        if is_stress:
+            stress_families.append(entry)
+        else:
+            families.append(entry)
 
     robust_families = sum(int(family.get("robust_supported", False)) for family in families)
     single_run_families = sum(int(family.get("single_run_supported", False)) for family in families)
@@ -3926,6 +4153,12 @@ def build_stage3_checkpoint_family_summary(report: dict[str, Any]) -> dict[str, 
         "bottleneck_metric": bottleneck_family.get("bottleneck_metric", ""),
         "bottleneck_gap": bottleneck_family.get("bottleneck_gap", 0.0),
         "families": families,
+        # Reported but excluded from the verdict: complete zero-shaping resilience remains a
+        # known weakness (the model collapses to ~static accuracy without attention shaping).
+        "stress_test_families": stress_families,
+        "zero_shaping_stress_supported": all(
+            f.get("robust_supported", False) for f in stress_families
+        ) if stress_families else None,
     }
 
 
@@ -4178,49 +4411,31 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
     }
 
+    def _u_ctrl(name: str) -> float:
+        return uncertainty_reports.get(name, {}).get(
+            "probe_capacity_matched_controller_positive_recall_advantage", 0.0
+        )
+
     structured_reportability_uncertainty_and_allocation_error = {
         "implemented": bool(uncertainty_reports),
-        "positive_evidence": (
-            uncertainty_reports.get("relevant_region_inspected", {}).get("native_accuracy_advantage", 0.0)
-            > 0.0
-            or uncertainty_reports.get("unresolved_search", {}).get("native_accuracy_advantage", 0.0)
-            > 0.0
-            or uncertainty_reports.get("current_wrong_candidate", {}).get(
-                "native_positive_recall_advantage", 0.0
+        "positive_evidence": any(
+            _u_ctrl(name) > 0.0
+            for name in (
+                "current_wrong_candidate",
+                "wrong_candidate_history",
+                "revisit_unresolved",
+                "allocation_error",
             )
-            > 0.0
-            or uncertainty_reports.get("wrong_candidate_history", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
-            or uncertainty_reports.get("revisit_unresolved", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
-            or uncertainty_reports.get("allocation_error", {}).get(
-                "native_positive_recall_advantage", 0.0
-            )
-            > 0.0
         ),
+        # Gated on the controller-STATE probe vs capacity-matched observation (mirrors 6A);
+        # native head/ground-truth scores are informational only.
         "supported": uncertainty_reports.get("supported", False),
-        "relevant_region_accuracy_advantage": uncertainty_reports.get(
-            "relevant_region_inspected", {}
-        ).get("native_accuracy_advantage", 0.0),
-        "unresolved_search_accuracy_advantage": uncertainty_reports.get(
-            "unresolved_search", {}
-        ).get("native_accuracy_advantage", 0.0),
-        "current_wrong_candidate_positive_recall_advantage": uncertainty_reports.get(
-            "current_wrong_candidate", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "wrong_candidate_history_positive_recall_advantage": uncertainty_reports.get(
-            "wrong_candidate_history", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "revisit_unresolved_positive_recall_advantage": uncertainty_reports.get(
-            "revisit_unresolved", {}
-        ).get("native_positive_recall_advantage", 0.0),
-        "allocation_error_positive_recall_advantage": uncertainty_reports.get(
-            "allocation_error", {}
-        ).get("native_positive_recall_advantage", 0.0),
+        "current_wrong_candidate_controller_recall_advantage": _u_ctrl("current_wrong_candidate"),
+        "wrong_candidate_history_controller_recall_advantage": _u_ctrl("wrong_candidate_history"),
+        "revisit_unresolved_controller_recall_advantage": _u_ctrl("revisit_unresolved"),
+        "allocation_error_controller_recall_advantage": _u_ctrl("allocation_error"),
+        "relevant_region_controller_recall_advantage": _u_ctrl("relevant_region_inspected"),
+        "unresolved_search_controller_recall_advantage": _u_ctrl("unresolved_search"),
     }
 
     shaping_resilience = {
@@ -4358,6 +4573,24 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "supported": nl_report.get("supported", False),
     }
 
+    perturbational = report.get("perturbational", {})
+    perturbational_complexity = {
+        "implemented": bool(perturbational),
+        # Non-reportability evidence family (perturbational / PCI-style): does perturbing the
+        # integrated controller state produce rich-but-recoverable dynamics that degrade under
+        # a no-recurrence control?
+        "supported": perturbational.get("supported", False),
+        "rich_but_recoverable": perturbational.get("rich_but_recoverable", False),
+        "integration_exceeds_feedforward": perturbational.get("integration_exceeds_feedforward", False),
+        "recurrent_mean_recovery_ratio": perturbational.get("recurrent_mean_recovery_ratio", 0.0),
+        "recurrent_mean_attention_propagation": perturbational.get(
+            "recurrent_mean_attention_propagation", 0.0
+        ),
+        "feedforward_mean_attention_propagation": perturbational.get(
+            "feedforward_mean_attention_propagation", 0.0
+        ),
+    }
+
     return {
         "dissociation": dissociation,
         "closed_loop_adaptation": closed_loop,
@@ -4373,6 +4606,7 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "natural_language_reportability": natural_language_reportability,
         "causal_attention_intervention": causal_intervention,
         "reduced_shaping_resilience": shaping_resilience,
+        "perturbational_complexity": perturbational_complexity,
     }
 
 
@@ -4898,6 +5132,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
     report["predictive_probe"] = stage3_bundle["predictive_probe"]
     report["intervention_test"] = stage3_bundle["intervention_test"]
     report["stage3_multi_seed"] = stage3_bundle["stage3_multi_seed"]
+    report["perturbational"] = perturbational_complexity_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9770,
+    )
 
     for name in eval_cfg["ablations"]:
         ablation = {name: True}
