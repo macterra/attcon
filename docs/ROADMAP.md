@@ -417,6 +417,7 @@ Current status in this repo:
 - report probes are implemented
 - on the default run, controller state supports stronger readouts than observation alone for current search type and current attended cell
 - the current report suite supports cumulative target-found reporting and unresolved-region reporting
+- an empirical permuted-label noise floor (`noise_floor_metrics`) backs the strong report signals: the real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above the permuted-label p95 floor (`~0.004`, `~0.003`), so the claim is significant rather than a probe-capacity artifact. The evidence summary now requires the strong signals to clear this floor when the diagnostic is enabled.
 
 Current assessment:
 
@@ -764,6 +765,22 @@ Stage 7 is now closed for a bounded local reporter claim. The opaque token strea
 Decoder caveat:
 
 The local calibrated reporter is a constrained decoder over a learned token interface. It is useful because it keeps the Stage 7 path runnable and checks whether opaque internal tokens contain recoverable report content on held-out examples, but it is not the same as showing that an off-the-shelf language or vision-language model can faithfully express the system's internal state. The stronger natural-language reportability claim remains open until the API LLM or VLM path beats scene-only and observation-only baselines under the same anti-cheating constraints.
+
+Sharper decoder caveat (anti-memorization tests do not bite the local reporter): the local
+decoder reads the scored content fields (current and previous attended visible type, attended
+digit, and glimpse digit) from dedicated attended-content token bases that the renderer fills
+*directly from the model's attended content*, not from the calibration-fit translator's
+predictions (those occupy separate bases the decoder ignores for these fields), and the opaque
+latent-bit tokens are not used for the scored content. The local content report is therefore a
+schema-aware structural round-trip of directly-encoded attended-content tokens -- closer to the
+symbolic-dump baseline (relabelled with opaque IDs whose schema the decoder is told) than to
+"learn to attach labels to opaque latent state". Consequently the two named anti-memorization
+falsifiers below are not meaningful against the current local reporter: a consistent token
+remapping is invariant by construction (the decoder is schema-aware), and held-out cue/content
+combinations do not bite content fields that are directly encoded rather than learned. The
+genuine anti-memorization / faithfulness test therefore requires either a decoder forced to
+recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that
+is not told the schema. Both are open (the latter is currently quota/model-limited).
 
 Falsification criterion:
 

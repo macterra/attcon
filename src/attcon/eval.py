@@ -1307,6 +1307,79 @@ def report_probe_metrics(
     }
 
 
+def noise_floor_metrics(
+    model,
+    cfg: dict[str, Any],
+    task_cfg: TaskConfig,
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Empirical permuted-label noise floor for the Stage 6A controller-state advantage.
+
+    Hardcoded directional thresholds answer "is the advantage positive?" but not "is it
+    bigger than chance?". For each strong report signal this measures the real
+    controller-vs-observation accuracy advantage and the distribution of that same
+    advantage under permuted (shuffled) labels, where no real signal exists. The
+    p95 permuted advantage is a data-driven significance floor; a real advantage that
+    clears it is unlikely to be a spurious probe-capacity artifact.
+    """
+
+    nf_cfg = cfg["evaluation"].get("noise_floor", {})
+    if not nf_cfg.get("enabled", False):
+        return {}
+
+    set_seed(seed)
+    batch_size = cfg["training"]["batch_size"]
+    train_batches = nf_cfg.get("train_batches", 8)
+    test_batches = nf_cfg.get("test_batches", 4)
+    epochs = nf_cfg.get("epochs", 40)
+    learning_rate = nf_cfg.get("learning_rate", 0.05)
+    permutations = int(nf_cfg.get("permutations", 12))
+    percentile = nf_cfg.get("percentile", 95)
+
+    train = _collect_report_probe_dataset(model, task_cfg, batch_size, train_batches, device, seed)
+    test = _collect_report_probe_dataset(model, task_cfg, batch_size, test_batches, device, seed + 1000)
+    generator = make_generator(seed + 7000, device)
+
+    def _advantage(train_labels, test_labels, num_classes):
+        controller = _train_classification_probe(
+            train["state_features"], train_labels, test["state_features"], test_labels,
+            num_classes=num_classes, epochs=epochs, learning_rate=learning_rate,
+        )
+        observation = _train_classification_probe(
+            train["observation_features"], train_labels, test["observation_features"], test_labels,
+            num_classes=num_classes, epochs=epochs, learning_rate=learning_rate,
+        )
+        return controller["test_accuracy"] - observation["test_accuracy"]
+
+    signals = {
+        "current_search_type": ("cue_labels", task_cfg.num_types),
+        "current_attended_cell": ("attended_cell_labels", task_cfg.num_cells),
+    }
+    results: dict[str, Any] = {"permutations": permutations, "percentile": percentile}
+    all_pass = True
+    for name, (label_key, num_classes) in signals.items():
+        train_labels = train[label_key]
+        test_labels = test[label_key]
+        real_advantage = _advantage(train_labels, test_labels, num_classes)
+        null_advantages = []
+        for _ in range(permutations):
+            tr = train_labels[torch.randperm(train_labels.shape[0], generator=generator, device=device)]
+            te = test_labels[torch.randperm(test_labels.shape[0], generator=generator, device=device)]
+            null_advantages.append(_advantage(tr, te, num_classes))
+        floor = float(np.percentile(np.array(null_advantages), percentile))
+        exceeds = real_advantage > floor
+        all_pass = all_pass and exceeds
+        results[name] = {
+            "real_controller_advantage": real_advantage,
+            "permuted_label_advantage_mean": float(np.mean(null_advantages)),
+            "permuted_label_advantage_p95": floor,
+            "exceeds_noise_floor": exceeds,
+        }
+    results["supported"] = all_pass
+    return results
+
+
 def self_model_metrics(
     model,
     cfg: dict[str, Any],
@@ -4321,6 +4394,14 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
     self_model = report.get("self_modeling", {})
     learned_self_model = report.get("learned_self_modeling", {})
     uncertainty_reports = report.get("uncertainty_report_probes", {})
+    noise_floor = report.get("noise_floor", {})
+    # When the empirical noise-floor diagnostic is enabled, require the strong report signals
+    # to clear their permuted-label p95 floor; when disabled, fall back to directional > 0.
+    noise_floor_enabled = bool(noise_floor)
+    noise_floor_cleared = (
+        noise_floor.get("current_search_type", {}).get("exceeds_noise_floor", False)
+        and noise_floor.get("current_attended_cell", {}).get("exceeds_noise_floor", False)
+    )
     structured_reportability = {
         "current_search_type_advantage": report_probes.get("current_search_type", {}).get(
             "controller_accuracy_advantage", 0.0
@@ -4334,12 +4415,14 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         "unresolved_region_advantage": self_model.get("native_cell_report", {}).get(
             "cell_accuracy_advantage", 0.0
         ),
-        "supported": report_probes.get("supported", False),
+        "noise_floor_enabled": noise_floor_enabled,
+        "exceeds_noise_floor": noise_floor_cleared if noise_floor_enabled else None,
     }
     structured_reportability["supported"] = (
         report_probes.get("current_search_type", {}).get("controller_accuracy_advantage", 0.0) > 0.0
         and report_probes.get("current_attended_cell", {}).get("controller_accuracy_advantage", 0.0) > 0.0
         and self_model.get("native_cell_report", {}).get("cell_accuracy_advantage", 0.0) > 0.0
+        and (noise_floor_cleared if noise_floor_enabled else True)
     )
 
     engineered_self_state_tracking = {
@@ -5036,6 +5119,13 @@ def run_ablations(config: dict[str, Any], checkpoint_path: str | Path) -> dict[s
         task_cfg,
         device,
         cfg["seed"] + 9725,
+    )
+    report["noise_floor"] = noise_floor_metrics(
+        models["recurrent"],
+        cfg,
+        task_cfg,
+        device,
+        cfg["seed"] + 9728,
     )
     report["self_modeling"] = self_model_metrics(
         models["recurrent"],
