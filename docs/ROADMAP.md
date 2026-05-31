@@ -417,6 +417,7 @@ Current status in this repo:
 - report probes are implemented
 - on the default run, controller state supports stronger readouts than observation alone for current search type and current attended cell
 - the current report suite supports cumulative target-found reporting and unresolved-region reporting
+- an empirical permuted-label noise floor (`noise_floor_metrics`) backs the strong report signals: the real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above the permuted-label p95 floor (`~0.004`, `~0.003`), so the claim is significant rather than a probe-capacity artifact. The evidence summary now requires the strong signals to clear this floor when the diagnostic is enabled.
 
 Current assessment:
 

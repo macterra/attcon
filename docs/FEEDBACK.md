@@ -41,6 +41,7 @@ Initial review of commits 5044e4d → 615681c (2026-05-16) added Stage 4B/6A/6B/
 ### Partially addressed
 
 - **Pass thresholds are unprincipled.** Now configurable with non-zero defaults (e.g., `min_cell_bce_advantage: 0.01`, `min_accuracy_drop: 0.02`) and `nonnegative_directional_effect` / `probe_effect_positive` flags reported alongside the stricter `passed`. Real improvement, but the thresholds are still hardcoded constants rather than empirically calibrated. Suggest a small noise-floor routine that runs each probe against shuffled labels and uses the 95th-percentile spurious advantage as the threshold.
+  - **Addressed (post-rehab, PR #11) for Stage 6A.** `noise_floor_metrics` runs the strong report-signal probes against permuted (shuffled) labels and reports the 95th-percentile spurious advantage as a data-driven floor; the evidence summary gates `structured_reportability` on clearing it. On the current checkpoint the real advantages (`~0.38`, `~0.42`) are ~100x above the permuted-label p95 floor (`~0.004`, `~0.003`). Extending the same routine to the other gated audits (Stage 4B, 6B, 7) remains open.
 
 ### Still open
 
