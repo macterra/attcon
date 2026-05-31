@@ -58,7 +58,7 @@ def main():
 
     task_cfg = TaskConfig.from_dict(emergence_cfg["task"])
     model_cfg = ModelConfig.from_dict(emergence_cfg["model"])
-    ckpt = torch.load("outputs/stage4b_emergence/experiment.pt")
+    ckpt = torch.load("outputs/stage4b_emergence/experiment.pt", map_location=device)
     emergent = RecurrentAttentionController(task_cfg, model_cfg)
     emergent.load_state_dict(ckpt["models"]["recurrent"])
     emergent.eval()

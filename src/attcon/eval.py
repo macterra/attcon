@@ -500,7 +500,9 @@ def _collect_self_model_dataset(
         prev_observation[:, 1:] = outputs["observation_seq"][:, :-1]
 
         target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
-        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        # Binarize (a no-op for one-hot hard mode); graded soft-mode inspection would
+        # otherwise inflate positive recall above 1.0 via a fractional denominator.
+        target_true = (inspection_true.gather(2, target_pos).squeeze(-1) >= 0.5).float()
         target_pred = inspection_pred.gather(2, target_pos).squeeze(-1)
 
         total_cell_matches += (
@@ -578,7 +580,10 @@ def _collect_learned_self_model_dataset(
         inspection_true = outputs["inspection_seq"]
         hidden_inspection_pred = outputs.get("hidden_self_model_seq")
         target_pos = batch.target_pos[:, None, None].expand(-1, task_cfg.num_steps, 1)
-        target_true = inspection_true.gather(2, target_pos).squeeze(-1)
+        # Binarize the "target inspected" label. inspection_seq is graded in soft-attention
+        # mode, so using it both as a boolean numerator and a fractional recall denominator
+        # let positive recall exceed 1.0; threshold it once (a no-op for one-hot hard mode).
+        target_true = (inspection_true.gather(2, target_pos).squeeze(-1) >= 0.5).float()
         if hidden_inspection_pred is not None:
             hidden_target_pred = hidden_inspection_pred.gather(2, target_pos).squeeze(-1)
             total_hidden_cell_matches += (
@@ -2603,6 +2608,8 @@ def perturbational_complexity_metrics(
     batch_size = pcfg.get("probe_scenes", cfg["evaluation"]["probe_scenes"]) * task_cfg.num_types
     magnitudes = pcfg.get("magnitudes", [0.5, 1.0, 2.0])
     step = pcfg.get("step", max(task_cfg.num_steps // 2, 1))
+    if step < 0 or step >= task_cfg.num_steps:
+        raise ValueError("perturbational.step must be within the episode length")
     min_recovery = pcfg.get("min_recovery_ratio", 0.1)
     min_propagation = pcfg.get("min_attention_propagation", 0.05)
 
