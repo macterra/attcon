@@ -1,0 +1,44 @@
+{
+  "note": "Stage 7 latent-only decoder: recover the scored content from the opaque quantised internal-state levels alone (directly-encoded content tokens withheld), so held-out and counterfactual slices become genuine faithfulness tests rather than the schema-aware round-trip the standard local reporter performs. See ROADMAP 'Sharper decoder caveat' / 'Planned next step' and NEXT_STEPS 'Current Focus'.",
+  "config_base": "configs/tune_prob_035.yaml",
+  "checkpoint": "outputs/tune_prob_035/experiment.pt",
+  "interface": "opaque_quantised_state_levels",
+  "reads_exact_content_tokens": false,
+  "shipped_config": {"num_chunks": 8, "num_levels": 4, "fit_examples": 20, "evaluation_examples": 8},
+  "result_shipped_config": {
+    "default_slice": {
+      "current_content_joint_accuracy_advantage": 0.125,
+      "memory_content_joint_accuracy_advantage": 0.0,
+      "content_only_joint_accuracy_advantage": 0.0,
+      "content_supported": false
+    },
+    "cue_switch_slice": {
+      "current_content_joint_accuracy_advantage": 0.0,
+      "memory_content_joint_accuracy_advantage": 0.0,
+      "content_only_joint_accuracy_advantage": 0.0,
+      "content_supported": false
+    },
+    "intervention_slice": {
+      "current_content_joint_accuracy_advantage": 0.0,
+      "memory_content_joint_accuracy_advantage": 0.0,
+      "content_only_joint_accuracy_advantage": 0.0,
+      "content_supported": false
+    }
+  },
+  "interface_width_sweep_default_slice": {
+    "columns": ["num_chunks", "num_levels", "probe_scenes", "fit_examples", "evaluation_examples", "current_adv", "memory_adv", "content_only_adv", "content_supported"],
+    "rows": [
+      [8, 4, 8, 20, 8, 0.125, 0.0, 0.0, false],
+      [8, 4, 24, 52, 16, 0.0, 0.0, 0.0, false],
+      [16, 4, 8, 20, 8, 0.125, 0.0, 0.0, false],
+      [16, 4, 24, 52, 16, 0.0, 0.0, 0.0, false],
+      [16, 8, 8, 20, 8, 0.25, 0.0, 0.0, false],
+      [16, 8, 24, 52, 16, 0.0, 0.0, 0.0, false],
+      [32, 8, 8, 20, 8, 0.25, 0.0, 0.0, false],
+      [32, 8, 24, 52, 16, 0.0, 0.062, 0.0, false],
+      [48, 8, 8, 20, 8, 0.25, 0.0, 0.0, false],
+      [48, 8, 24, 52, 16, 0.0, 0.062, 0.0, false]
+    ]
+  },
+  "disposition": "Implemented and runnable in CI (unit test confirms the decoder recovers content from internal-state levels and provably ignores the exact-content fields on synthetic data where content is recoverable). On the current discrete-attention checkpoint the latent-only decoder does NOT clear the faithful-access bar: a small, non-robust current-content advantage appears on the 8-example slice (+0.125 to +0.25, growing with interface width) but it vanishes on the larger 16-example slice and on the cue-switch / intervention slices, and memory/content-only content is never recovered above observation (content_supported = false everywhere). Honest reading: the coarse opaque latent interface on this checkpoint carries marginal current-attended-content signal at best and no reliable remembered/counterfactual content. This BOUNDS the Stage 7 faithful-access claim to the schema-aware round-trip reporter and leaves the genuine faithfulness leg open. Per the plan, this is a real negative-to-marginal result, not a hidden failure: the remaining routes are a richer latent interface on a checkpoint whose state more separably encodes remembered content, or the external API LLM / VLM path (quota/model-blocked)."
+}

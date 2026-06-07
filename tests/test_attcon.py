@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
+from dataclasses import replace
 from pathlib import Path
 import tempfile
 import unittest
@@ -40,14 +41,17 @@ from attcon.models import (
 )
 from attcon.nl_report import (
     _extract_response_json,
+    _latent_feature_matrix,
     collect_cue_switch_nl_examples,
     collect_intervention_nl_examples,
     collect_nl_examples,
     run_calibrated_token_report_mode,
+    run_latent_only_report_mode,
     run_nl_report_mode,
     run_observation_only_heuristic_report_mode,
     tokenized_state_payload_metrics,
 )
+from attcon.nl_report import NLExample
 from attcon.train import train_experiment
 from attcon.train import load_config
 
@@ -585,6 +589,124 @@ class AttentionControlTests(unittest.TestCase):
             observation["memory_content_joint_accuracy"],
         )
         self.assertGreater(tokenized["joint_accuracy"], observation["joint_accuracy"])
+
+    def _make_latent_example(self, idx: int) -> NLExample:
+        """Synthetic Stage 7 example whose state vectors encode the attended content.
+
+        The five state vectors are a fixed deterministic projection of the content values, so
+        a latent-only decoder can learn to recover content from the opaque quantised view while
+        an observation-only reporter (which never sees attention) cannot.
+        """
+
+        grid = self.task_cfg.grid_size
+        cells = grid * grid
+        visible_type = idx % 8
+        digit = idx % 10
+        prev_visible_type = (idx + 3) % 8
+        prev_digit = (idx + 5) % 10
+        prev_glimpse_digit = (idx + 7) % 10
+        attended_cell = idx % cells
+        prev_attended_cell = (idx + 11) % cells
+        cue = idx % 8
+        content = torch.tensor(
+            [
+                float(visible_type),
+                float(digit),
+                float(prev_visible_type),
+                float(prev_digit),
+                float(prev_glimpse_digit),
+                float(attended_cell),
+                float(prev_attended_cell),
+                float(cue),
+            ]
+        )
+        states = [
+            torch.randn(64, content.numel(), generator=torch.Generator().manual_seed(20240607 + which))
+            @ content
+            for which in range(5)
+        ]
+        return NLExample(
+            example_id=f"latent{idx}",
+            step_index=1,
+            cue=cue,
+            previous_cue=(idx + 1) % 8,
+            cue_switched=bool(idx % 2),
+            attended_cell=attended_cell,
+            attended_visible_type=visible_type,
+            attended_digit=digit,
+            glimpse_digit=idx % 10,
+            prev_attended_cell=prev_attended_cell,
+            prev_attended_visible_type=prev_visible_type,
+            prev_attended_digit=prev_digit,
+            prev_glimpse_digit=prev_glimpse_digit,
+            glimpse_target_match=bool(idx % 3 == 0),
+            found_target=bool(idx % 4 == 0),
+            relevant_region_inspected=bool(idx % 2),
+            unresolved_search=bool((idx + 1) % 2),
+            current_wrong_candidate=bool(idx % 3 == 1),
+            wrong_candidate_history=bool(idx % 3 == 2),
+            revisit_unresolved=False,
+            allocation_error=bool(idx % 5 == 0),
+            previous_found_target=bool(idx % 4 == 1),
+            inspected_count=idx % cells,
+            previous_inspected_count=(idx + 1) % cells,
+            attended_cell_previously_inspected=bool(idx % 2),
+            unresolved_cells=[],
+            unresolved_rows=[],
+            unresolved_cols=[],
+            unresolved_count=0,
+            controller_state=states[0],
+            prev_controller_state=states[1],
+            attention_state=states[2],
+            prev_attention_state=states[3],
+            memory_state=states[4],
+            symbolic_state="",
+            tokenized_state="",
+            observation_only="",
+        )
+
+    def test_latent_only_decoder_recovers_content_without_reading_exact_tokens(self) -> None:
+        examples = [self._make_latent_example(idx) for idx in range(12)]
+
+        latent = run_latent_only_report_mode(
+            fit_examples=examples,
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+            num_chunks=8,
+            num_levels=4,
+        )
+        observation = run_observation_only_heuristic_report_mode(
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+        )
+
+        # The decoder advertises that it never reads the directly-encoded content tokens.
+        self.assertFalse(latent["reads_exact_content_tokens"])
+        # It recovers attended/remembered content from opaque internal-state levels, well above
+        # the observation-only baseline (which cannot see attention at all).
+        self.assertGreater(
+            latent["current_content_joint_accuracy"],
+            observation["current_content_joint_accuracy"],
+        )
+        self.assertGreater(
+            latent["memory_content_joint_accuracy"],
+            observation["memory_content_joint_accuracy"],
+        )
+        self.assertGreater(latent["current_content_joint_accuracy"], 0.5)
+
+        # Structural anti-round-trip guarantee: the decoder input is a function of the state
+        # vectors only. Corrupting the exact-content fields leaves the input matrix unchanged,
+        # so the latent decoder cannot be reading content from a schema-known token.
+        corrupted = [
+            replace(example, attended_visible_type=0, attended_digit=0, prev_attended_digit=0)
+            for example in examples
+        ]
+        self.assertTrue(
+            torch.equal(
+                _latent_feature_matrix(examples, 8, 4),
+                _latent_feature_matrix(corrupted, 8, 4),
+            )
+        )
 
     def test_nl_report_metrics_include_capacity_audit_for_local_reporter(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)

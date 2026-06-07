@@ -142,6 +142,69 @@ def _opaque_bit_tokens(base: int, bits: list[int]) -> list[str]:
     return [f"x{base + bit_idx * 2 + bit}" for bit_idx, bit in enumerate(bits)]
 
 
+# Opaque latent-state interface for the latent-only decoder. These tokens carry a coarse,
+# label-free, quantised view of the controller/attention/memory state. They are richer than
+# the single-bit `_chunk_bits` tokens but still contain no schema field names and no exact
+# attended-content values, so a decoder restricted to them must *learn* content from internal
+# state rather than read it from a directly-encoded content token.
+LATENT_TOKEN_BASE = 40000
+LATENT_NUM_CHUNKS = 8
+LATENT_NUM_LEVELS = 4
+_LATENT_STATE_ATTRS = (
+    "controller_state",
+    "prev_controller_state",
+    "attention_state",
+    "prev_attention_state",
+    "memory_state",
+)
+
+
+def _latent_levels(vector: torch.Tensor, num_chunks: int, num_levels: int) -> list[int]:
+    """Quantise a state vector into coarse, opaque per-chunk levels.
+
+    The encoding is example-local and label-free: each chunk mean is standardised by the
+    vector's own spread, squashed through tanh, then bucketed into ``num_levels`` levels.
+    This is the lossy internal-state view the latent-only decoder is allowed to read; it
+    never exposes the exact attended-content values.
+    """
+
+    scale = vector.std().clamp_min(1e-6)
+    levels: list[int] = []
+    for chunk in torch.chunk(vector, num_chunks):
+        unit = (torch.tanh(chunk.mean() / scale) * 0.5 + 0.5).item()  # (0, 1)
+        levels.append(min(num_levels - 1, max(0, int(unit * num_levels))))
+    if len(levels) < num_chunks:
+        levels.extend([0] * (num_chunks - len(levels)))
+    return levels
+
+
+def _opaque_latent_tokens(base: int, levels: list[int], num_levels: int) -> list[str]:
+    return [f"x{base + chunk_idx * num_levels + level}" for chunk_idx, level in enumerate(levels)]
+
+
+def _latent_feature_matrix(
+    examples: list["NLExample"],
+    num_chunks: int,
+    num_levels: int,
+) -> torch.Tensor:
+    """Build the latent-only decoder's input: normalised quantised levels, content withheld.
+
+    The only inputs are the coarse per-chunk levels of the five state vectors. The exact
+    attended-content fields (visible type, digit, cell) are deliberately not read here, so a
+    decoder fit on this matrix cannot perform the schema-aware round-trip the standard local
+    reporter does.
+    """
+
+    denom = float(max(num_levels - 1, 1))
+    rows: list[torch.Tensor] = []
+    for example in examples:
+        levels: list[int] = []
+        for attr in _LATENT_STATE_ATTRS:
+            levels.extend(_latent_levels(getattr(example, attr), num_chunks, num_levels))
+        rows.append(torch.tensor([level / denom for level in levels], dtype=torch.float32))
+    return torch.stack(rows, dim=0)
+
+
 def _fit_multiclass_probe(
     features: torch.Tensor,
     labels: torch.Tensor,
@@ -205,6 +268,9 @@ def _feature_matrix(examples: list[NLExample]) -> torch.Tensor:
 def _render_tokenized_examples(
     calibration_examples: list[NLExample],
     target_examples: list[NLExample],
+    *,
+    latent_num_chunks: int = LATENT_NUM_CHUNKS,
+    latent_num_levels: int = LATENT_NUM_LEVELS,
 ) -> None:
     """Build learned opaque token streams using a translator fit on calibration examples only."""
 
@@ -422,6 +488,14 @@ def _render_tokenized_examples(
         tokens.append("x930")
         for col in range(5):
             tokens.append(_opaque_bool_token(3800 + col * 10, int(unresolved_col_pred[idx, col].item())))
+        tokens.append("x940")
+        for state_idx, attr in enumerate(_LATENT_STATE_ATTRS):
+            latent_levels = _latent_levels(getattr(example, attr), latent_num_chunks, latent_num_levels)
+            tokens.extend(
+                _opaque_latent_tokens(
+                    LATENT_TOKEN_BASE + state_idx * 1000, latent_levels, latent_num_levels
+                )
+            )
         example.tokenized_state = " ".join(tokens)
 
 
@@ -688,7 +762,12 @@ def _score_local_report_payloads(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": getattr(example, "tokenized_state" if mode == "tokenized_state" else "observation_only"),
+                "input": getattr(
+                    example,
+                    "tokenized_state"
+                    if mode in ("tokenized_state", "latent_only_state")
+                    else "observation_only",
+                ),
                 "response": prediction,
                 "expected": _expected_report_payload(example, grid_size),
             }
@@ -880,6 +959,145 @@ def run_observation_only_heuristic_report_mode(
         predictions=predictions,
         grid_size=grid_size,
     )
+
+
+# (schema field name, NLExample attribute, class count) for the latent-only decoder heads.
+_LATENT_MULTICLASS_FIELDS = (
+    ("previous_search_type", "previous_cue", 8),
+    ("attended_cell", "attended_cell", 25),
+    ("attended_visible_type", "attended_visible_type", 8),
+    ("attended_digit", "attended_digit", 10),
+    ("previous_attended_cell", "prev_attended_cell", 25),
+    ("previous_attended_visible_type", "prev_attended_visible_type", 8),
+    ("previous_attended_digit", "prev_attended_digit", 10),
+    ("previous_glimpse_digit", "prev_glimpse_digit", 10),
+    ("inspected_count", "inspected_count", 26),
+    ("previous_inspected_count", "previous_inspected_count", 26),
+    ("unresolved_count", "unresolved_count", 26),
+)
+_LATENT_BINARY_FIELDS = (
+    ("cue_switched", "cue_switched"),
+    ("previous_found_target", "previous_found_target"),
+    ("found_target", "found_target"),
+    ("relevant_region_inspected", "relevant_region_inspected"),
+    ("unresolved_search", "unresolved_search"),
+    ("current_wrong_candidate", "current_wrong_candidate"),
+    ("wrong_candidate_history", "wrong_candidate_history"),
+    ("revisit_unresolved", "revisit_unresolved"),
+    ("allocation_error", "allocation_error"),
+    ("attended_cell_previously_inspected", "attended_cell_previously_inspected"),
+)
+
+
+def run_latent_only_report_mode(
+    *,
+    fit_examples: list[NLExample],
+    evaluation_examples: list[NLExample],
+    grid_size: int,
+    num_chunks: int = LATENT_NUM_CHUNKS,
+    num_levels: int = LATENT_NUM_LEVELS,
+) -> dict[str, Any]:
+    """Decode the report schema from opaque quantised internal-state levels alone.
+
+    Unlike :func:`run_calibrated_token_report_mode`, this decoder never reads the
+    directly-encoded attended-content tokens. Its only input is the coarse quantised view of
+    the controller/attention/memory state (see :func:`_latent_feature_matrix`). It is fit on
+    ``fit_examples`` and must *learn* a map from that lossy internal state to the scored
+    content, so held-out and counterfactual (cue-switch / intervention) slices become genuine
+    faithfulness tests rather than schema round-trips. Observation-known fields (the cue, the
+    current glimpse digit, and glimpse/target match) are taken from the example, exactly as the
+    observation-only baseline does, so the advantage isolates what the internal state adds.
+    """
+
+    fit_features = _latent_feature_matrix(fit_examples, num_chunks, num_levels)
+    eval_features = _latent_feature_matrix(evaluation_examples, num_chunks, num_levels)
+
+    multiclass_pred: dict[str, torch.Tensor] = {}
+    for field, attr, num_classes in _LATENT_MULTICLASS_FIELDS:
+        labels = torch.tensor([int(getattr(example, attr)) for example in fit_examples])
+        head = _fit_multiclass_probe(fit_features, labels, num_classes)
+        with torch.no_grad():
+            multiclass_pred[field] = head(eval_features).argmax(dim=-1)
+
+    binary_pred: dict[str, torch.Tensor] = {}
+    for field, attr in _LATENT_BINARY_FIELDS:
+        labels = torch.tensor(
+            [[float(getattr(example, attr))] for example in fit_examples], dtype=torch.float32
+        )
+        head = _fit_binary_probe(fit_features, labels)
+        with torch.no_grad():
+            binary_pred[field] = (torch.sigmoid(head(eval_features)) >= 0.5).long()
+
+    unresolved_rows_head = _fit_binary_probe(
+        fit_features,
+        torch.tensor(
+            [[int(row in example.unresolved_rows) for row in range(grid_size)] for example in fit_examples],
+            dtype=torch.float32,
+        ),
+    )
+    unresolved_cols_head = _fit_binary_probe(
+        fit_features,
+        torch.tensor(
+            [[int(col in example.unresolved_cols) for col in range(grid_size)] for example in fit_examples],
+            dtype=torch.float32,
+        ),
+    )
+    with torch.no_grad():
+        unresolved_rows_pred = (torch.sigmoid(unresolved_rows_head(eval_features)) >= 0.5).long()
+        unresolved_cols_pred = (torch.sigmoid(unresolved_cols_head(eval_features)) >= 0.5).long()
+
+    predictions: list[dict[str, Any]] = []
+    for idx, example in enumerate(evaluation_examples):
+        cell = int(multiclass_pred["attended_cell"][idx].item())
+        prev_cell = int(multiclass_pred["previous_attended_cell"][idx].item())
+        predictions.append(
+            {
+                "natural_language_report": "latent-only decode of opaque internal-state levels",
+                "search_type": example.cue,
+                "previous_search_type": int(multiclass_pred["previous_search_type"][idx].item()),
+                "cue_switched": bool(binary_pred["cue_switched"][idx, 0].item()),
+                "attended_cell": list(divmod(cell, grid_size)),
+                "attended_visible_type": int(multiclass_pred["attended_visible_type"][idx].item()),
+                "attended_digit": int(multiclass_pred["attended_digit"][idx].item()),
+                "glimpse_digit": example.glimpse_digit,
+                "previous_attended_cell": list(divmod(prev_cell, grid_size)),
+                "previous_attended_visible_type": int(
+                    multiclass_pred["previous_attended_visible_type"][idx].item()
+                ),
+                "previous_attended_digit": int(multiclass_pred["previous_attended_digit"][idx].item()),
+                "previous_glimpse_digit": int(multiclass_pred["previous_glimpse_digit"][idx].item()),
+                "glimpse_target_match": example.glimpse_target_match,
+                "previous_found_target": bool(binary_pred["previous_found_target"][idx, 0].item()),
+                "found_target": bool(binary_pred["found_target"][idx, 0].item()),
+                "relevant_region_inspected": bool(binary_pred["relevant_region_inspected"][idx, 0].item()),
+                "unresolved_search": bool(binary_pred["unresolved_search"][idx, 0].item()),
+                "current_wrong_candidate": bool(binary_pred["current_wrong_candidate"][idx, 0].item()),
+                "wrong_candidate_history": bool(binary_pred["wrong_candidate_history"][idx, 0].item()),
+                "revisit_unresolved": bool(binary_pred["revisit_unresolved"][idx, 0].item()),
+                "allocation_error": bool(binary_pred["allocation_error"][idx, 0].item()),
+                "inspected_count": int(multiclass_pred["inspected_count"][idx].item()),
+                "previous_inspected_count": int(multiclass_pred["previous_inspected_count"][idx].item()),
+                "attended_cell_previously_inspected": bool(
+                    binary_pred["attended_cell_previously_inspected"][idx, 0].item()
+                ),
+                "unresolved_rows": [row for row in range(grid_size) if unresolved_rows_pred[idx, row].item()],
+                "unresolved_cols": [col for col in range(grid_size) if unresolved_cols_pred[idx, col].item()],
+                "unresolved_count": int(multiclass_pred["unresolved_count"][idx].item()),
+            }
+        )
+
+    scored = _score_local_report_payloads(
+        mode="latent_only_state",
+        examples=evaluation_examples,
+        predictions=predictions,
+        grid_size=grid_size,
+    )
+    scored["interface"] = "opaque_quantised_state_levels"
+    scored["reads_exact_content_tokens"] = False
+    scored["num_chunks"] = num_chunks
+    scored["num_levels"] = num_levels
+    scored["fit_examples"] = len(fit_examples)
+    return scored
 
 
 def _render_observation_only(

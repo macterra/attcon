@@ -751,6 +751,7 @@ Current status in this repo:
 - the opaque token translator is fit on calibration examples using small linear heads over internal-state features, then evaluated on held-out examples; the local reporter decodes the resulting opaque token IDs into the report schema
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - on the current tuned checkpoint, the local calibrated token reporter beats the observation-only reporter on default, cue-switch, and intervention slices
+- a latent-only decoder (`run_latent_only_report_mode`) is implemented and runnable in CI: it recovers the scored content from an opaque quantised view of internal state alone (content tokens withheld), so the held-out and counterfactual slices are genuine faithfulness tests. On the current checkpoint it does not clear the faithful-access bar (marginal, non-robust current-content advantage; no remembered/counterfactual recovery; `content_supported = false`), so the bounded Stage 7 claim still rests on the schema-aware round-trip reporter (see the "Latent-only decoder" note below and `audits/stage7_latent_only_tune_prob_035.json`)
 
 Current assessment:
 
@@ -781,6 +782,27 @@ combinations do not bite content fields that are directly encoded rather than le
 genuine anti-memorization / faithfulness test therefore requires either a decoder forced to
 recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that
 is not told the schema. Both are open (the latter is currently quota/model-limited).
+
+Latent-only decoder (implemented; honest negative-to-marginal):
+
+The unblocked resolution route is now implemented (`run_latent_only_report_mode`). It recovers the
+scored content from an opaque, quantised view of the controller/attention/memory state alone
+(`_latent_feature_matrix`: coarse per-chunk levels, no schema field names, the directly-encoded
+attended-content bases withheld), fit on the held-out translator+calibration pool and evaluated on the
+held-out, cue-switch, and intervention slices. Because content is *learned* from opaque internal state
+rather than read from a schema-known token, the held-out and counterfactual falsifiers below would
+finally bite — and on the current discrete-attention checkpoint they do. The finding
+(`audits/stage7_latent_only_tune_prob_035.json`) is a real negative-to-marginal: a small, non-robust
+current-content advantage on the 8-example slice (`+0.125`, rising to `+0.25` as the opaque interface
+is widened) that vanishes on the larger 16-example slice and on the cue-switch / intervention slices,
+with remembered and counterfactual content never recovered above observation
+(`content_supported = false` for every interface width and slice). So the coarse opaque latent
+interface on this checkpoint carries marginal current-attended signal at best; the genuine
+faithful-access claim therefore remains **bounded to the schema-aware round-trip reporter**, exactly
+as the caveat above warns. This is a disciplined negative, not a hidden failure: the remaining routes
+are a checkpoint whose remembered-attention state is more separably encoded (memory-regularised or
+longer-trained) and/or a richer opaque interface, or the external API LLM / VLM path that is not told
+the schema (still quota/model-blocked). See NEXT_STEPS "Current Focus".
 
 Falsification criterion:
 
@@ -941,11 +963,21 @@ The repo now emits switched-cue comparison plots, self-state diagnostics plots, 
 
 Immediate engineering and audit work:
 
+Current focus (unblocked next cycle):
+
+- [x] build a latent-only Stage 7 decoder that recovers the scored content from an opaque quantised view of internal state alone (directly-encoded content bases withheld), so held-out and counterfactual-tension faithfulness tests become meaningful. **Implemented and runnable in CI; honest finding: does not clear the faithful-access bar on the current checkpoint** (marginal, non-robust current-content advantage; no remembered/counterfactual recovery; `content_supported = false`). See the Stage 7 "Latent-only decoder" note and `audits/stage7_latent_only_tune_prob_035.json`.
+- [ ] **next:** re-run the latent-only decoder on a checkpoint with more separably encoded remembered-attention state (memory-regularised or longer-trained), and/or a richer opaque interface, to test whether faithful remembered-content recovery is reachable; otherwise fall back to the external LLM/VLM path
+
+Completed in the Priority 1 audit pass:
+
+- [x] add matched-capacity baseline audits for Stage 4B, Stage 6, and Stage 7 probes
+- [x] add explicit negative-control runs for feedforward, shuffled-feedback, and high-capacity observation-only systems
+- [x] add first-class comparator runs for static/feedforward, matched transformer, large-LM-without-loop, and trivial-regulator systems
+
+Still open (blocked or larger):
+
 - [ ] evaluate external API LLM reporting under cue switches and interventions once quota is available
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
-- [ ] add matched-capacity baseline audits for Stage 4B, Stage 6, and Stage 7 probes
-- [ ] add explicit negative-control runs for feedforward, shuffled-feedback, and high-capacity observation-only systems
-- [ ] add first-class comparator runs for static/feedforward, matched transformer, large-LM-without-loop, and trivial-regulator systems
 - [ ] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling
 
 Branch builds:
@@ -1017,6 +1049,7 @@ What is not yet established:
 - robust (multi-seed, cross-system) perturbational-complexity evidence beyond the current bounded single-checkpoint result
 - multi-theory convergence across consciousness-theory branches
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
+- faithful Stage 7 reportability from opaque latent internal state alone: the latent-only decoder is implemented and runnable, but on the current checkpoint it does not clear the faithful-access bar (`content_supported = false` across interface widths and slices), so the bounded Stage 7 claim still rests on the schema-aware round-trip reporter
 - minimal consciousness-like content
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined, staged, and experimentally grounded.
