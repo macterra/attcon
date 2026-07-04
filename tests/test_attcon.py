@@ -666,7 +666,13 @@ class AttentionControlTests(unittest.TestCase):
         )
 
     def test_latent_only_decoder_recovers_content_without_reading_exact_tokens(self) -> None:
-        examples = [self._make_latent_example(idx) for idx in range(12)]
+        examples = [
+            replace(
+                self._make_latent_example(idx),
+                tokenized_state="x11100 x11200 x11300 x21100 x21200 x21300",
+            )
+            for idx in range(12)
+        ]
 
         latent = run_latent_only_report_mode(
             fit_examples=examples,
@@ -682,6 +688,8 @@ class AttentionControlTests(unittest.TestCase):
 
         # The decoder advertises that it never reads the directly-encoded content tokens.
         self.assertFalse(latent["reads_exact_content_tokens"])
+        self.assertNotIn("x11100", latent["examples"][0]["input"])
+        self.assertIn("x40000", latent["examples"][0]["input"])
         # It recovers attended/remembered content from opaque internal-state levels, well above
         # the observation-only baseline (which cannot see attention at all).
         self.assertGreater(

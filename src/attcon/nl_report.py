@@ -205,6 +205,18 @@ def _latent_feature_matrix(
     return torch.stack(rows, dim=0)
 
 
+def _render_latent_only_state_input(
+    example: "NLExample",
+    num_chunks: int,
+    num_levels: int,
+) -> str:
+    tokens: list[str] = []
+    for attr_idx, attr in enumerate(_LATENT_STATE_ATTRS):
+        levels = _latent_levels(getattr(example, attr), num_chunks, num_levels)
+        tokens.extend(_opaque_latent_tokens(LATENT_TOKEN_BASE + attr_idx * 1000, levels, num_levels))
+    return " ".join(tokens)
+
+
 def _fit_multiclass_probe(
     features: torch.Tensor,
     labels: torch.Tensor,
@@ -755,19 +767,23 @@ def _score_local_report_payloads(
     examples: list[NLExample],
     predictions: list[dict[str, Any]],
     grid_size: int,
+    num_chunks: int = LATENT_NUM_CHUNKS,
+    num_levels: int = LATENT_NUM_LEVELS,
 ) -> dict[str, Any]:
     results = []
     for example, prediction in zip(examples, predictions):
+        if mode == "tokenized_state":
+            input_text = example.tokenized_state
+        elif mode == "latent_only_state":
+            input_text = _render_latent_only_state_input(example, num_chunks, num_levels)
+        else:
+            input_text = example.observation_only
+
         results.append(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": getattr(
-                    example,
-                    "tokenized_state"
-                    if mode in ("tokenized_state", "latent_only_state")
-                    else "observation_only",
-                ),
+                "input": input_text,
                 "response": prediction,
                 "expected": _expected_report_payload(example, grid_size),
             }
@@ -961,19 +977,13 @@ def run_observation_only_heuristic_report_mode(
     )
 
 
-# (schema field name, NLExample attribute, class count) for the latent-only decoder heads.
-_LATENT_MULTICLASS_FIELDS = (
+_LATENT_FIXED_MULTICLASS_FIELDS = (
     ("previous_search_type", "previous_cue", 8),
-    ("attended_cell", "attended_cell", 25),
     ("attended_visible_type", "attended_visible_type", 8),
     ("attended_digit", "attended_digit", 10),
-    ("previous_attended_cell", "prev_attended_cell", 25),
     ("previous_attended_visible_type", "prev_attended_visible_type", 8),
     ("previous_attended_digit", "prev_attended_digit", 10),
     ("previous_glimpse_digit", "prev_glimpse_digit", 10),
-    ("inspected_count", "inspected_count", 26),
-    ("previous_inspected_count", "previous_inspected_count", 26),
-    ("unresolved_count", "unresolved_count", 26),
 )
 _LATENT_BINARY_FIELDS = (
     ("cue_switched", "cue_switched"),
@@ -987,6 +997,18 @@ _LATENT_BINARY_FIELDS = (
     ("allocation_error", "allocation_error"),
     ("attended_cell_previously_inspected", "attended_cell_previously_inspected"),
 )
+
+
+def _latent_multiclass_fields(grid_size: int) -> tuple[tuple[str, str, int], ...]:
+    num_cells = grid_size * grid_size
+    return (
+        *_LATENT_FIXED_MULTICLASS_FIELDS,
+        ("attended_cell", "attended_cell", num_cells),
+        ("previous_attended_cell", "prev_attended_cell", num_cells),
+        ("inspected_count", "inspected_count", num_cells + 1),
+        ("previous_inspected_count", "previous_inspected_count", num_cells + 1),
+        ("unresolved_count", "unresolved_count", num_cells + 1),
+    )
 
 
 def run_latent_only_report_mode(
@@ -1013,7 +1035,7 @@ def run_latent_only_report_mode(
     eval_features = _latent_feature_matrix(evaluation_examples, num_chunks, num_levels)
 
     multiclass_pred: dict[str, torch.Tensor] = {}
-    for field, attr, num_classes in _LATENT_MULTICLASS_FIELDS:
+    for field, attr, num_classes in _latent_multiclass_fields(grid_size):
         labels = torch.tensor([int(getattr(example, attr)) for example in fit_examples])
         head = _fit_multiclass_probe(fit_features, labels, num_classes)
         with torch.no_grad():
@@ -1091,6 +1113,8 @@ def run_latent_only_report_mode(
         examples=evaluation_examples,
         predictions=predictions,
         grid_size=grid_size,
+        num_chunks=num_chunks,
+        num_levels=num_levels,
     )
     scored["interface"] = "opaque_quantised_state_levels"
     scored["reads_exact_content_tokens"] = False
