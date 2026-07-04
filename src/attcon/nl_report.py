@@ -75,6 +75,8 @@ class NLExample:
     symbolic_state: str
     tokenized_state: str
     observation_only: str
+    current_observation_state: torch.Tensor | None = None
+    prev_observation_state: torch.Tensor | None = None
 
 
 def _cell_name(cell_idx: int, grid_size: int) -> str:
@@ -1260,6 +1262,8 @@ def collect_nl_examples(
                 symbolic_state="",
                 tokenized_state="",
                 observation_only="",
+                current_observation_state=observation[batch_idx, step_idx].detach().cpu(),
+                prev_observation_state=observation[batch_idx, prev_step_idx].detach().cpu(),
             )
             example.symbolic_state = _render_symbolic_state(example, task_cfg.grid_size)
             example.observation_only = _render_observation_only(

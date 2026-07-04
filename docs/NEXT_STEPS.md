@@ -56,7 +56,11 @@ Remaining sub-steps (the real next work):
   Some individual previous-visible-type signal is present (`~0.25-0.46` depending on slice/interface),
   but attended digits and joint content stay near chance. This points away from quantisation as the
   sole bottleneck and toward the checkpoint/state representation itself lacking separable faithful
-  content.
+  content. A follow-up condition that includes the model's actual current/previous observation
+  feedback channel improves remembered-field recovery (`memory_content_joint_accuracy_advantage`
+  `~+0.08` to `+0.21` depending on slice), but still does not recover full joint content, so the
+  remaining target is a checkpoint that carries sensory feedback into separable controller state
+  rather than only leaving it available as immediate recurrent input.
 - [ ] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
   separably encoded (e.g. a memory-regularised or longer-trained recipe), to test whether faithful
   remembered-content recovery is reachable at all.

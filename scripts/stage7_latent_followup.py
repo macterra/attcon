@@ -15,6 +15,7 @@ Usage:
 """
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 from typing import Any
@@ -53,6 +54,19 @@ EVALUATION_EXAMPLES = 24
 TRANSLATOR_TRAIN_EXAMPLES = 64
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run the Stage 7 latent-only bottleneck audit.")
+    parser.add_argument("--config", default=CONFIG_PATH)
+    parser.add_argument("--checkpoint", default=CHECKPOINT_PATH)
+    parser.add_argument("--out", default=str(OUT_PATH))
+    parser.add_argument("--probe-scenes", type=int, default=PROBE_SCENES)
+    parser.add_argument("--calibration-examples", type=int, default=CALIBRATION_EXAMPLES)
+    parser.add_argument("--evaluation-examples", type=int, default=EVALUATION_EXAMPLES)
+    parser.add_argument("--translator-train-examples", type=int, default=TRANSLATOR_TRAIN_EXAMPLES)
+    parser.add_argument("--seed-offset", type=int, default=SEED_OFFSET)
+    return parser.parse_args()
+
+
 def _continuous_feature_matrix(examples: list[Any]) -> torch.Tensor:
     rows = []
     for example in examples:
@@ -71,6 +85,30 @@ def _continuous_feature_matrix(examples: list[Any]) -> torch.Tensor:
     return torch.stack(rows, dim=0)
 
 
+def _feedback_feature_matrix(examples: list[Any]) -> torch.Tensor:
+    rows = []
+    for example in examples:
+        current_observation = example.current_observation_state
+        previous_observation = example.prev_observation_state
+        if current_observation is None or previous_observation is None:
+            raise ValueError("feedback diagnostic requires observation-state fields")
+        rows.append(
+            torch.cat(
+                [
+                    example.controller_state,
+                    example.prev_controller_state,
+                    example.attention_state,
+                    example.prev_attention_state,
+                    example.memory_state,
+                    current_observation,
+                    previous_observation,
+                ],
+                dim=0,
+            ).float()
+        )
+    return torch.stack(rows, dim=0)
+
+
 def _standardize(train_features: torch.Tensor, eval_features: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     mean = train_features.mean(dim=0, keepdim=True)
     std = train_features.std(dim=0, keepdim=True).clamp_min(1e-6)
@@ -82,10 +120,14 @@ def _run_continuous_state_probe(
     fit_examples: list[Any],
     evaluation_examples: list[Any],
     grid_size: int,
+    feature_kind: str = "continuous_internal_state_probe",
 ) -> dict[str, Any]:
+    feature_matrix = (
+        _feedback_feature_matrix if feature_kind == "continuous_state_plus_feedback_probe" else _continuous_feature_matrix
+    )
     fit_features, eval_features = _standardize(
-        _continuous_feature_matrix(fit_examples),
-        _continuous_feature_matrix(evaluation_examples),
+        feature_matrix(fit_examples),
+        feature_matrix(evaluation_examples),
     )
 
     multiclass_pred: dict[str, torch.Tensor] = {}
@@ -169,30 +211,37 @@ def _run_continuous_state_probe(
         predictions=predictions,
         grid_size=grid_size,
     )
-    scored["interface"] = "continuous_internal_state_probe"
+    scored["interface"] = feature_kind
     scored["reads_exact_content_tokens"] = False
     scored["fit_examples"] = len(fit_examples)
     return scored
 
 
-def _score_slice(examples: list[Any], *, grid_size: int) -> dict[str, Any]:
+def _score_slice(
+    examples: list[Any],
+    *,
+    grid_size: int,
+    calibration_examples: int,
+    evaluation_examples: int,
+    translator_train_examples: int,
+) -> dict[str, Any]:
     examples = [example for example in examples if example.step_index > 0]
-    required = CALIBRATION_EXAMPLES + EVALUATION_EXAMPLES
+    required = calibration_examples + evaluation_examples
     if len(examples) < required:
         return {"skipped": True, "reason": f"need {required} examples, have {len(examples)}"}
 
     calibration, evaluation = _select_diverse_nl_examples(
         examples,
         grid_size=grid_size,
-        calibration_count=CALIBRATION_EXAMPLES,
-        evaluation_count=EVALUATION_EXAMPLES,
+        calibration_count=calibration_examples,
+        evaluation_count=evaluation_examples,
     )
     held_out = {id(example) for example in calibration + evaluation}
     translator_pool = [example for example in examples if id(example) not in held_out]
     translator = _select_translator_examples(
         translator_pool,
         grid_size=grid_size,
-        target_count=TRANSLATOR_TRAIN_EXAMPLES,
+        target_count=translator_train_examples,
     )
     if not translator:
         translator = calibration
@@ -241,6 +290,12 @@ def _score_slice(examples: list[Any], *, grid_size: int) -> dict[str, Any]:
         evaluation_examples=evaluation,
         grid_size=grid_size,
     )
+    feedback = _run_continuous_state_probe(
+        fit_examples=fit,
+        evaluation_examples=evaluation,
+        grid_size=grid_size,
+        feature_kind="continuous_state_plus_feedback_probe",
+    )
     return {
         "fit_examples": len(fit),
         "evaluation_examples": len(evaluation),
@@ -258,19 +313,21 @@ def _score_slice(examples: list[Any], *, grid_size: int) -> dict[str, Any]:
         },
         "quantized_opaque_levels": quantized_runs,
         "continuous_internal_state_probe": summarize(continuous),
+        "continuous_state_plus_feedback_probe": summarize(feedback),
     }
 
 
 def main() -> None:
+    args = parse_args()
     device = torch.device("cpu")
-    cfg = load_config(CONFIG_PATH)
-    _, task_cfg, models = load_models_from_checkpoint(CHECKPOINT_PATH, device, cfg)
+    cfg = load_config(args.config)
+    _, task_cfg, models = load_models_from_checkpoint(args.checkpoint, device, cfg)
     model = models["recurrent"]
     model.eval()
 
-    generator = make_generator(int(cfg["seed"]) + SEED_OFFSET, device)
+    generator = make_generator(int(cfg["seed"]) + args.seed_offset, device)
     batch = generate_batch(
-        PROBE_SCENES,
+        args.probe_scenes,
         task_cfg.num_steps,
         task_cfg,
         generator=generator,
@@ -302,31 +359,51 @@ def main() -> None:
     result = {
         "note": (
             "Stage 7 latent-only follow-up. Quantised opaque levels and a richer continuous "
-            "internal-state-only probe are evaluated on the same held-out examples. The "
-            "continuous probe is not a reporter interface claim; it is a bottleneck diagnostic."
+            "internal-state-only probe are evaluated on the same held-out examples. A separate "
+            "diagnostic also includes the model's current/previous observation feedback channel. "
+            "The continuous probes are not reporter interface claims; they are bottleneck diagnostics."
         ),
-        "config_base": CONFIG_PATH,
-        "checkpoint": CHECKPOINT_PATH,
-        "probe_scenes": PROBE_SCENES,
-        "calibration_examples": CALIBRATION_EXAMPLES,
-        "evaluation_examples": EVALUATION_EXAMPLES,
-        "translator_train_examples": TRANSLATOR_TRAIN_EXAMPLES,
+        "config_base": args.config,
+        "checkpoint": args.checkpoint,
+        "probe_scenes": args.probe_scenes,
+        "calibration_examples": args.calibration_examples,
+        "evaluation_examples": args.evaluation_examples,
+        "translator_train_examples": args.translator_train_examples,
         "slices": {
-            "default": _score_slice(default_examples, grid_size=task_cfg.grid_size),
-            "cue_switch": _score_slice(cue_switch_examples, grid_size=task_cfg.grid_size),
+            "default": _score_slice(
+                default_examples,
+                grid_size=task_cfg.grid_size,
+                calibration_examples=args.calibration_examples,
+                evaluation_examples=args.evaluation_examples,
+                translator_train_examples=args.translator_train_examples,
+            ),
+            "cue_switch": _score_slice(
+                cue_switch_examples,
+                grid_size=task_cfg.grid_size,
+                calibration_examples=args.calibration_examples,
+                evaluation_examples=args.evaluation_examples,
+                translator_train_examples=args.translator_train_examples,
+            ),
             "intervention_baseline": _score_slice(
                 intervention["baseline_examples"],
                 grid_size=task_cfg.grid_size,
+                calibration_examples=args.calibration_examples,
+                evaluation_examples=args.evaluation_examples,
+                translator_train_examples=args.translator_train_examples,
             ),
             "intervention_intervened": _score_slice(
                 intervention["intervened_examples"],
                 grid_size=task_cfg.grid_size,
+                calibration_examples=args.calibration_examples,
+                evaluation_examples=args.evaluation_examples,
+                translator_train_examples=args.translator_train_examples,
             ),
         },
     }
-    OUT_PATH.write_text(json.dumps(result, indent=2))
+    out_path = Path(args.out)
+    out_path.write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
-    print(f"\nwrote {OUT_PATH}")
+    print(f"\nwrote {out_path}")
 
 
 if __name__ == "__main__":
