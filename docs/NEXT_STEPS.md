@@ -64,6 +64,14 @@ Remaining sub-steps (the real next work):
 - [ ] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
   separably encoded (e.g. a memory-regularised or longer-trained recipe), to test whether faithful
   remembered-content recovery is reachable at all.
+- [~] First widened-checkpoint pilot completed (`configs/stage7_longer_wide.yaml`,
+  `audits/stage7_latent_followup_longer_wide.json`): a 64-hidden / 24-scene-embedding checkpoint
+  trained for 3000 steps reached recurrent validation accuracy `0.395` vs static `0.247`, so it is
+  viable but weaker than `tune_prob_035`. Latent-only joint content still does **not** clear the bar:
+  the best quantised runs reach only `+0.0417` current/memory joint advantages on some slices and
+  `content_only_joint_accuracy_advantage` remains `0.0`; continuous and feedback-channel diagnostics
+  also remain unsupported. The pilot improves visible-type field recovery but not attended digits or
+  full content binding.
 - [ ] If it stays negative, treat the external API LLM / VLM path (still quota/model-blocked) as the
   only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
   the (clearly labelled) bounded local result.
