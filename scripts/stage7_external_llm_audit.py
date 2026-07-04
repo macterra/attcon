@@ -22,6 +22,8 @@ from attcon.data import generate_batch
 from attcon.eval import (
     _select_diverse_nl_examples,
     _select_translator_examples,
+    collect_cue_switch_nl_examples,
+    collect_intervention_nl_examples,
     collect_nl_examples,
     load_config,
     load_models_from_checkpoint,
@@ -49,6 +51,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-output-tokens", type=int, default=1600)
     parser.add_argument("--request-retries", type=int, default=1)
     parser.add_argument("--seed-offset", type=int, default=9901)
+    parser.add_argument(
+        "--slices",
+        nargs="+",
+        default=["default"],
+        choices=["default", "cue_switch", "intervention_baseline", "intervention_intervened"],
+    )
     return parser.parse_args()
 
 
@@ -79,6 +87,79 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2))
     print(json.dumps(payload, indent=2))
     print(f"\nwrote {path}")
+
+
+def _score_slice(
+    *,
+    args: argparse.Namespace,
+    examples: list[Any],
+    grid_size: int,
+) -> dict[str, Any]:
+    examples = [example for example in examples if example.step_index > 0]
+    required = args.calibration_examples + args.evaluation_examples
+    if len(examples) < required:
+        return {
+            "status": "blocked",
+            "reason": f"not enough examples: need {required}, have {len(examples)}",
+        }
+
+    calibration, evaluation = _select_diverse_nl_examples(
+        examples,
+        grid_size=grid_size,
+        calibration_count=args.calibration_examples,
+        evaluation_count=args.evaluation_examples,
+    )
+    held_out = {id(example) for example in calibration + evaluation}
+    translator_pool = [example for example in examples if id(example) not in held_out]
+    teaching = _select_translator_examples(
+        translator_pool,
+        grid_size=grid_size,
+        target_count=args.translator_train_examples,
+    )
+    if not teaching:
+        teaching = calibration
+
+    observation = run_observation_only_heuristic_report_mode(
+        evaluation_examples=evaluation,
+        grid_size=grid_size,
+    )
+    latent_llm = run_nl_report_mode(
+        mode="latent_only_state",
+        model_name=args.model,
+        calibration_examples=calibration,
+        evaluation_examples=evaluation,
+        grid_size=grid_size,
+        max_output_tokens=args.max_output_tokens,
+        request_retries=args.request_retries,
+        teaching_examples=teaching,
+        latent_num_chunks=args.latent_num_chunks,
+        latent_num_levels=args.latent_num_levels,
+    )
+    observation_llm = run_nl_report_mode(
+        mode="observation_only",
+        model_name=args.model,
+        calibration_examples=calibration,
+        evaluation_examples=evaluation,
+        grid_size=grid_size,
+        max_output_tokens=args.max_output_tokens,
+        request_retries=args.request_retries,
+        teaching_examples=teaching,
+    )
+    return {
+        "status": "complete",
+        "calibration_examples": len(calibration),
+        "evaluation_examples": len(evaluation),
+        "translator_train_examples": len(teaching),
+        "local_observation_baseline": {
+            "current_content_joint_accuracy": observation["current_content_joint_accuracy"],
+            "memory_content_joint_accuracy": observation["memory_content_joint_accuracy"],
+            "content_only_joint_accuracy": observation["content_only_joint_accuracy"],
+        },
+        "latent_only_llm_summary": _summarize_against_observation(latent_llm, observation),
+        "observation_only_llm_summary": _summarize_against_observation(observation_llm, observation),
+        "latent_only_llm": latent_llm,
+        "observation_only_llm": observation_llm,
+    }
 
 
 def main() -> None:
@@ -120,65 +201,35 @@ def main() -> None:
             target_pos=batch.target_pos,
             num_steps=task_cfg.num_steps,
         )
-    examples = [example for example in collect_nl_examples(model, task_cfg, batch, outputs) if example.step_index > 0]
-    required = args.calibration_examples + args.evaluation_examples
-    if len(examples) < required:
-        _write(
-            out_path,
-            {
-                "status": "blocked",
-                "reason": f"not enough examples: need {required}, have {len(examples)}",
-                "config_base": args.config,
-                "checkpoint": args.checkpoint,
-                "model": args.model,
-            },
+    slice_examples = {
+        "default": collect_nl_examples(model, task_cfg, batch, outputs),
+    }
+    if any(name == "cue_switch" for name in args.slices):
+        slice_examples["cue_switch"] = collect_cue_switch_nl_examples(
+            model,
+            task_cfg,
+            batch,
+            switch_step=int(cfg["evaluation"].get("cue_switch", {}).get("switch_step", 3)),
         )
-        return
-
-    calibration, evaluation = _select_diverse_nl_examples(
-        examples,
-        grid_size=task_cfg.grid_size,
-        calibration_count=args.calibration_examples,
-        evaluation_count=args.evaluation_examples,
-    )
-    held_out = {id(example) for example in calibration + evaluation}
-    translator_pool = [example for example in examples if id(example) not in held_out]
-    teaching = _select_translator_examples(
-        translator_pool,
-        grid_size=task_cfg.grid_size,
-        target_count=args.translator_train_examples,
-    )
-    if not teaching:
-        teaching = calibration
-
-    observation = run_observation_only_heuristic_report_mode(
-        evaluation_examples=evaluation,
-        grid_size=task_cfg.grid_size,
-    )
+    if any(name.startswith("intervention_") for name in args.slices):
+        intervention = collect_intervention_nl_examples(
+            model,
+            task_cfg,
+            batch,
+            intervention_step=int(cfg["evaluation"].get("intervention_test", {}).get("step", 5)),
+        )
+        slice_examples["intervention_baseline"] = intervention["baseline_examples"]
+        slice_examples["intervention_intervened"] = intervention["intervened_examples"]
 
     try:
-        latent_llm = run_nl_report_mode(
-            mode="latent_only_state",
-            model_name=args.model,
-            calibration_examples=calibration,
-            evaluation_examples=evaluation,
-            grid_size=task_cfg.grid_size,
-            max_output_tokens=args.max_output_tokens,
-            request_retries=args.request_retries,
-            teaching_examples=teaching,
-            latent_num_chunks=args.latent_num_chunks,
-            latent_num_levels=args.latent_num_levels,
-        )
-        observation_llm = run_nl_report_mode(
-            mode="observation_only",
-            model_name=args.model,
-            calibration_examples=calibration,
-            evaluation_examples=evaluation,
-            grid_size=task_cfg.grid_size,
-            max_output_tokens=args.max_output_tokens,
-            request_retries=args.request_retries,
-            teaching_examples=teaching,
-        )
+        slices = {
+            name: _score_slice(
+                args=args,
+                examples=slice_examples[name],
+                grid_size=task_cfg.grid_size,
+            )
+            for name in args.slices
+        }
     except Exception as exc:
         _write(
             out_path,
@@ -191,7 +242,8 @@ def main() -> None:
                 "probe_scenes": args.probe_scenes,
                 "calibration_examples": args.calibration_examples,
                 "evaluation_examples": args.evaluation_examples,
-                "translator_train_examples": len(teaching),
+                "translator_train_examples": args.translator_train_examples,
+                "slices": args.slices,
                 "latent_interface": {
                     "num_chunks": args.latent_num_chunks,
                     "num_levels": args.latent_num_levels,
@@ -214,20 +266,13 @@ def main() -> None:
             "probe_scenes": args.probe_scenes,
             "calibration_examples": args.calibration_examples,
             "evaluation_examples": args.evaluation_examples,
-            "translator_train_examples": len(teaching),
+            "translator_train_examples": args.translator_train_examples,
+            "slices_requested": args.slices,
             "latent_interface": {
                 "num_chunks": args.latent_num_chunks,
                 "num_levels": args.latent_num_levels,
             },
-            "local_observation_baseline": {
-                "current_content_joint_accuracy": observation["current_content_joint_accuracy"],
-                "memory_content_joint_accuracy": observation["memory_content_joint_accuracy"],
-                "content_only_joint_accuracy": observation["content_only_joint_accuracy"],
-            },
-            "latent_only_llm_summary": _summarize_against_observation(latent_llm, observation),
-            "observation_only_llm_summary": _summarize_against_observation(observation_llm, observation),
-            "latent_only_llm": latent_llm,
-            "observation_only_llm": observation_llm,
+            "slices": slices,
         },
     )
 

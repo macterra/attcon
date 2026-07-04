@@ -82,6 +82,11 @@ Remaining sub-steps (the real next work):
   remembered, or content-only fields on the 2-example smoke slice (`content_supported = false`).
   This is not a powered support test, but it confirms the external route is runnable and currently
   follows the same negative direction as the local latent-only probes.
+- [x] Extend the external API LLM smoke audit across Stage 7 slices
+  (`audits/stage7_external_llm_multislice_tiny_tune_prob_035.json`). A one-example-per-slice run on
+  default, cue-switch, and intervened examples completed with `gpt-5-mini`; every slice remained
+  negative for latent-only joint current, remembered, and content-only recovery. This is still only a
+  route/plumbing result, but it removes "external path not runnable" as the reason Stage 7 is open.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims
