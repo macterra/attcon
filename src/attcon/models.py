@@ -337,6 +337,21 @@ class RecurrentAttentionController(BaseAttentionModel):
         self.unresolved_search_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.wrong_candidate_history_head = nn.Linear(model_config.hidden_size + self.num_cells + 1, 1)
         self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 2, 1)
+        self.content_memory_adapter = nn.Sequential(
+            nn.Linear(
+                model_config.hidden_size + self.observation_dim + self.num_cells,
+                model_config.hidden_size,
+            ),
+            nn.Tanh(),
+        )
+        self.content_current_visible_head = nn.Linear(model_config.hidden_size, self.num_types)
+        self.content_current_digit_head = nn.Linear(model_config.hidden_size, self.digit_vocab_size)
+        self.content_previous_visible_head = nn.Linear(model_config.hidden_size, self.num_types)
+        self.content_previous_digit_head = nn.Linear(model_config.hidden_size, self.digit_vocab_size)
+        self.content_previous_glimpse_digit_head = nn.Linear(
+            model_config.hidden_size,
+            self.digit_vocab_size,
+        )
         nn.init.zeros_(self.policy_self_model_head.weight)
 
     @property
@@ -445,6 +460,12 @@ class RecurrentAttentionController(BaseAttentionModel):
         allocation_error_seq = []
         current_wrong_candidate_seq = []
         revisit_unresolved_seq = []
+        content_memory_state_seq = []
+        content_current_visible_logits_seq = []
+        content_current_digit_logits_seq = []
+        content_previous_visible_logits_seq = []
+        content_previous_digit_logits_seq = []
+        content_previous_glimpse_digit_logits_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -552,6 +573,9 @@ class RecurrentAttentionController(BaseAttentionModel):
                 (revisit_flag.squeeze(-1) > 0.5)
                 & (unresolved_search.squeeze(-1) > 0.5)
             ).float().unsqueeze(-1)
+            content_memory_state = self.content_memory_adapter(
+                torch.cat([hidden_state, observed_glimpse, attention], dim=-1)
+            )
 
             attention_seq.append(attention)
             logits_seq.append(step_logits)
@@ -575,6 +599,22 @@ class RecurrentAttentionController(BaseAttentionModel):
             wrong_candidate_history_seq.append(wrong_candidate_history)
             revisit_unresolved_seq.append(revisit_unresolved)
             allocation_error_seq.append(allocation_error)
+            content_memory_state_seq.append(content_memory_state)
+            content_current_visible_logits_seq.append(
+                self.content_current_visible_head(content_memory_state)
+            )
+            content_current_digit_logits_seq.append(
+                self.content_current_digit_head(content_memory_state)
+            )
+            content_previous_visible_logits_seq.append(
+                self.content_previous_visible_head(content_memory_state)
+            )
+            content_previous_digit_logits_seq.append(
+                self.content_previous_digit_head(content_memory_state)
+            )
+            content_previous_glimpse_digit_logits_seq.append(
+                self.content_previous_glimpse_digit_head(content_memory_state)
+            )
 
             previous_attention = attention
             inspection_state = inspection_state_post
@@ -613,4 +653,19 @@ class RecurrentAttentionController(BaseAttentionModel):
             "revisit_unresolved_seq": torch.stack(revisit_unresolved_seq, dim=1),
             "allocation_error_logits_seq": torch.stack(allocation_error_logits_seq, dim=1),
             "allocation_error_seq": torch.stack(allocation_error_seq, dim=1),
+            "content_memory_state_seq": torch.stack(content_memory_state_seq, dim=1),
+            "content_current_visible_logits_seq": torch.stack(
+                content_current_visible_logits_seq,
+                dim=1,
+            ),
+            "content_current_digit_logits_seq": torch.stack(content_current_digit_logits_seq, dim=1),
+            "content_previous_visible_logits_seq": torch.stack(
+                content_previous_visible_logits_seq,
+                dim=1,
+            ),
+            "content_previous_digit_logits_seq": torch.stack(content_previous_digit_logits_seq, dim=1),
+            "content_previous_glimpse_digit_logits_seq": torch.stack(
+                content_previous_glimpse_digit_logits_seq,
+                dim=1,
+            ),
         }

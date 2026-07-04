@@ -64,6 +64,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--evaluation-examples", type=int, default=EVALUATION_EXAMPLES)
     parser.add_argument("--translator-train-examples", type=int, default=TRANSLATOR_TRAIN_EXAMPLES)
     parser.add_argument("--seed-offset", type=int, default=SEED_OFFSET)
+    parser.add_argument("--state-key", default="controller_state_seq")
     return parser.parse_args()
 
 
@@ -342,18 +343,26 @@ def main() -> None:
             num_steps=task_cfg.num_steps,
         )
 
-    default_examples = collect_nl_examples(model, task_cfg, batch, outputs)
+    default_examples = collect_nl_examples(
+        model,
+        task_cfg,
+        batch,
+        outputs,
+        state_key=args.state_key,
+    )
     cue_switch_examples = collect_cue_switch_nl_examples(
         model,
         task_cfg,
         batch,
         switch_step=int(cfg["evaluation"]["cue_switch"].get("switch_step", 3)),
+        state_key=args.state_key,
     )
     intervention = collect_intervention_nl_examples(
         model,
         task_cfg,
         batch,
         intervention_step=int(cfg["evaluation"]["intervention_test"].get("step", 5)),
+        state_key=args.state_key,
     )
 
     result = {
@@ -369,6 +378,7 @@ def main() -> None:
         "calibration_examples": args.calibration_examples,
         "evaluation_examples": args.evaluation_examples,
         "translator_train_examples": args.translator_train_examples,
+        "state_key": args.state_key,
         "slices": {
             "default": _score_slice(
                 default_examples,

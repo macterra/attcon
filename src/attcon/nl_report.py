@@ -1171,6 +1171,7 @@ def collect_nl_examples(
     outputs: dict[str, torch.Tensor],
     *,
     cue_seq: torch.Tensor | None = None,
+    state_key: str = "controller_state_seq",
 ) -> list[NLExample]:
     """Extract per-step examples from one batch of recurrent outputs."""
 
@@ -1184,7 +1185,7 @@ def collect_nl_examples(
     allocation_error = outputs["allocation_error_seq"][..., 0]
     inspection = outputs["inspection_seq"]
     observation = outputs["observation_seq"]
-    controller_states = outputs["controller_state_seq"]
+    controller_states = outputs[state_key]
     visible_types = batch.visible_types
     if cue_seq is None:
         cue_seq = batch.cue.unsqueeze(1).repeat(1, task_cfg.num_steps)
@@ -1284,6 +1285,7 @@ def collect_cue_switch_nl_examples(
     batch,
     *,
     switch_step: int,
+    state_key: str = "controller_state_seq",
 ) -> list[NLExample]:
     """Collect Stage 7 examples from mid-episode cue-switch episodes."""
 
@@ -1305,7 +1307,14 @@ def collect_cue_switch_nl_examples(
             num_steps=task_cfg.num_steps,
         )
 
-    examples = collect_nl_examples(model, task_cfg, batch, outputs, cue_seq=cue_seq)
+    examples = collect_nl_examples(
+        model,
+        task_cfg,
+        batch,
+        outputs,
+        cue_seq=cue_seq,
+        state_key=state_key,
+    )
     for example in examples:
         example.example_id = f"cue_switch_{example.example_id}"
     return examples
@@ -1317,6 +1326,7 @@ def collect_intervention_nl_examples(
     batch,
     *,
     intervention_step: int,
+    state_key: str = "controller_state_seq",
 ) -> dict[str, Any]:
     """Collect aligned baseline/intervened Stage 7 examples from the same scenes."""
 
@@ -1354,8 +1364,20 @@ def collect_intervention_nl_examples(
             intervention={"step": intervention_step, "delta": intervention_delta},
         )
 
-    baseline_examples = collect_nl_examples(model, task_cfg, batch, baseline_outputs)
-    intervened_examples = collect_nl_examples(model, task_cfg, batch, intervened_outputs)
+    baseline_examples = collect_nl_examples(
+        model,
+        task_cfg,
+        batch,
+        baseline_outputs,
+        state_key=state_key,
+    )
+    intervened_examples = collect_nl_examples(
+        model,
+        task_cfg,
+        batch,
+        intervened_outputs,
+        state_key=state_key,
+    )
     for example in baseline_examples:
         example.example_id = f"baseline_intervention_{example.example_id}"
     for example in intervened_examples:

@@ -48,6 +48,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "unresolved_search_report_weight": 0.05,
         "wrong_candidate_history_report_weight": 0.05,
         "allocation_error_report_weight": 0.05,
+        "content_memory_weight": 0.0,
         "cue_switch_probability": 0.0,
         "cue_switch_step": 3,
     },
@@ -534,6 +535,49 @@ def train_single_model(
                 outputs["allocation_error_logits_seq"],
                 outputs["allocation_error_seq"].detach(),
             )
+        content_memory_loss = torch.tensor(0.0, device=device)
+        if train_cfg.get("content_memory_weight", 0.0) > 0.0 and "content_memory_state_seq" in outputs:
+            attended_cells = outputs["attention_seq"].argmax(dim=-1)
+            current_visible_labels = batch.visible_types.gather(1, attended_cells)
+            current_digit_labels = batch.digits.gather(1, attended_cells)
+            glimpse_digit_labels = outputs["observation_seq"][..., 1:].argmax(dim=-1).detach()
+            previous_visible_labels = torch.cat(
+                [current_visible_labels[:, :1], current_visible_labels[:, :-1]],
+                dim=1,
+            )
+            previous_digit_labels = torch.cat(
+                [current_digit_labels[:, :1], current_digit_labels[:, :-1]],
+                dim=1,
+            )
+            previous_glimpse_digit_labels = torch.cat(
+                [glimpse_digit_labels[:, :1], glimpse_digit_labels[:, :-1]],
+                dim=1,
+            )
+            content_memory_loss = (
+                F.cross_entropy(
+                    outputs["content_current_visible_logits_seq"].reshape(-1, task_cfg.num_types),
+                    current_visible_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_current_digit_logits_seq"].reshape(-1, task_cfg.digit_vocab_size),
+                    current_digit_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_previous_visible_logits_seq"].reshape(-1, task_cfg.num_types),
+                    previous_visible_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_previous_digit_logits_seq"].reshape(-1, task_cfg.digit_vocab_size),
+                    previous_digit_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_previous_glimpse_digit_logits_seq"].reshape(
+                        -1,
+                        task_cfg.digit_vocab_size,
+                    ),
+                    previous_glimpse_digit_labels.reshape(-1),
+                )
+            )
         # The main task loss is paired with a small final-fixation objective so the
         # controller gets a direct signal about where useful evidence should end up.
         loss = (
@@ -553,6 +597,7 @@ def train_single_model(
             + train_cfg.get("wrong_candidate_history_report_weight", 0.0)
             * wrong_candidate_history_report_loss
             + train_cfg.get("allocation_error_report_weight", 0.0) * allocation_error_report_loss
+            + train_cfg.get("content_memory_weight", 0.0) * content_memory_loss
         )
 
         optimizer.zero_grad()

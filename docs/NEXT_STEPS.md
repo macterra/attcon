@@ -6,8 +6,10 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > non-functional checkpoint (under the old fully-soft recipe the recurrent controller collapsed
 > to uniform attention and lost to the static baseline). After the discrete-glimpse fix, the
 > audits, negative controls, and comparator suite were re-run on a model that actually does the
-> task: dissociation/Stage 3/Stage 4A/Stage 5/Stage 6A/Stage 7 are genuinely supported (Stage 3
-> robustly), Stage 6B is bounded/provisional, and all negative controls + comparators fail as
+> task: dissociation/Stage 3/Stage 4A/Stage 5/Stage 6A are genuinely supported (Stage 3
+> robustly), Stage 7 is bounded (schema-aware round-trip only; the faithful-latent leg is open —
+> see [Current Focus](#current-focus-latent-only-stage-7-decoder)), Stage 6B is
+> bounded/provisional, and all negative controls + comparators fail as
 > intended. See `audits/post_rehab_full_eval_tune_prob_035_summary.json` and
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore now genuinely validated,
 > not artifacts. Remaining open work below (Priorities 2-5) is unchanged.
@@ -72,7 +74,8 @@ Remaining sub-steps (the real next work):
   `content_only_joint_accuracy_advantage` remains `0.0`; continuous and feedback-channel diagnostics
   also remain unsupported. The pilot improves visible-type field recovery but not attended digits or
   full content binding.
-- [ ] If it stays negative, treat the external API LLM / VLM path (still quota/model-blocked) as the
+- [ ] If it stays negative, treat the external API LLM / VLM path (LLM path now runnable with
+  `gpt-5-mini`; a *powered* support run and the VLM path are still outstanding) as the
   only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
   the (clearly labelled) bounded local result.
 - [x] Smoke-test the external API LLM path on the strict latent-only interface
@@ -87,6 +90,27 @@ Remaining sub-steps (the real next work):
   default, cue-switch, and intervened examples completed with `gpt-5-mini`; every slice remained
   negative for latent-only joint current, remembered, and content-only recovery. This is still only a
   route/plumbing result, but it removes "external path not runnable" as the reason Stage 7 is open.
+- [ ] **Solution direction:** stop treating Stage 7 as a decoder problem. The local latent probes,
+  richer continuous-state probes, feedback-channel diagnostic, widened checkpoint, and external LLM
+  smoke tests all point the same way: the current checkpoint uses glimpse content transiently but
+  does not carry current/remembered attended content in a separable report state. The next experiment
+  is therefore a **memory-regularized Stage 7 checkpoint**: add a post-glimpse report state and train
+  it with a small auxiliary content-memory objective for current attended visible type/digit and
+  previous attended visible type/digit/glimpse digit. Keep the claim boundary explicit: if this works,
+  it supports "faithful latent reportability under explicit content-memory regularization," not
+  spontaneous Stage 7 reportability.
+- [~] First memory-regularized checkpoint pilot completed
+  (`configs/stage7_content_memory.yaml`, `audits/stage7_latent_followup_content_memory.json`).
+  The checkpoint is task-viable but weaker than `tune_prob_035` (recurrent validation accuracy
+  `0.325` vs static `0.166`). Using the trained `content_memory_state_seq` as the latent report
+  state produces the first clear strict-Stage-7 movement: best quantised runs reach current/memory
+  joint advantages of `+0.0417/+0.3333` on default, `+0.125/+0.3333` on cue-switch,
+  `+0.0/+0.375` on intervention baseline, and `+0.1667/+0.3333` on intervened examples; previous
+  attended digit and previous glimpse digit often reach `0.83-1.0` accuracy. However,
+  `content_only_joint_accuracy_advantage` remains `0.0` on every slice, so strict Stage 7 is still
+  **not supported**. Reading: content-memory regularization is the right direction, but the auxiliary
+  target must also bind visible type, digit, location, and report-control fields strongly enough for
+  full joint content recovery.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims
@@ -123,7 +147,7 @@ falsifier, not a strong emergence claim.
 
 GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
 
-- [ ] Evaluate external API LLM reporting under default, cue-switch, and intervention slices once quota is available. (Blocked: quota.)
+- [~] Evaluate external API LLM reporting under default, cue-switch, and intervention slices. (Path runnable with `gpt-5-mini` — one-example-per-slice smoke run completed, all slices negative for joint content; a *powered* multi-example support run is still outstanding. See `audits/stage7_external_llm_multislice_tiny_tune_prob_035.json`.)
 - [ ] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings. (Blocked: vision model.)
 - [ ] Compare VLM reports against scene-only and explicit symbolic-dump baselines.
 - [~] Add token-remapping and held-out combination tests for the local opaque-token reporter. **Investigated: not meaningful against the current local reporter.** The local decoder reads the scored content fields from attended-content token bases the renderer fills *directly* from the model's attended content (not the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware structural round-trip: a consistent token remapping is invariant by construction and held-out combinations do not bite directly-encoded fields. The genuine anti-memorization test needs a **latent-only decoder** (forced to recover content from the opaque latent-bit tokens alone) or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".

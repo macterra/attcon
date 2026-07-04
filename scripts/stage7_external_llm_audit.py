@@ -51,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-output-tokens", type=int, default=1600)
     parser.add_argument("--request-retries", type=int, default=1)
     parser.add_argument("--seed-offset", type=int, default=9901)
+    parser.add_argument("--state-key", default="controller_state_seq")
     parser.add_argument(
         "--slices",
         nargs="+",
@@ -202,7 +203,13 @@ def main() -> None:
             num_steps=task_cfg.num_steps,
         )
     slice_examples = {
-        "default": collect_nl_examples(model, task_cfg, batch, outputs),
+        "default": collect_nl_examples(
+            model,
+            task_cfg,
+            batch,
+            outputs,
+            state_key=args.state_key,
+        ),
     }
     if any(name == "cue_switch" for name in args.slices):
         slice_examples["cue_switch"] = collect_cue_switch_nl_examples(
@@ -210,6 +217,7 @@ def main() -> None:
             task_cfg,
             batch,
             switch_step=int(cfg["evaluation"].get("cue_switch", {}).get("switch_step", 3)),
+            state_key=args.state_key,
         )
     if any(name.startswith("intervention_") for name in args.slices):
         intervention = collect_intervention_nl_examples(
@@ -217,6 +225,7 @@ def main() -> None:
             task_cfg,
             batch,
             intervention_step=int(cfg["evaluation"].get("intervention_test", {}).get("step", 5)),
+            state_key=args.state_key,
         )
         slice_examples["intervention_baseline"] = intervention["baseline_examples"]
         slice_examples["intervention_intervened"] = intervention["intervened_examples"]
@@ -243,6 +252,7 @@ def main() -> None:
                 "calibration_examples": args.calibration_examples,
                 "evaluation_examples": args.evaluation_examples,
                 "translator_train_examples": args.translator_train_examples,
+                "state_key": args.state_key,
                 "slices": args.slices,
                 "latent_interface": {
                     "num_chunks": args.latent_num_chunks,
@@ -267,6 +277,7 @@ def main() -> None:
             "calibration_examples": args.calibration_examples,
             "evaluation_examples": args.evaluation_examples,
             "translator_train_examples": args.translator_train_examples,
+            "state_key": args.state_key,
             "slices_requested": args.slices,
             "latent_interface": {
                 "num_chunks": args.latent_num_chunks,

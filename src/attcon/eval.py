@@ -98,6 +98,12 @@ def load_models_from_checkpoint(
                 "unresolved_search_head.",
                 "wrong_candidate_history_head.",
                 "allocation_error_head.",
+                "content_memory_adapter.",
+                "content_current_visible_head.",
+                "content_current_digit_head.",
+                "content_previous_visible_head.",
+                "content_previous_digit_head.",
+                "content_previous_glimpse_digit_head.",
             )
             missing_report_heads = [
                 key
@@ -115,9 +121,30 @@ def load_models_from_checkpoint(
                 for key, value in migrated_state.items()
                 if key in current and value.shape != current[key].shape
             ]
-            if unexpected or missing_other or mismatched or len(missing_report_heads) not in (3, 11, 15):
+            missing_only_content_memory = bool(missing_report_heads) and all(
+                key.startswith(
+                    (
+                        "content_memory_adapter.",
+                        "content_current_visible_head.",
+                        "content_current_digit_head.",
+                        "content_previous_visible_head.",
+                        "content_previous_digit_head.",
+                        "content_previous_glimpse_digit_head.",
+                    )
+                )
+                for key in missing_report_heads
+            )
+            if (
+                unexpected
+                or missing_other
+                or mismatched
+                or (not missing_only_content_memory and len(missing_report_heads) not in (3, 11, 15))
+            ):
                 raise
-            if not cfg.get("evaluation", {}).get("allow_stale_checkpoint", False):
+            if (
+                not missing_only_content_memory
+                and not cfg.get("evaluation", {}).get("allow_stale_checkpoint", False)
+            ):
                 raise RuntimeError(
                     "checkpoint requires report-head migration; rerun with "
                     "--allow-stale-checkpoint for probe-only diagnostics, or use a "
