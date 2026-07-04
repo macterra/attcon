@@ -75,6 +75,13 @@ Remaining sub-steps (the real next work):
 - [ ] If it stays negative, treat the external API LLM / VLM path (still quota/model-blocked) as the
   only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
   the (clearly labelled) bounded local result.
+- [x] Smoke-test the external API LLM path on the strict latent-only interface
+  (`scripts/stage7_external_llm_audit.py`, `audits/stage7_external_llm_tiny_tune_prob_035.json`).
+  The path is now live with `gpt-5-mini`, so API/model access is no longer the immediate blocker.
+  Tiny result: neither latent-only nor observation-only LLM reporting recovered joint current,
+  remembered, or content-only fields on the 2-example smoke slice (`content_supported = false`).
+  This is not a powered support test, but it confirms the external route is runnable and currently
+  follows the same negative direction as the local latent-only probes.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims

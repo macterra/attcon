@@ -1497,6 +1497,8 @@ def _make_messages(
     eval_example: NLExample,
     grid_size: int,
     teaching_examples: list[NLExample] | None = None,
+    num_chunks: int = LATENT_NUM_CHUNKS,
+    num_levels: int = LATENT_NUM_LEVELS,
 ) -> list[dict[str, Any]]:
     if teaching_examples is None:
         teaching_examples = []
@@ -1507,6 +1509,12 @@ def _make_messages(
             "previous attention, and unresolved-state summaries, but the tokens are not pre-labeled. "
             "Some recurring token families factor grid location and attended content into compact pieces. "
             "Use the examples to decode the same hidden structure in the evaluation case."
+        ),
+        "latent_only_state": (
+            "You receive only opaque quantised internal-state tokens derived from controller, "
+            "attention, and memory tensors. Exact attended-content tokens and symbolic field names "
+            "are withheld. Infer any recoverable report fields from repeated patterns in the examples, "
+            "but do not assume unavailable content can be known."
         ),
         "symbolic_state": (
             "You receive a direct symbolic dump of internal state. Answer faithfully."
@@ -1520,7 +1528,13 @@ def _make_messages(
         "tokenized_state": "tokenized_state",
         "symbolic_state": "symbolic_state",
         "observation_only": "observation_only",
+        "latent_only_state": "latent_only_state",
     }[mode]
+
+    def payload_for(example: NLExample) -> str:
+        if state_attr == "latent_only_state":
+            return _render_latent_only_state_input(example, num_chunks, num_levels)
+        return getattr(example, state_attr)
 
     messages: list[dict[str, Any]] = [
         {
@@ -1540,7 +1554,7 @@ def _make_messages(
     ]
     demo_examples = teaching_examples + calibration_examples if teaching_examples else calibration_examples
     for example in demo_examples:
-        payload = getattr(example, state_attr)
+        payload = payload_for(example)
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
@@ -1592,7 +1606,7 @@ def _make_messages(
     messages.append(
         {
             "role": "user",
-            "content": [{"type": "input_text", "text": getattr(eval_example, state_attr)}],
+            "content": [{"type": "input_text", "text": payload_for(eval_example)}],
         }
     )
     return messages
@@ -1609,6 +1623,8 @@ def run_nl_report_mode(
     request_retries: int = 8,
     retry_backoff_seconds: float = 2.0,
     teaching_examples: list[NLExample] | None = None,
+    latent_num_chunks: int = LATENT_NUM_CHUNKS,
+    latent_num_levels: int = LATENT_NUM_LEVELS,
 ) -> dict[str, Any]:
     """Query an OpenAI model for one reporting mode and score structured faithfulness."""
 
@@ -1656,6 +1672,8 @@ def run_nl_report_mode(
                         example,
                         grid_size,
                         teaching_examples=teaching_examples,
+                        num_chunks=latent_num_chunks,
+                        num_levels=latent_num_levels,
                     ),
                     max_output_tokens=max_output_tokens,
                     reasoning={"effort": "low"},
@@ -1721,7 +1739,13 @@ def run_nl_report_mode(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": getattr(example, mode),
+                "input": _render_latent_only_state_input(
+                    example,
+                    latent_num_chunks,
+                    latent_num_levels,
+                )
+                if mode == "latent_only_state"
+                else getattr(example, mode),
                 "response": parsed,
                 "expected": {
                     "search_type": example.cue,
