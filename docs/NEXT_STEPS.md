@@ -12,6 +12,51 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore now genuinely validated,
 > not artifacts. Remaining open work below (Priorities 2-5) is unchanged.
 
+## Current Focus: Latent-Only Stage 7 Decoder
+
+A **latent-only decoder** for Stage 7 is now **implemented** (`run_latent_only_report_mode` in
+`src/attcon/nl_report.py`, wired through `nl_report_metrics`, enabled in `configs/tune_prob_035.yaml`,
+unit-tested, runs in CI). It was the one unblocked piece of work that targets the weakest leg of the
+access/report side rather than opening a new branch. **Honest finding: it does not yet clear the
+faithful-access bar on the current checkpoint** — a real negative-to-marginal result, recorded in
+`audits/stage7_latent_only_tune_prob_035.json`.
+
+Why it matters. Stage 7's bounded support rests on the local calibrated reporter, but that reporter
+is a schema-aware structural round-trip: it reads the scored content fields (current and previous
+attended visible type, attended digit, glimpse digit) from attended-content token bases (`x111xx`,
+`x112xx`, `x113xx`, `x211xx`, ...) the renderer fills *directly* from the model's attended content.
+Because content is handed to the decoder pre-labelled, the anti-memorization falsifiers do not bite
+(see ROADMAP "Sharper decoder caveat").
+
+What the latent-only decoder does. It recovers the scored content from an **opaque, quantised view of
+the controller/attention/memory state alone** (`_latent_feature_matrix`: coarse per-chunk levels, no
+schema field names, content tokens withheld), fit on the held-out translator+calibration pool and
+evaluated on held-out, cue-switch, and intervention slices. Because content is *learned* from opaque
+internal state rather than read from a schema-known token, held-out and counterfactual slices are
+genuine faithfulness tests. The unit test confirms the mechanism (it recovers content when present and
+provably ignores the exact-content fields as input).
+
+Finding on the current discrete-attention checkpoint (`audits/stage7_latent_only_tune_prob_035.json`):
+
+- A small, non-robust **current-content** advantage on the 8-example slice (`+0.125`, rising to
+  `+0.25` as the opaque interface is widened from 8×4 to 48×8 levels) — but it vanishes on the larger
+  16-example slice and on both the cue-switch and intervention slices.
+- **Remembered/counterfactual content is never recovered** above observation (`content_supported`
+  is `false` for every interface width and slice).
+- Reading: the coarse opaque latent interface on this checkpoint carries marginal current-attended
+  signal at best and no reliable remembered or counterfactual content. This **bounds** the Stage 7
+  faithful-access claim to the schema-aware round-trip; the genuine faithfulness leg stays open.
+
+Remaining sub-steps (the real next work):
+
+- [ ] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
+  separably encoded (e.g. a memory-regularised or longer-trained recipe), and/or push the opaque
+  interface richer, to test whether faithful remembered-content recovery is reachable at all.
+- [ ] If it stays negative, treat the external API LLM / VLM path (still quota/model-blocked) as the
+  only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
+  the (clearly labelled) bounded local result.
+- [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
+
 ## Priority 1: Tighten Existing Claims
 
 - [x] Run matched-capacity baseline audits for Stage 4B hidden self-model probes.
@@ -50,7 +95,7 @@ GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
 - [ ] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings. (Blocked: vision model.)
 - [ ] Compare VLM reports against scene-only and explicit symbolic-dump baselines.
 - [~] Add token-remapping and held-out combination tests for the local opaque-token reporter. **Investigated: not meaningful against the current local reporter.** The local decoder reads the scored content fields from attended-content token bases the renderer fills *directly* from the model's attended content (not the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware structural round-trip: a consistent token remapping is invariant by construction and held-out combinations do not bite directly-encoded fields. The genuine anti-memorization test needs a **latent-only decoder** (forced to recover content from the opaque latent-bit tokens alone) or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".
-- [ ] Build a latent-only decoder so token-remapping / held-out-combination tests become meaningful (the real next step for this priority).
+- [x] **Implemented — see [Current Focus](#current-focus-latent-only-stage-7-decoder).** Built a latent-only decoder (`run_latent_only_report_mode`) that recovers the scored content from an opaque quantised view of internal state alone, with the directly-encoded content bases withheld, so held-out-combination and counterfactual-tension slices become meaningful. **Honest finding:** it does not yet clear the faithful-access bar on the current checkpoint (marginal, non-robust current-content advantage; no remembered/counterfactual recovery); `content_supported = false`. See `audits/stage7_latent_only_tune_prob_035.json`. Remaining: re-run on a checkpoint with more separable remembered-attention state, or fall back to the external LLM/VLM path.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the main Stage 7 claim.
 
 ## Priority 4: Build New Theory Branches
@@ -85,7 +130,7 @@ The methodology now produces one of each partition type (a robust access/report 
 bounded non-reportability family) and comparators fail as intended, but both families are not
 yet robust, content-identity is unestablished, and cross-system replication is absent.
 
-- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip — so the access/report side is strong but its strongest reportability leg needs the latent-only / external path.)
+- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder built to harden it does **not** clear the bar on the current checkpoint, so the access/report side is strong but its strongest reportability leg still needs a checkpoint with more separable remembered-attention state or the external path. See `audits/stage7_latent_only_tune_prob_035.json`.)
 - [ ] At least one non-reportability family has robust support. (Perturbational complexity has **bounded** support; needs multi-seed + cross-system for robust.)
 - [ ] The supported families point to the same internal contents, not merely the same checkpoint.
 - [x] Comparator systems fail in predicted ways. (All negative controls and comparators fail as intended; `shuffle_feedback` drops accuracy by `0.27`.)

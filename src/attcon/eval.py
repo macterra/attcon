@@ -29,6 +29,7 @@ from .nl_report import (
     collect_nl_examples,
     load_dotenv,
     run_calibrated_token_report_mode,
+    run_latent_only_report_mode,
     run_nl_report_mode,
     run_observation_only_heuristic_report_mode,
     tokenized_state_payload_metrics,
@@ -2158,6 +2159,10 @@ def nl_report_metrics(
     request_retries = int(nl_cfg.get("request_retries", 2))
     retry_backoff_seconds = float(nl_cfg.get("retry_backoff_seconds", 2.0))
     local_decoder_enabled = bool(nl_cfg.get("local_decoder", {}).get("enabled", False))
+    latent_only_cfg = nl_cfg.get("local_decoder", {}).get("latent_only", {})
+    latent_only_enabled = bool(latent_only_cfg.get("enabled", False))
+    latent_num_chunks = int(latent_only_cfg.get("num_chunks", 8))
+    latent_num_levels = int(latent_only_cfg.get("num_levels", 4))
     nl_audit_cfg = nl_cfg.get("capacity_audit", {})
     min_joint_advantage = nl_audit_cfg.get("min_joint_accuracy_advantage", 0.01)
     min_memory_advantage = nl_audit_cfg.get("min_memory_content_joint_accuracy_advantage", 0.01)
@@ -2269,11 +2274,65 @@ def nl_report_metrics(
             "semantic_input_tokens": observation_token_count,
             "filler_tokens": max(tokenized_token_count - observation_token_count, 0.0),
         }
+
+        # Latent-only decoder: recover content from the opaque quantised internal-state levels
+        # alone (content tokens withheld), so its advantage over observation cannot be a
+        # schema-aware round-trip. Fit on the held-out translator + calibration pool.
+        if latent_only_enabled:
+            latent_only = run_latent_only_report_mode(
+                fit_examples=translator_examples + calibration_examples,
+                evaluation_examples=evaluation_examples,
+                grid_size=task_cfg.grid_size,
+                num_chunks=latent_num_chunks,
+                num_levels=latent_num_levels,
+            )
+            latent_current_adv = (
+                latent_only["current_content_joint_accuracy"]
+                - observation["current_content_joint_accuracy"]
+            )
+            latent_memory_adv = (
+                latent_only["memory_content_joint_accuracy"]
+                - observation["memory_content_joint_accuracy"]
+            )
+            latent_content_only_adv = (
+                latent_only["content_only_joint_accuracy"]
+                - observation["content_only_joint_accuracy"]
+            )
+            latent_only_extra = {
+                "latent_only_state": latent_only,
+                "latent_only_current_content_joint_accuracy_advantage": latent_current_adv,
+                "latent_only_memory_content_joint_accuracy_advantage": latent_memory_adv,
+                "latent_only_content_only_joint_accuracy_advantage": latent_content_only_adv,
+                "latent_only": {
+                    "enabled": True,
+                    "interface": latent_only["interface"],
+                    "reads_exact_content_tokens": latent_only["reads_exact_content_tokens"],
+                    "num_chunks": latent_only["num_chunks"],
+                    "num_levels": latent_only["num_levels"],
+                    "fit_examples": latent_only["fit_examples"],
+                    "evaluation_examples": len(evaluation_examples),
+                    "current_content_joint_accuracy_advantage": latent_current_adv,
+                    "memory_content_joint_accuracy_advantage": latent_memory_adv,
+                    "content_only_joint_accuracy_advantage": latent_content_only_adv,
+                    "content_supported": (
+                        latent_only["current_content_joint_accuracy"]
+                        > observation["current_content_joint_accuracy"]
+                        and latent_only["memory_content_joint_accuracy"]
+                        > observation["memory_content_joint_accuracy"]
+                        and latent_only["content_only_joint_accuracy"]
+                        > observation["content_only_joint_accuracy"]
+                    ),
+                },
+            }
+        else:
+            latent_only_extra = {"latent_only": {"enabled": False}}
+
         return {
             "enabled": True,
             "skipped": False,
             "model": model_name,
             "local_decoder": local_decoder_enabled,
+            **latent_only_extra,
             "slice": slice_name,
             "calibration_examples": calibration_count,
             "evaluation_examples": evaluation_count,
@@ -4654,6 +4713,26 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
         ),
         "content_supported": nl_report.get("content_supported", False),
         "supported": nl_report.get("supported", False),
+        # Latent-only decoder: the anti-memorization-meaningful faithfulness signal. Unlike the
+        # round-trip `content_supported` above, this recovers content from opaque quantised
+        # internal-state levels alone (no directly-encoded content tokens), so held-out and
+        # cue-switch/intervention slices are genuine faithfulness tests.
+        "latent_only_enabled": nl_report.get("latent_only", {}).get("enabled", False),
+        "latent_only_reads_exact_content_tokens": nl_report.get("latent_only", {}).get(
+            "reads_exact_content_tokens", None
+        ),
+        "latent_only_current_content_joint_accuracy_advantage": nl_report.get(
+            "latent_only_current_content_joint_accuracy_advantage", 0.0
+        ),
+        "latent_only_memory_content_joint_accuracy_advantage": nl_report.get(
+            "latent_only_memory_content_joint_accuracy_advantage", 0.0
+        ),
+        "latent_only_content_only_joint_accuracy_advantage": nl_report.get(
+            "latent_only_content_only_joint_accuracy_advantage", 0.0
+        ),
+        "latent_only_content_supported": nl_report.get("latent_only", {}).get(
+            "content_supported", False
+        ),
     }
 
     perturbational = report.get("perturbational", {})
