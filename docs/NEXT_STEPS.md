@@ -49,9 +49,17 @@ Finding on the current discrete-attention checkpoint (`audits/stage7_latent_only
 
 Remaining sub-steps (the real next work):
 
+- [x] Add a bottleneck diagnostic that compares the shipped quantised latent interface against a
+  richer continuous-internal-state-only probe, without exposing directly encoded content tokens.
+  Result (`audits/stage7_latent_followup_tune_prob_035.json`): the richer continuous probe still
+  does **not** recover joint current, remembered, or content-only fields on the current checkpoint.
+  Some individual previous-visible-type signal is present (`~0.25-0.46` depending on slice/interface),
+  but attended digits and joint content stay near chance. This points away from quantisation as the
+  sole bottleneck and toward the checkpoint/state representation itself lacking separable faithful
+  content.
 - [ ] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
-  separably encoded (e.g. a memory-regularised or longer-trained recipe), and/or push the opaque
-  interface richer, to test whether faithful remembered-content recovery is reachable at all.
+  separably encoded (e.g. a memory-regularised or longer-trained recipe), to test whether faithful
+  remembered-content recovery is reachable at all.
 - [ ] If it stays negative, treat the external API LLM / VLM path (still quota/model-blocked) as the
   only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
   the (clearly labelled) bounded local result.
