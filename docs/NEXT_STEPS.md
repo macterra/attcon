@@ -142,6 +142,29 @@ Remaining sub-steps (the real next work):
   bottleneck fields show the remaining weak spots are mostly attended digit, inspected count, and
   current-wrong-candidate calibration; the continuous diagnostic remains negative, so the next
   robustness step is replicate v3 across seeds and tighten the quantised reporter selection policy.
+- [x] Calibrate the v3 positive against a permuted-label noise floor
+  (`scripts/stage7_latent_noise_floor.py`, `audits/stage7_latent_noise_floor_content_memory_v3.json`).
+  The pilots' `content_supported` gate is only a directional `>0` test, so a `+1/24` joint advantage
+  flips it true with no significance floor — the same gap the Stage 6A claim closed with
+  `noise_floor_metrics`. This audit refits the latent decoder 120x per slice/interface with fit-time
+  labels permuted (features and probe-init held fixed, so labels are the only variable) and compares
+  the observed advantage against the permuted p95. **Result: the v3 positive survives.** On both
+  claimed-positive interfaces (32x8, 48x8) across all four slices, the permuted `content_only`
+  advantage is a point mass at exactly `0.0` (mean = p95 = max = `0.0` over 120 permutations) — under
+  shuffled labels the decoder *never once* beats observation on joint content — while the real
+  advantage is `+0.0417`/`+0.0833`; current (`+0.21..+0.33` vs p95 `~0.08-0.125`) and memory
+  (`+0.50..+0.67` vs p95 `~0.08`) clear by wide margins. So the v3 content result is **not** a
+  probe-capacity/label-fit artifact. Honest boundaries this does *not* remove: the `content_only`
+  effect is significant-but-tiny (1-2 of 24 joint examples), it is single-checkpoint and
+  single-init-seed, current-content recovery is partly circular by construction (the visible-glimpse
+  is fed into the report state it is scored from), and cross-seed/architecture/benchmark replication
+  is absent. Significance is established; robustness and non-circularity are not.
+- [ ] Replace the bare `content_supported = (current>0 and memory>0 and content_only>0)` gate in the
+  latent pilots with the permuted-label floor gate (`content_supported_vs_floor`), so future Stage 7
+  checkpoints report significance rather than direction.
+- [ ] Replicate v3 across multiple training seeds and confirm the floor-cleared `content_only`
+  advantage holds; only then treat "faithful latent reportability under content-memory regularization"
+  as robust rather than significant-on-one-checkpoint.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims
@@ -217,7 +240,7 @@ The methodology now produces one of each partition type (a robust access/report 
 bounded non-reportability family) and comparators fail as intended, but both families are not
 yet robust, content-identity is unestablished, and cross-system replication is absent.
 
-- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder built to harden it does **not** clear the bar on the current checkpoint, so the access/report side is strong but its strongest reportability leg still needs a checkpoint with more separable remembered-attention state or the external path. See `audits/stage7_latent_only_tune_prob_035.json`.)
+- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder does **not** clear the bar on the shipped `tune_prob_035` checkpoint (`audits/stage7_latent_only_tune_prob_035.json`), but on the memory-regularized v3 checkpoint the latent `content_only` advantage **does clear a permuted-label noise floor** at every slice and interface (`audits/stage7_latent_noise_floor_content_memory_v3.json`) — significant, but small (1-2/24 joint), single-seed, and reliant on an explicit content-memory objective with a partly-circular current-content path. So the access/report side is strong and its latent reportability leg is now significance-established on one engineered checkpoint; robustness needs multi-seed replication, and the spontaneous/emergent version still needs a checkpoint with separably encoded remembered-attention state or the external path.)
 - [ ] At least one non-reportability family has robust support. (Perturbational complexity has **bounded** support; needs multi-seed + cross-system for robust.)
 - [ ] The supported families point to the same internal contents, not merely the same checkpoint.
 - [x] Comparator systems fail in predicted ways. (All negative controls and comparators fail as intended; `shuffle_feedback` drops accuracy by `0.27`.)
