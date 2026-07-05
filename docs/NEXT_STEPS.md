@@ -111,6 +111,22 @@ Remaining sub-steps (the real next work):
   **not supported**. Reading: content-memory regularization is the right direction, but the auxiliary
   target must also bind visible type, digit, location, and report-control fields strongly enough for
   full joint content recovery.
+- [~] Second memory-regularized checkpoint pilot completed
+  (`configs/stage7_content_memory_v2.yaml`, `audits/stage7_latent_followup_content_memory_v2.json`).
+  This version trains the content report state against the stricter report schema: current/previous
+  attended cell, current/previous visible type and digit, current/previous glimpse digit, previous
+  cue, inspection counts, and the binary report-control flags. The checkpoint remains task-viable
+  (recurrent validation accuracy `0.293` vs static `0.166`) and improves several quantised
+  report-state slices: best current/memory joint advantages reach `+0.2083/+0.1667` on default,
+  `+0.125/+0.375` on cue-switch, `+0.2083/+0.125` on intervention baseline, and
+  `+0.25/+0.2083` on intervened examples. Individual digit readouts are strong
+  (`0.625-0.9583` on several slices). However, `content_only_joint_accuracy_advantage` is still
+  `0.0` in every slice, so strict Stage 7 remains **not supported**. Reading: wider auxiliary
+  supervision makes more content recoverable, but the joint bottleneck is now likely field
+  compositionality/calibration under the opaque reporter rather than absence of any content signal.
+  Next experiment should either factor the reporter output by field before applying the joint claim,
+  or train the report state with an explicit joint structured decoding objective instead of only
+  independent heads.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims

@@ -98,12 +98,7 @@ def load_models_from_checkpoint(
                 "unresolved_search_head.",
                 "wrong_candidate_history_head.",
                 "allocation_error_head.",
-                "content_memory_adapter.",
-                "content_current_visible_head.",
-                "content_current_digit_head.",
-                "content_previous_visible_head.",
-                "content_previous_digit_head.",
-                "content_previous_glimpse_digit_head.",
+                "content_",
             )
             missing_report_heads = [
                 key
@@ -122,16 +117,7 @@ def load_models_from_checkpoint(
                 if key in current and value.shape != current[key].shape
             ]
             missing_only_content_memory = bool(missing_report_heads) and all(
-                key.startswith(
-                    (
-                        "content_memory_adapter.",
-                        "content_current_visible_head.",
-                        "content_current_digit_head.",
-                        "content_previous_visible_head.",
-                        "content_previous_digit_head.",
-                        "content_previous_glimpse_digit_head.",
-                    )
-                )
+                key.startswith("content_")
                 for key in missing_report_heads
             )
             if (

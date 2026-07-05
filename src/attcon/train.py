@@ -540,6 +540,7 @@ def train_single_model(
             attended_cells = outputs["attention_seq"].argmax(dim=-1)
             current_visible_labels = batch.visible_types.gather(1, attended_cells)
             current_digit_labels = batch.digits.gather(1, attended_cells)
+            current_cell_labels = attended_cells
             glimpse_digit_labels = outputs["observation_seq"][..., 1:].argmax(dim=-1).detach()
             previous_visible_labels = torch.cat(
                 [current_visible_labels[:, :1], current_visible_labels[:, :-1]],
@@ -549,10 +550,44 @@ def train_single_model(
                 [current_digit_labels[:, :1], current_digit_labels[:, :-1]],
                 dim=1,
             )
+            previous_cell_labels = torch.cat(
+                [current_cell_labels[:, :1], current_cell_labels[:, :-1]],
+                dim=1,
+            )
             previous_glimpse_digit_labels = torch.cat(
                 [glimpse_digit_labels[:, :1], glimpse_digit_labels[:, :-1]],
                 dim=1,
             )
+            previous_search_labels = torch.cat(
+                [episode["cue_seq"][:, :1], episode["cue_seq"][:, :-1]],
+                dim=1,
+            )
+            cue_switched_labels = (episode["cue_seq"] != previous_search_labels).float()
+            inspected_count_labels = outputs["inspection_seq"].detach().sum(dim=-1).long()
+            previous_inspected_count_labels = torch.cat(
+                [inspected_count_labels[:, :1], inspected_count_labels[:, :-1]],
+                dim=1,
+            )
+            previous_inspection = torch.cat(
+                [outputs["inspection_seq"][:, :1], outputs["inspection_seq"][:, :-1]],
+                dim=1,
+            ).detach()
+            attended_previously_inspected_labels = previous_inspection.gather(
+                2,
+                attended_cells.unsqueeze(-1),
+            ).squeeze(-1)
+            found_labels = outputs["found_state_seq"].detach().squeeze(-1)
+            previous_found_labels = torch.cat(
+                [found_labels[:, :1], found_labels[:, :-1]],
+                dim=1,
+            )
+
+            def binary_content_loss(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+                return F.binary_cross_entropy_with_logits(
+                    logits.squeeze(-1),
+                    labels.detach(),
+                )
+
             content_memory_loss = (
                 F.cross_entropy(
                     outputs["content_current_visible_logits_seq"].reshape(-1, task_cfg.num_types),
@@ -563,6 +598,17 @@ def train_single_model(
                     current_digit_labels.reshape(-1),
                 )
                 + F.cross_entropy(
+                    outputs["content_current_cell_logits_seq"].reshape(-1, task_cfg.num_cells),
+                    current_cell_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_current_glimpse_digit_logits_seq"].reshape(
+                        -1,
+                        task_cfg.digit_vocab_size,
+                    ),
+                    glimpse_digit_labels.reshape(-1),
+                )
+                + F.cross_entropy(
                     outputs["content_previous_visible_logits_seq"].reshape(-1, task_cfg.num_types),
                     previous_visible_labels.reshape(-1),
                 )
@@ -571,11 +617,64 @@ def train_single_model(
                     previous_digit_labels.reshape(-1),
                 )
                 + F.cross_entropy(
+                    outputs["content_previous_cell_logits_seq"].reshape(-1, task_cfg.num_cells),
+                    previous_cell_labels.reshape(-1),
+                )
+                + F.cross_entropy(
                     outputs["content_previous_glimpse_digit_logits_seq"].reshape(
                         -1,
                         task_cfg.digit_vocab_size,
                     ),
                     previous_glimpse_digit_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_previous_search_logits_seq"].reshape(-1, task_cfg.num_types),
+                    previous_search_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_inspected_count_logits_seq"].reshape(-1, task_cfg.num_cells + 1),
+                    inspected_count_labels.reshape(-1),
+                )
+                + F.cross_entropy(
+                    outputs["content_previous_inspected_count_logits_seq"].reshape(
+                        -1,
+                        task_cfg.num_cells + 1,
+                    ),
+                    previous_inspected_count_labels.reshape(-1),
+                )
+                + binary_content_loss(outputs["content_cue_switched_logits_seq"], cue_switched_labels)
+                + binary_content_loss(
+                    outputs["content_previous_found_logits_seq"],
+                    previous_found_labels,
+                )
+                + binary_content_loss(outputs["content_found_logits_seq"], found_labels)
+                + binary_content_loss(
+                    outputs["content_relevant_region_logits_seq"],
+                    outputs["relevant_region_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_unresolved_search_logits_seq"],
+                    outputs["unresolved_search_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_current_wrong_candidate_logits_seq"],
+                    outputs["current_wrong_candidate_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_wrong_candidate_history_logits_seq"],
+                    outputs["wrong_candidate_history_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_revisit_unresolved_logits_seq"],
+                    outputs["revisit_unresolved_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_allocation_error_logits_seq"],
+                    outputs["allocation_error_seq"].detach().squeeze(-1),
+                )
+                + binary_content_loss(
+                    outputs["content_attended_previously_inspected_logits_seq"],
+                    attended_previously_inspected_labels,
                 )
             )
         # The main task loss is paired with a small final-fixation objective so the

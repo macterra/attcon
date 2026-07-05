@@ -346,12 +346,34 @@ class RecurrentAttentionController(BaseAttentionModel):
         )
         self.content_current_visible_head = nn.Linear(model_config.hidden_size, self.num_types)
         self.content_current_digit_head = nn.Linear(model_config.hidden_size, self.digit_vocab_size)
+        self.content_current_cell_head = nn.Linear(model_config.hidden_size, self.num_cells)
+        self.content_current_glimpse_digit_head = nn.Linear(
+            model_config.hidden_size,
+            self.digit_vocab_size,
+        )
         self.content_previous_visible_head = nn.Linear(model_config.hidden_size, self.num_types)
         self.content_previous_digit_head = nn.Linear(model_config.hidden_size, self.digit_vocab_size)
+        self.content_previous_cell_head = nn.Linear(model_config.hidden_size, self.num_cells)
         self.content_previous_glimpse_digit_head = nn.Linear(
             model_config.hidden_size,
             self.digit_vocab_size,
         )
+        self.content_previous_search_head = nn.Linear(model_config.hidden_size, self.num_types)
+        self.content_inspected_count_head = nn.Linear(model_config.hidden_size, self.num_cells + 1)
+        self.content_previous_inspected_count_head = nn.Linear(
+            model_config.hidden_size,
+            self.num_cells + 1,
+        )
+        self.content_cue_switched_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_previous_found_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_found_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_relevant_region_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_unresolved_search_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_current_wrong_candidate_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_wrong_candidate_history_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_revisit_unresolved_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_allocation_error_head = nn.Linear(model_config.hidden_size, 1)
+        self.content_attended_previously_inspected_head = nn.Linear(model_config.hidden_size, 1)
         nn.init.zeros_(self.policy_self_model_head.weight)
 
     @property
@@ -463,9 +485,25 @@ class RecurrentAttentionController(BaseAttentionModel):
         content_memory_state_seq = []
         content_current_visible_logits_seq = []
         content_current_digit_logits_seq = []
+        content_current_cell_logits_seq = []
+        content_current_glimpse_digit_logits_seq = []
         content_previous_visible_logits_seq = []
         content_previous_digit_logits_seq = []
+        content_previous_cell_logits_seq = []
         content_previous_glimpse_digit_logits_seq = []
+        content_previous_search_logits_seq = []
+        content_inspected_count_logits_seq = []
+        content_previous_inspected_count_logits_seq = []
+        content_cue_switched_logits_seq = []
+        content_previous_found_logits_seq = []
+        content_found_logits_seq = []
+        content_relevant_region_logits_seq = []
+        content_unresolved_search_logits_seq = []
+        content_current_wrong_candidate_logits_seq = []
+        content_wrong_candidate_history_logits_seq = []
+        content_revisit_unresolved_logits_seq = []
+        content_allocation_error_logits_seq = []
+        content_attended_previously_inspected_logits_seq = []
 
         for step_idx in range(steps):
             step_cue = cue_seq_for_policy[:, step_idx]
@@ -606,14 +644,60 @@ class RecurrentAttentionController(BaseAttentionModel):
             content_current_digit_logits_seq.append(
                 self.content_current_digit_head(content_memory_state)
             )
+            content_current_cell_logits_seq.append(
+                self.content_current_cell_head(content_memory_state)
+            )
+            content_current_glimpse_digit_logits_seq.append(
+                self.content_current_glimpse_digit_head(content_memory_state)
+            )
             content_previous_visible_logits_seq.append(
                 self.content_previous_visible_head(content_memory_state)
             )
             content_previous_digit_logits_seq.append(
                 self.content_previous_digit_head(content_memory_state)
             )
+            content_previous_cell_logits_seq.append(
+                self.content_previous_cell_head(content_memory_state)
+            )
             content_previous_glimpse_digit_logits_seq.append(
                 self.content_previous_glimpse_digit_head(content_memory_state)
+            )
+            content_previous_search_logits_seq.append(
+                self.content_previous_search_head(content_memory_state)
+            )
+            content_inspected_count_logits_seq.append(
+                self.content_inspected_count_head(content_memory_state)
+            )
+            content_previous_inspected_count_logits_seq.append(
+                self.content_previous_inspected_count_head(content_memory_state)
+            )
+            content_cue_switched_logits_seq.append(
+                self.content_cue_switched_head(content_memory_state)
+            )
+            content_previous_found_logits_seq.append(
+                self.content_previous_found_head(content_memory_state)
+            )
+            content_found_logits_seq.append(self.content_found_head(content_memory_state))
+            content_relevant_region_logits_seq.append(
+                self.content_relevant_region_head(content_memory_state)
+            )
+            content_unresolved_search_logits_seq.append(
+                self.content_unresolved_search_head(content_memory_state)
+            )
+            content_current_wrong_candidate_logits_seq.append(
+                self.content_current_wrong_candidate_head(content_memory_state)
+            )
+            content_wrong_candidate_history_logits_seq.append(
+                self.content_wrong_candidate_history_head(content_memory_state)
+            )
+            content_revisit_unresolved_logits_seq.append(
+                self.content_revisit_unresolved_head(content_memory_state)
+            )
+            content_allocation_error_logits_seq.append(
+                self.content_allocation_error_head(content_memory_state)
+            )
+            content_attended_previously_inspected_logits_seq.append(
+                self.content_attended_previously_inspected_head(content_memory_state)
             )
 
             previous_attention = attention
@@ -659,13 +743,68 @@ class RecurrentAttentionController(BaseAttentionModel):
                 dim=1,
             ),
             "content_current_digit_logits_seq": torch.stack(content_current_digit_logits_seq, dim=1),
+            "content_current_cell_logits_seq": torch.stack(content_current_cell_logits_seq, dim=1),
+            "content_current_glimpse_digit_logits_seq": torch.stack(
+                content_current_glimpse_digit_logits_seq,
+                dim=1,
+            ),
             "content_previous_visible_logits_seq": torch.stack(
                 content_previous_visible_logits_seq,
                 dim=1,
             ),
             "content_previous_digit_logits_seq": torch.stack(content_previous_digit_logits_seq, dim=1),
+            "content_previous_cell_logits_seq": torch.stack(
+                content_previous_cell_logits_seq,
+                dim=1,
+            ),
             "content_previous_glimpse_digit_logits_seq": torch.stack(
                 content_previous_glimpse_digit_logits_seq,
+                dim=1,
+            ),
+            "content_previous_search_logits_seq": torch.stack(
+                content_previous_search_logits_seq,
+                dim=1,
+            ),
+            "content_inspected_count_logits_seq": torch.stack(
+                content_inspected_count_logits_seq,
+                dim=1,
+            ),
+            "content_previous_inspected_count_logits_seq": torch.stack(
+                content_previous_inspected_count_logits_seq,
+                dim=1,
+            ),
+            "content_cue_switched_logits_seq": torch.stack(content_cue_switched_logits_seq, dim=1),
+            "content_previous_found_logits_seq": torch.stack(
+                content_previous_found_logits_seq,
+                dim=1,
+            ),
+            "content_found_logits_seq": torch.stack(content_found_logits_seq, dim=1),
+            "content_relevant_region_logits_seq": torch.stack(
+                content_relevant_region_logits_seq,
+                dim=1,
+            ),
+            "content_unresolved_search_logits_seq": torch.stack(
+                content_unresolved_search_logits_seq,
+                dim=1,
+            ),
+            "content_current_wrong_candidate_logits_seq": torch.stack(
+                content_current_wrong_candidate_logits_seq,
+                dim=1,
+            ),
+            "content_wrong_candidate_history_logits_seq": torch.stack(
+                content_wrong_candidate_history_logits_seq,
+                dim=1,
+            ),
+            "content_revisit_unresolved_logits_seq": torch.stack(
+                content_revisit_unresolved_logits_seq,
+                dim=1,
+            ),
+            "content_allocation_error_logits_seq": torch.stack(
+                content_allocation_error_logits_seq,
+                dim=1,
+            ),
+            "content_attended_previously_inspected_logits_seq": torch.stack(
+                content_attended_previously_inspected_logits_seq,
                 dim=1,
             ),
         }
