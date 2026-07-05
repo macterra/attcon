@@ -1,0 +1,2200 @@
+{
+  "note": "Stage 7 latent-only follow-up. Quantised opaque levels and a richer continuous internal-state-only probe are evaluated on the same held-out examples. A separate diagnostic also includes the model's current/previous observation feedback channel. The continuous probes are not reporter interface claims; they are bottleneck diagnostics.",
+  "config_base": "configs/stage7_content_memory_v3.yaml",
+  "checkpoint": "outputs/stage7_content_memory_v3/experiment.pt",
+  "probe_scenes": 32,
+  "calibration_examples": 8,
+  "evaluation_examples": 24,
+  "translator_train_examples": 64,
+  "state_key": "content_memory_state_seq",
+  "slices": {
+    "default": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "observation": {
+        "current_content_joint_accuracy": 0.0,
+        "memory_content_joint_accuracy": 0.0,
+        "content_only_joint_accuracy": 0.0,
+        "attended_visible_type_accuracy": 0.0,
+        "attended_digit_accuracy": 0.0,
+        "previous_attended_visible_type_accuracy": 0.0,
+        "previous_attended_digit_accuracy": 0.0,
+        "previous_glimpse_digit_accuracy": 0.0,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 1.0,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.958333,
+          "inspected_count_accuracy": 0.0,
+          "previous_inspected_count_accuracy": 0.083333,
+          "attended_cell_previously_inspected_accuracy": 1.0,
+          "attended_visible_type_accuracy": 0.0,
+          "attended_digit_accuracy": 0.0,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.0,
+          "previous_attended_digit_accuracy": 0.0,
+          "previous_glimpse_digit_accuracy": 0.0,
+          "found_target_accuracy": 0.958333,
+          "relevant_region_inspected_accuracy": 0.958333,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.833333,
+          "wrong_candidate_history_accuracy": 0.125,
+          "revisit_unresolved_accuracy": 1.0,
+          "allocation_error_accuracy": 0.833333
+        }
+      },
+      "quantized_opaque_levels": {
+        "8x4": {
+          "current_content_joint_accuracy_advantage": 0.083333,
+          "memory_content_joint_accuracy_advantage": 0.333333,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.791667,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.791667,
+            "previous_inspected_count_accuracy": 0.666667,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.416667,
+            "attended_digit_accuracy": 0.25,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.5,
+            "previous_attended_digit_accuracy": 0.458333,
+            "previous_glimpse_digit_accuracy": 0.458333,
+            "found_target_accuracy": 0.916667,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.791667,
+            "wrong_candidate_history_accuracy": 0.833333,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.208333,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.791667,
+            "previous_inspected_count_accuracy_advantage": 0.583333,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.416667,
+            "attended_digit_accuracy_advantage": 0.25,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.5,
+            "previous_attended_digit_accuracy_advantage": 0.458333,
+            "previous_glimpse_digit_accuracy_advantage": 0.458333,
+            "found_target_accuracy_advantage": -0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.041667,
+            "wrong_candidate_history_accuracy_advantage": 0.708333,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.25,
+              "advantage": 0.25
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.5,
+              "advantage": 0.5
+            }
+          ],
+          "attended_visible_type_accuracy": 0.416667,
+          "attended_visible_type_accuracy_advantage": 0.416667,
+          "attended_digit_accuracy": 0.25,
+          "attended_digit_accuracy_advantage": 0.25,
+          "previous_attended_visible_type_accuracy": 0.5,
+          "previous_attended_visible_type_accuracy_advantage": 0.5,
+          "previous_attended_digit_accuracy": 0.458333,
+          "previous_attended_digit_accuracy_advantage": 0.458333,
+          "previous_glimpse_digit_accuracy": 0.458333,
+          "previous_glimpse_digit_accuracy_advantage": 0.458333
+        },
+        "16x8": {
+          "current_content_joint_accuracy_advantage": 0.166667,
+          "memory_content_joint_accuracy_advantage": 0.625,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.583333,
+            "previous_inspected_count_accuracy": 0.75,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.5,
+            "attended_digit_accuracy": 0.333333,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.666667,
+            "previous_attended_digit_accuracy": 0.708333,
+            "previous_glimpse_digit_accuracy": 0.75,
+            "found_target_accuracy": 1.0,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.833333,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.875
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.583333,
+            "previous_inspected_count_accuracy_advantage": 0.666667,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.041667,
+            "attended_visible_type_accuracy_advantage": 0.5,
+            "attended_digit_accuracy_advantage": 0.333333,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.666667,
+            "previous_attended_digit_accuracy_advantage": 0.708333,
+            "previous_glimpse_digit_accuracy_advantage": 0.75,
+            "found_target_accuracy_advantage": 0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": 0.0,
+            "wrong_candidate_history_accuracy_advantage": 0.666667,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.333333,
+              "advantage": 0.333333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.5,
+              "advantage": 0.5
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.666667,
+              "advantage": 0.666667
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.5,
+          "attended_visible_type_accuracy_advantage": 0.5,
+          "attended_digit_accuracy": 0.333333,
+          "attended_digit_accuracy_advantage": 0.333333,
+          "previous_attended_visible_type_accuracy": 0.666667,
+          "previous_attended_visible_type_accuracy_advantage": 0.666667,
+          "previous_attended_digit_accuracy": 0.708333,
+          "previous_attended_digit_accuracy_advantage": 0.708333,
+          "previous_glimpse_digit_accuracy": 0.75,
+          "previous_glimpse_digit_accuracy_advantage": 0.75
+        },
+        "32x8": {
+          "current_content_joint_accuracy_advantage": 0.333333,
+          "memory_content_joint_accuracy_advantage": 0.666667,
+          "content_only_joint_accuracy_advantage": 0.083333,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.708333,
+            "previous_inspected_count_accuracy": 0.875,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.583333,
+            "attended_digit_accuracy": 0.541667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.833333,
+            "previous_attended_digit_accuracy": 0.791667,
+            "previous_glimpse_digit_accuracy": 0.833333,
+            "found_target_accuracy": 0.958333,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.666667,
+            "wrong_candidate_history_accuracy": 0.833333,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.708333,
+            "previous_inspected_count_accuracy_advantage": 0.791667,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.583333,
+            "attended_digit_accuracy_advantage": 0.541667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.833333,
+            "previous_attended_digit_accuracy_advantage": 0.791667,
+            "previous_glimpse_digit_accuracy_advantage": 0.833333,
+            "found_target_accuracy_advantage": 0.0,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.166667,
+            "wrong_candidate_history_accuracy_advantage": 0.708333,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.541667,
+              "advantage": 0.541667
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.666667,
+              "advantage": -0.166667
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.791667,
+              "advantage": 0.791667
+            }
+          ],
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy": 0.541667,
+          "attended_digit_accuracy_advantage": 0.541667,
+          "previous_attended_visible_type_accuracy": 0.833333,
+          "previous_attended_visible_type_accuracy_advantage": 0.833333,
+          "previous_attended_digit_accuracy": 0.791667,
+          "previous_attended_digit_accuracy_advantage": 0.791667,
+          "previous_glimpse_digit_accuracy": 0.833333,
+          "previous_glimpse_digit_accuracy_advantage": 0.833333
+        },
+        "48x8": {
+          "current_content_joint_accuracy_advantage": 0.333333,
+          "memory_content_joint_accuracy_advantage": 0.583333,
+          "content_only_joint_accuracy_advantage": 0.083333,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.708333,
+            "previous_inspected_count_accuracy": 0.875,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.583333,
+            "attended_digit_accuracy": 0.5,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.791667,
+            "previous_attended_digit_accuracy": 0.833333,
+            "previous_glimpse_digit_accuracy": 0.791667,
+            "found_target_accuracy": 0.958333,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.666667,
+            "wrong_candidate_history_accuracy": 0.833333,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.708333,
+            "previous_inspected_count_accuracy_advantage": 0.791667,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.583333,
+            "attended_digit_accuracy_advantage": 0.5,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.791667,
+            "previous_attended_digit_accuracy_advantage": 0.833333,
+            "previous_glimpse_digit_accuracy_advantage": 0.791667,
+            "found_target_accuracy_advantage": 0.0,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.166667,
+            "wrong_candidate_history_accuracy_advantage": 0.708333,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.5,
+              "advantage": 0.5
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.666667,
+              "advantage": -0.166667
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.791667,
+              "advantage": 0.791667
+            }
+          ],
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy": 0.5,
+          "attended_digit_accuracy_advantage": 0.5,
+          "previous_attended_visible_type_accuracy": 0.791667,
+          "previous_attended_visible_type_accuracy_advantage": 0.791667,
+          "previous_attended_digit_accuracy": 0.833333,
+          "previous_attended_digit_accuracy_advantage": 0.833333,
+          "previous_glimpse_digit_accuracy": 0.791667,
+          "previous_glimpse_digit_accuracy_advantage": 0.791667
+        }
+      },
+      "continuous_internal_state_probe": {
+        "current_content_joint_accuracy_advantage": 0.125,
+        "memory_content_joint_accuracy_advantage": 0.458333,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.875,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.958333,
+          "inspected_count_accuracy": 0.5,
+          "previous_inspected_count_accuracy": 0.791667,
+          "attended_cell_previously_inspected_accuracy": 0.791667,
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_digit_accuracy": 0.291667,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.666667,
+          "previous_attended_digit_accuracy": 0.625,
+          "previous_glimpse_digit_accuracy": 0.75,
+          "found_target_accuracy": 1.0,
+          "relevant_region_inspected_accuracy": 0.916667,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.541667,
+          "wrong_candidate_history_accuracy": 0.75,
+          "revisit_unresolved_accuracy": 0.75,
+          "allocation_error_accuracy": 0.833333
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.125,
+          "cue_switched_accuracy_advantage": 0.0,
+          "previous_found_target_accuracy_advantage": 0.0,
+          "inspected_count_accuracy_advantage": 0.5,
+          "previous_inspected_count_accuracy_advantage": 0.708333,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.208333,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy_advantage": 0.291667,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.666667,
+          "previous_attended_digit_accuracy_advantage": 0.625,
+          "previous_glimpse_digit_accuracy_advantage": 0.75,
+          "found_target_accuracy_advantage": 0.041667,
+          "relevant_region_inspected_accuracy_advantage": -0.041667,
+          "unresolved_search_accuracy_advantage": 0.0,
+          "current_wrong_candidate_accuracy_advantage": -0.291667,
+          "wrong_candidate_history_accuracy_advantage": 0.625,
+          "revisit_unresolved_accuracy_advantage": -0.25,
+          "allocation_error_accuracy_advantage": 0.0
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.291667,
+            "advantage": 0.291667
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.5,
+            "advantage": 0.5
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.541667,
+            "advantage": -0.291667
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.583333,
+            "advantage": 0.583333
+          },
+          {
+            "field": "previous_attended_digit_accuracy",
+            "accuracy": 0.625,
+            "advantage": 0.625
+          }
+        ],
+        "attended_visible_type_accuracy": 0.583333,
+        "attended_visible_type_accuracy_advantage": 0.583333,
+        "attended_digit_accuracy": 0.291667,
+        "attended_digit_accuracy_advantage": 0.291667,
+        "previous_attended_visible_type_accuracy": 0.666667,
+        "previous_attended_visible_type_accuracy_advantage": 0.666667,
+        "previous_attended_digit_accuracy": 0.625,
+        "previous_attended_digit_accuracy_advantage": 0.625,
+        "previous_glimpse_digit_accuracy": 0.75,
+        "previous_glimpse_digit_accuracy_advantage": 0.75
+      },
+      "continuous_state_plus_feedback_probe": {
+        "current_content_joint_accuracy_advantage": 0.125,
+        "memory_content_joint_accuracy_advantage": 0.375,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.791667,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.916667,
+          "inspected_count_accuracy": 0.458333,
+          "previous_inspected_count_accuracy": 0.666667,
+          "attended_cell_previously_inspected_accuracy": 0.708333,
+          "attended_visible_type_accuracy": 0.458333,
+          "attended_digit_accuracy": 0.333333,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.583333,
+          "previous_attended_digit_accuracy": 0.75,
+          "previous_glimpse_digit_accuracy": 0.625,
+          "found_target_accuracy": 1.0,
+          "relevant_region_inspected_accuracy": 0.958333,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.5,
+          "wrong_candidate_history_accuracy": 0.75,
+          "revisit_unresolved_accuracy": 0.75,
+          "allocation_error_accuracy": 0.708333
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.208333,
+          "cue_switched_accuracy_advantage": 0.0,
+          "previous_found_target_accuracy_advantage": -0.041667,
+          "inspected_count_accuracy_advantage": 0.458333,
+          "previous_inspected_count_accuracy_advantage": 0.583333,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.291667,
+          "attended_visible_type_accuracy_advantage": 0.458333,
+          "attended_digit_accuracy_advantage": 0.333333,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.583333,
+          "previous_attended_digit_accuracy_advantage": 0.75,
+          "previous_glimpse_digit_accuracy_advantage": 0.625,
+          "found_target_accuracy_advantage": 0.041667,
+          "relevant_region_inspected_accuracy_advantage": 0.0,
+          "unresolved_search_accuracy_advantage": 0.0,
+          "current_wrong_candidate_accuracy_advantage": -0.333333,
+          "wrong_candidate_history_accuracy_advantage": 0.625,
+          "revisit_unresolved_accuracy_advantage": -0.25,
+          "allocation_error_accuracy_advantage": -0.125
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.333333,
+            "advantage": 0.333333
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.5,
+            "advantage": -0.333333
+          },
+          {
+            "field": "previous_attended_visible_type_accuracy",
+            "accuracy": 0.583333,
+            "advantage": 0.583333
+          }
+        ],
+        "attended_visible_type_accuracy": 0.458333,
+        "attended_visible_type_accuracy_advantage": 0.458333,
+        "attended_digit_accuracy": 0.333333,
+        "attended_digit_accuracy_advantage": 0.333333,
+        "previous_attended_visible_type_accuracy": 0.583333,
+        "previous_attended_visible_type_accuracy_advantage": 0.583333,
+        "previous_attended_digit_accuracy": 0.75,
+        "previous_attended_digit_accuracy_advantage": 0.75,
+        "previous_glimpse_digit_accuracy": 0.625,
+        "previous_glimpse_digit_accuracy_advantage": 0.625
+      }
+    },
+    "cue_switch": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "observation": {
+        "current_content_joint_accuracy": 0.0,
+        "memory_content_joint_accuracy": 0.0,
+        "content_only_joint_accuracy": 0.0,
+        "attended_visible_type_accuracy": 0.0,
+        "attended_digit_accuracy": 0.0,
+        "previous_attended_visible_type_accuracy": 0.0,
+        "previous_attended_digit_accuracy": 0.0,
+        "previous_glimpse_digit_accuracy": 0.0,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 1.0,
+          "cue_switched_accuracy": 0.791667,
+          "previous_found_target_accuracy": 0.875,
+          "inspected_count_accuracy": 0.0,
+          "previous_inspected_count_accuracy": 0.083333,
+          "attended_cell_previously_inspected_accuracy": 0.958333,
+          "attended_visible_type_accuracy": 0.0,
+          "attended_digit_accuracy": 0.0,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.0,
+          "previous_attended_digit_accuracy": 0.0,
+          "previous_glimpse_digit_accuracy": 0.0,
+          "found_target_accuracy": 0.875,
+          "relevant_region_inspected_accuracy": 0.833333,
+          "unresolved_search_accuracy": 0.833333,
+          "current_wrong_candidate_accuracy": 0.708333,
+          "wrong_candidate_history_accuracy": 0.25,
+          "revisit_unresolved_accuracy": 1.0,
+          "allocation_error_accuracy": 0.833333
+        }
+      },
+      "quantized_opaque_levels": {
+        "8x4": {
+          "current_content_joint_accuracy_advantage": 0.083333,
+          "memory_content_joint_accuracy_advantage": 0.25,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.583333,
+            "cue_switched_accuracy": 0.666667,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.416667,
+            "previous_inspected_count_accuracy": 0.583333,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.25,
+            "attended_digit_accuracy": 0.291667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.458333,
+            "previous_attended_digit_accuracy": 0.416667,
+            "previous_glimpse_digit_accuracy": 0.416667,
+            "found_target_accuracy": 0.916667,
+            "relevant_region_inspected_accuracy": 0.958333,
+            "unresolved_search_accuracy": 0.958333,
+            "current_wrong_candidate_accuracy": 0.458333,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.791667
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.416667,
+            "cue_switched_accuracy_advantage": -0.125,
+            "previous_found_target_accuracy_advantage": 0.125,
+            "inspected_count_accuracy_advantage": 0.416667,
+            "previous_inspected_count_accuracy_advantage": 0.5,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.25,
+            "attended_digit_accuracy_advantage": 0.291667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.458333,
+            "previous_attended_digit_accuracy_advantage": 0.416667,
+            "previous_glimpse_digit_accuracy_advantage": 0.416667,
+            "found_target_accuracy_advantage": 0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.125,
+            "unresolved_search_accuracy_advantage": 0.125,
+            "current_wrong_candidate_accuracy_advantage": -0.25,
+            "wrong_candidate_history_accuracy_advantage": 0.541667,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": -0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.25,
+              "advantage": 0.25
+            },
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.291667,
+              "advantage": 0.291667
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            }
+          ],
+          "attended_visible_type_accuracy": 0.25,
+          "attended_visible_type_accuracy_advantage": 0.25,
+          "attended_digit_accuracy": 0.291667,
+          "attended_digit_accuracy_advantage": 0.291667,
+          "previous_attended_visible_type_accuracy": 0.458333,
+          "previous_attended_visible_type_accuracy_advantage": 0.458333,
+          "previous_attended_digit_accuracy": 0.416667,
+          "previous_attended_digit_accuracy_advantage": 0.416667,
+          "previous_glimpse_digit_accuracy": 0.416667,
+          "previous_glimpse_digit_accuracy_advantage": 0.416667
+        },
+        "16x8": {
+          "current_content_joint_accuracy_advantage": 0.166667,
+          "memory_content_joint_accuracy_advantage": 0.416667,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.75,
+            "cue_switched_accuracy": 0.708333,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.458333,
+            "previous_inspected_count_accuracy": 0.666667,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.625,
+            "attended_digit_accuracy": 0.208333,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.583333,
+            "previous_attended_digit_accuracy": 0.666667,
+            "previous_glimpse_digit_accuracy": 0.75,
+            "found_target_accuracy": 1.0,
+            "relevant_region_inspected_accuracy": 0.958333,
+            "unresolved_search_accuracy": 0.958333,
+            "current_wrong_candidate_accuracy": 0.541667,
+            "wrong_candidate_history_accuracy": 0.75,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.875
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.25,
+            "cue_switched_accuracy_advantage": -0.083333,
+            "previous_found_target_accuracy_advantage": 0.125,
+            "inspected_count_accuracy_advantage": 0.458333,
+            "previous_inspected_count_accuracy_advantage": 0.583333,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.625,
+            "attended_digit_accuracy_advantage": 0.208333,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.583333,
+            "previous_attended_digit_accuracy_advantage": 0.666667,
+            "previous_glimpse_digit_accuracy_advantage": 0.75,
+            "found_target_accuracy_advantage": 0.125,
+            "relevant_region_inspected_accuracy_advantage": 0.125,
+            "unresolved_search_accuracy_advantage": 0.125,
+            "current_wrong_candidate_accuracy_advantage": -0.166667,
+            "wrong_candidate_history_accuracy_advantage": 0.5,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": 0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.208333,
+              "advantage": 0.208333
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.541667,
+              "advantage": -0.166667
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            }
+          ],
+          "attended_visible_type_accuracy": 0.625,
+          "attended_visible_type_accuracy_advantage": 0.625,
+          "attended_digit_accuracy": 0.208333,
+          "attended_digit_accuracy_advantage": 0.208333,
+          "previous_attended_visible_type_accuracy": 0.583333,
+          "previous_attended_visible_type_accuracy_advantage": 0.583333,
+          "previous_attended_digit_accuracy": 0.666667,
+          "previous_attended_digit_accuracy_advantage": 0.666667,
+          "previous_glimpse_digit_accuracy": 0.75,
+          "previous_glimpse_digit_accuracy_advantage": 0.75
+        },
+        "32x8": {
+          "current_content_joint_accuracy_advantage": 0.291667,
+          "memory_content_joint_accuracy_advantage": 0.666667,
+          "content_only_joint_accuracy_advantage": 0.041667,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.833333,
+            "cue_switched_accuracy": 0.708333,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.625,
+            "previous_inspected_count_accuracy": 0.833333,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.708333,
+            "attended_digit_accuracy": 0.416667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.791667,
+            "previous_attended_digit_accuracy": 0.833333,
+            "previous_glimpse_digit_accuracy": 0.875,
+            "found_target_accuracy": 1.0,
+            "relevant_region_inspected_accuracy": 0.916667,
+            "unresolved_search_accuracy": 0.916667,
+            "current_wrong_candidate_accuracy": 0.5,
+            "wrong_candidate_history_accuracy": 0.708333,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.166667,
+            "cue_switched_accuracy_advantage": -0.083333,
+            "previous_found_target_accuracy_advantage": 0.125,
+            "inspected_count_accuracy_advantage": 0.625,
+            "previous_inspected_count_accuracy_advantage": 0.75,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.708333,
+            "attended_digit_accuracy_advantage": 0.416667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.791667,
+            "previous_attended_digit_accuracy_advantage": 0.833333,
+            "previous_glimpse_digit_accuracy_advantage": 0.875,
+            "found_target_accuracy_advantage": 0.125,
+            "relevant_region_inspected_accuracy_advantage": 0.083333,
+            "unresolved_search_accuracy_advantage": 0.083333,
+            "current_wrong_candidate_accuracy_advantage": -0.208333,
+            "wrong_candidate_history_accuracy_advantage": 0.458333,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.5,
+              "advantage": -0.208333
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            },
+            {
+              "field": "cue_switched_accuracy",
+              "accuracy": 0.708333,
+              "advantage": -0.083333
+            },
+            {
+              "field": "wrong_candidate_history_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.458333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.708333,
+          "attended_visible_type_accuracy_advantage": 0.708333,
+          "attended_digit_accuracy": 0.416667,
+          "attended_digit_accuracy_advantage": 0.416667,
+          "previous_attended_visible_type_accuracy": 0.791667,
+          "previous_attended_visible_type_accuracy_advantage": 0.791667,
+          "previous_attended_digit_accuracy": 0.833333,
+          "previous_attended_digit_accuracy_advantage": 0.833333,
+          "previous_glimpse_digit_accuracy": 0.875,
+          "previous_glimpse_digit_accuracy_advantage": 0.875
+        },
+        "48x8": {
+          "current_content_joint_accuracy_advantage": 0.291667,
+          "memory_content_joint_accuracy_advantage": 0.666667,
+          "content_only_joint_accuracy_advantage": 0.041667,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.833333,
+            "cue_switched_accuracy": 0.708333,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.625,
+            "previous_inspected_count_accuracy": 0.833333,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.625,
+            "attended_digit_accuracy": 0.416667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.791667,
+            "previous_attended_digit_accuracy": 0.875,
+            "previous_glimpse_digit_accuracy": 0.833333,
+            "found_target_accuracy": 1.0,
+            "relevant_region_inspected_accuracy": 0.916667,
+            "unresolved_search_accuracy": 0.916667,
+            "current_wrong_candidate_accuracy": 0.5,
+            "wrong_candidate_history_accuracy": 0.75,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.166667,
+            "cue_switched_accuracy_advantage": -0.083333,
+            "previous_found_target_accuracy_advantage": 0.125,
+            "inspected_count_accuracy_advantage": 0.625,
+            "previous_inspected_count_accuracy_advantage": 0.75,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.625,
+            "attended_digit_accuracy_advantage": 0.416667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.791667,
+            "previous_attended_digit_accuracy_advantage": 0.875,
+            "previous_glimpse_digit_accuracy_advantage": 0.833333,
+            "found_target_accuracy_advantage": 0.125,
+            "relevant_region_inspected_accuracy_advantage": 0.083333,
+            "unresolved_search_accuracy_advantage": 0.083333,
+            "current_wrong_candidate_accuracy_advantage": -0.208333,
+            "wrong_candidate_history_accuracy_advantage": 0.5,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.5,
+              "advantage": -0.208333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            },
+            {
+              "field": "cue_switched_accuracy",
+              "accuracy": 0.708333,
+              "advantage": -0.083333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.625,
+          "attended_visible_type_accuracy_advantage": 0.625,
+          "attended_digit_accuracy": 0.416667,
+          "attended_digit_accuracy_advantage": 0.416667,
+          "previous_attended_visible_type_accuracy": 0.791667,
+          "previous_attended_visible_type_accuracy_advantage": 0.791667,
+          "previous_attended_digit_accuracy": 0.875,
+          "previous_attended_digit_accuracy_advantage": 0.875,
+          "previous_glimpse_digit_accuracy": 0.833333,
+          "previous_glimpse_digit_accuracy_advantage": 0.833333
+        }
+      },
+      "continuous_internal_state_probe": {
+        "current_content_joint_accuracy_advantage": 0.125,
+        "memory_content_joint_accuracy_advantage": 0.291667,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.666667,
+          "cue_switched_accuracy": 0.666667,
+          "previous_found_target_accuracy": 0.958333,
+          "inspected_count_accuracy": 0.5,
+          "previous_inspected_count_accuracy": 0.625,
+          "attended_cell_previously_inspected_accuracy": 0.75,
+          "attended_visible_type_accuracy": 0.541667,
+          "attended_digit_accuracy": 0.25,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.416667,
+          "previous_attended_digit_accuracy": 0.541667,
+          "previous_glimpse_digit_accuracy": 0.583333,
+          "found_target_accuracy": 0.916667,
+          "relevant_region_inspected_accuracy": 0.791667,
+          "unresolved_search_accuracy": 0.791667,
+          "current_wrong_candidate_accuracy": 0.541667,
+          "wrong_candidate_history_accuracy": 0.708333,
+          "revisit_unresolved_accuracy": 0.708333,
+          "allocation_error_accuracy": 0.75
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.333333,
+          "cue_switched_accuracy_advantage": -0.125,
+          "previous_found_target_accuracy_advantage": 0.083333,
+          "inspected_count_accuracy_advantage": 0.5,
+          "previous_inspected_count_accuracy_advantage": 0.541667,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.208333,
+          "attended_visible_type_accuracy_advantage": 0.541667,
+          "attended_digit_accuracy_advantage": 0.25,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.416667,
+          "previous_attended_digit_accuracy_advantage": 0.541667,
+          "previous_glimpse_digit_accuracy_advantage": 0.583333,
+          "found_target_accuracy_advantage": 0.041667,
+          "relevant_region_inspected_accuracy_advantage": -0.041667,
+          "unresolved_search_accuracy_advantage": -0.041667,
+          "current_wrong_candidate_accuracy_advantage": -0.166667,
+          "wrong_candidate_history_accuracy_advantage": 0.458333,
+          "revisit_unresolved_accuracy_advantage": -0.291667,
+          "allocation_error_accuracy_advantage": -0.083333
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.25,
+            "advantage": 0.25
+          },
+          {
+            "field": "previous_attended_visible_type_accuracy",
+            "accuracy": 0.416667,
+            "advantage": 0.416667
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.5,
+            "advantage": 0.5
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.541667,
+            "advantage": -0.166667
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.541667,
+            "advantage": 0.541667
+          }
+        ],
+        "attended_visible_type_accuracy": 0.541667,
+        "attended_visible_type_accuracy_advantage": 0.541667,
+        "attended_digit_accuracy": 0.25,
+        "attended_digit_accuracy_advantage": 0.25,
+        "previous_attended_visible_type_accuracy": 0.416667,
+        "previous_attended_visible_type_accuracy_advantage": 0.416667,
+        "previous_attended_digit_accuracy": 0.541667,
+        "previous_attended_digit_accuracy_advantage": 0.541667,
+        "previous_glimpse_digit_accuracy": 0.583333,
+        "previous_glimpse_digit_accuracy_advantage": 0.583333
+      },
+      "continuous_state_plus_feedback_probe": {
+        "current_content_joint_accuracy_advantage": 0.166667,
+        "memory_content_joint_accuracy_advantage": 0.291667,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.541667,
+          "cue_switched_accuracy": 0.541667,
+          "previous_found_target_accuracy": 0.875,
+          "inspected_count_accuracy": 0.458333,
+          "previous_inspected_count_accuracy": 0.5,
+          "attended_cell_previously_inspected_accuracy": 0.791667,
+          "attended_visible_type_accuracy": 0.458333,
+          "attended_digit_accuracy": 0.416667,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.458333,
+          "previous_attended_digit_accuracy": 0.541667,
+          "previous_glimpse_digit_accuracy": 0.5,
+          "found_target_accuracy": 0.916667,
+          "relevant_region_inspected_accuracy": 0.75,
+          "unresolved_search_accuracy": 0.791667,
+          "current_wrong_candidate_accuracy": 0.583333,
+          "wrong_candidate_history_accuracy": 0.791667,
+          "revisit_unresolved_accuracy": 0.666667,
+          "allocation_error_accuracy": 0.625
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.458333,
+          "cue_switched_accuracy_advantage": -0.25,
+          "previous_found_target_accuracy_advantage": 0.0,
+          "inspected_count_accuracy_advantage": 0.458333,
+          "previous_inspected_count_accuracy_advantage": 0.416667,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.166667,
+          "attended_visible_type_accuracy_advantage": 0.458333,
+          "attended_digit_accuracy_advantage": 0.416667,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.458333,
+          "previous_attended_digit_accuracy_advantage": 0.541667,
+          "previous_glimpse_digit_accuracy_advantage": 0.5,
+          "found_target_accuracy_advantage": 0.041667,
+          "relevant_region_inspected_accuracy_advantage": -0.083333,
+          "unresolved_search_accuracy_advantage": -0.041667,
+          "current_wrong_candidate_accuracy_advantage": -0.125,
+          "wrong_candidate_history_accuracy_advantage": 0.541667,
+          "revisit_unresolved_accuracy_advantage": -0.333333,
+          "allocation_error_accuracy_advantage": -0.208333
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.416667,
+            "advantage": 0.416667
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "previous_attended_visible_type_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "previous_inspected_count_accuracy",
+            "accuracy": 0.5,
+            "advantage": 0.416667
+          }
+        ],
+        "attended_visible_type_accuracy": 0.458333,
+        "attended_visible_type_accuracy_advantage": 0.458333,
+        "attended_digit_accuracy": 0.416667,
+        "attended_digit_accuracy_advantage": 0.416667,
+        "previous_attended_visible_type_accuracy": 0.458333,
+        "previous_attended_visible_type_accuracy_advantage": 0.458333,
+        "previous_attended_digit_accuracy": 0.541667,
+        "previous_attended_digit_accuracy_advantage": 0.541667,
+        "previous_glimpse_digit_accuracy": 0.5,
+        "previous_glimpse_digit_accuracy_advantage": 0.5
+      }
+    },
+    "intervention_baseline": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "observation": {
+        "current_content_joint_accuracy": 0.0,
+        "memory_content_joint_accuracy": 0.0,
+        "content_only_joint_accuracy": 0.0,
+        "attended_visible_type_accuracy": 0.0,
+        "attended_digit_accuracy": 0.0,
+        "previous_attended_visible_type_accuracy": 0.0,
+        "previous_attended_digit_accuracy": 0.0,
+        "previous_glimpse_digit_accuracy": 0.0,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 1.0,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.958333,
+          "inspected_count_accuracy": 0.0,
+          "previous_inspected_count_accuracy": 0.083333,
+          "attended_cell_previously_inspected_accuracy": 1.0,
+          "attended_visible_type_accuracy": 0.0,
+          "attended_digit_accuracy": 0.0,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.0,
+          "previous_attended_digit_accuracy": 0.0,
+          "previous_glimpse_digit_accuracy": 0.0,
+          "found_target_accuracy": 0.958333,
+          "relevant_region_inspected_accuracy": 0.958333,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.833333,
+          "wrong_candidate_history_accuracy": 0.125,
+          "revisit_unresolved_accuracy": 1.0,
+          "allocation_error_accuracy": 0.833333
+        }
+      },
+      "quantized_opaque_levels": {
+        "8x4": {
+          "current_content_joint_accuracy_advantage": 0.083333,
+          "memory_content_joint_accuracy_advantage": 0.25,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.791667,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.833333,
+            "previous_inspected_count_accuracy": 0.666667,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.458333,
+            "attended_digit_accuracy": 0.25,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.458333,
+            "previous_attended_digit_accuracy": 0.458333,
+            "previous_glimpse_digit_accuracy": 0.458333,
+            "found_target_accuracy": 0.916667,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.791667,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.791667
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.208333,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.833333,
+            "previous_inspected_count_accuracy_advantage": 0.583333,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.458333,
+            "attended_digit_accuracy_advantage": 0.25,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.458333,
+            "previous_attended_digit_accuracy_advantage": 0.458333,
+            "previous_glimpse_digit_accuracy_advantage": 0.458333,
+            "found_target_accuracy_advantage": -0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.041667,
+            "wrong_candidate_history_accuracy_advantage": 0.666667,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": -0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.25,
+              "advantage": 0.25
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.458333,
+          "attended_visible_type_accuracy_advantage": 0.458333,
+          "attended_digit_accuracy": 0.25,
+          "attended_digit_accuracy_advantage": 0.25,
+          "previous_attended_visible_type_accuracy": 0.458333,
+          "previous_attended_visible_type_accuracy_advantage": 0.458333,
+          "previous_attended_digit_accuracy": 0.458333,
+          "previous_attended_digit_accuracy_advantage": 0.458333,
+          "previous_glimpse_digit_accuracy": 0.458333,
+          "previous_glimpse_digit_accuracy_advantage": 0.458333
+        },
+        "16x8": {
+          "current_content_joint_accuracy_advantage": 0.166667,
+          "memory_content_joint_accuracy_advantage": 0.625,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.583333,
+            "previous_inspected_count_accuracy": 0.791667,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.5,
+            "attended_digit_accuracy": 0.333333,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.666667,
+            "previous_attended_digit_accuracy": 0.75,
+            "previous_glimpse_digit_accuracy": 0.708333,
+            "found_target_accuracy": 1.0,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.833333,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.875
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.583333,
+            "previous_inspected_count_accuracy_advantage": 0.708333,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.041667,
+            "attended_visible_type_accuracy_advantage": 0.5,
+            "attended_digit_accuracy_advantage": 0.333333,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.666667,
+            "previous_attended_digit_accuracy_advantage": 0.75,
+            "previous_glimpse_digit_accuracy_advantage": 0.708333,
+            "found_target_accuracy_advantage": 0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": 0.0,
+            "wrong_candidate_history_accuracy_advantage": 0.666667,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.333333,
+              "advantage": 0.333333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.5,
+              "advantage": 0.5
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.666667,
+              "advantage": 0.666667
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.5,
+          "attended_visible_type_accuracy_advantage": 0.5,
+          "attended_digit_accuracy": 0.333333,
+          "attended_digit_accuracy_advantage": 0.333333,
+          "previous_attended_visible_type_accuracy": 0.666667,
+          "previous_attended_visible_type_accuracy_advantage": 0.666667,
+          "previous_attended_digit_accuracy": 0.75,
+          "previous_attended_digit_accuracy_advantage": 0.75,
+          "previous_glimpse_digit_accuracy": 0.708333,
+          "previous_glimpse_digit_accuracy_advantage": 0.708333
+        },
+        "32x8": {
+          "current_content_joint_accuracy_advantage": 0.333333,
+          "memory_content_joint_accuracy_advantage": 0.583333,
+          "content_only_joint_accuracy_advantage": 0.083333,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.708333,
+            "previous_inspected_count_accuracy": 0.875,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.583333,
+            "attended_digit_accuracy": 0.541667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.791667,
+            "previous_attended_digit_accuracy": 0.75,
+            "previous_glimpse_digit_accuracy": 0.833333,
+            "found_target_accuracy": 0.958333,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.708333,
+            "wrong_candidate_history_accuracy": 0.833333,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.708333,
+            "previous_inspected_count_accuracy_advantage": 0.791667,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.583333,
+            "attended_digit_accuracy_advantage": 0.541667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.791667,
+            "previous_attended_digit_accuracy_advantage": 0.75,
+            "previous_glimpse_digit_accuracy_advantage": 0.833333,
+            "found_target_accuracy_advantage": 0.0,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.125,
+            "wrong_candidate_history_accuracy_advantage": 0.708333,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.541667,
+              "advantage": 0.541667
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.708333,
+              "advantage": -0.125
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.75,
+              "advantage": 0.75
+            }
+          ],
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy": 0.541667,
+          "attended_digit_accuracy_advantage": 0.541667,
+          "previous_attended_visible_type_accuracy": 0.791667,
+          "previous_attended_visible_type_accuracy_advantage": 0.791667,
+          "previous_attended_digit_accuracy": 0.75,
+          "previous_attended_digit_accuracy_advantage": 0.75,
+          "previous_glimpse_digit_accuracy": 0.833333,
+          "previous_glimpse_digit_accuracy_advantage": 0.833333
+        },
+        "48x8": {
+          "current_content_joint_accuracy_advantage": 0.333333,
+          "memory_content_joint_accuracy_advantage": 0.708333,
+          "content_only_joint_accuracy_advantage": 0.083333,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.958333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 1.0,
+            "inspected_count_accuracy": 0.708333,
+            "previous_inspected_count_accuracy": 0.875,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.583333,
+            "attended_digit_accuracy": 0.541667,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.833333,
+            "previous_attended_digit_accuracy": 0.916667,
+            "previous_glimpse_digit_accuracy": 0.875,
+            "found_target_accuracy": 0.958333,
+            "relevant_region_inspected_accuracy": 1.0,
+            "unresolved_search_accuracy": 1.0,
+            "current_wrong_candidate_accuracy": 0.666667,
+            "wrong_candidate_history_accuracy": 0.833333,
+            "revisit_unresolved_accuracy": 0.875,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.041667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.041667,
+            "inspected_count_accuracy_advantage": 0.708333,
+            "previous_inspected_count_accuracy_advantage": 0.791667,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.083333,
+            "attended_visible_type_accuracy_advantage": 0.583333,
+            "attended_digit_accuracy_advantage": 0.541667,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.833333,
+            "previous_attended_digit_accuracy_advantage": 0.916667,
+            "previous_glimpse_digit_accuracy_advantage": 0.875,
+            "found_target_accuracy_advantage": 0.0,
+            "relevant_region_inspected_accuracy_advantage": 0.041667,
+            "unresolved_search_accuracy_advantage": 0.041667,
+            "current_wrong_candidate_accuracy_advantage": -0.166667,
+            "wrong_candidate_history_accuracy_advantage": 0.708333,
+            "revisit_unresolved_accuracy_advantage": -0.125,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.541667,
+              "advantage": 0.541667
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.666667,
+              "advantage": -0.166667
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.708333,
+              "advantage": 0.708333
+            },
+            {
+              "field": "allocation_error_accuracy",
+              "accuracy": 0.833333,
+              "advantage": 0.0
+            }
+          ],
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy": 0.541667,
+          "attended_digit_accuracy_advantage": 0.541667,
+          "previous_attended_visible_type_accuracy": 0.833333,
+          "previous_attended_visible_type_accuracy_advantage": 0.833333,
+          "previous_attended_digit_accuracy": 0.916667,
+          "previous_attended_digit_accuracy_advantage": 0.916667,
+          "previous_glimpse_digit_accuracy": 0.875,
+          "previous_glimpse_digit_accuracy_advantage": 0.875
+        }
+      },
+      "continuous_internal_state_probe": {
+        "current_content_joint_accuracy_advantage": 0.125,
+        "memory_content_joint_accuracy_advantage": 0.458333,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.833333,
+          "cue_switched_accuracy": 0.958333,
+          "previous_found_target_accuracy": 0.916667,
+          "inspected_count_accuracy": 0.5,
+          "previous_inspected_count_accuracy": 0.833333,
+          "attended_cell_previously_inspected_accuracy": 0.75,
+          "attended_visible_type_accuracy": 0.583333,
+          "attended_digit_accuracy": 0.25,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.625,
+          "previous_attended_digit_accuracy": 0.625,
+          "previous_glimpse_digit_accuracy": 0.708333,
+          "found_target_accuracy": 0.958333,
+          "relevant_region_inspected_accuracy": 0.958333,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.541667,
+          "wrong_candidate_history_accuracy": 0.833333,
+          "revisit_unresolved_accuracy": 0.708333,
+          "allocation_error_accuracy": 0.708333
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.166667,
+          "cue_switched_accuracy_advantage": -0.041667,
+          "previous_found_target_accuracy_advantage": -0.041667,
+          "inspected_count_accuracy_advantage": 0.5,
+          "previous_inspected_count_accuracy_advantage": 0.75,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.25,
+          "attended_visible_type_accuracy_advantage": 0.583333,
+          "attended_digit_accuracy_advantage": 0.25,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.625,
+          "previous_attended_digit_accuracy_advantage": 0.625,
+          "previous_glimpse_digit_accuracy_advantage": 0.708333,
+          "found_target_accuracy_advantage": 0.0,
+          "relevant_region_inspected_accuracy_advantage": 0.0,
+          "unresolved_search_accuracy_advantage": 0.0,
+          "current_wrong_candidate_accuracy_advantage": -0.291667,
+          "wrong_candidate_history_accuracy_advantage": 0.708333,
+          "revisit_unresolved_accuracy_advantage": -0.291667,
+          "allocation_error_accuracy_advantage": -0.125
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.25,
+            "advantage": 0.25
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.5,
+            "advantage": 0.5
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.541667,
+            "advantage": -0.291667
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.583333,
+            "advantage": 0.583333
+          },
+          {
+            "field": "previous_attended_digit_accuracy",
+            "accuracy": 0.625,
+            "advantage": 0.625
+          }
+        ],
+        "attended_visible_type_accuracy": 0.583333,
+        "attended_visible_type_accuracy_advantage": 0.583333,
+        "attended_digit_accuracy": 0.25,
+        "attended_digit_accuracy_advantage": 0.25,
+        "previous_attended_visible_type_accuracy": 0.625,
+        "previous_attended_visible_type_accuracy_advantage": 0.625,
+        "previous_attended_digit_accuracy": 0.625,
+        "previous_attended_digit_accuracy_advantage": 0.625,
+        "previous_glimpse_digit_accuracy": 0.708333,
+        "previous_glimpse_digit_accuracy_advantage": 0.708333
+      },
+      "continuous_state_plus_feedback_probe": {
+        "current_content_joint_accuracy_advantage": 0.166667,
+        "memory_content_joint_accuracy_advantage": 0.375,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.833333,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.916667,
+          "inspected_count_accuracy": 0.5,
+          "previous_inspected_count_accuracy": 0.666667,
+          "attended_cell_previously_inspected_accuracy": 0.708333,
+          "attended_visible_type_accuracy": 0.458333,
+          "attended_digit_accuracy": 0.375,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.541667,
+          "previous_attended_digit_accuracy": 0.708333,
+          "previous_glimpse_digit_accuracy": 0.666667,
+          "found_target_accuracy": 0.958333,
+          "relevant_region_inspected_accuracy": 0.958333,
+          "unresolved_search_accuracy": 0.958333,
+          "current_wrong_candidate_accuracy": 0.458333,
+          "wrong_candidate_history_accuracy": 0.833333,
+          "revisit_unresolved_accuracy": 0.708333,
+          "allocation_error_accuracy": 0.708333
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.166667,
+          "cue_switched_accuracy_advantage": 0.0,
+          "previous_found_target_accuracy_advantage": -0.041667,
+          "inspected_count_accuracy_advantage": 0.5,
+          "previous_inspected_count_accuracy_advantage": 0.583333,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.291667,
+          "attended_visible_type_accuracy_advantage": 0.458333,
+          "attended_digit_accuracy_advantage": 0.375,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.541667,
+          "previous_attended_digit_accuracy_advantage": 0.708333,
+          "previous_glimpse_digit_accuracy_advantage": 0.666667,
+          "found_target_accuracy_advantage": 0.0,
+          "relevant_region_inspected_accuracy_advantage": 0.0,
+          "unresolved_search_accuracy_advantage": 0.0,
+          "current_wrong_candidate_accuracy_advantage": -0.375,
+          "wrong_candidate_history_accuracy_advantage": 0.708333,
+          "revisit_unresolved_accuracy_advantage": -0.291667,
+          "allocation_error_accuracy_advantage": -0.125
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.375,
+            "advantage": 0.375
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.458333,
+            "advantage": -0.375
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.458333,
+            "advantage": 0.458333
+          },
+          {
+            "field": "inspected_count_accuracy",
+            "accuracy": 0.5,
+            "advantage": 0.5
+          },
+          {
+            "field": "previous_attended_visible_type_accuracy",
+            "accuracy": 0.541667,
+            "advantage": 0.541667
+          }
+        ],
+        "attended_visible_type_accuracy": 0.458333,
+        "attended_visible_type_accuracy_advantage": 0.458333,
+        "attended_digit_accuracy": 0.375,
+        "attended_digit_accuracy_advantage": 0.375,
+        "previous_attended_visible_type_accuracy": 0.541667,
+        "previous_attended_visible_type_accuracy_advantage": 0.541667,
+        "previous_attended_digit_accuracy": 0.708333,
+        "previous_attended_digit_accuracy_advantage": 0.708333,
+        "previous_glimpse_digit_accuracy": 0.666667,
+        "previous_glimpse_digit_accuracy_advantage": 0.666667
+      }
+    },
+    "intervention_intervened": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "observation": {
+        "current_content_joint_accuracy": 0.0,
+        "memory_content_joint_accuracy": 0.0,
+        "content_only_joint_accuracy": 0.0,
+        "attended_visible_type_accuracy": 0.0,
+        "attended_digit_accuracy": 0.0,
+        "previous_attended_visible_type_accuracy": 0.0,
+        "previous_attended_digit_accuracy": 0.0,
+        "previous_glimpse_digit_accuracy": 0.0,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 1.0,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.75,
+          "inspected_count_accuracy": 0.0,
+          "previous_inspected_count_accuracy": 0.083333,
+          "attended_cell_previously_inspected_accuracy": 0.958333,
+          "attended_visible_type_accuracy": 0.0,
+          "attended_digit_accuracy": 0.0,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.0,
+          "previous_attended_digit_accuracy": 0.0,
+          "previous_glimpse_digit_accuracy": 0.0,
+          "found_target_accuracy": 0.75,
+          "relevant_region_inspected_accuracy": 0.75,
+          "unresolved_search_accuracy": 0.75,
+          "current_wrong_candidate_accuracy": 0.875,
+          "wrong_candidate_history_accuracy": 0.25,
+          "revisit_unresolved_accuracy": 1.0,
+          "allocation_error_accuracy": 0.875
+        }
+      },
+      "quantized_opaque_levels": {
+        "8x4": {
+          "current_content_joint_accuracy_advantage": 0.083333,
+          "memory_content_joint_accuracy_advantage": 0.083333,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.666667,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 0.875,
+            "inspected_count_accuracy": 0.333333,
+            "previous_inspected_count_accuracy": 0.666667,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.541667,
+            "attended_digit_accuracy": 0.208333,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.458333,
+            "previous_attended_digit_accuracy": 0.333333,
+            "previous_glimpse_digit_accuracy": 0.375,
+            "found_target_accuracy": 0.791667,
+            "relevant_region_inspected_accuracy": 0.875,
+            "unresolved_search_accuracy": 0.875,
+            "current_wrong_candidate_accuracy": 0.666667,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.333333,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.125,
+            "inspected_count_accuracy_advantage": 0.333333,
+            "previous_inspected_count_accuracy_advantage": 0.583333,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.041667,
+            "attended_visible_type_accuracy_advantage": 0.541667,
+            "attended_digit_accuracy_advantage": 0.208333,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.458333,
+            "previous_attended_digit_accuracy_advantage": 0.333333,
+            "previous_glimpse_digit_accuracy_advantage": 0.375,
+            "found_target_accuracy_advantage": 0.041667,
+            "relevant_region_inspected_accuracy_advantage": 0.125,
+            "unresolved_search_accuracy_advantage": 0.125,
+            "current_wrong_candidate_accuracy_advantage": -0.208333,
+            "wrong_candidate_history_accuracy_advantage": 0.541667,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": -0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.208333,
+              "advantage": 0.208333
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.333333,
+              "advantage": 0.333333
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.333333,
+              "advantage": 0.333333
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.375,
+              "advantage": 0.375
+            },
+            {
+              "field": "previous_attended_visible_type_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            }
+          ],
+          "attended_visible_type_accuracy": 0.541667,
+          "attended_visible_type_accuracy_advantage": 0.541667,
+          "attended_digit_accuracy": 0.208333,
+          "attended_digit_accuracy_advantage": 0.208333,
+          "previous_attended_visible_type_accuracy": 0.458333,
+          "previous_attended_visible_type_accuracy_advantage": 0.458333,
+          "previous_attended_digit_accuracy": 0.333333,
+          "previous_attended_digit_accuracy_advantage": 0.333333,
+          "previous_glimpse_digit_accuracy": 0.375,
+          "previous_glimpse_digit_accuracy_advantage": 0.375
+        },
+        "16x8": {
+          "current_content_joint_accuracy_advantage": 0.166667,
+          "memory_content_joint_accuracy_advantage": 0.291667,
+          "content_only_joint_accuracy_advantage": 0.0,
+          "content_supported": false,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.708333,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 0.916667,
+            "inspected_count_accuracy": 0.5,
+            "previous_inspected_count_accuracy": 0.666667,
+            "attended_cell_previously_inspected_accuracy": 0.916667,
+            "attended_visible_type_accuracy": 0.708333,
+            "attended_digit_accuracy": 0.25,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.708333,
+            "previous_attended_digit_accuracy": 0.375,
+            "previous_glimpse_digit_accuracy": 0.416667,
+            "found_target_accuracy": 0.833333,
+            "relevant_region_inspected_accuracy": 0.916667,
+            "unresolved_search_accuracy": 0.916667,
+            "current_wrong_candidate_accuracy": 0.625,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.875
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.291667,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.166667,
+            "inspected_count_accuracy_advantage": 0.5,
+            "previous_inspected_count_accuracy_advantage": 0.583333,
+            "attended_cell_previously_inspected_accuracy_advantage": -0.041667,
+            "attended_visible_type_accuracy_advantage": 0.708333,
+            "attended_digit_accuracy_advantage": 0.25,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.708333,
+            "previous_attended_digit_accuracy_advantage": 0.375,
+            "previous_glimpse_digit_accuracy_advantage": 0.416667,
+            "found_target_accuracy_advantage": 0.083333,
+            "relevant_region_inspected_accuracy_advantage": 0.166667,
+            "unresolved_search_accuracy_advantage": 0.166667,
+            "current_wrong_candidate_accuracy_advantage": -0.25,
+            "wrong_candidate_history_accuracy_advantage": 0.541667,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": 0.0
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.25,
+              "advantage": 0.25
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.375,
+              "advantage": 0.375
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.416667,
+              "advantage": 0.416667
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.5,
+              "advantage": 0.5
+            },
+            {
+              "field": "current_wrong_candidate_accuracy",
+              "accuracy": 0.625,
+              "advantage": -0.25
+            }
+          ],
+          "attended_visible_type_accuracy": 0.708333,
+          "attended_visible_type_accuracy_advantage": 0.708333,
+          "attended_digit_accuracy": 0.25,
+          "attended_digit_accuracy_advantage": 0.25,
+          "previous_attended_visible_type_accuracy": 0.708333,
+          "previous_attended_visible_type_accuracy_advantage": 0.708333,
+          "previous_attended_digit_accuracy": 0.375,
+          "previous_attended_digit_accuracy_advantage": 0.375,
+          "previous_glimpse_digit_accuracy": 0.416667,
+          "previous_glimpse_digit_accuracy_advantage": 0.416667
+        },
+        "32x8": {
+          "current_content_joint_accuracy_advantage": 0.208333,
+          "memory_content_joint_accuracy_advantage": 0.416667,
+          "content_only_joint_accuracy_advantage": 0.041667,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.875,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 0.916667,
+            "inspected_count_accuracy": 0.458333,
+            "previous_inspected_count_accuracy": 0.875,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.625,
+            "attended_digit_accuracy": 0.375,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.791667,
+            "previous_attended_digit_accuracy": 0.625,
+            "previous_glimpse_digit_accuracy": 0.583333,
+            "found_target_accuracy": 0.875,
+            "relevant_region_inspected_accuracy": 0.916667,
+            "unresolved_search_accuracy": 0.916667,
+            "current_wrong_candidate_accuracy": 0.708333,
+            "wrong_candidate_history_accuracy": 0.791667,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.125,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.166667,
+            "inspected_count_accuracy_advantage": 0.458333,
+            "previous_inspected_count_accuracy_advantage": 0.791667,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.625,
+            "attended_digit_accuracy_advantage": 0.375,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.791667,
+            "previous_attended_digit_accuracy_advantage": 0.625,
+            "previous_glimpse_digit_accuracy_advantage": 0.583333,
+            "found_target_accuracy_advantage": 0.125,
+            "relevant_region_inspected_accuracy_advantage": 0.166667,
+            "unresolved_search_accuracy_advantage": 0.166667,
+            "current_wrong_candidate_accuracy_advantage": -0.166667,
+            "wrong_candidate_history_accuracy_advantage": 0.541667,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": -0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.375,
+              "advantage": 0.375
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            }
+          ],
+          "attended_visible_type_accuracy": 0.625,
+          "attended_visible_type_accuracy_advantage": 0.625,
+          "attended_digit_accuracy": 0.375,
+          "attended_digit_accuracy_advantage": 0.375,
+          "previous_attended_visible_type_accuracy": 0.791667,
+          "previous_attended_visible_type_accuracy_advantage": 0.791667,
+          "previous_attended_digit_accuracy": 0.625,
+          "previous_attended_digit_accuracy_advantage": 0.625,
+          "previous_glimpse_digit_accuracy": 0.583333,
+          "previous_glimpse_digit_accuracy_advantage": 0.583333
+        },
+        "48x8": {
+          "current_content_joint_accuracy_advantage": 0.208333,
+          "memory_content_joint_accuracy_advantage": 0.458333,
+          "content_only_joint_accuracy_advantage": 0.041667,
+          "content_supported": true,
+          "content_only_field_accuracies": {
+            "previous_search_type_accuracy": 0.875,
+            "cue_switched_accuracy": 1.0,
+            "previous_found_target_accuracy": 0.916667,
+            "inspected_count_accuracy": 0.458333,
+            "previous_inspected_count_accuracy": 0.833333,
+            "attended_cell_previously_inspected_accuracy": 0.958333,
+            "attended_visible_type_accuracy": 0.625,
+            "attended_digit_accuracy": 0.375,
+            "glimpse_digit_accuracy": 1.0,
+            "previous_attended_visible_type_accuracy": 0.833333,
+            "previous_attended_digit_accuracy": 0.583333,
+            "previous_glimpse_digit_accuracy": 0.625,
+            "found_target_accuracy": 0.875,
+            "relevant_region_inspected_accuracy": 0.916667,
+            "unresolved_search_accuracy": 0.916667,
+            "current_wrong_candidate_accuracy": 0.666667,
+            "wrong_candidate_history_accuracy": 0.75,
+            "revisit_unresolved_accuracy": 1.0,
+            "allocation_error_accuracy": 0.833333
+          },
+          "content_only_field_accuracy_advantages": {
+            "previous_search_type_accuracy_advantage": -0.125,
+            "cue_switched_accuracy_advantage": 0.0,
+            "previous_found_target_accuracy_advantage": 0.166667,
+            "inspected_count_accuracy_advantage": 0.458333,
+            "previous_inspected_count_accuracy_advantage": 0.75,
+            "attended_cell_previously_inspected_accuracy_advantage": 0.0,
+            "attended_visible_type_accuracy_advantage": 0.625,
+            "attended_digit_accuracy_advantage": 0.375,
+            "glimpse_digit_accuracy_advantage": 0.0,
+            "previous_attended_visible_type_accuracy_advantage": 0.833333,
+            "previous_attended_digit_accuracy_advantage": 0.583333,
+            "previous_glimpse_digit_accuracy_advantage": 0.625,
+            "found_target_accuracy_advantage": 0.125,
+            "relevant_region_inspected_accuracy_advantage": 0.166667,
+            "unresolved_search_accuracy_advantage": 0.166667,
+            "current_wrong_candidate_accuracy_advantage": -0.208333,
+            "wrong_candidate_history_accuracy_advantage": 0.5,
+            "revisit_unresolved_accuracy_advantage": 0.0,
+            "allocation_error_accuracy_advantage": -0.041667
+          },
+          "content_only_bottleneck_fields": [
+            {
+              "field": "attended_digit_accuracy",
+              "accuracy": 0.375,
+              "advantage": 0.375
+            },
+            {
+              "field": "inspected_count_accuracy",
+              "accuracy": 0.458333,
+              "advantage": 0.458333
+            },
+            {
+              "field": "previous_attended_digit_accuracy",
+              "accuracy": 0.583333,
+              "advantage": 0.583333
+            },
+            {
+              "field": "attended_visible_type_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            },
+            {
+              "field": "previous_glimpse_digit_accuracy",
+              "accuracy": 0.625,
+              "advantage": 0.625
+            }
+          ],
+          "attended_visible_type_accuracy": 0.625,
+          "attended_visible_type_accuracy_advantage": 0.625,
+          "attended_digit_accuracy": 0.375,
+          "attended_digit_accuracy_advantage": 0.375,
+          "previous_attended_visible_type_accuracy": 0.833333,
+          "previous_attended_visible_type_accuracy_advantage": 0.833333,
+          "previous_attended_digit_accuracy": 0.583333,
+          "previous_attended_digit_accuracy_advantage": 0.583333,
+          "previous_glimpse_digit_accuracy": 0.625,
+          "previous_glimpse_digit_accuracy_advantage": 0.625
+        }
+      },
+      "continuous_internal_state_probe": {
+        "current_content_joint_accuracy_advantage": 0.041667,
+        "memory_content_joint_accuracy_advantage": 0.25,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.666667,
+          "cue_switched_accuracy": 1.0,
+          "previous_found_target_accuracy": 0.833333,
+          "inspected_count_accuracy": 0.5,
+          "previous_inspected_count_accuracy": 0.75,
+          "attended_cell_previously_inspected_accuracy": 0.5,
+          "attended_visible_type_accuracy": 0.416667,
+          "attended_digit_accuracy": 0.166667,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.541667,
+          "previous_attended_digit_accuracy": 0.333333,
+          "previous_glimpse_digit_accuracy": 0.375,
+          "found_target_accuracy": 0.916667,
+          "relevant_region_inspected_accuracy": 0.833333,
+          "unresolved_search_accuracy": 0.875,
+          "current_wrong_candidate_accuracy": 0.416667,
+          "wrong_candidate_history_accuracy": 0.791667,
+          "revisit_unresolved_accuracy": 0.541667,
+          "allocation_error_accuracy": 0.833333
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.333333,
+          "cue_switched_accuracy_advantage": 0.0,
+          "previous_found_target_accuracy_advantage": 0.083333,
+          "inspected_count_accuracy_advantage": 0.5,
+          "previous_inspected_count_accuracy_advantage": 0.666667,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.458333,
+          "attended_visible_type_accuracy_advantage": 0.416667,
+          "attended_digit_accuracy_advantage": 0.166667,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.541667,
+          "previous_attended_digit_accuracy_advantage": 0.333333,
+          "previous_glimpse_digit_accuracy_advantage": 0.375,
+          "found_target_accuracy_advantage": 0.166667,
+          "relevant_region_inspected_accuracy_advantage": 0.083333,
+          "unresolved_search_accuracy_advantage": 0.125,
+          "current_wrong_candidate_accuracy_advantage": -0.458333,
+          "wrong_candidate_history_accuracy_advantage": 0.541667,
+          "revisit_unresolved_accuracy_advantage": -0.458333,
+          "allocation_error_accuracy_advantage": -0.041667
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.166667,
+            "advantage": 0.166667
+          },
+          {
+            "field": "previous_attended_digit_accuracy",
+            "accuracy": 0.333333,
+            "advantage": 0.333333
+          },
+          {
+            "field": "previous_glimpse_digit_accuracy",
+            "accuracy": 0.375,
+            "advantage": 0.375
+          },
+          {
+            "field": "current_wrong_candidate_accuracy",
+            "accuracy": 0.416667,
+            "advantage": -0.458333
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.416667,
+            "advantage": 0.416667
+          }
+        ],
+        "attended_visible_type_accuracy": 0.416667,
+        "attended_visible_type_accuracy_advantage": 0.416667,
+        "attended_digit_accuracy": 0.166667,
+        "attended_digit_accuracy_advantage": 0.166667,
+        "previous_attended_visible_type_accuracy": 0.541667,
+        "previous_attended_visible_type_accuracy_advantage": 0.541667,
+        "previous_attended_digit_accuracy": 0.333333,
+        "previous_attended_digit_accuracy_advantage": 0.333333,
+        "previous_glimpse_digit_accuracy": 0.375,
+        "previous_glimpse_digit_accuracy_advantage": 0.375
+      },
+      "continuous_state_plus_feedback_probe": {
+        "current_content_joint_accuracy_advantage": 0.083333,
+        "memory_content_joint_accuracy_advantage": 0.208333,
+        "content_only_joint_accuracy_advantage": 0.0,
+        "content_supported": false,
+        "content_only_field_accuracies": {
+          "previous_search_type_accuracy": 0.583333,
+          "cue_switched_accuracy": 0.958333,
+          "previous_found_target_accuracy": 0.833333,
+          "inspected_count_accuracy": 0.416667,
+          "previous_inspected_count_accuracy": 0.666667,
+          "attended_cell_previously_inspected_accuracy": 0.5,
+          "attended_visible_type_accuracy": 0.291667,
+          "attended_digit_accuracy": 0.291667,
+          "glimpse_digit_accuracy": 1.0,
+          "previous_attended_visible_type_accuracy": 0.375,
+          "previous_attended_digit_accuracy": 0.375,
+          "previous_glimpse_digit_accuracy": 0.375,
+          "found_target_accuracy": 0.833333,
+          "relevant_region_inspected_accuracy": 0.875,
+          "unresolved_search_accuracy": 0.833333,
+          "current_wrong_candidate_accuracy": 0.541667,
+          "wrong_candidate_history_accuracy": 0.916667,
+          "revisit_unresolved_accuracy": 0.541667,
+          "allocation_error_accuracy": 0.791667
+        },
+        "content_only_field_accuracy_advantages": {
+          "previous_search_type_accuracy_advantage": -0.416667,
+          "cue_switched_accuracy_advantage": -0.041667,
+          "previous_found_target_accuracy_advantage": 0.083333,
+          "inspected_count_accuracy_advantage": 0.416667,
+          "previous_inspected_count_accuracy_advantage": 0.583333,
+          "attended_cell_previously_inspected_accuracy_advantage": -0.458333,
+          "attended_visible_type_accuracy_advantage": 0.291667,
+          "attended_digit_accuracy_advantage": 0.291667,
+          "glimpse_digit_accuracy_advantage": 0.0,
+          "previous_attended_visible_type_accuracy_advantage": 0.375,
+          "previous_attended_digit_accuracy_advantage": 0.375,
+          "previous_glimpse_digit_accuracy_advantage": 0.375,
+          "found_target_accuracy_advantage": 0.083333,
+          "relevant_region_inspected_accuracy_advantage": 0.125,
+          "unresolved_search_accuracy_advantage": 0.083333,
+          "current_wrong_candidate_accuracy_advantage": -0.333333,
+          "wrong_candidate_history_accuracy_advantage": 0.666667,
+          "revisit_unresolved_accuracy_advantage": -0.458333,
+          "allocation_error_accuracy_advantage": -0.083333
+        },
+        "content_only_bottleneck_fields": [
+          {
+            "field": "attended_digit_accuracy",
+            "accuracy": 0.291667,
+            "advantage": 0.291667
+          },
+          {
+            "field": "attended_visible_type_accuracy",
+            "accuracy": 0.291667,
+            "advantage": 0.291667
+          },
+          {
+            "field": "previous_attended_digit_accuracy",
+            "accuracy": 0.375,
+            "advantage": 0.375
+          },
+          {
+            "field": "previous_attended_visible_type_accuracy",
+            "accuracy": 0.375,
+            "advantage": 0.375
+          },
+          {
+            "field": "previous_glimpse_digit_accuracy",
+            "accuracy": 0.375,
+            "advantage": 0.375
+          }
+        ],
+        "attended_visible_type_accuracy": 0.291667,
+        "attended_visible_type_accuracy_advantage": 0.291667,
+        "attended_digit_accuracy": 0.291667,
+        "attended_digit_accuracy_advantage": 0.291667,
+        "previous_attended_visible_type_accuracy": 0.375,
+        "previous_attended_visible_type_accuracy_advantage": 0.375,
+        "previous_attended_digit_accuracy": 0.375,
+        "previous_attended_digit_accuracy_advantage": 0.375,
+        "previous_glimpse_digit_accuracy": 0.375,
+        "previous_glimpse_digit_accuracy_advantage": 0.375
+      }
+    }
+  }
+}

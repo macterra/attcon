@@ -52,6 +52,27 @@ PROBE_SCENES = 32
 CALIBRATION_EXAMPLES = 8
 EVALUATION_EXAMPLES = 24
 TRANSLATOR_TRAIN_EXAMPLES = 64
+CONTENT_ONLY_ACCURACY_FIELDS = (
+    "previous_search_type_accuracy",
+    "cue_switched_accuracy",
+    "previous_found_target_accuracy",
+    "inspected_count_accuracy",
+    "previous_inspected_count_accuracy",
+    "attended_cell_previously_inspected_accuracy",
+    "attended_visible_type_accuracy",
+    "attended_digit_accuracy",
+    "glimpse_digit_accuracy",
+    "previous_attended_visible_type_accuracy",
+    "previous_attended_digit_accuracy",
+    "previous_glimpse_digit_accuracy",
+    "found_target_accuracy",
+    "relevant_region_inspected_accuracy",
+    "unresolved_search_accuracy",
+    "current_wrong_candidate_accuracy",
+    "wrong_candidate_history_accuracy",
+    "revisit_unresolved_accuracy",
+    "allocation_error_accuracy",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -256,6 +277,25 @@ def _score_slice(
         current_adv = scored["current_content_joint_accuracy"] - observation["current_content_joint_accuracy"]
         memory_adv = scored["memory_content_joint_accuracy"] - observation["memory_content_joint_accuracy"]
         content_adv = scored["content_only_joint_accuracy"] - observation["content_only_joint_accuracy"]
+        field_accuracies = {
+            field: round(scored[field], 6)
+            for field in CONTENT_ONLY_ACCURACY_FIELDS
+        }
+        field_advantages = {
+            f"{field}_advantage": round(scored[field] - observation[field], 6)
+            for field in CONTENT_ONLY_ACCURACY_FIELDS
+        }
+        bottleneck_fields = sorted(
+            (
+                {
+                    "field": field,
+                    "accuracy": field_accuracies[field],
+                    "advantage": field_advantages[f"{field}_advantage"],
+                }
+                for field in CONTENT_ONLY_ACCURACY_FIELDS
+            ),
+            key=lambda item: (item["accuracy"], item["advantage"], item["field"]),
+        )
         summary = {
             "current_content_joint_accuracy_advantage": round(current_adv, 6),
             "memory_content_joint_accuracy_advantage": round(memory_adv, 6),
@@ -263,6 +303,9 @@ def _score_slice(
             "content_supported": bool(
                 current_adv > 0.0 and memory_adv > 0.0 and content_adv > 0.0
             ),
+            "content_only_field_accuracies": field_accuracies,
+            "content_only_field_accuracy_advantages": field_advantages,
+            "content_only_bottleneck_fields": bottleneck_fields[:5],
         }
         for field in (
             "attended_visible_type_accuracy",
@@ -311,6 +354,10 @@ def _score_slice(
             ],
             "previous_attended_digit_accuracy": observation["previous_attended_digit_accuracy"],
             "previous_glimpse_digit_accuracy": observation["previous_glimpse_digit_accuracy"],
+            "content_only_field_accuracies": {
+                field: round(observation[field], 6)
+                for field in CONTENT_ONLY_ACCURACY_FIELDS
+            },
         },
         "quantized_opaque_levels": quantized_runs,
         "continuous_internal_state_probe": summarize(continuous),

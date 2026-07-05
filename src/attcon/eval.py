@@ -116,6 +116,12 @@ def load_models_from_checkpoint(
                 for key, value in migrated_state.items()
                 if key in current and value.shape != current[key].shape
             ]
+            content_mismatched = [key for key in mismatched if key.startswith("content_")]
+            if content_mismatched:
+                for key in content_mismatched:
+                    del migrated_state[key]
+                missing_report_heads.extend(content_mismatched)
+                mismatched = [key for key in mismatched if not key.startswith("content_")]
             missing_only_content_memory = bool(missing_report_heads) and all(
                 key.startswith("content_")
                 for key in missing_report_heads

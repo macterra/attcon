@@ -127,6 +127,21 @@ Remaining sub-steps (the real next work):
   Next experiment should either factor the reporter output by field before applying the joint claim,
   or train the report state with an explicit joint structured decoding objective instead of only
   independent heads.
+- [x] Third memory-regularized checkpoint pilot completed
+  (`configs/stage7_content_memory_v3.yaml`, `audits/stage7_latent_followup_content_memory_v3.json`).
+  The v2 bottleneck audit showed that visible-type fields were the lowest-accuracy strict-report
+  fields even when digit memory was strong, so v3 adds the controller's attended visible-type glimpse
+  to the post-glimpse `content_memory_state_seq` adapter. The checkpoint remains task-viable
+  (recurrent validation accuracy `0.324` vs static `0.166`) and is the first strict-positive
+  Stage 7 pilot under the quantised opaque reporter: best quantised current/memory/content-only
+  advantages are `+0.3333/+0.6667/+0.0833` on default, `+0.2917/+0.6667/+0.0417` on cue-switch,
+  `+0.3333/+0.7083/+0.0833` on intervention baseline, and
+  `+0.2083/+0.4583/+0.0417` on intervened examples. Claim boundary: this supports
+  **faithful latent reportability under explicit content-memory regularization with visible-glimpse
+  binding**, not spontaneous Stage 7 reportability in the original checkpoint. The enriched
+  bottleneck fields show the remaining weak spots are mostly attended digit, inspected count, and
+  current-wrong-candidate calibration; the continuous diagnostic remains negative, so the next
+  robustness step is replicate v3 across seeds and tighten the quantised reporter selection policy.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims

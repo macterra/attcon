@@ -339,7 +339,7 @@ class RecurrentAttentionController(BaseAttentionModel):
         self.allocation_error_head = nn.Linear(model_config.hidden_size + 2 * self.num_cells + 2, 1)
         self.content_memory_adapter = nn.Sequential(
             nn.Linear(
-                model_config.hidden_size + self.observation_dim + self.num_cells,
+                model_config.hidden_size + self.observation_dim + self.num_types + self.num_cells,
                 model_config.hidden_size,
             ),
             nn.Tanh(),
@@ -545,6 +545,8 @@ class RecurrentAttentionController(BaseAttentionModel):
             attention_logits = self.policy_head(hidden_state) + policy_self_model_feedback
             attention = torch.softmax(attention_logits / self.model_config.temperature, dim=-1)
             glimpse_weights = _glimpse_weights(attention, self.model_config.hard_attention)
+            visible_features = scene[..., : self.num_types]
+            visible_glimpse = torch.sum(glimpse_weights.unsqueeze(-1) * visible_features, dim=1)
             hidden_glimpse = torch.sum(glimpse_weights.unsqueeze(-1) * hidden_features, dim=1)
             observed_glimpse = self.observe_glimpse(hidden_glimpse, step_cue)
             step_logits = self.task_head(torch.cat([observed_glimpse, hidden_state], dim=-1))
@@ -612,7 +614,7 @@ class RecurrentAttentionController(BaseAttentionModel):
                 & (unresolved_search.squeeze(-1) > 0.5)
             ).float().unsqueeze(-1)
             content_memory_state = self.content_memory_adapter(
-                torch.cat([hidden_state, observed_glimpse, attention], dim=-1)
+                torch.cat([hidden_state, observed_glimpse, visible_glimpse, attention], dim=-1)
             )
 
             attention_seq.append(attention)
