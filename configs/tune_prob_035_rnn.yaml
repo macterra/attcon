@@ -1,0 +1,148 @@
+seed: 7
+output_dir: outputs/tune_prob_035_rnn
+device: cpu
+task:
+  grid_size: 5
+  num_types: 4
+  digit_vocab_size: 10
+  min_type_count: 6
+  num_steps: 6
+model:
+  hidden_size: 32
+  cue_embedding_dim: 8
+  scene_embedding_dim: 16
+  temperature: 1.0
+  hard_attention: true
+  controller_kind: rnn
+training:
+  batch_size: 128
+  train_steps: 5000
+  val_batches: 20
+  val_interval: 500
+  log_interval: 100
+  learning_rate: 0.001
+  weight_decay: 0.0
+  aux_loss_weight: 0.15
+  attention_target_weight: 3.0
+  stepwise_attention_target_weight: 3.0
+  cue_switch_transition_weight: 0.2
+  attention_entropy_weight: 0.0
+  cue_switch_probability: 0.35
+  cue_switch_step: 3
+  self_model_weight: 0.5
+  hidden_self_model_weight: 0.5
+  self_model_policy_feedback_weight: 0.0
+  self_model_policy_feedback_scale: 4.0
+evaluation:
+  test_batches: 40
+  probe_scenes: 4
+  predictive_probe:
+    train_batches: 12
+    test_batches: 6
+    epochs: 60
+    learning_rate: 0.05
+    thresholds:
+      min_advantage_cross_entropy: 0.01
+      min_advantage_mse: 1.0e-05
+      min_advantage_top1_match: 0.05
+  intervention_test:
+    enabled: true
+    probe_scenes: 16
+    step: 5
+    thresholds:
+      min_attention_change_kl: 0.01
+      min_original_target_attention_drop: 0.01
+      min_alternate_target_attention_gain: 0.01
+  stage3_multi_seed:
+    enabled: true
+    num_seeds: 3
+    seed_stride: 100
+  perturbational:
+    enabled: true
+    probe_scenes: 16
+    step: 2
+    magnitudes:
+    - 0.5
+    - 1.0
+    - 2.0
+    min_recovery_ratio: 0.1
+    min_attention_propagation: 0.05
+  cue_switch:
+    enabled: true
+    probe_scenes: 4
+    switch_step: 3
+  report_probes:
+    enabled: true
+    train_batches: 12
+    test_batches: 6
+    epochs: 60
+    learning_rate: 0.05
+  noise_floor:
+    enabled: true
+    train_batches: 8
+    test_batches: 4
+    epochs: 40
+    learning_rate: 0.05
+    permutations: 12
+    percentile: 95
+  self_modeling:
+    enabled: true
+    train_batches: 12
+    test_batches: 6
+    epochs: 60
+    learning_rate: 0.05
+  learned_self_modeling:
+    enabled: true
+    train_batches: 12
+    test_batches: 6
+    epochs: 60
+    learning_rate: 0.05
+    intervention:
+      probe_scenes: 16
+      step: 2
+      scale: 2.0
+  uncertainty_report_probes:
+    enabled: true
+    train_batches: 12
+    test_batches: 6
+    epochs: 60
+    learning_rate: 0.05
+  nl_report:
+    enabled: true
+    model: local-calibrated-token-decoder
+    calibration_examples: 4
+    evaluation_examples: 8
+    translator_train_examples: 16
+    probe_scenes: 8
+    max_output_tokens: 2000
+    local_decoder:
+      enabled: true
+      latent_only:
+        enabled: true
+        num_chunks: 8
+        num_levels: 4
+  reduced_shaping:
+    enabled: true
+    weights:
+    - 0.25
+    - 0.0
+    training_overrides:
+      train_steps: 3000
+      self_model_weight: 0.0
+      target_found_report_weight: 0.0
+      relevant_region_report_weight: 0.0
+      unresolved_search_report_weight: 0.0
+      wrong_candidate_history_report_weight: 0.0
+      allocation_error_report_weight: 0.0
+    thresholds:
+      min_accuracy: 0.25
+      min_temporal_reallocation: 0.02
+      min_target_attention_gain: 0.0
+  ablations:
+  - freeze_recurrence
+  - feedforward_summary
+  - zero_prev_glimpse
+  - zero_prev_loss
+  - zero_prev_confidence
+  - zero_prev_attention
+  - shuffle_cue

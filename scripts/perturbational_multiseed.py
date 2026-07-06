@@ -68,6 +68,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seeds", type=int, default=25, help="number of perturbation seeds per checkpoint")
     parser.add_argument("--seed-base", type=int, default=4000)
     parser.add_argument("--seed-stride", type=int, default=7)
+    parser.add_argument(
+        "--extra",
+        action="append",
+        default=[],
+        metavar="LABEL:CONFIG:CHECKPOINT",
+        help="append an extra checkpoint (e.g. a different-architecture controller for cross-architecture replication); repeatable",
+    )
     return parser.parse_args()
 
 
@@ -116,7 +123,12 @@ def main() -> None:
     args = parse_args()
     seeds = [args.seed_base + i * args.seed_stride for i in range(args.seeds)]
 
-    results = [audit_checkpoint(label, config, checkpoint, seeds) for label, config, checkpoint in CHECKPOINTS]
+    checkpoints = list(CHECKPOINTS)
+    for spec in args.extra:
+        label, config, checkpoint = spec.split(":", 2)
+        checkpoints.append((label, config, checkpoint))
+
+    results = [audit_checkpoint(label, config, checkpoint, seeds) for label, config, checkpoint in checkpoints]
 
     # Robustness verdicts, kept honest about what they establish.
     per_seed_robust = all(r["supported_fraction"] == 1.0 for r in results)

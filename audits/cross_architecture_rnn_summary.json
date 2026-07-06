@@ -1,0 +1,72 @@
+{
+  "note": "Cross-architecture replication: ungated nn.RNNCell controller (controller_kind='rnn') vs the gated GRU, both on the tune_prob_035 recipe. Source reports are the (gitignored) outputs/*/evaluation_report.json; this is the committed summary. 6/7 supported claims replicate on the RNN; cue_switch_adaptation drops.",
+  "recurrent_val_accuracy": {
+    "gru": 0.44179687500000003,
+    "rnn": 0.3125
+  },
+  "static_val_accuracy": {
+    "gru": 0.16660156250000002,
+    "rnn": 0.16660156250000002
+  },
+  "claims": {
+    "dissociation": {
+      "gru": true,
+      "rnn": true,
+      "replicates": true
+    },
+    "closed_loop_adaptation": {
+      "gru": true,
+      "rnn": true,
+      "replicates": true
+    },
+    "cue_dependence": {
+      "gru": true,
+      "rnn": true,
+      "replicates": true
+    },
+    "cue_switch_adaptation": {
+      "gru": true,
+      "rnn": false,
+      "replicates": false
+    },
+    "stage3_explicit_attention_modeling_robust": {
+      "gru": true,
+      "rnn": true,
+      "rnn_predictive_supported_fraction": 1.0,
+      "rnn_intervention_supported_fraction": 1.0,
+      "replicates": true
+    },
+    "stage6A_report_probes": {
+      "gru": true,
+      "rnn": true,
+      "rnn_noise_floor": {
+        "permutations": 12,
+        "percentile": 95,
+        "current_search_type": {
+          "real_controller_advantage": 0.4090983271598816,
+          "permuted_label_advantage_mean": 0.002638076742490133,
+          "permuted_label_advantage_p95": 0.006665045022964476,
+          "exceeds_noise_floor": true
+        },
+        "current_attended_cell": {
+          "real_controller_advantage": 0.4482422024011612,
+          "permuted_label_advantage_mean": -0.002583825339873632,
+          "permuted_label_advantage_p95": 0.0010375987738370862,
+          "exceeds_noise_floor": true
+        },
+        "supported": true
+      },
+      "replicates": true
+    },
+    "perturbational": {
+      "gru": true,
+      "rnn": true,
+      "replicates": true
+    }
+  },
+  "replicated_count": 6,
+  "total_comparable": 7,
+  "dropped_on_rnn": [
+    "cue_switch_adaptation"
+  ]
+}
