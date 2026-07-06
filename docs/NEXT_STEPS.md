@@ -142,6 +142,46 @@ Remaining sub-steps (the real next work):
   bottleneck fields show the remaining weak spots are mostly attended digit, inspected count, and
   current-wrong-candidate calibration; the continuous diagnostic remains negative, so the next
   robustness step is replicate v3 across seeds and tighten the quantised reporter selection policy.
+- [x] Calibrate the v3 positive against a permuted-label noise floor
+  (`scripts/stage7_latent_noise_floor.py`, `audits/stage7_latent_noise_floor_content_memory_v3.json`).
+  The pilots' `content_supported` gate is only a directional `>0` test, so a `+1/24` joint advantage
+  flips it true with no significance floor — the same gap the Stage 6A claim closed with
+  `noise_floor_metrics`. This audit refits the latent decoder 120x per slice/interface with fit-time
+  labels permuted (features and probe-init held fixed, so labels are the only variable) and compares
+  the observed advantage against the permuted p95. **Result: the v3 positive survives.** On both
+  claimed-positive interfaces (32x8, 48x8) across all four slices, the permuted `content_only`
+  advantage is a point mass at exactly `0.0` (mean = p95 = max = `0.0` over 120 permutations) — under
+  shuffled labels the decoder *never once* beats observation on joint content — while the real
+  advantage is `+0.0417`/`+0.0833`; current (`+0.21..+0.33` vs p95 `~0.08-0.125`) and memory
+  (`+0.50..+0.67` vs p95 `~0.08`) clear by wide margins. So the v3 content result is **not** a
+  probe-capacity/label-fit artifact. Honest boundaries this does *not* remove: the `content_only`
+  effect is significant-but-tiny (1-2 of 24 joint examples), it is single-checkpoint and
+  single-init-seed, current-content recovery is partly circular by construction (the visible-glimpse
+  is fed into the report state it is scored from), and cross-seed/architecture/benchmark replication
+  is absent. Significance is established; robustness and non-circularity are not.
+- [ ] Replace the bare `content_supported = (current>0 and memory>0 and content_only>0)` gate in the
+  latent pilots with the permuted-label floor gate (`content_supported_vs_floor`), so future Stage 7
+  checkpoints report significance rather than direction.
+- [x] Replicate v3 across 3 fresh training seeds (107/207/307, stride 100 from v3's seed 7;
+  `configs/stage7_content_memory_v3_seed*.yaml`, `scripts/stage7_multiseed_v3.sh`,
+  `audits/stage7_latent_noise_floor_v3_seed*.json`). All three checkpoints are task-viable
+  (recurrent val `0.322`/`0.323`/`0.326` vs static `0.261`/`0.171`/`0.209`). **The replication splits
+  the claim cleanly into a robust leg and a fragile leg:**
+  - **Robust across all 4 seeds (32/32 slice*interface cells clear the floor): remembered-content
+    (`memory`) joint recovery.** Observed advantage per-seed means `+0.41..+0.64` (range `+0.33..+0.79`)
+    vs a permuted p95 of `~0.08` — large and non-circular (previous/remembered attended content is
+    carried by the recurrent memory state, not fed in via the visible-glimpse). `current` joint also
+    clears 4/4 seeds (means `+0.24..+0.33`) but is partly circular by construction, so it carries less
+    weight. This is the defensible, seed-robust Stage 7 result: faithful latent reportability of
+    *remembered* attended content under content-memory regularization.
+  - **Seed-fragile: the strict `content_only` leg (content jointly beyond observation).** It clears
+    fully on seeds 7 and 207 (8/8 cells), partially on 307 (4/8), and **not at all on 107 (0/8 —
+    advantage exactly `0.0` everywhere)**. It is significant whenever it appears (always beats the
+    degenerate point-mass-at-0 null) but its magnitude is a knife-edge `1-2/24`, so on some seeds the
+    decoder lands exactly at the observation baseline. So strict `content_only` is **significant but
+    not robust** — do not claim it as robust Stage 7 support on the strength of v3 alone.
+  Net: the earlier "v3 = first strict-positive Stage 7" headline is downgraded to *significant-but-
+  seed-fragile* for the strict leg; what actually replicates is the **remembered-content** leg.
 - [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
 
 ## Priority 1: Tighten Existing Claims
@@ -198,12 +238,13 @@ GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 - [ ] Add separable downstream consumers for Branch F: action, report, uncertainty, reallocation, memory, and language-shaped report paths.
 - [ ] Add Branch F broadcast/ignition experiments with coordinated intervention tests.
 - [x] Add perturbational-complexity diagnostics over controller and self-model state. (`perturbational_complexity_metrics`; first non-reportability evidence family, bounded support: rich-but-recoverable dynamics that propagate far more than a no-recurrence control and recover unlike a frozen-state control. Robust support still needs multiple seeds and cross-system replication.)
+- [x] Multi-seed + cross-checkpoint robustness for the perturbational family (`scripts/perturbational_multiseed.py`, `audits/perturbational_multiseed.json`). Under a standardized perturbation config, `supported` (rich-but-recoverable AND integration>feedforward AND recovery>freeze) holds on **100% of 25 perturbation seeds on all 4 checkpoints** — the primary `tune_prob_035` controller plus the 3 independently-trained v3 content-memory controllers (seeds 107/207/307). Recurrent attention-propagation exceeds the feedforward control on every seed (`tune_prob_035` `~0.59` vs `~0.13`; v3 seeds `~0.15` vs `~0.06` — smaller margin on the content-memory recipe but still robust), and recurrent recovery (`~0.39-0.46`) exceeds the frozen-state control (`0.000`) everywhere. So the non-reportability family is now **perturbation-seed robust and cross-training-seed / cross-recipe replicated**. Boundary: all four are the *same* recurrent controller architecture, so this does **not** yet satisfy the Stage 8 cross-architecture requirement (item d) — that still needs a structurally different controller.
 
 ## Priority 5: Replicate Across Systems
 
 GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
 
-- [ ] Replicate supported claims on a structurally different controller architecture.
+- [~] Replicate supported claims on a structurally different controller architecture. **First cross-architecture pass done: an ungated `nn.RNNCell` controller** (`ModelConfig.controller_kind: "rnn"`, `configs/tune_prob_035_rnn.yaml`, `outputs/tune_prob_035_rnn/`) vs the gated GRU. The RNN is task-viable but weaker (recurrent val `0.31` vs GRU `0.44`). Of 7 comparable supported claims, **6 replicate**: Stage 3 explicit-attention-modeling (`robust_supported` on 3 seeds), Stage 6A report probes (and the RNN Stage 6A advantages `0.41`/`0.45` clear their own permuted-label floor at p95 `~0.007`/`~0.001`), dissociation, closed-loop adaptation, cue-dependence, and perturbational complexity (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds). **One drops: `cue_switch_adaptation`** (supported on GRU, false on the RNN — the weaker recurrence does not reallocate attention on a mid-episode cue switch). So both evidence families' headline claims replicate on a different recurrent architecture; a genuinely non-recurrent-*family* architecture (e.g. LSTM's dual state, or a state-space controller) and re-running the comparator/negative-control suite on the RNN remain.
 - [ ] Replicate supported claims on a second benchmark with different surface task structure.
 - [ ] Re-run comparator and negative-control suites on the replicated systems.
 - [ ] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches.
@@ -214,13 +255,16 @@ GitHub issue: [#8](https://github.com/macterra/attcon/issues/8)
 
 Do not claim Stage 8 support until all of the following are true. **Current status: not met.**
 The methodology now produces one of each partition type (a robust access/report family and a
-bounded non-reportability family) and comparators fail as intended, but both families are not
-yet robust, content-identity is unestablished, and cross-system replication is absent.
+non-reportability family) and comparators fail as intended. Both families' headline claims now
+also replicate on a second (ungated-RNN) controller architecture — so cross-*architecture*
+replication is under way (6/7 supported claims transfer; `cue_switch_adaptation` drops). Still
+open: content-identity across families is unestablished, replication is within one task/benchmark,
+and the strict Stage 7 content-only leg is not seed-robust.
 
-- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder built to harden it does **not** clear the bar on the current checkpoint, so the access/report side is strong but its strongest reportability leg still needs a checkpoint with more separable remembered-attention state or the external path. See `audits/stage7_latent_only_tune_prob_035.json`.)
-- [ ] At least one non-reportability family has robust support. (Perturbational complexity has **bounded** support; needs multi-seed + cross-system for robust.)
+- [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder does **not** clear the bar on the shipped `tune_prob_035` checkpoint (`audits/stage7_latent_only_tune_prob_035.json`). On the memory-regularized v3 recipe, a permuted-label noise floor plus a 3-seed replication (`audits/stage7_latent_noise_floor_v3_seed*.json`) splits the claim: **remembered-content (`memory`) latent recovery clears the floor on all 4 seeds** (means `+0.41..+0.64` vs p95 `~0.08`; non-circular) — a genuinely seed-robust reportability result for *remembered* attended content under content-memory regularization — while the strict `content_only` leg is significant-when-present but **seed-fragile** (full on 2/4 seeds, partial on 1, null on 1) and partly circular for current content. So the access/report side is strong and now has one seed-robust latent reportability leg (remembered content) on an engineered recipe; the strict content-only claim is not yet robust, and the spontaneous/emergent version still needs a checkpoint with separably encoded remembered-attention state or the external path. Stage 3 and Stage 6A (the robust access/report claims) now also **replicate on a different architecture** — an ungated RNN controller, Stage 6A clearing its own noise floor there; benchmark replication remains absent. See gate item (d).)
+- [~] At least one non-reportability family has robust support. (Perturbational complexity is now **perturbation-seed robust and cross-training-seed replicated** — `supported` on 100% of 25 seeds across `tune_prob_035` + 3 independently-trained v3 controllers; `audits/perturbational_multiseed.json`. It **also replicates on a structurally different architecture** — the ungated RNN controller (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds, recurrent propagation `0.316` vs feedforward `0.068`). So this leg is now multi-seed robust *and* cross-architecture and cross-training-seed replicated; the remaining gap is a more distant (non-recurrent-family) architecture and a second benchmark.)
 - [ ] The supported families point to the same internal contents, not merely the same checkpoint.
 - [x] Comparator systems fail in predicted ways. (All negative controls and comparators fail as intended; `shuffle_feedback` drops accuracy by `0.27`.)
-- [ ] Results replicate across at least one different architecture.
+- [~] Results replicate across at least one different architecture. (First cross-architecture pass: an ungated `nn.RNNCell` controller vs the gated GRU replicates 6 of 7 supported claims — Stage 3 robust, Stage 6A noise-floor-clearing, dissociation, closed-loop, cue-dependence, and perturbational; `cue_switch_adaptation` drops on the weaker RNN. See Priority 5 and `audits/cross_architecture_rnn_summary.json` + `audits/perturbational_multiseed_with_rnn.json`. Substantially met for both families' headline claims; a more distant architecture and the comparator/negative-control re-run remain.)
 - [ ] Results replicate across at least one different benchmark.
 - [ ] The final claim is framed as consciousness-relevant evidence, not proof of consciousness.

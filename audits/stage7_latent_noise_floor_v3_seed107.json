@@ -1,0 +1,243 @@
+{
+  "note": "Permuted-label noise floor for the Stage 7 latent-only decoder. For each slice and interface width, the decoder is refit `permutations` times with fit-time labels shuffled (features fixed), giving a null distribution of the content advantage. A content claim is credible only if the observed advantage clears the permuted-label p95 floor; `content_supported_directional` is the bare >0 gate the pilots currently report, shown alongside for contrast.",
+  "config_base": "configs/stage7_content_memory_v3_seed107.yaml",
+  "checkpoint": "outputs/stage7_content_memory_v3_seed107/experiment.pt",
+  "state_key": "content_memory_state_seq",
+  "permutations": 80,
+  "permutation_seed": 20260705,
+  "evaluation_examples": 24,
+  "slices": {
+    "default": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "quantized_opaque_levels": {
+        "32x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.033854,
+            "permuted_p95": 0.125,
+            "permuted_max": 0.166667,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.5,
+            "permuted_mean": 0.025,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        },
+        "48x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.030208,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.166667,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.5,
+            "permuted_mean": 0.015625,
+            "permuted_p95": 0.04375,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        }
+      }
+    },
+    "cue_switch": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "quantized_opaque_levels": {
+        "32x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.026042,
+            "permuted_p95": 0.085417,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.75,
+            "permuted_mean": 0.030729,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        },
+        "48x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.375,
+            "permuted_mean": 0.023958,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.791667,
+            "permuted_mean": 0.036458,
+            "permuted_p95": 0.125,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        }
+      }
+    },
+    "intervention_baseline": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "quantized_opaque_levels": {
+        "32x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.035417,
+            "permuted_p95": 0.125,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.5,
+            "permuted_mean": 0.027604,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        },
+        "48x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.0375,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.5,
+            "permuted_mean": 0.021875,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        }
+      }
+    },
+    "intervention_intervened": {
+      "fit_examples": 72,
+      "evaluation_examples": 24,
+      "quantized_opaque_levels": {
+        "32x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.291667,
+            "permuted_mean": 0.020313,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.333333,
+            "permuted_mean": 0.039062,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.166667,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        },
+        "48x8": {
+          "permutations": 80,
+          "current": {
+            "observed_advantage": 0.291667,
+            "permuted_mean": 0.021875,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "memory": {
+            "observed_advantage": 0.375,
+            "permuted_mean": 0.025,
+            "permuted_p95": 0.083333,
+            "permuted_max": 0.125,
+            "clears_floor": true
+          },
+          "content_only": {
+            "observed_advantage": 0.0,
+            "permuted_mean": 0.0,
+            "permuted_p95": 0.0,
+            "permuted_max": 0.0,
+            "clears_floor": false
+          },
+          "content_supported_directional": false,
+          "content_supported_vs_floor": false
+        }
+      }
+    }
+  }
+}

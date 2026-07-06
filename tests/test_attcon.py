@@ -716,6 +716,56 @@ class AttentionControlTests(unittest.TestCase):
             )
         )
 
+    def test_latent_only_decoder_label_permutation_is_a_permuted_label_null(self) -> None:
+        examples = [
+            replace(
+                self._make_latent_example(idx),
+                tokenized_state="x11100 x11200 x11300 x21100 x21200 x21300",
+            )
+            for idx in range(12)
+        ]
+        kwargs = dict(
+            fit_examples=examples,
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+            num_chunks=8,
+            num_levels=4,
+        )
+
+        # Probe weights are randomly initialized off the global RNG, so pin it before each decode
+        # to isolate the label effect. An identity permutation must then reproduce the unpermuted
+        # decode exactly — the hook only reindexes fit-time labels, never the features.
+        torch.manual_seed(0)
+        base = run_latent_only_report_mode(**kwargs)
+        torch.manual_seed(0)
+        identity = run_latent_only_report_mode(
+            **kwargs, label_permutation=list(range(len(examples)))
+        )
+        self.assertAlmostEqual(
+            base["current_content_joint_accuracy"],
+            identity["current_content_joint_accuracy"],
+            places=9,
+        )
+        self.assertAlmostEqual(
+            base["content_only_joint_accuracy"],
+            identity["content_only_joint_accuracy"],
+            places=9,
+        )
+
+        # A shuffle that breaks the feature-to-label association must not recover current content
+        # better than the true labels — that is the whole point of the permuted-label null.
+        shuffled = list(reversed(range(len(examples))))
+        torch.manual_seed(0)
+        permuted = run_latent_only_report_mode(**kwargs, label_permutation=shuffled)
+        self.assertLessEqual(
+            permuted["current_content_joint_accuracy"],
+            base["current_content_joint_accuracy"],
+        )
+
+        # A malformed permutation is rejected rather than silently mis-scored.
+        with self.assertRaises(ValueError):
+            run_latent_only_report_mode(**kwargs, label_permutation=[0] * len(examples))
+
     def test_nl_report_metrics_include_capacity_audit_for_local_reporter(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
         model = RecurrentAttentionController(self.task_cfg, self.model_cfg)

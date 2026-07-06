@@ -1020,6 +1020,7 @@ def run_latent_only_report_mode(
     grid_size: int,
     num_chunks: int = LATENT_NUM_CHUNKS,
     num_levels: int = LATENT_NUM_LEVELS,
+    label_permutation: list[int] | None = None,
 ) -> dict[str, Any]:
     """Decode the report schema from opaque quantised internal-state levels alone.
 
@@ -1031,14 +1032,28 @@ def run_latent_only_report_mode(
     faithfulness tests rather than schema round-trips. Observation-known fields (the cue, the
     current glimpse digit, and glimpse/target match) are taken from the example, exactly as the
     observation-only baseline does, so the advantage isolates what the internal state adds.
+
+    ``label_permutation`` is a permutation of ``range(len(fit_examples))`` used to build a
+    permuted-label null: fit-time labels are read from ``fit_examples[label_permutation[i]]``
+    while the quantised features stay in natural order, so the feature-to-label association is
+    destroyed but the marginal label distribution and the evaluation set are unchanged. The
+    distribution of the resulting content advantages is an empirical significance floor for the
+    real (unpermuted) advantage — the latent analogue of :func:`attcon.eval.noise_floor_metrics`.
     """
 
     fit_features = _latent_feature_matrix(fit_examples, num_chunks, num_levels)
     eval_features = _latent_feature_matrix(evaluation_examples, num_chunks, num_levels)
 
+    if label_permutation is None:
+        label_examples = fit_examples
+    else:
+        if sorted(label_permutation) != list(range(len(fit_examples))):
+            raise ValueError("label_permutation must be a permutation of range(len(fit_examples))")
+        label_examples = [fit_examples[index] for index in label_permutation]
+
     multiclass_pred: dict[str, torch.Tensor] = {}
     for field, attr, num_classes in _latent_multiclass_fields(grid_size):
-        labels = torch.tensor([int(getattr(example, attr)) for example in fit_examples])
+        labels = torch.tensor([int(getattr(example, attr)) for example in label_examples])
         head = _fit_multiclass_probe(fit_features, labels, num_classes)
         with torch.no_grad():
             multiclass_pred[field] = head(eval_features).argmax(dim=-1)
@@ -1046,7 +1061,7 @@ def run_latent_only_report_mode(
     binary_pred: dict[str, torch.Tensor] = {}
     for field, attr in _LATENT_BINARY_FIELDS:
         labels = torch.tensor(
-            [[float(getattr(example, attr))] for example in fit_examples], dtype=torch.float32
+            [[float(getattr(example, attr))] for example in label_examples], dtype=torch.float32
         )
         head = _fit_binary_probe(fit_features, labels)
         with torch.no_grad():
@@ -1055,14 +1070,14 @@ def run_latent_only_report_mode(
     unresolved_rows_head = _fit_binary_probe(
         fit_features,
         torch.tensor(
-            [[int(row in example.unresolved_rows) for row in range(grid_size)] for example in fit_examples],
+            [[int(row in example.unresolved_rows) for row in range(grid_size)] for example in label_examples],
             dtype=torch.float32,
         ),
     )
     unresolved_cols_head = _fit_binary_probe(
         fit_features,
         torch.tensor(
-            [[int(col in example.unresolved_cols) for col in range(grid_size)] for example in fit_examples],
+            [[int(col in example.unresolved_cols) for col in range(grid_size)] for example in label_examples],
             dtype=torch.float32,
         ),
     )
