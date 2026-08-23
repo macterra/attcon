@@ -237,14 +237,12 @@ policy uses it with the claimed regulatory semantics.
 
 GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
 
-- [~] Evaluate external API LLM reporting under default, cue-switch, and intervention slices. The
-  path remains valid with `gpt-5-mini`, and the powered runner now uses same-model latent-vs-
-  observation controls plus an exact paired sign test rather than a directional gate. A planned
-  12-example × 3-slice run on the v3 content-memory checkpoint was attempted and recorded in
-  `audits/stage7_external_llm_powered_content_memory_v3.json`, but produced no scored examples:
-  the API account returned `insufficient_quota` / `credit_balance_exhausted` on the first request.
-  The runner now treats that as terminal and preserves the remaining slices as `not_attempted`.
-  A powered support result therefore remains outstanding pending restored API credits.
+- [x] Evaluate external API LLM reporting under default, cue-switch, and intervention slices. The
+  72-request `gpt-5-mini` run completed with same-model latent-vs-observation controls and exact
+  paired sign tests. It is unsupported on the v3 content-memory interface: latent-only current-
+  content joint accuracy was `0/12`, `1/12`, and `0/12` across the three slices versus observation-
+  only `3/12`, `5/12`, and `1/12`; remembered and full-content joint accuracy were zero throughout.
+  Artifact: `audits/stage7_external_llm_powered_content_memory_v3.json`.
 - [ ] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings. (Blocked: vision model.)
 - [ ] Compare VLM reports against scene-only and explicit symbolic-dump baselines.
 - [~] Add token-remapping and held-out combination tests for the local opaque-token reporter. **Investigated: not meaningful against the current local reporter.** The local decoder reads the scored content fields from attended-content token bases the renderer fills *directly* from the model's attended content (not the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware structural round-trip: a consistent token remapping is invariant by construction and held-out combinations do not bite directly-encoded fields. The genuine anti-memorization test needs a **latent-only decoder** (forced to recover content from the opaque latent-bit tokens alone) or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".

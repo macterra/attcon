@@ -42,9 +42,11 @@ Tracked artifacts:
   real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above
   the permuted-label p95 floor (`~0.004`, `~0.003`), so the claim is significant rather than a
   probe-capacity artifact. This replaces the hardcoded directional thresholds for those signals.
-- **Stage 6B uncertainty / allocation error**: bounded / provisional. Positive controller-state
-  recall advantage on all four gated signals; the accuracy-guarded capacity audit does not pass
-  (`revisit_unresolved`, `allocation_error` have marginally negative accuracy advantage).
+- **Stage 6B uncertainty / allocation error**: bounded positive evidence; full support false.
+  All four controller-state recall advantages clear their empirical permuted-label p95 floors,
+  but the calibrated capacity audit does not pass: `revisit_unresolved` and `allocation_error`
+  retain marginally negative accuracy advantages and fail their accuracy noise floors. See
+  `audits/stage6b_noise_floor_tune_prob_035.json`.
 - **Stage 7 local opaque-token reporter**: supported, capacity audit passes. External API LLM and
   VLM routes remain open. Sharper caveat: the local decoder reads the scored content fields from
   attended-content token bases the renderer fills *directly* from the model's attended content (not

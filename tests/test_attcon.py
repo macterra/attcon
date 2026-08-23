@@ -1891,6 +1891,11 @@ class AttentionControlTests(unittest.TestCase):
                         "test_batches": 1,
                         "epochs": 10,
                         "learning_rate": 0.05,
+                        "noise_floor": {
+                            "enabled": True,
+                            "permutations": 2,
+                            "percentile": 95,
+                        },
                     },
                     "nl_report": {
                         "enabled": False,
@@ -1948,6 +1953,17 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("wrong_candidate_history", report["uncertainty_report_probes"])
             self.assertIn("revisit_unresolved", report["uncertainty_report_probes"])
             self.assertIn("allocation_error", report["uncertainty_report_probes"])
+            uncertainty_noise_floor = report["uncertainty_report_probes"]["noise_floor"]
+            self.assertEqual(uncertainty_noise_floor["permutations"], 2)
+            self.assertIn("current_wrong_candidate", uncertainty_noise_floor)
+            self.assertIn(
+                "permuted_label_positive_recall_advantage_p95",
+                uncertainty_noise_floor["current_wrong_candidate"],
+            )
+            self.assertEqual(
+                report["uncertainty_report_probes"]["supported"],
+                report["uncertainty_report_probes"]["capacity_audit"]["passed"],
+            )
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
             self.assertIn("engineered_self_state_tracking", report["evidence"])
