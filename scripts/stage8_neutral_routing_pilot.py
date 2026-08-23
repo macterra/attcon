@@ -48,11 +48,15 @@ def main() -> None:
     parser.add_argument("--model-seed", type=int, default=1009)
     parser.add_argument("--null-seed", type=int, default=1013)
     parser.add_argument("--epochs", type=int, default=30)
+    parser.add_argument("--pretrain-epochs", type=int, default=0)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--learning-rate", type=float, default=3e-3)
     parser.add_argument("--hidden-size", type=int, default=64)
     parser.add_argument("--initial-routing-weight", type=float, default=0.05)
     parser.add_argument("--private-access-dropout", type=float, default=0.0)
+    parser.add_argument(
+        "--no-private-dropout-rescale", action="store_true"
+    )
     parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
@@ -83,26 +87,54 @@ def main() -> None:
             args.hidden_size,
             routing=routing,
             initial_routing_weight=args.initial_routing_weight,
-            private_access_dropout=args.private_access_dropout,
+            private_access_dropout=(
+                0.0 if args.pretrain_epochs else args.private_access_dropout
+            ),
+            private_access_dropout_rescale=not args.no_private_dropout_rescale,
         )
         initial_weight = float(torch.sigmoid(model.routing_logit).item())
+        pretrain_losses = []
+        pre_pressure_eval = None
+        if args.pretrain_epochs:
+            pretrain_losses = train_integrated_content_model(
+                model,
+                train,
+                epochs=args.pretrain_epochs,
+                batch_size=args.batch_size,
+                learning_rate=args.learning_rate,
+                seed=args.model_seed,
+                device=args.device,
+            )
+            pre_pressure_eval = evaluate_integrated_content_model(
+                model, heldout, device=args.device
+            )
+            model.private_access_dropout = args.private_access_dropout
+        pre_pressure_weight = float(torch.sigmoid(model.routing_logit).item())
         losses = train_integrated_content_model(
             model,
             train,
             epochs=args.epochs,
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,
-            seed=args.model_seed,
+            seed=args.model_seed + (10000 if args.pretrain_epochs else 0),
             device=args.device,
         )
         runs[routing] = {
             "model": model,
             "parameter_count": parameter_count(model),
             "initial_routing_weight": initial_weight,
+            "pre_pressure_routing_weight": pre_pressure_weight,
             "final_routing_weight": float(model.routing_weight().item()),
             "learned_logit_sigmoid": float(torch.sigmoid(model.routing_logit).item()),
             "initial_epoch_loss": losses[0],
             "final_epoch_loss": losses[-1],
+            "pretrain_initial_epoch_loss": (
+                pretrain_losses[0] if pretrain_losses else None
+            ),
+            "pretrain_final_epoch_loss": (
+                pretrain_losses[-1] if pretrain_losses else None
+            ),
+            "pre_pressure_heldout": pre_pressure_eval,
             "heldout": evaluate_integrated_content_model(
                 model, heldout, device=args.device
             ),
@@ -132,7 +164,7 @@ def main() -> None:
         ],
         "final_routing_weight": learned["final_routing_weight"],
         "routing_weight_increase": learned["final_routing_weight"]
-        - learned["initial_routing_weight"],
+        - learned["pre_pressure_routing_weight"],
         "learned_joint_directional_follow": learned["true_direction"][joint_key],
         "joint_advantage_over_permuted_direction": learned["true_direction"][
             joint_key
@@ -159,7 +191,9 @@ def main() -> None:
     }
     result = {
         "audit": (
-            "stage8_task_induced_routing_pilot"
+            "stage8_task_induced_routing_curriculum"
+            if args.pretrain_epochs
+            else "stage8_task_induced_routing_pilot"
             if args.private_access_dropout
             else "stage8_neutral_routing_pilot"
         ),
@@ -173,10 +207,15 @@ def main() -> None:
             else "neutral_routing_unsupported"
         ),
         "scope": (
-            "single-seed dual-lane pilot; the cross-lane gate starts near closed and receives "
+            "single-seed dual-lane pilot; the cross-lane gate receives "
             + (
-                "indirect task pressure from stochastic private-lane loss but no direct gate "
-                "or overlap supervision"
+                "task-only pretraining before "
+                if args.pretrain_epochs
+                else ""
+            )
+            + (
+                "indirect pressure from stochastic private-lane loss but no direct gate or "
+                "overlap supervision"
                 if args.private_access_dropout
                 else "no direct overlap supervision or private-lane robustness pressure"
             )
@@ -190,11 +229,13 @@ def main() -> None:
             "model_seed": args.model_seed,
             "null_seed": args.null_seed,
             "epochs": args.epochs,
+            "pretrain_epochs": args.pretrain_epochs,
             "batch_size": args.batch_size,
             "learning_rate": args.learning_rate,
             "hidden_size": args.hidden_size,
             "initial_routing_weight": args.initial_routing_weight,
             "private_access_dropout": args.private_access_dropout,
+            "private_access_dropout_rescale": not args.no_private_dropout_rescale,
             "alpha": args.alpha,
             "device": args.device,
         },

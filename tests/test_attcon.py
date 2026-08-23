@@ -132,6 +132,7 @@ from scripts.stage4b_emergence import _scale_sweep_summary
 from scripts.stage8_convergence_audit import build_stage8_convergence_audit
 from scripts.stage8_integrated_content_scaffold import build_scaffold_audit
 from scripts.stage8_task_induced_routing_sweep import build_sweep
+from scripts.stage8_task_induced_routing_correction import build_correction
 import scripts.stage7_external_llm_audit as external_llm_audit
 from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
@@ -245,6 +246,17 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(sweep["task_induced_routing_pilot_supported"])
         self.assertFalse(sweep["summary"]["no_pressure_supported"])
         self.assertEqual(sweep["summary"]["supported_condition_count"], 1)
+        correction = build_correction()
+        self.assertFalse(correction["task_induced_routing_supported"])
+        self.assertFalse(
+            correction["rescaled_dropout_result_retained_as_diagnostic_only"][
+                "valid_for_task_induced_support"
+            ]
+        )
+        self.assertLess(
+            correction["corrected_summary"]["maximum_joint_directional_follow"],
+            0.1,
+        )
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)
@@ -525,7 +537,12 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertFalse(
             result["evidence"]["integrated_same_content_assay"][
-                "multi_seed_task_induced_routing_support"
+                "task_induced_routing_supported"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "rescaled_dropout_valid_for_support"
             ]
         )
         self.assertEqual(

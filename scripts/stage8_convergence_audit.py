@@ -25,7 +25,7 @@ def build_stage8_convergence_audit() -> dict:
     integrated_directional = _load(
         "stage8_integrated_content_directional_multiseed.json"
     )
-    task_induced_routing = _load("stage8_task_induced_routing_duration.json")
+    task_induced_routing = _load("stage8_task_induced_routing_correction.json")
 
     rnn_perturbation = next(
         checkpoint
@@ -90,15 +90,21 @@ def build_stage8_convergence_audit() -> dict:
                 "stage8_same_content_gate_satisfied"
             ],
             "support_boundary": integrated_directional["support_boundary"],
-            "multi_seed_task_induced_routing_support": task_induced_routing[
-                "duration_robust_support"
+            "task_induced_routing_supported": task_induced_routing[
+                "task_induced_routing_supported"
             ],
-            "task_induced_support_rate": task_induced_routing["summary"][
-                "support_rate"
-            ],
-            "minimum_task_induced_metrics": task_induced_routing["summary"][
-                "minimum_metrics"
-            ],
+            "corrected_maximum_directional_follow": task_induced_routing[
+                "corrected_summary"
+            ]["maximum_joint_directional_follow"],
+            "rescaled_dropout_valid_for_support": task_induced_routing[
+                "rescaled_dropout_result_retained_as_diagnostic_only"
+            ]["valid_for_task_induced_support"],
+            "corrected_minimum_task_accuracy": task_induced_routing[
+                "corrected_summary"
+            ]["minimum_learned_task_joint_accuracy"],
+            "corrected_minimum_control_accuracy": task_induced_routing[
+                "corrected_summary"
+            ]["minimum_blocked_task_joint_accuracy"],
             "task_induced_support_boundary": task_induced_routing[
                 "support_boundary"
             ],
@@ -140,10 +146,10 @@ def build_stage8_convergence_audit() -> dict:
             "reason": (
                 "The integrated assay tracks one identity through binding and access and shows "
                 "seed-robust, disjoint-split directional causal overlap against permuted and "
-                "split-state nulls. A learned route also emerges under severe private-lane "
-                "robustness pressure, but not ordinary joint supervision. Directional transfer "
-                "replicates over three fresh seeds, while the full routing gate passes only two; "
-                "this remains short of independent qualifying theory families."
+                "split-state nulls. A neutral dual-lane model does not develop qualifying overlap "
+                "under ordinary supervision or corrected lane occlusion; an earlier apparent "
+                "task-induced effect was traced to inverted-dropout scaling. Independent "
+                "qualifying theory-family overlap therefore remains absent."
             ),
         },
         "comparators_fail_as_predicted": {

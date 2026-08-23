@@ -222,6 +222,7 @@ class NeutralRoutingContentModel(IntegratedContentModel):
         routing: Literal["learned", "blocked"] = "learned",
         initial_routing_weight: float = 0.05,
         private_access_dropout: float = 0.0,
+        private_access_dropout_rescale: bool = True,
     ) -> None:
         if routing not in {"learned", "blocked"}:
             raise ValueError(f"unknown routing condition: {routing}")
@@ -232,6 +233,7 @@ class NeutralRoutingContentModel(IntegratedContentModel):
         super().__init__(config, hidden_size, mode="split")
         self.routing = routing
         self.private_access_dropout = private_access_dropout
+        self.private_access_dropout_rescale = private_access_dropout_rescale
         initial_logit = torch.logit(torch.tensor(float(initial_routing_weight)))
         self.routing_logit = nn.Parameter(initial_logit)
 
@@ -263,8 +265,11 @@ class NeutralRoutingContentModel(IntegratedContentModel):
             private_access_state = (
                 private_access_state
                 * keep
-                / (1.0 - self.private_access_dropout)
             )
+            if self.private_access_dropout_rescale:
+                private_access_state = private_access_state / (
+                    1.0 - self.private_access_dropout
+                )
         weight = self.routing_weight()
         access_initial_state = (
             weight * binding_state + (1.0 - weight) * private_access_state
