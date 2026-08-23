@@ -25,6 +25,7 @@ from attcon.binding import (
 from attcon.binding_experiment import (
     IndependentFeatureBaseline,
     SharedSelectionBindingModel,
+    SetTransformerBindingModel,
     binding_intervention_metrics,
     evaluate_binding_model,
     parameter_count,
@@ -158,6 +159,19 @@ class AttentionControlTests(unittest.TestCase):
                 "non_target_all_field_invariance": 0.90,
             },
         )
+
+    def test_branch_c_set_transformer_control_is_exactly_parameter_matched(self) -> None:
+        config = BindingConfig()
+        examples = generate_binding_examples(8, config=config, seed=23)
+        tensors = tensorize_binding_examples(examples, config)
+        integrated = SetTransformerBindingModel(config, hidden_size=16, num_heads=4)
+        pooled = SetTransformerBindingModel(
+            config, hidden_size=16, num_heads=4, pool_objects=True
+        )
+        self.assertEqual(parameter_count(integrated), parameter_count(pooled))
+        prediction = integrated(tensors.attributes, tensors.cues)
+        self.assertEqual(prediction.location.shape, (8, config.num_cells))
+        self.assertIsNone(prediction.attention)
 
     def test_stage4b_scale_sweep_requires_policy_consistent_reallocation(self) -> None:
         def result(report_gap: float, attention_gap: float, supported: bool = False):

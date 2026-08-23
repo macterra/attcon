@@ -196,6 +196,53 @@ class IndependentFeatureBaseline(nn.Module):
         return self.heads(self.encoder(torch.cat((pooled, cues), dim=-1)))
 
 
+class SetTransformerBindingModel(nn.Module):
+    """Bind through a cue token and set-equivariant self-attention.
+
+    When ``pool_objects`` is true, the same parameterization receives only a repeated
+    scene-level feature pool. This creates an exactly parameter-matched identity-destroying
+    control for the cross-model audit.
+    """
+
+    def __init__(
+        self,
+        config: BindingConfig,
+        hidden_size: int = 32,
+        *,
+        num_heads: int = 4,
+        num_layers: int = 2,
+        pool_objects: bool = False,
+    ) -> None:
+        super().__init__()
+        if hidden_size % num_heads:
+            raise ValueError("hidden_size must be divisible by num_heads")
+        self.config = config
+        self.pool_objects = pool_objects
+        self.object_projection = nn.Linear(attribute_dim(config), hidden_size)
+        self.cue_projection = nn.Linear(config.num_cues, hidden_size)
+        layer = nn.TransformerEncoderLayer(
+            d_model=hidden_size,
+            nhead=num_heads,
+            dim_feedforward=hidden_size * 2,
+            dropout=0.0,
+            activation="gelu",
+            batch_first=True,
+            norm_first=False,
+        )
+        self.encoder = nn.TransformerEncoder(layer, num_layers=num_layers)
+        self.heads = _BindingHeads(hidden_size, config)
+
+    def forward(
+        self, attributes: torch.Tensor, cues: torch.Tensor
+    ) -> BindingPrediction:
+        if self.pool_objects:
+            attributes = attributes.mean(dim=1, keepdim=True).expand_as(attributes)
+        object_tokens = self.object_projection(attributes)
+        cue_token = self.cue_projection(cues)[:, None, :]
+        encoded = self.encoder(torch.cat((cue_token, object_tokens), dim=1))
+        return self.heads(encoded[:, 0])
+
+
 def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 

@@ -514,9 +514,9 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, frozen-gate surface replication, and a six-run multi-seed audit
-- positive evidence: yes, across two synthetic surface variants and three independent data/model-seed pairs per variant
-- supported: yes, bounded; not robust
+- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, frozen-gate surface replication, six-run multi-seed audit, and an exactly matched cue-token transformer replication
+- positive evidence: yes, across two synthetic surface variants, three independent shared-selector data/model-seed pairs per variant, and a structurally different model family
+- supported: yes, strong bounded; not robust for Stage 8
 
 Implementation note:
 
@@ -545,8 +545,17 @@ thresholds and different schemas/cardinalities, so Branch C now has bounded supp
 predeclared threshold. The multi-seed audit (`audits/branch_c_binding_multiseed.json`) repeats both
 variants with three independent data/model-seed pairs each. All six runs pass every gate; the
 minimum integrated joint accuracy, lure rejection, target-edit coherence, and non-target invariance
-are all `1.00`. It is still not robust support because the shared binding bottleneck is imposed by
-the architecture; replication outside this selector family remains.
+are all `1.00`.
+
+The cross-model audit (`audits/branch_c_binding_cross_model.json`) removes the explicit scalar
+selector. A permutation-equivariant transformer binds through a cue token and self-attention; its
+control has the identical 20,073-parameter (original) or 19,487-parameter (surface-v2) transformer
+after object identities are mean-pooled away. The integrated transformer reaches `1.00` joint
+accuracy, lure rejection, and all intervention scores on both variants. The controls reach
+`0.014`/`0.499` and `0.006`/`0.500` joint/lure performance. Branch C therefore clears its
+predeclared support threshold with multi-seed and cross-model evidence. The status remains strong
+bounded rather than robust for Stage 8 because the transformer replication is single-seed per
+variant and both benchmarks retain the same synthetic selection-task structure.
 
 Consciousness-evidence role:
 
@@ -1024,7 +1033,7 @@ Still open (blocked or larger):
 Branch builds:
 
 - [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
-- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (bounded, multi-seed support across two surface variants; cross-model robustness remains)
+- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (strong bounded support: multi-seed, two surface variants, and exactly matched cross-model replication)
 - [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
