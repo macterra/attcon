@@ -595,9 +595,9 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent-access/no-cache pilot, and causal cache/observation interventions
-- positive evidence: yes, for relational access; no for an unstructured GRU
-- supported: yes, bounded; not robust
+- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent-access/no-cache pilot, causal cache/observation interventions, and a three-run multi-seed audit
+- positive evidence: yes and seed-robust for relational access; no for an unstructured GRU
+- supported: yes, bounded and seed-robust; not robust across architectures or task variants
 
 Implementation note:
 
@@ -631,8 +631,15 @@ cases and each of the four access states. The no-cache route reaches `1.00` only
 merely visible targets and `0.00` for previous-memory and counterfactual-tension targets. Erasing the
 queried cache drops memory/tension accuracy by `1.00`; changing the conflicting visible value leaves
 the cache answer invariant and correct at `1.00`. All frozen gates pass. This supplies bounded
-Branch D support while sharply localizing it to a relational inductive bias. Multiple seeds and an
-alternate relational architecture remain necessary for robust support.
+Branch D support while sharply localizing it to a relational inductive bias. The single-run result
+is followed by the multi-seed audit below; an alternate relational architecture remains necessary
+for robust support.
+
+The three-run audit (`audits/branch_d_access_multiseed.json`) uses fresh data/model-seed pairs and a
+reduced but fixed 8,192-case/25-epoch budget. Every gate passes in every run. Minimum held-out
+accuracy, memory/tension advantage over no-cache, cache-erasure accuracy drop, and conflicting-
+observation cache retention are all `1.00`. This makes the bounded result seed-robust. An alternate
+relational architecture and a different surface-task variant remain the robustness blockers.
 
 Consciousness-evidence role:
 
