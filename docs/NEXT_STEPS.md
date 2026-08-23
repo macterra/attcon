@@ -277,7 +277,7 @@ GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
 - [~] Replicate supported claims on a structurally different controller architecture. **First cross-architecture pass done: an ungated `nn.RNNCell` controller** (`ModelConfig.controller_kind: "rnn"`, `configs/tune_prob_035_rnn.yaml`, `outputs/tune_prob_035_rnn/`) vs the gated GRU. The RNN is task-viable but weaker (recurrent val `0.31` vs GRU `0.44`). Of 7 comparable supported claims, **6 replicate**: Stage 3 explicit-attention-modeling (`robust_supported` on 3 seeds), Stage 6A report probes (and the RNN Stage 6A advantages `0.41`/`0.45` clear their own permuted-label floor at p95 `~0.007`/`~0.001`), dissociation, closed-loop adaptation, cue-dependence, and perturbational complexity (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds). **One drops: `cue_switch_adaptation`** (supported on GRU, false on the RNN — the weaker recurrence does not reallocate attention on a mid-episode cue switch). So both evidence families' headline claims replicate on a different recurrent architecture; a genuinely non-recurrent-*family* architecture (e.g. LSTM's dual state, or a state-space controller) and re-running the comparator/negative-control suite on the RNN remain.
 - [ ] Replicate supported claims on a second benchmark with different surface task structure.
 - [ ] Re-run comparator and negative-control suites on the replicated systems.
-- [~] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches. The paired scaffold fixes one target identity and initial feature bundle across binding and all four access-status transitions (`audits/stage8_integrated_content_scaffold.json`; 2,048 groups / 8,192 cases, all seven invariant gates pass). Whole-state swaps are multi-seed robust (`audits/stage8_integrated_content_multiseed.json`; all ten gates pass in all three runs). The stricter disjoint-split directional audit also passes all ten gates (`audits/stage8_integrated_content_directional.json`): a value direction fitted only on training states moves held-out binding and access jointly at `1.00`, with `1.00` non-value stability, versus `0.00` for both a permuted-label direction and split-state access. Thus cross-validated directional overlap is observed inside the assay, but the shared architecture is imposed. Next: repeat the directional result across seeds, then remove forced sharing and test whether joint training produces overlap relative to the matched split null.
+- [~] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches. The paired scaffold fixes one target identity and initial feature bundle across binding and all four access-status transitions (`audits/stage8_integrated_content_scaffold.json`; 2,048 groups / 8,192 cases, all seven invariant gates pass). Whole-state swaps are multi-seed robust (`audits/stage8_integrated_content_multiseed.json`). The stricter disjoint-split directional audit also passes all ten gates in all three fresh seed runs (`audits/stage8_integrated_content_directional_multiseed.json`): every minimum task, donor-follow, non-value stability, permuted-null advantage, and split-null advantage metric is `1.00`. Thus cross-validated directional overlap is seed-robust inside the assay, but the shared architecture is imposed. Next: remove forced sharing and test whether joint training produces overlap relative to the matched split null.
 
 ## Stage 8 Gate
 
@@ -285,13 +285,13 @@ GitHub issue: [#8](https://github.com/macterra/attcon/issues/8)
 
 Do not claim Stage 8 support until all of the following are true. **Current status: not met.**
 The executable artifact audit (`audits/stage8_convergence_current.json`) currently records three
-passing gates, three partial gates, and two failures. The failures are same-content causal
-convergence across families and genuinely different-benchmark replication. Branch C/D surface
-variants strengthen their individual claims but retain the same synthetic task structures; Branch
-E/F engineering results are explicitly excluded from theoretical-family counts. The next decisive
-experiment is one integrated benchmark/controller where the same content identity participates in
-binding, counterfactual access, and perturbation tests, followed by replication on a structurally
-different task.
+passing gates, four partial gates, and one failure. Same-content causal convergence advances from
+fail to partial: the integrated directional assay is disjoint-split and seed-robust, but the shared
+bottleneck is imposed rather than independently emerging across qualifying families. Genuinely
+different-benchmark replication remains failed. Branch C/D surface variants retain their original
+synthetic task structures, and Branch E/F engineering results are explicitly excluded from
+theoretical-family counts. The next decisive experiment removes forced sharing in a neutral jointly
+trained controller, followed by replication on a structurally different task.
 The methodology now produces one of each partition type (a robust access/report family and a
 non-reportability family) and comparators fail as intended. Both families' headline claims now
 also replicate on a second (ungated-RNN) controller architecture — so cross-*architecture*

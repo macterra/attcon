@@ -492,10 +492,20 @@ class AttentionControlTests(unittest.TestCase):
     def test_stage8_convergence_audit_keeps_open_blockers_explicit(self) -> None:
         result = build_stage8_convergence_audit()
         self.assertFalse(result["stage8_supported"])
-        self.assertEqual(result["gate_counts"], {"pass": 3, "partial": 3, "fail": 2})
+        self.assertEqual(result["gate_counts"], {"pass": 3, "partial": 4, "fail": 1})
         self.assertEqual(
             result["gates"]["same_internal_content_across_families"]["status"],
-            "fail",
+            "partial",
+        )
+        self.assertTrue(
+            result["evidence"]["integrated_same_content_assay"][
+                "multi_seed_directional_engineering_support"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "stage8_same_content_gate_satisfied"
+            ]
         )
         self.assertEqual(
             result["gates"]["different_benchmark_replication"]["status"],

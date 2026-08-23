@@ -22,6 +22,9 @@ def build_stage8_convergence_audit() -> dict:
     branch_d_seeds = _load("branch_d_access_multiseed.json")
     branch_e = _load("branch_e_higher_order_pilot.json")
     branch_f = _load("branch_f_broadcast_multiseed.json")
+    integrated_directional = _load(
+        "stage8_integrated_content_directional_multiseed.json"
+    )
 
     rnn_perturbation = next(
         checkpoint
@@ -75,6 +78,18 @@ def build_stage8_convergence_audit() -> dict:
             ],
             "branch_f_theoretical_support": branch_f["branch_f_supported"],
         },
+        "integrated_same_content_assay": {
+            "multi_seed_directional_engineering_support": integrated_directional[
+                "multi_seed_directional_engineering_support"
+            ],
+            "minimum_directional_metrics": integrated_directional["summary"][
+                "minimum_metrics"
+            ],
+            "stage8_same_content_gate_satisfied": integrated_directional[
+                "stage8_same_content_gate_satisfied"
+            ],
+            "support_boundary": integrated_directional["support_boundary"],
+        },
         "comparators": {
             "base_comparators_fail_as_intended": full[
                 "comparators_failed_as_intended"
@@ -108,10 +123,12 @@ def build_stage8_convergence_audit() -> dict:
             ),
         },
         "same_internal_content_across_families": {
-            "status": "fail",
+            "status": "partial",
             "reason": (
-                "No artifact tracks one content identity through two families and shows "
-                "cross-validated causal overlap. Branch C/D use separate synthetic systems."
+                "The integrated assay tracks one identity through binding and access and shows "
+                "seed-robust, disjoint-split directional causal overlap against permuted and "
+                "split-state nulls. It remains an architecturally imposed shared bottleneck, "
+                "not overlap emerging independently across qualifying theory families."
             ),
         },
         "comparators_fail_as_predicted": {
@@ -153,13 +170,14 @@ def build_stage8_convergence_audit() -> dict:
             gate["status"] == "pass" for gate in gates.values()
         ),
         "verdict": (
-            "not_met: three gates pass, three are partial, and two fail. The decisive blockers "
-            "are same-content causal convergence and a genuinely different benchmark."
+            "not_met: three gates pass, four are partial, and one fails. Same-content causal "
+            "overlap now has a seed-robust engineered assay, but qualifying independent-family "
+            "overlap and a genuinely different benchmark remain open."
         ),
         "next_decisive_experiment": (
-            "Build one benchmark/controller in which the same content identity participates in "
-            "binding, counterfactual access, and perturbation tests; pre-register a causal overlap "
-            "metric and replicate the package on a structurally different task."
+            "Remove forced state sharing and test whether a neutral jointly trained controller "
+            "develops the same directional overlap beyond a matched split-state null, then "
+            "replicate the package on a structurally different task."
         ),
     }
 
