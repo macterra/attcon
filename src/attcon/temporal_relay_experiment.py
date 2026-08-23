@@ -207,6 +207,70 @@ class RelationalTemporalRelayModel(TemporalRelayModel):
         return binding_state, access_state
 
 
+class RelationalTemporalTransformerModel(TemporalRelayModel):
+    """Resolve the relational event stream with position-aware self-attention."""
+
+    def __init__(
+        self,
+        config: TemporalRelayConfig,
+        hidden_size: int = 32,
+        *,
+        mode: Literal["shared", "split", "pooled"] = "shared",
+        num_heads: int = 4,
+        num_layers: int = 2,
+    ) -> None:
+        if hidden_size % num_heads:
+            raise ValueError("hidden_size must be divisible by num_heads")
+        super().__init__(config, hidden_size, mode=mode)
+        del self.binding_memory
+        del self.access_memory
+        relational_dim = config.operation_vocab_size + config.payload_vocab_size + 1
+        self.stream_projection = nn.Linear(relational_dim, hidden_size)
+        self.position_embedding = nn.Parameter(
+            torch.zeros(config.stream_length + 1, hidden_size)
+        )
+        self.binding_cls = nn.Parameter(torch.zeros(1, 1, hidden_size))
+        self.access_cls = nn.Parameter(torch.zeros(1, 1, hidden_size))
+
+        def encoder() -> nn.TransformerEncoder:
+            layer = nn.TransformerEncoderLayer(
+                d_model=hidden_size,
+                nhead=num_heads,
+                dim_feedforward=hidden_size * 2,
+                dropout=0.0,
+                activation="gelu",
+                batch_first=True,
+            )
+            return nn.TransformerEncoder(layer, num_layers=num_layers)
+
+        self.binding_transformer = encoder()
+        self.access_transformer = encoder()
+
+    def initial_states(
+        self, events: torch.Tensor, query: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        entity_width = self.config.entity_vocab_size
+        matches = torch.einsum("bte,be->bt", events[:, :, :entity_width], query)
+        content = events[:, :, entity_width:] * matches[:, :, None]
+        stream = torch.cat((content, matches[:, :, None]), dim=-1)
+        if self.mode == "pooled":
+            stream = stream.mean(dim=1, keepdim=True).expand_as(stream)
+        projected = self.stream_projection(stream)
+        batch_size = len(events)
+        binding_tokens = torch.cat(
+            (self.binding_cls.expand(batch_size, -1, -1), projected), dim=1
+        ) + self.position_embedding[None]
+        access_tokens = torch.cat(
+            (self.access_cls.expand(batch_size, -1, -1), projected), dim=1
+        ) + self.position_embedding[None]
+        binding_state = self.binding_transformer(binding_tokens)[:, 0]
+        access_state = self.access_transformer(access_tokens)[:, 0]
+        if self.mode in {"shared", "pooled"}:
+            shared = (binding_state + access_state) / 2.0
+            return shared, shared
+        return binding_state, access_state
+
+
 def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 

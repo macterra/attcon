@@ -98,6 +98,7 @@ from attcon.temporal_relay import (
 )
 from attcon.temporal_relay_experiment import (
     RelationalTemporalRelayModel,
+    RelationalTemporalTransformerModel,
     TemporalRelayModel,
     parameter_count as temporal_parameter_count,
     tensorize_temporal_relay_examples,
@@ -309,6 +310,16 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(
             temporal_parameter_count(relational),
             temporal_parameter_count(relational_control),
+        )
+        transformer = RelationalTemporalTransformerModel(
+            config, hidden_size=16, mode="shared"
+        )
+        transformer_control = RelationalTemporalTransformerModel(
+            config, hidden_size=16, mode="pooled"
+        )
+        self.assertEqual(
+            temporal_parameter_count(transformer),
+            temporal_parameter_count(transformer_control),
         )
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:

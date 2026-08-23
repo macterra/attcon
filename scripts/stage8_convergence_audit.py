@@ -27,6 +27,7 @@ def build_stage8_convergence_audit() -> dict:
     )
     task_induced_routing = _load("stage8_task_induced_routing_correction.json")
     temporal_relay = _load("stage8_temporal_relay_multiseed.json")
+    temporal_transformer = _load("stage8_temporal_relay_transformer_pilot.json")
 
     rnn_perturbation = next(
         checkpoint
@@ -131,6 +132,10 @@ def build_stage8_convergence_audit() -> dict:
                 "different_benchmark_replication_established"
             ],
             "support_boundary": temporal_relay["support_boundary"],
+            "transformer_single_seed_gates_pass": temporal_transformer[
+                "all_pilot_gates_pass"
+            ],
+            "transformer_observed": temporal_transformer["observed"],
         },
     }
     gates = {
@@ -170,8 +175,9 @@ def build_stage8_convergence_audit() -> dict:
         "different_architecture_replication": {
             "status": "partial",
             "reason": (
-                "Six of seven claims replicate from GRU to ungated RNN, but these remain closely "
-                "related recurrent architectures and cue-switch adaptation drops."
+                "Six of seven base claims replicate from GRU to ungated RNN. On temporal relay, "
+                "the full engineered assay also transfers from relational GRU to a transformer, "
+                "but that transformer result is single-seed and cue-switch adaptation still drops."
             ),
         },
         "different_benchmark_replication": {

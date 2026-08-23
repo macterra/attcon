@@ -19,6 +19,7 @@ from attcon.temporal_relay import TemporalRelayConfig, generate_temporal_relay_e
 from attcon.temporal_relay_experiment import (
     TemporalRelayModel,
     RelationalTemporalRelayModel,
+    RelationalTemporalTransformerModel,
     evaluate_temporal_relay_model,
     parameter_count,
     payload_direction_metrics,
@@ -43,7 +44,9 @@ THRESHOLDS = {
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--architecture", choices=("generic", "relational"), default="generic"
+        "--architecture",
+        choices=("generic", "relational", "relational_transformer"),
+        default="generic",
     )
     parser.add_argument("--episodes", type=int, default=2048)
     parser.add_argument("--data-seed", type=int, default=1103)
@@ -62,14 +65,15 @@ def main() -> None:
         [example for example in examples if example.split == "heldout_event_bundle"], config
     )
     runs = {}
-    model_class = (
-        RelationalTemporalRelayModel
-        if args.architecture == "relational"
-        else TemporalRelayModel
-    )
+    model_class = {
+        "generic": TemporalRelayModel,
+        "relational": RelationalTemporalRelayModel,
+        "relational_transformer": RelationalTemporalTransformerModel,
+    }[args.architecture]
+    hidden_size = 32 if args.architecture == "relational_transformer" else 64
     for mode in ("shared", "split", "pooled"):
         torch.manual_seed(args.model_seed)
-        model = model_class(config, 64, mode=mode)
+        model = model_class(config, hidden_size, mode=mode)
         losses = train_temporal_relay_model(
             model, train, seed=args.model_seed, epochs=args.epochs
         )
@@ -107,7 +111,7 @@ def main() -> None:
     result = {
         "audit": (
             "stage8_temporal_relay_relational_pilot"
-            if args.architecture == "relational"
+            if args.architecture in {"relational", "relational_transformer"}
             else "stage8_temporal_relay_pilot"
         ),
         "status": "different_benchmark_engineering_support"
