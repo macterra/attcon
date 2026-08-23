@@ -595,9 +595,9 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent-access/no-cache pilot, causal cache/observation interventions, and a three-run multi-seed audit
-- positive evidence: yes and seed-robust for relational access; no for an unstructured GRU
-- supported: yes, bounded and seed-robust; not robust across architectures or task variants
+- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent pilot, causal interventions, three-run multi-seed audit, and a set-transformer replication across two surface variants
+- positive evidence: yes across seeds, relational architectures, and surface variants; no for an unstructured GRU
+- supported: yes, strong bounded; not spontaneous in the original controller or robust for Stage 8
 
 Implementation note:
 
@@ -638,8 +638,18 @@ for robust support.
 The three-run audit (`audits/branch_d_access_multiseed.json`) uses fresh data/model-seed pairs and a
 reduced but fixed 8,192-case/25-epoch budget. Every gate passes in every run. Minimum held-out
 accuracy, memory/tension advantage over no-cache, cache-erasure accuracy drop, and conflicting-
-observation cache retention are all `1.00`. This makes the bounded result seed-robust. An alternate
-relational architecture and a different surface-task variant remain the robustness blockers.
+observation cache retention are all `1.00`. This makes the bounded result seed-robust.
+
+The cross-model audit (`audits/branch_d_access_cross_model.json`) replaces the GRU with a
+permutation-equivariant event-set transformer and repeats both the original task and a surface-v2
+task with different query/answer semantics, item count, key and value vocabularies, holdout ratio,
+and seeds. Exactly parameter-matched no-cache controls are retained. Both variants pass every gate;
+minimum held-out accuracy, memory/tension advantage, cache-erasure drop, and observation-change
+retention are `1.00`. This establishes strong bounded evidence across seeds, architectures, and two
+surface variants. The important remaining falsifier is that both successful families use explicit
+relational key addressing. The result therefore shows flexible access once that inductive bias is
+provided, not spontaneous access in the original attention controller, and is not robust Stage 8
+evidence.
 
 Consciousness-evidence role:
 

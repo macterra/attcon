@@ -18,6 +18,7 @@ import attcon.eval as eval_module
 from attcon.access_experiment import (
     RelationalRecurrentAccessModel,
     RecurrentAccessModel,
+    SetTransformerAccessModel,
     access_intervention_metrics,
     evaluate_access_model,
     parameter_count as access_parameter_count,
@@ -184,6 +185,17 @@ class AttentionControlTests(unittest.TestCase):
         )
         relational_eval = evaluate_access_model(relational, tensors)
         self.assertEqual(relational_eval["count"], 32)
+        set_access = SetTransformerAccessModel(
+            config, hidden_size=16, fusion_size=32, num_heads=4
+        )
+        set_no_cache = SetTransformerAccessModel(
+            config, hidden_size=16, fusion_size=32, num_heads=4
+        )
+        self.assertEqual(
+            access_parameter_count(set_access), access_parameter_count(set_no_cache)
+        )
+        set_eval = evaluate_access_model(set_access, tensors)
+        self.assertEqual(set_eval["count"], 32)
 
     def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
         config = BindingConfig()
