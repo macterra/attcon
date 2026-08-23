@@ -1,0 +1,130 @@
+{
+  "all_engineering_gates_pass": true,
+  "audit": "branch_e_higher_order_pilot",
+  "branch_e_supported": false,
+  "capacity_matched_status_probes": {
+    "first_order": {
+      "heldout_accuracy": 0.0,
+      "heldout_by_status_accuracy": {
+        "fresh_current": 0.0,
+        "fresh_memory": 0.0,
+        "inferred_content": 0.0,
+        "stale_access_lure": 0.0,
+        "unavailable": 0.0,
+        "wrong_access_lure": 0.0
+      },
+      "train_accuracy": 0.20819035172462463,
+      "trainable_parameter_count": 4550
+    },
+    "latent": {
+      "heldout_accuracy": 1.0,
+      "heldout_by_status_accuracy": {
+        "fresh_current": 1.0,
+        "fresh_memory": 1.0,
+        "inferred_content": 1.0,
+        "stale_access_lure": 1.0,
+        "unavailable": 1.0,
+        "wrong_access_lure": 1.0
+      },
+      "train_accuracy": 1.0,
+      "trainable_parameter_count": 4550
+    },
+    "observation_only": {
+      "heldout_accuracy": 0.30211204290390015,
+      "heldout_by_status_accuracy": {
+        "fresh_current": 0.5102421045303345,
+        "fresh_memory": 0.11926605552434921,
+        "inferred_content": 0.2444852888584137,
+        "stale_access_lure": 0.2794676721096039,
+        "unavailable": 0.18166090548038483,
+        "wrong_access_lure": 0.4897579252719879
+      },
+      "train_accuracy": 0.3411118686199188,
+      "trainable_parameter_count": 4550
+    }
+  },
+  "config": {
+    "batch_size": 256,
+    "count": 16380,
+    "data_seed": 13,
+    "device": "cpu",
+    "epochs": 40,
+    "heldout_count": 3267,
+    "heldout_modulus": 5,
+    "hidden_size": 64,
+    "key_vocab_size": 16,
+    "learning_rate": 0.003,
+    "model_seed": 83,
+    "probe_steps": 300,
+    "train_count": 13113,
+    "value_vocab_size": 10
+  },
+  "gates": {
+    "confidence_increase_rate": true,
+    "correction_turns_off_rate": true,
+    "latent_advantage_over_first_order": true,
+    "latent_advantage_over_observation": true,
+    "latent_status_accuracy": true,
+    "minimum_behavior_accuracy": true,
+    "newly_accessible_report_content_accuracy": true,
+    "reinspection_turns_off_rate": true
+  },
+  "observed_gate_metrics": {
+    "confidence_increase_rate": 1.0,
+    "correction_turns_off_rate": 1.0,
+    "latent_advantage_over_first_order": 1.0,
+    "latent_advantage_over_observation": 0.6978879570960999,
+    "latent_status_accuracy": 1.0,
+    "minimum_behavior_accuracy": 1.0,
+    "newly_accessible_report_content_accuracy": 1.0,
+    "reinspection_turns_off_rate": 1.0
+  },
+  "paired_wrong_access_intervention": {
+    "confidence_increase_rate": 1.0,
+    "correction_turns_off_rate": 1.0,
+    "first_order_content_held_fixed_rate": 1.0,
+    "mean_hidden_swap_l2": 8.636626243591309,
+    "newly_accessible_report_content_accuracy": 1.0,
+    "pair_count": 537.0,
+    "reinspection_turns_off_rate": 1.0
+  },
+  "predeclared_thresholds": {
+    "confidence_increase_rate": 0.85,
+    "correction_turns_off_rate": 0.85,
+    "latent_advantage_over_first_order": 0.45,
+    "latent_advantage_over_observation": 0.35,
+    "latent_status_accuracy": 0.85,
+    "minimum_behavior_accuracy": 0.9,
+    "newly_accessible_report_content_accuracy": 0.85,
+    "reinspection_turns_off_rate": 0.85
+  },
+  "status": "engineering_support",
+  "supervision": {
+    "behavior_targets": [
+      "report answer",
+      "confidence band",
+      "reinspection decision",
+      "correction decision"
+    ],
+    "engineering_support_only": true,
+    "exact_six_way_status_labels_used_for_behavior_model": false,
+    "status_labels_used_only_by_post_hoc_frozen_latent_probes": true
+  },
+  "support_boundary": "The exact six-way labels are withheld from representation learning, but confidence, reinspection, and correction targets directly engineer access-sensitive behavior. A pass is engineering support only; spontaneous higher-order representation must emerge under objectives that do not reward these higher-order targets.",
+  "training": {
+    "final_epoch_loss": 0.00040272973996271686,
+    "heldout_behavior": {
+      "confidence_accuracy": 1.0,
+      "correction_accuracy": 1.0,
+      "reinspect_accuracy": 1.0,
+      "report_accuracy": 1.0
+    },
+    "initial_epoch_loss": 2.744701388143506,
+    "train_behavior": {
+      "confidence_accuracy": 1.0,
+      "correction_accuracy": 1.0,
+      "reinspect_accuracy": 1.0,
+      "report_accuracy": 1.0
+    }
+  }
+}

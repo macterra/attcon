@@ -735,8 +735,8 @@ Branch E should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold only (`attcon.higher_order`); learned higher-order-state experiment not yet implemented
-- positive evidence: no
+- implemented: benchmark scaffold plus a shared-latent behavior model, capacity-matched frozen probes, and paired wrong-access interventions
+- positive evidence: yes, engineering support under direct access-sensitive behavior objectives
 - supported: no
 
 Implementation note:
@@ -751,6 +751,22 @@ is `0.167`; adding the current observation raises the oracle ceiling only to `0.
 experiment must learn a candidate higher-order state without supervising these exact evaluation
 labels, beat both baselines, and survive interventions that preserve first-order content. The
 scaffold alone is not positive Branch E evidence.
+
+The first trained pilot (`audits/branch_e_higher_order_pilot.json`) never uses the exact six-way
+status labels to learn the representation. Instead, a shared latent is trained through report
+answer, confidence band, reinspection, and correction outputs; status labels are used only by
+post-hoc frozen-state probes. On 3,267 held-out content/status conjunctions, the capacity-matched
+latent probe reaches `1.00` status accuracy, versus `0.00` for first-order content and `0.302` for
+observation-only features; every probe has 4,550 trainable parameters. In 537 fresh-current/wrong-
+access pairs where content and current observation are identical, swapping only the candidate latent
+state raises confidence, turns off reinspection and correction, and yields the newly accessible
+content at `1.00`. All predeclared engineering gates pass.
+
+This is engineering support, not Branch E theoretical support. Confidence, reinspection, and
+correction directly reward the access distinctions the latent later exposes. The decisive next test
+is whether comparable higher-order structure and causal behavior emerge under objectives that do
+not supervise those access-sensitive targets, with report templates and observation-only systems
+retained as matched controls.
 
 Consciousness-evidence role:
 
@@ -1102,7 +1118,7 @@ Branch builds:
 - [x] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [x] add Branch D counterfactual-access experiments for non-current but query-available contents (bounded relational support; unstructured GRU fails as intended)
 - [x] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
-- [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
+- [~] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state (engineering gates pass; unsupervised/task-only emergence remains)
 - [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
 - [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests
 - [ ] add perturbational-complexity diagnostics over controller and self-model state

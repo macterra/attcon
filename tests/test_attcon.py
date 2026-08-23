@@ -48,6 +48,12 @@ from attcon.higher_order import (
     validate_counterbalance_group,
     validate_higher_order_example,
 )
+from attcon.higher_order_experiment import (
+    HigherOrderBehaviorModel,
+    behavior_metrics as higher_order_behavior_metrics,
+    paired_wrong_access_intervention,
+    tensorize_higher_order_examples,
+)
 from attcon.counterfactual_access import (
     CounterfactualAccessConfig,
     TARGET_STATUSES,
@@ -182,6 +188,26 @@ class AttentionControlTests(unittest.TestCase):
             {example.split for example in examples},
             {"train", "heldout_content_status"},
         )
+
+    def test_branch_e_behavior_model_exposes_shared_latent_and_paired_intervention(self) -> None:
+        config = HigherOrderConfig()
+        examples = generate_higher_order_examples(120, config=config, seed=43)
+        tensors = tensorize_higher_order_examples(examples, config)
+        model = HigherOrderBehaviorModel(config, hidden_size=16)
+        prediction = model(tensors.model_input)
+        self.assertEqual(prediction.hidden.shape, (120, 16))
+        self.assertEqual(
+            set(higher_order_behavior_metrics(model, tensors)),
+            {
+                "report_accuracy",
+                "confidence_accuracy",
+                "reinspect_accuracy",
+                "correction_accuracy",
+            },
+        )
+        interventions = paired_wrong_access_intervention(model, examples, config)
+        self.assertEqual(interventions["first_order_content_held_fixed_rate"], 1.0)
+        self.assertGreater(interventions["pair_count"], 0)
 
     def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
         config = CounterfactualAccessConfig()
