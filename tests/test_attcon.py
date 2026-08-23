@@ -79,6 +79,7 @@ from attcon.integrated_content_experiment import (
     IntegratedContentModel,
     parameter_count as integrated_parameter_count,
     tensorize_integrated_content_examples,
+    value_direction_intervention_metrics,
 )
 from attcon.counterfactual_access import (
     CounterfactualAccessConfig,
@@ -211,6 +212,23 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(
             torch.equal(split_output.access_initial_state, split_access)
         )
+
+    def test_stage8_directional_intervention_exposes_permuted_null(self) -> None:
+        config = IntegratedContentConfig()
+        examples = generate_integrated_content_examples(128, config=config, seed=919)
+        tensors = tensorize_integrated_content_examples(examples, config)
+        model = IntegratedContentModel(config, hidden_size=16, mode="shared")
+        real = value_direction_intervention_metrics(model, tensors, tensors)
+        null = value_direction_intervention_metrics(
+            model, tensors, tensors, permute_fit_labels=True, seed=929
+        )
+        for result in (real, null):
+            self.assertEqual(result["alpha"], 1.0)
+            for key, value in result.items():
+                if key.endswith("rate") or key.endswith("stability"):
+                    self.assertGreaterEqual(value, 0.0)
+                    self.assertLessEqual(value, 1.0)
+        self.assertGreater(real["mean_direction_norm"], null["mean_direction_norm"])
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)

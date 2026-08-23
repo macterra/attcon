@@ -357,3 +357,88 @@ def binding_state_swap_metrics(
         .mean()
         .item(),
     }
+
+
+@torch.no_grad()
+def value_direction_intervention_metrics(
+    model: IntegratedContentModel,
+    fit_data: IntegratedContentTensors,
+    test_data: IntegratedContentTensors,
+    *,
+    alpha: float = 1.0,
+    permute_fit_labels: bool = False,
+    seed: int = 883,
+    device: str = "cpu",
+) -> dict[str, float]:
+    """Fit value centroids on one split and intervene along them on another.
+
+    The intervention changes only the fitted value-content direction. Location and feature
+    type are held at the receiver labels, and access status is unchanged. A permuted-label
+    call provides an identically computed null direction.
+    """
+
+    model.eval()
+    fit = fit_data.to(device)
+    test = test_data.to(device)
+    fit_states, _ = model.initial_states(
+        fit.initial_features, fit.content_ids, fit.query
+    )
+    fit_labels = fit.value.clone()
+    if permute_fit_labels:
+        generator = torch.Generator(device="cpu").manual_seed(seed)
+        order = torch.randperm(len(fit_labels), generator=generator).to(device)
+        fit_labels = fit_labels[order]
+    centroids = []
+    for value in range(model.config.value_vocab_size):
+        mask = fit_labels.eq(value)
+        if not mask.any():
+            raise ValueError(f"fit split has no examples for value {value}")
+        centroids.append(fit_states[mask].mean(dim=0))
+    centroid_matrix = torch.stack(centroids)
+
+    test_states, _ = model.initial_states(
+        test.initial_features, test.content_ids, test.query
+    )
+    donor_values = (test.value + 1) % model.config.value_vocab_size
+    directions = centroid_matrix[donor_values] - centroid_matrix[test.value]
+    edited_states = test_states + float(alpha) * directions
+    edited = model(
+        test.initial_features,
+        test.content_ids,
+        test.query,
+        test.transition,
+        binding_state_override=edited_states,
+    )
+    binding_value = edited.value.argmax(dim=-1)
+    access_value = edited.access_answer.argmax(dim=-1)
+    location_stable = edited.location.argmax(dim=-1).eq(test.location)
+    type_stable = edited.feature_type.argmax(dim=-1).eq(test.feature_type)
+    binding_follows = binding_value.eq(donor_values)
+    accessible = ~test.status.eq(0)
+    access_follows = access_value.eq(donor_values)
+    unavailable_retains_unknown = access_value[test.status.eq(0)].eq(
+        model.config.value_vocab_size
+    )
+    return {
+        "binding_value_donor_follow_rate": binding_follows.float().mean().item(),
+        "binding_other_fields_stability": (location_stable & type_stable)
+        .float()
+        .mean()
+        .item(),
+        "accessible_access_donor_follow_rate": access_follows[accessible]
+        .float()
+        .mean()
+        .item(),
+        "accessible_binding_access_joint_donor_follow_rate": (
+            binding_follows & access_follows
+        )[accessible]
+        .float()
+        .mean()
+        .item(),
+        "unavailable_unknown_retention_rate": unavailable_retains_unknown
+        .float()
+        .mean()
+        .item(),
+        "mean_direction_norm": directions.norm(dim=-1).mean().item(),
+        "alpha": float(alpha),
+    }
