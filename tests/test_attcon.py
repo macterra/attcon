@@ -68,6 +68,13 @@ from attcon.higher_order_experiment import (
     paired_wrong_access_intervention,
     tensorize_higher_order_examples,
 )
+from attcon.integrated_content import (
+    IntegratedContentConfig,
+    TARGET_STATUSES as INTEGRATED_TARGET_STATUSES,
+    generate_integrated_content_examples,
+    validate_integrated_content_example,
+    validate_paired_content_group,
+)
 from attcon.counterfactual_access import (
     CounterfactualAccessConfig,
     TARGET_STATUSES,
@@ -116,6 +123,7 @@ from attcon.train import train_experiment
 from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
 from scripts.stage8_convergence_audit import build_stage8_convergence_audit
+from scripts.stage8_integrated_content_scaffold import build_scaffold_audit
 import scripts.stage7_external_llm_audit as external_llm_audit
 from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
@@ -134,6 +142,31 @@ class AttentionControlTests(unittest.TestCase):
             pos = target_positions.item()
             self.assertEqual(pos, batch.target_pos[idx].item())
             self.assertEqual(batch.digits[idx, pos].item(), batch.target[idx].item())
+
+    def test_stage8_integrated_cases_preserve_identity_across_statuses(self) -> None:
+        config = IntegratedContentConfig(heldout_modulus=3)
+        examples = generate_integrated_content_examples(64, config=config, seed=817)
+        self.assertEqual(len(examples), 64 * len(INTEGRATED_TARGET_STATUSES))
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_integrated_content_example(example), [])
+            self.assertEqual(
+                example.binding_cue_content_id,
+                example.switched_query_content_id,
+            )
+            groups.setdefault(example.pair_group_id, []).append(example)
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_bundle"},
+        )
+        for group in groups.values():
+            self.assertEqual(validate_paired_content_group(group), [])
+
+    def test_stage8_integrated_scaffold_does_not_claim_causal_overlap(self) -> None:
+        audit = build_scaffold_audit(64, 819)
+        self.assertTrue(audit["all_scaffold_gates_pass"])
+        self.assertFalse(audit["same_content_causal_overlap_established"])
+        self.assertEqual(audit["counts"]["pair_groups"], 64)
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)
