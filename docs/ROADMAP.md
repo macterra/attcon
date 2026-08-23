@@ -514,9 +514,9 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold plus a trained shared-selection pilot and causal feature interventions
-- positive evidence: yes, on one synthetic surface-attribute benchmark
-- supported: no
+- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, and a frozen-gate surface-attribute replication
+- positive evidence: yes, across two synthetic surface-attribute variants
+- supported: yes, bounded; not robust
 
 Implementation note:
 
@@ -533,8 +533,17 @@ soft object selection and compares it with an object-identity-destroying pooled 
 joint accuracy and `1.00` false-binding-lure rejection; the independent-feature route reaches
 `0.015` and `0.511`. Changing the target object's type changes that reported type while preserving
 the other three fields, and changing a non-target type leaves all four reports invariant; every
-predeclared pilot gate passes. This is positive single-benchmark evidence, not full Branch C support.
-The remaining predeclared blocker is replication with different surface attributes.
+predeclared pilot gate passes.
+
+The frozen-gate replication (`audits/branch_c_binding_surface_variant.json`) changes the semantics to
+tile position, geometric shape, texture, color key, and illumination; changes every non-binary
+vocabulary size plus the object count; and uses new data and model seeds. On 4,162 held-out
+conjunctions, the integrated route again reaches `1.00` joint accuracy, lure rejection, and all
+intervention scores. Its 24%-larger pooled baseline reaches `0.008` joint accuracy and `0.512` lure
+rejection. The aggregate audit (`audits/branch_c_binding_replication.json`) confirms identical
+thresholds and different schemas/cardinalities, so Branch C now has bounded support under the
+predeclared threshold. It is not robust support: the shared binding bottleneck is imposed by the
+architecture, and multiple training seeds plus replication outside this selector family remain.
 
 Consciousness-evidence role:
 
@@ -1012,7 +1021,7 @@ Still open (blocked or larger):
 Branch builds:
 
 - [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
-- [~] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (single-benchmark pilot passes; surface-attribute replication remains)
+- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (bounded support across two surface variants; multi-seed and cross-model robustness remain)
 - [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E

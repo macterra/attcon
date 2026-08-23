@@ -72,6 +72,7 @@ from attcon.train import train_experiment
 from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
 import scripts.stage7_external_llm_audit as external_llm_audit
+from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
 
 class AttentionControlTests(unittest.TestCase):
@@ -138,6 +139,23 @@ class AttentionControlTests(unittest.TestCase):
                 "target_other_field_joint_stability",
                 "non_target_all_field_invariance",
                 "target_selection_stability",
+            },
+        )
+
+    def test_branch_c_surface_replication_changes_schema_but_freezes_gates(self) -> None:
+        original = VARIANTS["original"]
+        replication = VARIANTS["surface_v2"]
+        self.assertNotEqual(original["surface_schema"], replication["surface_schema"])
+        self.assertNotEqual(original["config"], replication["config"])
+        self.assertEqual(
+            BINDING_THRESHOLDS,
+            {
+                "integrated_heldout_joint_accuracy": 0.75,
+                "heldout_joint_advantage": 0.25,
+                "lure_rejection_advantage": 0.15,
+                "target_type_follow_rate": 0.75,
+                "target_other_field_joint_stability": 0.90,
+                "non_target_all_field_invariance": 0.90,
             },
         )
 

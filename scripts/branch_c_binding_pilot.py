@@ -35,9 +35,40 @@ THRESHOLDS = {
     "non_target_all_field_invariance": 0.90,
 }
 
+VARIANTS = {
+    "original": {
+        "config": BindingConfig(),
+        "surface_schema": {
+            "location": "grid_cell",
+            "visible_type": "visual_category",
+            "digit": "glyph_digit",
+            "cue_tag": "cue_category",
+            "inspected": "inspection_status",
+        },
+    },
+    "surface_v2": {
+        "config": BindingConfig(
+            grid_size=4,
+            num_objects=10,
+            num_visible_types=6,
+            digit_vocab_size=7,
+            num_cues=5,
+            heldout_modulus=4,
+        ),
+        "surface_schema": {
+            "location": "tile_slot",
+            "visible_type": "geometric_shape",
+            "digit": "texture_pattern",
+            "cue_tag": "color_key",
+            "inspected": "illumination_flag",
+        },
+    },
+}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--variant", choices=tuple(VARIANTS), default="original")
     parser.add_argument("--count", type=int, default=16384)
     parser.add_argument("--data-seed", type=int, default=7)
     parser.add_argument("--model-seed", type=int, default=31)
@@ -49,7 +80,8 @@ def main() -> None:
     parser.add_argument("--out", default="audits/branch_c_binding_pilot.json")
     args = parser.parse_args()
 
-    config = BindingConfig()
+    variant = VARIANTS[args.variant]
+    config = variant["config"]
     examples = generate_binding_examples(args.count, config=config, seed=args.data_seed)
     train_examples = [example for example in examples if example.split == "train"]
     heldout_examples = [
@@ -102,6 +134,8 @@ def main() -> None:
     }
     result = {
         "audit": "branch_c_binding_pilot",
+        "variant": args.variant,
+        "surface_schema": variant["surface_schema"],
         "status": "supported_pilot" if all(gates.values()) else "unsupported_pilot",
         "scope": (
             "single synthetic surface-attribute benchmark; a second variant is required "
