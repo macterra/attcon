@@ -172,6 +172,41 @@ class TemporalRelayModel(nn.Module):
         )
 
 
+class RelationalTemporalRelayModel(TemporalRelayModel):
+    """Remove entity identity after an exact query match, while preserving stream order."""
+
+    def __init__(
+        self,
+        config: TemporalRelayConfig,
+        hidden_size: int = 64,
+        *,
+        mode: Literal["shared", "split", "pooled"] = "shared",
+    ) -> None:
+        super().__init__(config, hidden_size, mode=mode)
+        relational_dim = (
+            config.operation_vocab_size + config.payload_vocab_size + 1
+        )
+        self.binding_memory = nn.GRU(relational_dim, hidden_size, batch_first=True)
+        self.access_memory = nn.GRU(relational_dim, hidden_size, batch_first=True)
+
+    def initial_states(
+        self, events: torch.Tensor, query: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        entity_width = self.config.entity_vocab_size
+        matches = torch.einsum("bte,be->bt", events[:, :, :entity_width], query)
+        content = events[:, :, entity_width:] * matches[:, :, None]
+        stream = torch.cat((content, matches[:, :, None]), dim=-1)
+        if self.mode == "pooled":
+            stream = stream.mean(dim=1, keepdim=True).expand_as(stream)
+        _, binding = self.binding_memory(stream)
+        _, access = self.access_memory(stream)
+        binding_state, access_state = binding[-1], access[-1]
+        if self.mode in {"shared", "pooled"}:
+            shared = (binding_state + access_state) / 2.0
+            return shared, shared
+        return binding_state, access_state
+
+
 def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 

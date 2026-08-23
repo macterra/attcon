@@ -97,6 +97,7 @@ from attcon.temporal_relay import (
     validate_temporal_relay_group,
 )
 from attcon.temporal_relay_experiment import (
+    RelationalTemporalRelayModel,
     TemporalRelayModel,
     parameter_count as temporal_parameter_count,
     tensorize_temporal_relay_examples,
@@ -299,6 +300,16 @@ class AttentionControlTests(unittest.TestCase):
         )
         output = shared(tensors.events, tensors.query, tensors.transition)
         self.assertEqual(output.payload.shape, (len(examples), config.payload_vocab_size))
+        relational = RelationalTemporalRelayModel(
+            config, hidden_size=16, mode="shared"
+        )
+        relational_control = RelationalTemporalRelayModel(
+            config, hidden_size=16, mode="pooled"
+        )
+        self.assertEqual(
+            temporal_parameter_count(relational),
+            temporal_parameter_count(relational_control),
+        )
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)

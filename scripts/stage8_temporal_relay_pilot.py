@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """Train the structurally different temporal-relay replication pilot."""
 
+import argparse
 from dataclasses import asdict
 import json
 from pathlib import Path
@@ -17,6 +18,7 @@ import torch
 from attcon.temporal_relay import TemporalRelayConfig, generate_temporal_relay_examples
 from attcon.temporal_relay_experiment import (
     TemporalRelayModel,
+    RelationalTemporalRelayModel,
     evaluate_temporal_relay_model,
     parameter_count,
     payload_direction_metrics,
@@ -39,8 +41,20 @@ THRESHOLDS = {
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--architecture", choices=("generic", "relational"), default="generic"
+    )
+    parser.add_argument("--episodes", type=int, default=2048)
+    parser.add_argument("--data-seed", type=int, default=1103)
+    parser.add_argument("--model-seed", type=int, default=1123)
+    parser.add_argument("--epochs", type=int, default=35)
+    parser.add_argument("--out", default="audits/stage8_temporal_relay_pilot.json")
+    args = parser.parse_args()
     config = TemporalRelayConfig()
-    examples = generate_temporal_relay_examples(2048, config=config, seed=1103)
+    examples = generate_temporal_relay_examples(
+        args.episodes, config=config, seed=args.data_seed
+    )
     train = tensorize_temporal_relay_examples(
         [example for example in examples if example.split == "train"], config
     )
@@ -48,10 +62,17 @@ def main() -> None:
         [example for example in examples if example.split == "heldout_event_bundle"], config
     )
     runs = {}
+    model_class = (
+        RelationalTemporalRelayModel
+        if args.architecture == "relational"
+        else TemporalRelayModel
+    )
     for mode in ("shared", "split", "pooled"):
-        torch.manual_seed(1123)
-        model = TemporalRelayModel(config, 64, mode=mode)
-        losses = train_temporal_relay_model(model, train, seed=1123)
+        torch.manual_seed(args.model_seed)
+        model = model_class(config, 64, mode=mode)
+        losses = train_temporal_relay_model(
+            model, train, seed=args.model_seed, epochs=args.epochs
+        )
         runs[mode] = {
             "model": model,
             "parameter_count": parameter_count(model),
@@ -84,7 +105,11 @@ def main() -> None:
         {run["parameter_count"] for run in runs.values()}
     ) == 1
     result = {
-        "audit": "stage8_temporal_relay_pilot",
+        "audit": (
+            "stage8_temporal_relay_relational_pilot"
+            if args.architecture == "relational"
+            else "stage8_temporal_relay_pilot"
+        ),
         "status": "different_benchmark_engineering_support"
         if all(gates.values())
         else "different_benchmark_engineering_unsupported",
@@ -92,7 +117,16 @@ def main() -> None:
             "single-seed engineered shared-state replication on a structurally different "
             "ordered event-stream task; Stage 8 support is not claimed"
         ),
-        "config": {**asdict(config), "train_count": len(train), "heldout_count": len(heldout)},
+        "config": {
+            **asdict(config),
+            "architecture": args.architecture,
+            "episode_count": args.episodes,
+            "data_seed": args.data_seed,
+            "model_seed": args.model_seed,
+            "epochs": args.epochs,
+            "train_count": len(train),
+            "heldout_count": len(heldout),
+        },
         "models": {
             mode: {key: value for key, value in run.items() if key != "model"}
             for mode, run in runs.items()
@@ -108,7 +142,7 @@ def main() -> None:
         ),
         "next_experiment": "repeat the frozen temporal-relay gates across fresh seeds",
     }
-    output = ROOT / "audits" / "stage8_temporal_relay_pilot.json"
+    output = ROOT / args.out
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     print(json.dumps(result, indent=2, sort_keys=True))
 
