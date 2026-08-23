@@ -8,8 +8,8 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > audits, negative controls, and comparator suite were re-run on a model that actually does the
 > task: dissociation/Stage 3/Stage 4A/Stage 5/Stage 6A are genuinely supported (Stage 3
 > robustly), Stage 7 is bounded (schema-aware round-trip only; the faithful-latent leg is open —
-> see [Current Focus](#current-focus-latent-only-stage-7-decoder)), Stage 6B is
-> bounded/provisional, and all negative controls + comparators fail as
+> see [Current Focus](#current-focus-latent-only-stage-7-decoder)), Stage 6B has bounded
+> positive evidence but fails its full calibrated support gate, and all negative controls + comparators fail as
 > intended. See `audits/post_rehab_full_eval_tune_prob_035_summary.json` and
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore now genuinely validated,
 > not artifacts. Remaining open work below (Priorities 2-5) is unchanged.
@@ -74,10 +74,11 @@ Remaining sub-steps (the real next work):
   `content_only_joint_accuracy_advantage` remains `0.0`; continuous and feedback-channel diagnostics
   also remain unsupported. The pilot improves visible-type field recovery but not attended digits or
   full content binding.
-- [ ] If it stays negative, treat the external API LLM / VLM path (LLM path now runnable with
-  `gpt-5-mini`; a *powered* support run and the VLM path are still outstanding) as the
-  only remaining route to the strong Stage 7 faithfulness claim, and keep the round-trip reporter as
-  the (clearly labelled) bounded local result.
+- [x] Test the external API LLM / VLM fallback path. Both powered `gpt-5-mini` variants are
+  unsupported on the current v3 interface. The VLM result is especially well controlled: the
+  label-free latent heatmap is `0/8` on all three joint-content families in all three slices, while
+  the explicit symbolic-image upper bound is `8/8` on every joint metric and the entire report.
+  Keep the round-trip reporter as the clearly labelled bounded local result.
 - [x] Smoke-test the external API LLM path on the strict latent-only interface
   (`scripts/stage7_external_llm_audit.py`, `audits/stage7_external_llm_tiny_tune_prob_035.json`).
   The path is now live with `gpt-5-mini`, so API/model access is no longer the immediate blocker.
@@ -189,7 +190,9 @@ Remaining sub-steps (the real next work):
     not robust** — do not claim it as robust Stage 7 support on the strength of v3 alone.
   Net: the earlier "v3 = first strict-positive Stage 7" headline is downgraded to *significant-but-
   seed-fragile* for the strict leg; what actually replicates is the **remembered-content** leg.
-- [ ] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim.
+- [x] Keep the symbolic dump as an upper-bound baseline, not the Stage 7 claim. The powered VLM
+  audit does this explicitly and requires the symbolic-image control to pass before latent support
+  is even eligible.
 
 ## Priority 1: Tighten Existing Claims
 
@@ -243,11 +246,14 @@ GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
   content joint accuracy was `0/12`, `1/12`, and `0/12` across the three slices versus observation-
   only `3/12`, `5/12`, and `1/12`; remembered and full-content joint accuracy were zero throughout.
   Artifact: `audits/stage7_external_llm_powered_content_memory_v3.json`.
-- [ ] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings. (Blocked: vision model.)
-- [ ] Compare VLM reports against scene-only and explicit symbolic-dump baselines.
+- [x] Add a VLM-based Stage 7 path using minimally labeled visual internal-state renderings.
+  Implemented with a fixed eight-level, label-free activation heatmap and GPT-5 mini image input.
+- [x] Compare VLM reports against scene-only and explicit symbolic-dump baselines. Powered result:
+  latent heatmap `0/8` on current/memory/full content in every slice; symbolic upper bound `8/8`
+  throughout; `content_supported = false`.
 - [~] Add token-remapping and held-out combination tests for the local opaque-token reporter. **Investigated: not meaningful against the current local reporter.** The local decoder reads the scored content fields from attended-content token bases the renderer fills *directly* from the model's attended content (not the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware structural round-trip: a consistent token remapping is invariant by construction and held-out combinations do not bite directly-encoded fields. The genuine anti-memorization test needs a **latent-only decoder** (forced to recover content from the opaque latent-bit tokens alone) or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".
 - [x] **Implemented — see [Current Focus](#current-focus-latent-only-stage-7-decoder).** Built a latent-only decoder (`run_latent_only_report_mode`) that recovers the scored content from an opaque quantised view of internal state alone, with the directly-encoded content bases withheld, so held-out-combination and counterfactual-tension slices become meaningful. **Honest finding:** it does not yet clear the faithful-access bar on the current checkpoint (marginal, non-robust current-content advantage; no remembered/counterfactual recovery); `content_supported = false`. See `audits/stage7_latent_only_tune_prob_035.json`. Remaining: re-run on a checkpoint with more separable remembered-attention state, or fall back to the external LLM/VLM path.
-- [ ] Keep the symbolic dump as an upper-bound baseline, not the main Stage 7 claim.
+- [x] Keep the symbolic dump as an upper-bound baseline, not the main Stage 7 claim.
 
 ## Priority 4: Build New Theory Branches
 

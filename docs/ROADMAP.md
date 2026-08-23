@@ -764,11 +764,11 @@ Current assessment:
 
 - implemented: yes
 - positive evidence: yes
-- supported: bounded support for the local calibrated opaque-token reporter; the powered external-LLM variant is unsupported and the VLM variant remains open
+- supported: bounded support for the local calibrated opaque-token reporter; powered external LLM and VLM variants are unsupported on the current v3 interface
 
 Interpretation:
 
-Stage 7 is now closed for a bounded local reporter claim. The opaque token stream carries current and remembered attended location/content, and a calibrated local reporter can decode those tokens into the same structured report schema while beating an observation-only reporter on default, cue-switch, and intervention slices. This should not be overstated as a general LLM/VLM reporting result. A powered 72-request GPT-5 mini audit on the v3 content-memory checkpoint completed across default, cue-switch, and intervened slices and was negative: latent-only current-content joint accuracy was `0/12`, `1/12`, and `0/12`, never above the paired observation-only condition, while remembered and full-content joint accuracy were zero throughout. The VLM path remains future work. The supported claim therefore remains the narrower local reporter result.
+Stage 7 is now closed for a bounded local reporter claim. The opaque token stream carries current and remembered attended location/content, and a calibrated local reporter can decode those tokens into the same structured report schema while beating an observation-only reporter on default, cue-switch, and intervention slices. This should not be overstated as a general LLM/VLM reporting result. A powered 72-request GPT-5 mini text audit on the v3 content-memory checkpoint was negative: latent-only current-content joint accuracy was `0/12`, `1/12`, and `0/12`, while remembered and full-content joint accuracy were zero throughout. A separate 72-request VLM audit rendered the same state as a fixed eight-level, label-free heatmap and scored `0/8` on current, remembered, and full content in every slice. The explicit symbolic-state image control scored `8/8` on all joint metrics and the complete report in every slice, so the VLM negative is not explained by an unreadable image/API path. The supported claim therefore remains the narrower local reporter result.
 
 Decoder caveat:
 
@@ -789,8 +789,7 @@ combinations do not bite content fields that are directly encoded rather than le
 genuine anti-memorization / faithfulness test therefore requires either a decoder forced to
 recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that
 is not told the schema. The latent-only route remains open for a better representation; the
-powered external-LLM test on the current interface is complete and negative, while the VLM route
-remains open.
+powered external-LLM and VLM tests on the current interface are complete and negative.
 
 Latent-only decoder (implemented; honest negative-to-marginal):
 
@@ -811,8 +810,8 @@ faithful-access claim therefore remains **bounded to the schema-aware round-trip
 as the caveat above warns. This is a disciplined negative, not a hidden failure: the remaining routes
 are a checkpoint whose remembered-attention state is more separably encoded (memory-regularised or
 longer-trained) and/or a richer opaque interface. The current external-LLM interface is now
-empirically unsupported rather than blocked; the VLM route remains open. See NEXT_STEPS "Current
-Focus".
+empirically unsupported rather than blocked; the powered VLM interface is likewise unsupported.
+See NEXT_STEPS "Current Focus".
 
 Falsification criterion:
 
@@ -987,7 +986,7 @@ Completed in the Priority 1 audit pass:
 Still open (blocked or larger):
 
 - [x] evaluate external API LLM reporting under cue switches and interventions (powered paired audit complete; unsupported on the current v3 interface)
-- [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
+- [x] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines (powered result unsupported; symbolic upper-bound control passes perfectly)
 - [x] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward
   self-modeling. The experiment and causal follow-up are complete; the result is a substantive
   negative for policy-consistent regulation, not Stage 4B support.
@@ -1047,7 +1046,8 @@ Positive but still provisional evidence:
   but with the wrong regulatory sign at all four tested scales: higher "already inspected" report means
   more attention to that cell. This is bounded evidence against the "supervised self-model required
   everywhere" global falsifier, but a negative result for Stage 4B regulatory use.
-- external API LLM and VLM natural-language reportability infrastructure
+- external API LLM and VLM natural-language reportability infrastructure (implemented, but both
+  powered v3 interfaces are empirically unsupported)
 
 What is not yet established:
 

@@ -53,6 +53,7 @@ from attcon.nl_report import (
     tokenized_state_payload_metrics,
 )
 from attcon.nl_report import NLExample
+from attcon.vlm_report import VLMImageRenderer, render_vlm_png
 from attcon.train import train_experiment
 from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
@@ -618,6 +619,24 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.current_wrong_candidate, bool)
         self.assertIsInstance(example.wrong_candidate_history, bool)
         self.assertIsInstance(example.revisit_unresolved, bool)
+
+        latent_png = render_vlm_png(example, "visual_latent_state")
+        self.assertTrue(latent_png.startswith(b"\x89PNG\r\n\x1a\n"))
+        renderer = VLMImageRenderer("visual_latent_state")
+        image_content = renderer.content(example)
+        self.assertEqual(image_content[1]["type"], "input_image")
+        self.assertTrue(image_content[1]["image_url"].startswith("data:image/png;base64,"))
+        self.assertFalse(renderer.summary(example)["contains_symbolic_field_names"])
+        messages = nl_report_module._make_messages(
+            "visual_latent_state",
+            [example],
+            example,
+            self.task_cfg.grid_size,
+            input_content_builder=renderer.content,
+        )
+        self.assertEqual(messages[-1]["content"][1]["type"], "input_image")
+        symbolic_renderer = VLMImageRenderer("visual_symbolic_state")
+        self.assertTrue(symbolic_renderer.summary(example)["contains_symbolic_field_names"])
         self.assertIsInstance(example.allocation_error, bool)
         self.assertIsInstance(example.inspected_count, int)
         self.assertIsInstance(example.previous_inspected_count, int)

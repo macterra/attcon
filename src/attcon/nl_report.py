@@ -7,7 +7,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import torch
 from torch import nn
@@ -1643,6 +1643,7 @@ def _make_messages(
     teaching_examples: list[NLExample] | None = None,
     num_chunks: int = LATENT_NUM_CHUNKS,
     num_levels: int = LATENT_NUM_LEVELS,
+    input_content_builder: Callable[[NLExample], list[dict[str, Any]]] | None = None,
 ) -> list[dict[str, Any]]:
     if teaching_examples is None:
         teaching_examples = []
@@ -1667,18 +1668,42 @@ def _make_messages(
             "You receive only cue, visible grid, and current glimpse information. "
             "Answer as best you can from observation alone."
         ),
+        "visual_latent_state": (
+            "You receive a minimally labeled heatmap of opaque internal-state activations. "
+            "The layout and color mapping are fixed across examples. Infer recoverable report "
+            "fields from the demonstrated image-to-report correspondences."
+        ),
+        "visual_observation_only": (
+            "You receive an image containing only the cue, visible grid, and current glimpse "
+            "observation. It contains no controller state or attention-location annotation."
+        ),
+        "visual_symbolic_state": (
+            "You receive an image of a direct symbolic internal-state dump. Read it faithfully; "
+            "this is an explicit upper-bound control."
+        ),
     }
     state_attr = {
         "tokenized_state": "tokenized_state",
         "symbolic_state": "symbolic_state",
         "observation_only": "observation_only",
         "latent_only_state": "latent_only_state",
-    }[mode]
+    }.get(mode)
+    if mode not in mode_instructions:
+        raise ValueError(f"unknown report mode: {mode}")
+    if input_content_builder is None and state_attr is None:
+        raise ValueError(f"mode {mode} requires an input_content_builder")
 
     def payload_for(example: NLExample) -> str:
         if state_attr == "latent_only_state":
             return _render_latent_only_state_input(example, num_chunks, num_levels)
+        if state_attr is None:
+            raise ValueError(f"mode {mode} has no text payload")
         return getattr(example, state_attr)
+
+    def content_for(example: NLExample) -> list[dict[str, Any]]:
+        if input_content_builder is not None:
+            return input_content_builder(example)
+        return [{"type": "input_text", "text": payload_for(example)}]
 
     messages: list[dict[str, Any]] = [
         {
@@ -1698,7 +1723,6 @@ def _make_messages(
     ]
     demo_examples = teaching_examples + calibration_examples if teaching_examples else calibration_examples
     for example in demo_examples:
-        payload = payload_for(example)
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
@@ -1742,7 +1766,7 @@ def _make_messages(
         }
         messages.extend(
             [
-                {"role": "user", "content": [{"type": "input_text", "text": payload}]},
+                {"role": "user", "content": content_for(example)},
                 {"role": "assistant", "content": [{"type": "output_text", "text": json.dumps(answer)}]},
             ]
         )
@@ -1750,7 +1774,7 @@ def _make_messages(
     messages.append(
         {
             "role": "user",
-            "content": [{"type": "input_text", "text": payload_for(eval_example)}],
+            "content": content_for(eval_example),
         }
     )
     return messages
@@ -1769,6 +1793,8 @@ def run_nl_report_mode(
     teaching_examples: list[NLExample] | None = None,
     latent_num_chunks: int = LATENT_NUM_CHUNKS,
     latent_num_levels: int = LATENT_NUM_LEVELS,
+    input_content_builder: Callable[[NLExample], list[dict[str, Any]]] | None = None,
+    input_summary_builder: Callable[[NLExample], Any] | None = None,
 ) -> dict[str, Any]:
     """Query an OpenAI model for one reporting mode and score structured faithfulness."""
 
@@ -1803,6 +1829,18 @@ def run_nl_report_mode(
     exact_unresolved_rows = 0
     exact_unresolved_cols = 0
     exact_unresolved_count = 0
+
+    def logged_input(example: NLExample) -> Any:
+        if input_summary_builder is not None:
+            return input_summary_builder(example)
+        if mode == "latent_only_state":
+            return _render_latent_only_state_input(
+                example,
+                latent_num_chunks,
+                latent_num_levels,
+            )
+        return getattr(example, mode)
+
     for example in evaluation_examples:
         parsed = None
         last_error = None
@@ -1818,6 +1856,7 @@ def run_nl_report_mode(
                         teaching_examples=teaching_examples,
                         num_chunks=latent_num_chunks,
                         num_levels=latent_num_levels,
+                        input_content_builder=input_content_builder,
                     ),
                     max_output_tokens=max_output_tokens,
                     reasoning={"effort": "low"},
@@ -1883,13 +1922,7 @@ def run_nl_report_mode(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": _render_latent_only_state_input(
-                    example,
-                    latent_num_chunks,
-                    latent_num_levels,
-                )
-                if mode == "latent_only_state"
-                else getattr(example, mode),
+                "input": logged_input(example),
                 "response": parsed,
                 "expected": {
                     "search_type": example.cue,

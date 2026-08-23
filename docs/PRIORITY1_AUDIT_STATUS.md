@@ -47,13 +47,13 @@ Tracked artifacts:
   but the calibrated capacity audit does not pass: `revisit_unresolved` and `allocation_error`
   retain marginally negative accuracy advantages and fail their accuracy noise floors. See
   `audits/stage6b_noise_floor_tune_prob_035.json`.
-- **Stage 7 local opaque-token reporter**: supported, capacity audit passes. External API LLM and
-  VLM routes remain open. Sharper caveat: the local decoder reads the scored content fields from
+- **Stage 7 local opaque-token reporter**: supported, capacity audit passes. Powered external API
+  LLM and VLM routes are unsupported on the current v3 interface. Sharper caveat: the local decoder reads the scored content fields from
   attended-content token bases the renderer fills *directly* from the model's attended content (not
   the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware
   structural round-trip. Consequently consistent token-remapping and held-out-combination
   anti-memorization tests do not bite it; the genuine faithfulness test needs a latent-only decoder
-  or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".
+  or a redesigned external LLM/VLM interface. See ROADMAP "Sharper decoder caveat".
 - **Negative controls**: all fail as intended. `shuffle_feedback` accuracy drop `0.27`,
   `feedforward_summary` `0.21`, high-capacity observation-only and the matched-transformer /
   trivial-regulator comparators all fail as intended.

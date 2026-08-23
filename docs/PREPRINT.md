@@ -237,7 +237,7 @@ The repository now includes a Stage 7 natural-language reporting harness. It can
 - tokenized internal-state reporting as the real Stage 7 target,
 - observation-only reporting as the weaker external baseline.
 
-A plausible parallel branch now under consideration is a VLM-based Stage 7 route in which internal attention/self-model state is rendered as compact visual panels or overlays. That branch would be useful only if it obeys the same anti-cheating discipline as the text route: explicit labeled visual dumps would count only as baselines, while minimally labeled internal-state renderings would need to beat scene-only baselines on held-out current and remembered attended-content reports.
+A parallel VLM-based Stage 7 route now renders internal state as a fixed eight-level, label-free heatmap and compares it against observation-only and explicit-symbolic image controls. In a powered 72-request audit, the heatmap condition recovers none of the current, remembered, or full joint content (`0/8` in each family and slice). The explicit symbolic-image upper bound is perfect (`8/8` on all joint metrics and the entire report in every slice), validating the vision path while keeping that labeled dump out of the main claim.
 
 The current picture is now judged under a stricter, more skeptical setup:
 
@@ -258,7 +258,7 @@ In a recent local calibrated Stage 7 slice on the current tuned checkpoint:
 - cue-switch slice supported: yes
 - intervention slice supported: yes
 
-This supports a bounded Stage 7 claim: faithful natural-language-shaped reportability from opaque tokenized internal state is now established for the local calibrated reporter. That reporter is a learned decoder, not an off-the-shelf language interface. A powered 72-request GPT-5 mini audit does not extend the result to an off-the-shelf language interface: latent-only current-content joint accuracy was `0/12`, `1/12`, and `0/12` across default, cue-switch, and intervened slices and never beat the paired observation-only prompt; remembered and full-content joint accuracy were zero throughout. The VLM branch remains future work.
+This supports a bounded Stage 7 claim: faithful natural-language-shaped reportability from opaque tokenized internal state is now established for the local calibrated reporter. That reporter is a learned decoder, not an off-the-shelf language interface. Powered GPT-5 mini text and vision audits do not extend the result to off-the-shelf interfaces. The text route's latent-only current-content joint accuracy was `0/12`, `1/12`, and `0/12` across default, cue-switch, and intervened slices, with remembered/full content zero throughout. The VLM heatmap route was `0/8` on every joint-content family and slice despite a perfect symbolic-image upper bound.
 
 A sharper caveat further narrows the local claim. On inspection, the local decoder reads the scored content fields (current and previous attended visible type, attended digit, and glimpse digit) from dedicated attended-content token bases that the renderer fills *directly from the model's attended content*, not from the calibration-fit translator's predictions (those occupy separate token bases the decoder ignores for these fields), and not from the opaque latent-bit tokens. The local content report is therefore a schema-aware structural round-trip of directly-encoded attended-content tokens — closer to the symbolic-dump baseline (relabelled with opaque IDs whose schema the decoder is told) than to "learn to attach labels to opaque latent state". Two consequences follow: the local reporter's advantage over the observation-only baseline comes from the tokenized stream *containing* the attended-content tokens rather than from a learned decode of opaque state, and the two named anti-memorization falsifiers — consistent token remapping and held-out cue/content combinations — are not meaningful against it (the former is invariant by construction for a schema-aware decoder; the latter does not bite directly-encoded fields). The genuine faithfulness / anti-memorization test therefore requires a decoder forced to recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that is not told the schema. The narrower local result is still useful because it is runnable in CI and confirms the attended-content is recoverable from the token interface, but it should not be read as the stronger learned-decode claim.
 
@@ -330,7 +330,7 @@ This system is still intentionally minimal.
 - Comparator systems, cross-architecture replication, and cross-benchmark replication are not yet implemented.
 - Unity/binding, counterfactual-access, and perturbational-complexity branches remain roadmap items rather than current evidence.
 - External API LLM Stage 7 reporting is unsupported on the current powered v3 interface and should be treated as separate from the local calibrated reporter claim.
-- VLM-based Stage 7 reporting remains untested.
+- VLM-based Stage 7 reporting is unsupported on the current powered heatmap interface; its symbolic-image upper-bound control passes perfectly.
 - The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
 
 So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
@@ -345,7 +345,7 @@ The next highest-value experiments are now concentrated on turning the current a
 4. add unity/binding, counterfactual-access, and perturbational-complexity branches,
 5. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
 6. replicate supported claims on a structurally different architecture and a second benchmark,
-7. test a VLM reporter and, before any external-LLM retest, redesign the opaque interface or representation in light of the negative powered v3 result.
+7. redesign the opaque interface or representation before retesting either external text or vision reporters; both current powered v3 routes are negative.
 
 ## 9. Reproducibility
 
