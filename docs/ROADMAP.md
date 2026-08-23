@@ -735,9 +735,22 @@ Branch E should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
+- implemented: benchmark scaffold only (`attcon.higher_order`); learned higher-order-state experiment not yet implemented
 - positive evidence: no
 - supported: no
+
+Implementation note:
+
+The scaffold counterbalances identical first-order key/value content across fresh-current,
+fresh-memory, inferred-content, unavailable, stale-access-lure, and wrong-access-lure conditions.
+The current observation is exactly identical in every fresh-current/wrong-access pair while the
+access gate, report source, confidence, correction, and reinspection targets differ. The 4,092-case
+audit (`audits/branch_e_higher_order_dataset.json`) contains 682 complete six-way groups and 816
+held-out content/status conjunctions with no invariant failures. The best content-only status oracle
+is `0.167`; adding the current observation raises the oracle ceiling only to `0.333`. The next
+experiment must learn a candidate higher-order state without supervising these exact evaluation
+labels, beat both baselines, and survive interventions that preserve first-order content. The
+scaffold alone is not positive Branch E evidence.
 
 Consciousness-evidence role:
 
@@ -1088,7 +1101,7 @@ Branch builds:
 - [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (strong bounded support: multi-seed, two surface variants, and exactly matched cross-model replication)
 - [x] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [x] add Branch D counterfactual-access experiments for non-current but query-available contents (bounded relational support; unstructured GRU fails as intended)
-- [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
+- [x] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
 - [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
 - [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
 - [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests

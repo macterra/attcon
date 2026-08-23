@@ -41,6 +41,13 @@ from attcon.binding_experiment import (
     tensorize_binding_examples,
 )
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
+from attcon.higher_order import (
+    HIGHER_ORDER_STATUSES,
+    HigherOrderConfig,
+    generate_higher_order_examples,
+    validate_counterbalance_group,
+    validate_higher_order_example,
+)
 from attcon.counterfactual_access import (
     CounterfactualAccessConfig,
     TARGET_STATUSES,
@@ -153,6 +160,28 @@ class AttentionControlTests(unittest.TestCase):
                 self.assertEqual(example.expected_answer, UNKNOWN_ANSWER)
             if example.target_status == "counterfactually_accessible":
                 self.assertNotEqual(example.scene_only_answer, example.expected_answer)
+
+    def test_branch_e_higher_order_cases_hold_content_constant_across_access_states(self) -> None:
+        config = HigherOrderConfig(heldout_modulus=3)
+        examples = generate_higher_order_examples(120, config=config, seed=41)
+        self.assertEqual(
+            examples, generate_higher_order_examples(120, config=config, seed=41)
+        )
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_higher_order_example(example), [])
+            groups.setdefault(example.counterbalance_group, []).append(example)
+        self.assertEqual(len(groups), 20)
+        for cases in groups.values():
+            self.assertEqual(validate_counterbalance_group(cases), [])
+            self.assertEqual({case.status for case in cases}, set(HIGHER_ORDER_STATUSES))
+            self.assertEqual(
+                len({(case.content_key, case.content_value) for case in cases}), 1
+            )
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_status"},
+        )
 
     def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
         config = CounterfactualAccessConfig()
