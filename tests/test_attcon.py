@@ -32,6 +32,13 @@ from attcon.binding_experiment import (
     tensorize_binding_examples,
 )
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
+from attcon.counterfactual_access import (
+    CounterfactualAccessConfig,
+    TARGET_STATUSES,
+    UNKNOWN_ANSWER,
+    generate_counterfactual_access_examples,
+    validate_counterfactual_access_example,
+)
 from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
@@ -115,6 +122,28 @@ class AttentionControlTests(unittest.TestCase):
                 example.false_binding_lure.conjunction(),
                 {obj.conjunction() for obj in example.objects},
             )
+
+    def test_branch_d_access_cases_separate_statuses_under_fixed_attention(self) -> None:
+        config = CounterfactualAccessConfig(heldout_modulus=3)
+        examples = generate_counterfactual_access_examples(256, config=config, seed=29)
+        self.assertEqual(
+            examples,
+            generate_counterfactual_access_examples(256, config=config, seed=29),
+        )
+        self.assertEqual({example.target_status for example in examples}, set(TARGET_STATUSES))
+        self.assertEqual(
+            {example.split for example in examples}, {"train", "heldout_query_value"}
+        )
+        for example in examples:
+            self.assertEqual(validate_counterfactual_access_example(example), [])
+            self.assertEqual(
+                example.current_attention_before, example.current_attention_after
+            )
+            self.assertNotEqual(example.target_index, example.current_attention_before)
+            if example.target_status == "unavailable":
+                self.assertEqual(example.expected_answer, UNKNOWN_ANSWER)
+            if example.target_status == "counterfactually_accessible":
+                self.assertNotEqual(example.scene_only_answer, example.expected_answer)
 
     def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
         config = BindingConfig()

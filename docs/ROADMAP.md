@@ -595,9 +595,23 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
+- implemented: benchmark scaffold only (`attcon.counterfactual_access`); trained internal-access experiment not yet implemented
 - positive evidence: no
 - supported: no
+
+Implementation note:
+
+The scaffold makes the required contrasts explicit instead of inferring them from ordinary search
+episodes. Each case changes from a currently attended anchor query to a non-current target while
+holding the fixation index fixed. Targets are balanced across unavailable, merely visible,
+previously attended, and counterfactually accessible states. Counterfactual-access cases retain an
+unattended task-access cache while exposing a conflicting current observation, so reconstruction
+from the scene predicts the wrong answer by construction. The 4,096-case audit
+(`audits/branch_d_access_dataset.json`) contains 831 held-out query/value pairs, a `1.00` fixed-
+attention rate, a `1.00` counterfactual-tension rate, and no invariant failures. Scene-only accuracy
+is `1.00` for merely visible/unavailable targets and `0.00` for previously attended/counterfactual
+targets. The next step is a trained access route plus matched no-cache, scene-only, current-glimpse,
+and symbolic upper-bound controls; the scaffold itself is not positive Branch D evidence.
 
 Consciousness-evidence role:
 
@@ -1034,7 +1048,7 @@ Branch builds:
 
 - [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
 - [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (strong bounded support: multi-seed, two surface variants, and exactly matched cross-model replication)
-- [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
+- [x] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
 - [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
