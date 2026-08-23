@@ -1,0 +1,149 @@
+{
+  "audit": "stage8_task_induced_routing_duration",
+  "config": {
+    "episodes_per_run": 2048,
+    "epochs": 90,
+    "private_access_dropout": 0.95,
+    "seed_triples": [
+      {
+        "data_seed": 1019,
+        "model_seed": 1021,
+        "null_seed": 1031
+      },
+      {
+        "data_seed": 1033,
+        "model_seed": 1039,
+        "null_seed": 1049
+      },
+      {
+        "data_seed": 1051,
+        "model_seed": 1061,
+        "null_seed": 1063
+      }
+    ]
+  },
+  "duration_robust_support": false,
+  "next_experiment": "replace private-lane dropout with distributional occlusion or resource competition and repeat on a genuinely different benchmark",
+  "predeclared_thresholds": {
+    "binding_other_fields_stability": 0.9,
+    "blocked_task_joint_accuracy": 0.9,
+    "final_routing_weight": 0.2,
+    "joint_advantage_over_permuted_direction": 0.4,
+    "joint_coordination_advantage_over_blocked": 0.4,
+    "learned_joint_directional_follow": 0.6,
+    "learned_task_joint_accuracy": 0.9,
+    "routing_weight_increase": 0.1
+  },
+  "runs": [
+    {
+      "all_routing_gates_pass": false,
+      "data_seed": 1019,
+      "gates": {
+        "binding_other_fields_stability": true,
+        "blocked_task_joint_accuracy": false,
+        "final_routing_weight": true,
+        "joint_advantage_over_permuted_direction": true,
+        "joint_coordination_advantage_over_blocked": true,
+        "learned_joint_directional_follow": true,
+        "learned_task_joint_accuracy": true,
+        "parameters_exactly_matched": true,
+        "routing_weight_increase": true
+      },
+      "model_seed": 1021,
+      "null_seed": 1031,
+      "observed": {
+        "binding_other_fields_stability": 1.0,
+        "blocked_task_joint_accuracy": 0.8888888955116272,
+        "final_routing_weight": 0.21416567265987396,
+        "joint_advantage_over_permuted_direction": 0.9282407164573669,
+        "joint_coordination_advantage_over_blocked": 0.9282407164573669,
+        "learned_joint_directional_follow": 0.9282407164573669,
+        "learned_task_joint_accuracy": 0.9884259104728699,
+        "routing_weight_increase": 0.1641656719148159
+      }
+    },
+    {
+      "all_routing_gates_pass": true,
+      "data_seed": 1033,
+      "gates": {
+        "binding_other_fields_stability": true,
+        "blocked_task_joint_accuracy": true,
+        "final_routing_weight": true,
+        "joint_advantage_over_permuted_direction": true,
+        "joint_coordination_advantage_over_blocked": true,
+        "learned_joint_directional_follow": true,
+        "learned_task_joint_accuracy": true,
+        "parameters_exactly_matched": true,
+        "routing_weight_increase": true
+      },
+      "model_seed": 1039,
+      "null_seed": 1049,
+      "observed": {
+        "binding_other_fields_stability": 1.0,
+        "blocked_task_joint_accuracy": 1.0,
+        "final_routing_weight": 0.2127169817686081,
+        "joint_advantage_over_permuted_direction": 0.9976580739021301,
+        "joint_coordination_advantage_over_blocked": 0.9976580739021301,
+        "learned_joint_directional_follow": 0.9976580739021301,
+        "learned_task_joint_accuracy": 1.0,
+        "routing_weight_increase": 0.16271698102355003
+      }
+    },
+    {
+      "all_routing_gates_pass": true,
+      "data_seed": 1051,
+      "gates": {
+        "binding_other_fields_stability": true,
+        "blocked_task_joint_accuracy": true,
+        "final_routing_weight": true,
+        "joint_advantage_over_permuted_direction": true,
+        "joint_coordination_advantage_over_blocked": true,
+        "learned_joint_directional_follow": true,
+        "learned_task_joint_accuracy": true,
+        "parameters_exactly_matched": true,
+        "routing_weight_increase": true
+      },
+      "model_seed": 1061,
+      "null_seed": 1063,
+      "observed": {
+        "binding_other_fields_stability": 1.0,
+        "blocked_task_joint_accuracy": 0.9877451062202454,
+        "final_routing_weight": 0.20743967592716217,
+        "joint_advantage_over_permuted_direction": 0.968137264251709,
+        "joint_coordination_advantage_over_blocked": 0.968137264251709,
+        "learned_joint_directional_follow": 0.968137264251709,
+        "learned_task_joint_accuracy": 1.0,
+        "routing_weight_increase": 0.1574396751821041
+      }
+    }
+  ],
+  "scope": "post-replication duration check: the 0.95 private-lane dropout condition is extended from 60 to 90 epochs with every model and gate otherwise unchanged",
+  "stage8_same_content_gate_satisfied": false,
+  "summary": {
+    "minimum_metrics": {
+      "binding_other_fields_stability": 1.0,
+      "blocked_task_joint_accuracy": 0.8888888955116272,
+      "final_routing_weight": 0.20743967592716217,
+      "joint_advantage_over_permuted_direction": 0.9282407164573669,
+      "joint_coordination_advantage_over_blocked": 0.9282407164573669,
+      "learned_joint_directional_follow": 0.9282407164573669,
+      "learned_task_joint_accuracy": 0.9884259104728699,
+      "routing_weight_increase": 0.1574396751821041
+    },
+    "per_gate_pass_rate": {
+      "binding_other_fields_stability": 1.0,
+      "blocked_task_joint_accuracy": 0.6666666666666666,
+      "final_routing_weight": 1.0,
+      "joint_advantage_over_permuted_direction": 1.0,
+      "joint_coordination_advantage_over_blocked": 1.0,
+      "learned_joint_directional_follow": 1.0,
+      "learned_task_joint_accuracy": 1.0,
+      "parameters_exactly_matched": 1.0,
+      "routing_weight_increase": 1.0
+    },
+    "prior_60_epoch_support_rate": 0.3333333333333333,
+    "run_count": 3,
+    "support_rate": 0.6666666666666666
+  },
+  "support_boundary": "This is a post-replication duration check on the same synthetic benchmark and severe engineered dropout condition; longer optimization is part of the result."
+}

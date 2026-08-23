@@ -25,7 +25,7 @@ def build_stage8_convergence_audit() -> dict:
     integrated_directional = _load(
         "stage8_integrated_content_directional_multiseed.json"
     )
-    task_induced_routing = _load("stage8_task_induced_routing_multiseed.json")
+    task_induced_routing = _load("stage8_task_induced_routing_duration.json")
 
     rnn_perturbation = next(
         checkpoint
@@ -91,13 +91,13 @@ def build_stage8_convergence_audit() -> dict:
             ],
             "support_boundary": integrated_directional["support_boundary"],
             "multi_seed_task_induced_routing_support": task_induced_routing[
-                "multi_seed_task_induced_routing_support"
+                "duration_robust_support"
             ],
             "task_induced_support_rate": task_induced_routing["summary"][
-                "task_induced_support_rate"
+                "support_rate"
             ],
             "minimum_task_induced_metrics": task_induced_routing["summary"][
-                "minimum_task_induced_metrics"
+                "minimum_metrics"
             ],
             "task_induced_support_boundary": task_induced_routing[
                 "support_boundary"
@@ -142,7 +142,7 @@ def build_stage8_convergence_audit() -> dict:
                 "seed-robust, disjoint-split directional causal overlap against permuted and "
                 "split-state nulls. A learned route also emerges under severe private-lane "
                 "robustness pressure, but not ordinary joint supervision. Directional transfer "
-                "replicates over three fresh seeds, while the full routing gate passes only one; "
+                "replicates over three fresh seeds, while the full routing gate passes only two; "
                 "this remains short of independent qualifying theory families."
             ),
         },
