@@ -1032,9 +1032,11 @@ No single experiment should count toward multiple convergence families unless it
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no, except for bounded ingredients in the self-model/reportability branch
+- implemented: yes, as an artifact-level convergence audit (`audits/stage8_convergence_current.json`)
+- positive evidence: partial. The current package contains bounded access/report and non-reportability ingredients, predicted comparator failures, and some cross-architecture replication. Branch E and Branch F remain engineering-only results and are excluded from the theory-family count.
 - supported: no
+
+The current audit records three passed, three partial, and two failed gates. The decisive failures are the absence of cross-validated causal overlap for the same internal content across theory-derived families and the absence of replication on a genuinely different benchmark. Branch C and Branch D provide strong bounded results, but their surface/cardinality variants remain within their original synthetic task families and therefore do not satisfy the different-benchmark gate. The next decisive experiment is an integrated benchmark in which one explicit content identity participates in binding, counterfactual access, and perturbational analyses, followed by replication on a structurally different task.
 
 Philosophical bridge:
 

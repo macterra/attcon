@@ -115,6 +115,7 @@ from attcon.vlm_report import VLMImageRenderer, render_vlm_png
 from attcon.train import train_experiment
 from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
+from scripts.stage8_convergence_audit import build_stage8_convergence_audit
 import scripts.stage7_external_llm_audit as external_llm_audit
 from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
@@ -392,6 +393,29 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertTrue(regulatory["any_scale_policy_consistent_avoidance"])
         self.assertTrue(regulatory["any_scale_supported"])
+
+    def test_stage8_convergence_audit_keeps_open_blockers_explicit(self) -> None:
+        result = build_stage8_convergence_audit()
+        self.assertFalse(result["stage8_supported"])
+        self.assertEqual(result["gate_counts"], {"pass": 3, "partial": 3, "fail": 2})
+        self.assertEqual(
+            result["gates"]["same_internal_content_across_families"]["status"],
+            "fail",
+        )
+        self.assertEqual(
+            result["gates"]["different_benchmark_replication"]["status"],
+            "fail",
+        )
+        self.assertFalse(
+            result["evidence"]["engineering_only_families_excluded"][
+                "branch_e_theoretical_support"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["engineering_only_families_excluded"][
+                "branch_f_theoretical_support"
+            ]
+        )
 
     def test_external_llm_support_uses_paired_exact_significance(self) -> None:
         example_ids = [f"example_{index}" for index in range(8)]

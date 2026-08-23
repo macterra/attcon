@@ -284,6 +284,14 @@ GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
 GitHub issue: [#8](https://github.com/macterra/attcon/issues/8)
 
 Do not claim Stage 8 support until all of the following are true. **Current status: not met.**
+The executable artifact audit (`audits/stage8_convergence_current.json`) currently records three
+passing gates, three partial gates, and two failures. The failures are same-content causal
+convergence across families and genuinely different-benchmark replication. Branch C/D surface
+variants strengthen their individual claims but retain the same synthetic task structures; Branch
+E/F engineering results are explicitly excluded from theoretical-family counts. The next decisive
+experiment is one integrated benchmark/controller where the same content identity participates in
+binding, counterfactual access, and perturbation tests, followed by replication on a structurally
+different task.
 The methodology now produces one of each partition type (a robust access/report family and a
 non-reportability family) and comparators fail as intended. Both families' headline claims now
 also replicate on a second (ungated-RNN) controller architecture — so cross-*architecture*
