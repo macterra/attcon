@@ -89,6 +89,13 @@ from attcon.counterfactual_access import (
     generate_counterfactual_access_examples,
     validate_counterfactual_access_example,
 )
+from attcon.temporal_relay import (
+    RELAY_STATUSES,
+    TemporalRelayConfig,
+    generate_temporal_relay_examples,
+    validate_temporal_relay_example,
+    validate_temporal_relay_group,
+)
 from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
@@ -133,6 +140,7 @@ from scripts.stage8_convergence_audit import build_stage8_convergence_audit
 from scripts.stage8_integrated_content_scaffold import build_scaffold_audit
 from scripts.stage8_task_induced_routing_sweep import build_sweep
 from scripts.stage8_task_induced_routing_correction import build_correction
+from scripts.stage8_temporal_relay_scaffold import build_temporal_relay_scaffold
 import scripts.stage7_external_llm_audit as external_llm_audit
 from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
@@ -257,6 +265,27 @@ class AttentionControlTests(unittest.TestCase):
             correction["corrected_summary"]["maximum_joint_directional_follow"],
             0.1,
         )
+
+    def test_stage8_temporal_relay_is_ordered_and_pair_stable(self) -> None:
+        config = TemporalRelayConfig(heldout_modulus=3)
+        examples = generate_temporal_relay_examples(64, config=config, seed=1109)
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_temporal_relay_example(example), [])
+            self.assertEqual(
+                example.target,
+                [
+                    event for event in example.events
+                    if event.entity == example.query_entity
+                ][-1],
+            )
+            groups.setdefault(example.pair_group_id, []).append(example)
+        self.assertEqual(len(examples), 64 * len(RELAY_STATUSES))
+        for group in groups.values():
+            self.assertEqual(validate_temporal_relay_group(group), [])
+        scaffold = build_temporal_relay_scaffold(64, 1117)
+        self.assertTrue(scaffold["all_scaffold_gates_pass"])
+        self.assertFalse(scaffold["different_benchmark_replication_established"])
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)
