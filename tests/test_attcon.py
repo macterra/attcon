@@ -75,6 +75,11 @@ from attcon.integrated_content import (
     validate_integrated_content_example,
     validate_paired_content_group,
 )
+from attcon.integrated_content_experiment import (
+    IntegratedContentModel,
+    parameter_count as integrated_parameter_count,
+    tensorize_integrated_content_examples,
+)
 from attcon.counterfactual_access import (
     CounterfactualAccessConfig,
     TARGET_STATUSES,
@@ -167,6 +172,45 @@ class AttentionControlTests(unittest.TestCase):
         self.assertTrue(audit["all_scaffold_gates_pass"])
         self.assertFalse(audit["same_content_causal_overlap_established"])
         self.assertEqual(audit["counts"]["pair_groups"], 64)
+
+    def test_stage8_shared_and_split_interventions_are_parameter_matched(self) -> None:
+        config = IntegratedContentConfig()
+        examples = generate_integrated_content_examples(4, config=config, seed=823)
+        tensors = tensorize_integrated_content_examples(examples, config)
+        torch.manual_seed(829)
+        shared = IntegratedContentModel(config, hidden_size=16, mode="shared")
+        torch.manual_seed(829)
+        split = IntegratedContentModel(config, hidden_size=16, mode="split")
+        self.assertEqual(
+            integrated_parameter_count(shared), integrated_parameter_count(split)
+        )
+        shared_state, _ = shared.initial_states(
+            tensors.initial_features, tensors.content_ids, tensors.query
+        )
+        split_binding, split_access = split.initial_states(
+            tensors.initial_features, tensors.content_ids, tensors.query
+        )
+        donor = torch.arange(len(tensors)).roll(1)
+        shared_output = shared(
+            tensors.initial_features,
+            tensors.content_ids,
+            tensors.query,
+            tensors.transition,
+            binding_state_override=shared_state[donor],
+        )
+        split_output = split(
+            tensors.initial_features,
+            tensors.content_ids,
+            tensors.query,
+            tensors.transition,
+            binding_state_override=split_binding[donor],
+        )
+        self.assertTrue(
+            torch.equal(shared_output.binding_state, shared_output.access_initial_state)
+        )
+        self.assertTrue(
+            torch.equal(split_output.access_initial_state, split_access)
+        )
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)

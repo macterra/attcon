@@ -1,0 +1,141 @@
+{
+  "all_engineering_pilot_gates_pass": true,
+  "audit": "stage8_integrated_content_pilot",
+  "config": {
+    "batch_size": 256,
+    "content_id_vocab_size": 16,
+    "data_seed": 811,
+    "device": "cpu",
+    "episode_count": 2048,
+    "epochs": 30,
+    "feature_type_vocab_size": 5,
+    "grid_size": 5,
+    "heldout_count": 1668,
+    "heldout_modulus": 5,
+    "hidden_size": 64,
+    "learning_rate": 0.003,
+    "model_seed": 827,
+    "num_objects": 7,
+    "train_count": 6524,
+    "value_vocab_size": 10
+  },
+  "gates": {
+    "binding_advantage_over_pooled": true,
+    "coordination_advantage_over_split": true,
+    "parameters_exactly_matched": true,
+    "shared_access_accuracy": true,
+    "shared_access_donor_follow_rate": true,
+    "shared_binding_and_access_joint_accuracy": true,
+    "shared_binding_donor_follow_rate": true,
+    "shared_binding_joint_accuracy": true,
+    "shared_joint_donor_follow_rate": true,
+    "split_binding_and_access_joint_accuracy": true
+  },
+  "models": {
+    "pooled": {
+      "binding_state_swap": {
+        "accessible_access_donor_follow_rate": 0.2653876841068268,
+        "accessible_access_receiver_retention_rate": 0.09912070631980896,
+        "accessible_joint_donor_follow_rate": 0.009592326357960701,
+        "binding_donor_follow_rate": 0.016786571592092514
+      },
+      "final_epoch_loss": 5.490671209876775,
+      "heldout": {
+        "access_accuracy": 0.4490407705307007,
+        "access_accuracy_by_status": {
+          "counterfactually_accessible": 0.26618704199790955,
+          "merely_visible": 0.2685851454734802,
+          "previously_attended": 0.26139089465141296,
+          "unavailable": 1.0
+        },
+        "binding_and_access_joint_accuracy": 0.011390887200832367,
+        "binding_joint_accuracy": 0.016786571592092514,
+        "count": 1668,
+        "false_binding_lure_rejection": 0.9880095720291138
+      },
+      "initial_epoch_loss": 9.36826068532021,
+      "parameter_count": 22003
+    },
+    "shared": {
+      "binding_state_swap": {
+        "accessible_access_donor_follow_rate": 1.0,
+        "accessible_access_receiver_retention_rate": 0.11510791629552841,
+        "accessible_joint_donor_follow_rate": 1.0,
+        "binding_donor_follow_rate": 1.0
+      },
+      "final_epoch_loss": 0.007944714782187392,
+      "heldout": {
+        "access_accuracy": 1.0,
+        "access_accuracy_by_status": {
+          "counterfactually_accessible": 1.0,
+          "merely_visible": 1.0,
+          "previously_attended": 1.0,
+          "unavailable": 1.0
+        },
+        "binding_and_access_joint_accuracy": 1.0,
+        "binding_joint_accuracy": 1.0,
+        "count": 1668,
+        "false_binding_lure_rejection": 1.0
+      },
+      "initial_epoch_loss": 8.665886219405895,
+      "parameter_count": 22003
+    },
+    "split": {
+      "binding_state_swap": {
+        "accessible_access_donor_follow_rate": 0.11510791629552841,
+        "accessible_access_receiver_retention_rate": 1.0,
+        "accessible_joint_donor_follow_rate": 0.11510791629552841,
+        "binding_donor_follow_rate": 1.0
+      },
+      "final_epoch_loss": 0.007841579466464329,
+      "heldout": {
+        "access_accuracy": 1.0,
+        "access_accuracy_by_status": {
+          "counterfactually_accessible": 1.0,
+          "merely_visible": 1.0,
+          "previously_attended": 1.0,
+          "unavailable": 1.0
+        },
+        "binding_and_access_joint_accuracy": 1.0,
+        "binding_joint_accuracy": 1.0,
+        "count": 1668,
+        "false_binding_lure_rejection": 1.0
+      },
+      "initial_epoch_loss": 8.471482897886537,
+      "parameter_count": 22003
+    }
+  },
+  "next_experiment": "repeat over fresh seeds, learn the intervention direction on disjoint training data, and test it on held-out content bundles before changing task structure",
+  "observed": {
+    "binding_advantage_over_pooled": 0.9832134284079075,
+    "coordination_advantage_over_split": 0.8848920837044716,
+    "shared_access_accuracy": 1.0,
+    "shared_access_donor_follow_rate": 1.0,
+    "shared_binding_and_access_joint_accuracy": 1.0,
+    "shared_binding_donor_follow_rate": 1.0,
+    "shared_binding_joint_accuracy": 1.0,
+    "shared_joint_donor_follow_rate": 1.0,
+    "split_binding_and_access_joint_accuracy": 1.0
+  },
+  "predeclared_thresholds": {
+    "binding_advantage_over_pooled": 0.5,
+    "coordination_advantage_over_split": 0.65,
+    "shared_access_accuracy": 0.9,
+    "shared_access_donor_follow_rate": 0.85,
+    "shared_binding_and_access_joint_accuracy": 0.85,
+    "shared_binding_donor_follow_rate": 0.9,
+    "shared_binding_joint_accuracy": 0.9,
+    "shared_joint_donor_follow_rate": 0.85,
+    "split_binding_and_access_joint_accuracy": 0.85
+  },
+  "same_content_causal_overlap_observed": true,
+  "scope": "single-seed engineered shared bottleneck on one synthetic benchmark; this validates the same-content causal-overlap measurement but does not establish spontaneous multi-theory convergence or Stage 8 support",
+  "stage8_same_content_gate_satisfied": false,
+  "stage8_support_blockers": [
+    "shared content bottleneck is imposed by architecture",
+    "single data/model seed",
+    "no cross-validated learned content direction",
+    "no structurally different benchmark replication"
+  ],
+  "status": "engineering_pilot_supported"
+}
