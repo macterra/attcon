@@ -514,20 +514,27 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold only (`attcon.binding`); controller experiment not yet implemented
-- positive evidence: no
+- implemented: benchmark scaffold plus a trained shared-selection pilot and causal feature interventions
+- positive evidence: yes, on one synthetic surface-attribute benchmark
 - supported: no
 
 Implementation note:
 
-The first benchmark-side prerequisite is now concrete. `attcon.binding` generates objects whose
+The benchmark-side prerequisite is now concrete. `attcon.binding` generates objects whose
 location, visible type, digit, cue tag, and inspection state are independently recombinable; assigns
 target conjunctions to a deterministic train/held-out split; and constructs false-binding lures from
 feature values that all occur in the scene even though the lure conjunction itself does not. The
 4,096-case audit (`audits/branch_c_binding_dataset.json`) contains 808 held-out conjunctions, retains
-the full individual feature vocabulary in training, and reports no invalid lures. This is dataset
-infrastructure only. Branch C remains unsupported until an integrated binding state beats matched
-independent-feature recombination and passes the required intervention and benchmark-variant tests.
+the full individual feature vocabulary in training, and reports no invalid lures.
+
+The first powered pilot (`audits/branch_c_binding_pilot.json`) forces every answer through one shared
+soft object selection and compares it with an object-identity-destroying pooled baseline that has
+13% more parameters. On 3,288 untouched held-out conjunctions, the integrated route reaches `1.00`
+joint accuracy and `1.00` false-binding-lure rejection; the independent-feature route reaches
+`0.015` and `0.511`. Changing the target object's type changes that reported type while preserving
+the other three fields, and changing a non-target type leaves all four reports invariant; every
+predeclared pilot gate passes. This is positive single-benchmark evidence, not full Branch C support.
+The remaining predeclared blocker is replication with different surface attributes.
 
 Consciousness-evidence role:
 
@@ -1004,8 +1011,8 @@ Still open (blocked or larger):
 
 Branch builds:
 
-- [ ] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
-- [ ] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests
+- [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
+- [~] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (single-benchmark pilot passes; surface-attribute replication remains)
 - [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E

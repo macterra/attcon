@@ -22,6 +22,14 @@ from attcon.binding import (
     generate_binding_examples,
     validate_binding_example,
 )
+from attcon.binding_experiment import (
+    IndependentFeatureBaseline,
+    SharedSelectionBindingModel,
+    binding_intervention_metrics,
+    evaluate_binding_model,
+    parameter_count,
+    tensorize_binding_examples,
+)
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
@@ -105,6 +113,33 @@ class AttentionControlTests(unittest.TestCase):
                 example.false_binding_lure.conjunction(),
                 {obj.conjunction() for obj in example.objects},
             )
+
+    def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
+        config = BindingConfig()
+        examples = generate_binding_examples(32, config=config, seed=19)
+        tensors = tensorize_binding_examples(examples, config)
+        integrated = SharedSelectionBindingModel(config, hidden_size=64)
+        baseline = IndependentFeatureBaseline(config, hidden_size=64)
+        integrated_prediction = integrated(tensors.attributes, tensors.cues)
+        baseline_prediction = baseline(tensors.attributes, tensors.cues)
+        self.assertEqual(integrated_prediction.attention.shape, (32, config.num_objects))
+        self.assertIsNone(baseline_prediction.attention)
+        self.assertEqual(integrated_prediction.location.shape, (32, config.num_cells))
+        self.assertGreater(parameter_count(baseline), parameter_count(integrated))
+        evaluated = evaluate_binding_model(integrated, tensors)
+        self.assertEqual(evaluated["count"], 32)
+        self.assertIn("false_binding_lure_rejection", evaluated)
+        interventions = binding_intervention_metrics(integrated, tensors, config)
+        self.assertEqual(
+            set(interventions),
+            {
+                "target_type_follow_rate",
+                "target_other_field_mean_stability",
+                "target_other_field_joint_stability",
+                "non_target_all_field_invariance",
+                "target_selection_stability",
+            },
+        )
 
     def test_stage4b_scale_sweep_requires_policy_consistent_reallocation(self) -> None:
         def result(report_gap: float, attention_gap: float, supported: bool = False):
