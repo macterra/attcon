@@ -55,6 +55,7 @@ from attcon.nl_report import (
 from attcon.nl_report import NLExample
 from attcon.train import train_experiment
 from attcon.train import load_config
+from scripts.stage4b_emergence import _scale_sweep_summary
 
 
 class AttentionControlTests(unittest.TestCase):
@@ -71,6 +72,33 @@ class AttentionControlTests(unittest.TestCase):
             pos = target_positions.item()
             self.assertEqual(pos, batch.target_pos[idx].item())
             self.assertEqual(batch.digits[idx, pos].item(), batch.target[idx].item())
+
+    def test_stage4b_scale_sweep_requires_policy_consistent_reallocation(self) -> None:
+        def result(report_gap: float, attention_gap: float, supported: bool = False):
+            return {
+                "directed_effect": {
+                    "selected_cell_report_gap": report_gap,
+                    "intervention_step_selected_attention_gap": attention_gap,
+                    "future_selected_attention_gap": attention_gap / 2.0,
+                },
+                "attention_policy_specificity": True,
+                "policy_consistent_avoidance": attention_gap < 0.0,
+                "supported": supported,
+            }
+
+        wrong_sign = _scale_sweep_summary(
+            {"0.5": result(0.4, 0.02), "1.0": result(0.7, 0.05)}
+        )
+        self.assertTrue(wrong_sign["all_scales_shift_report_positive"])
+        self.assertTrue(wrong_sign["all_scales_increase_selected_cell_attention"])
+        self.assertFalse(wrong_sign["any_scale_policy_consistent_avoidance"])
+        self.assertFalse(wrong_sign["any_scale_supported"])
+
+        regulatory = _scale_sweep_summary(
+            {"0.5": result(0.4, -0.02, supported=True)}
+        )
+        self.assertTrue(regulatory["any_scale_policy_consistent_avoidance"])
+        self.assertTrue(regulatory["any_scale_supported"])
 
     def test_stage3_robustness_is_enabled_in_repo_configs(self) -> None:
         for path in (

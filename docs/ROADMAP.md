@@ -329,7 +329,14 @@ Current assessment:
 
 Interpretation:
 
-The bounded Stage 4B claim is now closed for the hidden-self-model feedback route: the controller learns a hidden-state-only inspected-cell model, that representation beats a previous-observation baseline on held-out inspected-state prediction, hidden-state interventions move self-model report output, and direct hidden-self-model overrides measurably affect attention through the learned policy feedback path. On a fresh closeout probe with the Stage 4B feedback objective, the learned-self-model metrics passed with positive hidden cell BCE advantage, positive target BCE/separation advantage, a bidirectional self-model intervention gap, and nonzero policy-feedback causal effect. This remains a benchmark-local claim rather than a broad self-awareness claim, and older checkpoints trained before the feedback objective should not be counted as Stage 4B-supported.
+The task-only emergence experiment finds weak decodable inspection-history structure, but the causal
+follow-up does not establish a regulatory self-model. A fitted inspection-map direction moves its
+decoded report and has cell-specific attention effects above matched random hidden-state directions.
+Yet across intervention scales `0.25`, `0.5`, `1.0`, and `2.0`, raising the direction's "already
+inspected" report increases attention to the same cell at both the intervention and following step.
+That is the opposite of the avoidance/reallocation semantics required by this stage. The same pattern
+appears in the supervised base checkpoint. Stage 4B therefore remains unsupported: decodability and
+generic/cell-specific causal overlap are present, but policy-consistent regulatory use is not.
 
 Engineered-objective caveat:
 
@@ -978,7 +985,9 @@ Still open (blocked or larger):
 
 - [ ] evaluate external API LLM reporting under cue switches and interventions once quota is available
 - [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
-- [ ] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling
+- [x] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward
+  self-modeling. The experiment and causal follow-up are complete; the result is a substantive
+  negative for policy-consistent regulation, not Stage 4B support.
 
 Branch builds:
 
@@ -1030,8 +1039,11 @@ Positive but still provisional evidence:
   emerges from the search task alone (raw hidden state beats a previous-observation baseline on the
   inspection map, BCE advantage `~+0.09`), and the dedicated self-model objective adds almost nothing
   to it (`~+0.005`), so the representation is task-induced, not supervision-induced. But target-level
-  inspection is not encoded better than observation, so emergence is partial and weak. This is bounded
-  evidence against the "supervised self-model required everywhere" global falsifier, not a strong claim.
+  inspection is not encoded better than observation, so emergence is partial and weak. The causal
+  follow-up moves the probe-defined report and cell-specific attention above random-direction controls,
+  but with the wrong regulatory sign at all four tested scales: higher "already inspected" report means
+  more attention to that cell. This is bounded evidence against the "supervised self-model required
+  everywhere" global falsifier, but a negative result for Stage 4B regulatory use.
 - external API LLM and VLM natural-language reportability infrastructure
 
 What is not yet established:

@@ -214,10 +214,22 @@ dedicated self-model objective adds only `~+0.005`), but target-level inspection
 emerge. Bounded evidence against the "supervised self-model required everywhere" global
 falsifier, not a strong emergence claim.
 
+The causal follow-up is now complete. A fitted inspection-map direction moves its decoded report
+and produces selected-cell attention effects above a 32-direction matched random-state floor, in
+both the task-only and supervised checkpoints. However, across scales `0.25/0.5/1.0/2.0`, raising
+the direction's "already inspected" report consistently **increases** attention to that cell at the
+intervention and following step. This is the opposite of the avoidance/reallocation effect required
+for an inspection-history regulatory self-model. Stage 4B therefore remains unsupported: the state
+contains decodable inspection-correlated structure, but the causal test does not establish that the
+policy uses it with the claimed regulatory semantics.
+
 - [x] Define a Stage 4B training condition with no direct self-model objective.
 - [x] Train fresh checkpoints under the task-only or indirectly induced self-modeling objective.
 - [x] Evaluate hidden-state inspected-map and target-inspected probes against previous-observation baselines.
-- [ ] Test hidden-state interventions for effects on self-model reports and attention policy. (Causal feedback path is disabled in the base config; interventions remain to be run on a task-only checkpoint.)
+- [x] Test hidden-state interventions for effects on self-model reports and attention policy.
+  Completed with matched random-direction controls and a four-scale sweep on both task-only and
+  supervised checkpoints. Report and cell-specific attention effects are real, but the attention
+  effect has the wrong regulatory sign at every scale; `supported = false`.
 - [x] Compare against the supervised Stage 4B feedback checkpoint.
 - [x] Decide whether Stage 4B remains an engineered capability probe or gains consciousness-relevant evidence status. (Engineered capability probe; the emergent component is weak.)
 

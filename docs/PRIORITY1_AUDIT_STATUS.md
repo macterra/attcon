@@ -31,8 +31,11 @@ Tracked artifacts:
   supported on every seed (`stage3_multi_seed` 1.0/1.0); `stage3_checkpoint_family` verdict
   `robust` across the default and `0.25` reduced-shaping checkpoints.
 - **Stage 4A engineered self-state**: supported (native cell accuracy `~0.99`).
-- **Stage 4B learned self-model feedback**: not supported in the base config (feedback path off
-  by design; emergence is Phase 3).
+- **Stage 4B learned self-model feedback / emergence**: not supported. The feedback path remains
+  off in the base config. A task-only hidden state weakly predicts the inspection map, but a
+  matched-random-control intervention sweep finds policy-inconsistent causality: increasing the
+  fitted "already inspected" direction increases attention to that cell across all tested scales,
+  rather than driving avoidance or reallocation.
 - **Stage 5 cue-switch**: supported (recurrent switch accuracy `0.25` vs baseline `0.0`).
 - **Stage 6A structured reportability**: supported, capacity audit passes. An empirical
   permuted-label noise floor (`noise_floor_metrics`) now backs the strong report signals: the
