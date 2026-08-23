@@ -514,8 +514,8 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, and a frozen-gate surface-attribute replication
-- positive evidence: yes, across two synthetic surface-attribute variants
+- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, frozen-gate surface replication, and a six-run multi-seed audit
+- positive evidence: yes, across two synthetic surface variants and three independent data/model-seed pairs per variant
 - supported: yes, bounded; not robust
 
 Implementation note:
@@ -542,8 +542,11 @@ conjunctions, the integrated route again reaches `1.00` joint accuracy, lure rej
 intervention scores. Its 24%-larger pooled baseline reaches `0.008` joint accuracy and `0.512` lure
 rejection. The aggregate audit (`audits/branch_c_binding_replication.json`) confirms identical
 thresholds and different schemas/cardinalities, so Branch C now has bounded support under the
-predeclared threshold. It is not robust support: the shared binding bottleneck is imposed by the
-architecture, and multiple training seeds plus replication outside this selector family remain.
+predeclared threshold. The multi-seed audit (`audits/branch_c_binding_multiseed.json`) repeats both
+variants with three independent data/model-seed pairs each. All six runs pass every gate; the
+minimum integrated joint accuracy, lure rejection, target-edit coherence, and non-target invariance
+are all `1.00`. It is still not robust support because the shared binding bottleneck is imposed by
+the architecture; replication outside this selector family remains.
 
 Consciousness-evidence role:
 
@@ -1021,7 +1024,7 @@ Still open (blocked or larger):
 Branch builds:
 
 - [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
-- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (bounded support across two surface variants; multi-seed and cross-model robustness remain)
+- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (bounded, multi-seed support across two surface variants; cross-model robustness remains)
 - [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
 - [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E

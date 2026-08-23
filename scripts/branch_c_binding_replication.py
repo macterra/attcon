@@ -92,8 +92,8 @@ def main() -> None:
         "checks": checks,
         "branch_c_supported": all(checks.values()),
         "support_scope": (
-            "bounded synthetic-benchmark support; robustness still requires multiple model "
-            "seeds and replication outside the shared-selection benchmark family"
+            "bounded synthetic-benchmark support; the separate multi-seed audit covers seed "
+            "robustness, while cross-model replication remains"
         ),
     }
     output = ROOT / args.out
