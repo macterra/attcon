@@ -523,6 +523,11 @@ class AttentionControlTests(unittest.TestCase):
                 "stage8_same_content_gate_satisfied"
             ]
         )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "multi_seed_task_induced_routing_support"
+            ]
+        )
         self.assertEqual(
             result["gates"]["different_benchmark_replication"]["status"],
             "fail",
