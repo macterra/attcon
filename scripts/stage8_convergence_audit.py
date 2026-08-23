@@ -26,6 +26,7 @@ def build_stage8_convergence_audit() -> dict:
         "stage8_integrated_content_directional_multiseed.json"
     )
     task_induced_routing = _load("stage8_task_induced_routing_correction.json")
+    temporal_relay = _load("stage8_temporal_relay_multiseed.json")
 
     rnn_perturbation = next(
         checkpoint
@@ -121,6 +122,16 @@ def build_stage8_convergence_audit() -> dict:
             ]
             / cross_arch["total_comparable"],
         },
+        "different_benchmark_assay": {
+            "temporal_relay_multi_seed_engineering_support": temporal_relay[
+                "multi_seed_different_benchmark_engineering_support"
+            ],
+            "minimum_metrics": temporal_relay["summary"]["minimum_metrics"],
+            "different_benchmark_replication_established": temporal_relay[
+                "different_benchmark_replication_established"
+            ],
+            "support_boundary": temporal_relay["support_boundary"],
+        },
     }
     gates = {
         "robust_attention_control_foundation": {
@@ -164,10 +175,11 @@ def build_stage8_convergence_audit() -> dict:
             ),
         },
         "different_benchmark_replication": {
-            "status": "fail",
+            "status": "partial",
             "reason": (
-                "Surface-vocabulary/cardinality variants preserve their synthetic task structure "
-                "and do not satisfy the roadmap's different-benchmark requirement."
+                "The engineered shared-state assay passes every frozen gate over three fresh "
+                "seeds on the structurally different temporal-relay task. Relational matching "
+                "and state sharing remain explicit, so independent robust replication is open."
             ),
         },
         "claim_framed_as_evidence_not_proof": {
@@ -191,14 +203,13 @@ def build_stage8_convergence_audit() -> dict:
             gate["status"] == "pass" for gate in gates.values()
         ),
         "verdict": (
-            "not_met: three gates pass, four are partial, and one fails. Same-content causal "
-            "overlap now has a seed-robust engineered assay, but qualifying independent-family "
-            "overlap and a genuinely different benchmark remain open."
+            "not_met: three gates pass and five are partial. Same-content causal overlap and "
+            "different-benchmark transfer now have seed-robust engineered assays, but both "
+            "still impose the key relational/shared-state mechanisms."
         ),
         "next_decisive_experiment": (
-            "Remove forced state sharing and test whether a neutral jointly trained controller "
-            "develops the same directional overlap beyond a matched split-state null, then "
-            "replicate the package on a structurally different task."
+            "Remove forced state sharing on both benchmarks and replicate temporal relay with a "
+            "different sequence architecture before treating either partial gate as robust."
         ),
     }
 

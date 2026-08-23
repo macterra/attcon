@@ -275,7 +275,7 @@ GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
 
 - [~] Replicate supported claims on a structurally different controller architecture. **First cross-architecture pass done: an ungated `nn.RNNCell` controller** (`ModelConfig.controller_kind: "rnn"`, `configs/tune_prob_035_rnn.yaml`, `outputs/tune_prob_035_rnn/`) vs the gated GRU. The RNN is task-viable but weaker (recurrent val `0.31` vs GRU `0.44`). Of 7 comparable supported claims, **6 replicate**: Stage 3 explicit-attention-modeling (`robust_supported` on 3 seeds), Stage 6A report probes (and the RNN Stage 6A advantages `0.41`/`0.45` clear their own permuted-label floor at p95 `~0.007`/`~0.001`), dissociation, closed-loop adaptation, cue-dependence, and perturbational complexity (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds). **One drops: `cue_switch_adaptation`** (supported on GRU, false on the RNN — the weaker recurrence does not reallocate attention on a mid-episode cue switch). So both evidence families' headline claims replicate on a different recurrent architecture; a genuinely non-recurrent-*family* architecture (e.g. LSTM's dual state, or a state-space controller) and re-running the comparator/negative-control suite on the RNN remain.
-- [~] Replicate supported claims on a second benchmark with different task structure. The temporal-relay scaffold passes all seven invariants over 2,048 paired ordered streams / 8,192 cases (`audits/stage8_temporal_relay_scaffold.json`). The generic GRU is a decisive memorization control (`0.020` held-out joint), while the relational sequence pilot clears all ten frozen gates (`audits/stage8_temporal_relay_relational_pilot.json`): `1.00` shared/split held-out joint accuracy, `0.041` order-destroyed, `1.00` shared directional coordination, `0.00` permuted/split nulls, and `0.998` non-payload stability. This is positive single-seed engineering replication on a structurally different task. Next: repeat every gate over fresh data/model seeds.
+- [~] Replicate supported claims on a second benchmark with different task structure. The generic temporal-relay GRU is a decisive memorization control (`0.020` held-out joint). The relational sequence model then clears all ten frozen gates in all three fresh runs (`audits/stage8_temporal_relay_multiseed.json`): every minimum task, directional, null-advantage, and non-payload stability metric is `1.00`, and minimum advantage over the exactly matched order-destroyed control is `0.934`. This is seed-robust engineered transfer to a structurally different ordered event-stream task. It remains partial because query matching and shared state are explicit. Next: use a different sequence architecture and remove forced sharing.
 - [ ] Re-run comparator and negative-control suites on the replicated systems.
 - [~] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches. Whole-state swaps and stricter disjoint-split directions are multi-seed robust inside the explicitly shared assay (`audits/stage8_integrated_content_multiseed.json`, `audits/stage8_integrated_content_directional_multiseed.json`). Removing forced sharing remains negative. Ordinary joint supervision yields `0.00` transfer. The apparent dropout-induced effect was confounded by inverted scaling: at `0.95` dropout the surviving private state was `20×` larger during training than evaluation. Corrected zero-or-normal occlusion keeps both controls task-perfect but produces at most `0.021` transfer; a viability-first curriculum produces `0.001` (`audits/stage8_task_induced_routing_correction.json`). Learned routing is unsupported. Next: use a naturally coupled task or resource constraint with identical train/evaluation scaling, and require emergence against the neutral dual-lane control.
 
@@ -285,14 +285,12 @@ GitHub issue: [#8](https://github.com/macterra/attcon/issues/8)
 
 Do not claim Stage 8 support until all of the following are true. **Current status: not met.**
 The executable artifact audit (`audits/stage8_convergence_current.json`) currently records three
-passing gates, four partial gates, and one failure. Same-content causal convergence advances from
-fail to partial: the integrated directional assay is disjoint-split and seed-robust, but the shared
-bottleneck is imposed rather than independently emerging across qualifying families. Genuinely
-different-benchmark replication remains failed. Branch C/D surface variants retain their original
-synthetic task structures, and Branch E/F engineering results are explicitly excluded from
-theoretical-family counts. The temporal-relay scaffold now supplies the structurally different
-ordered task, but no trained replication yet exists. The next decisive experiment trains its
-sequence and order-destroying controls and repeats the held-out directional intervention.
+passing gates, five partial gates, and zero failures. Same-content causal convergence and
+different-benchmark transfer now each have seed-robust engineered assays. They remain partial
+because the shared bottleneck and relational matching are imposed rather than independently
+emerging across qualifying families. Branch E/F engineering results remain excluded from
+theoretical-family counts. The next decisive experiments remove forced sharing on both benchmarks
+and replicate temporal relay with a different sequence architecture.
 The methodology now produces one of each partition type (a robust access/report family and a
 non-reportability family) and comparators fail as intended. Both families' headline claims now
 also replicate on a second (ungated-RNN) controller architecture — so cross-*architecture*
@@ -305,5 +303,5 @@ and the strict Stage 7 content-only leg is not seed-robust.
 - [ ] The supported families point to the same internal contents, not merely the same checkpoint.
 - [x] Comparator systems fail in predicted ways. (All negative controls and comparators fail as intended; `shuffle_feedback` drops accuracy by `0.27`.)
 - [~] Results replicate across at least one different architecture. (First cross-architecture pass: an ungated `nn.RNNCell` controller vs the gated GRU replicates 6 of 7 supported claims — Stage 3 robust, Stage 6A noise-floor-clearing, dissociation, closed-loop, cue-dependence, and perturbational; `cue_switch_adaptation` drops on the weaker RNN. See Priority 5 and `audits/cross_architecture_rnn_summary.json` + `audits/perturbational_multiseed_with_rnn.json`. Substantially met for both families' headline claims; a more distant architecture and the comparator/negative-control re-run remain.)
-- [ ] Results replicate across at least one different benchmark.
+- [~] Results replicate across at least one different benchmark. (The relational temporal-relay audit passes all ten gates across three fresh seeds, with `1.00` minimum task/causal/null metrics and `0.934` minimum order-destroyed advantage. This is structurally different and seed-robust at the engineering level, but explicit relational matching and forced shared state prevent a robust Stage 8 pass. See `audits/stage8_temporal_relay_multiseed.json`.)
 - [ ] The final claim is framed as consciousness-relevant evidence, not proof of consciousness.

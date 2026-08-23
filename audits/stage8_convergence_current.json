@@ -17,6 +17,22 @@
       "cross_architecture_replicated_claim_fraction": 0.8571428571428571,
       "negative_controls_fail_as_intended": true
     },
+    "different_benchmark_assay": {
+      "different_benchmark_replication_established": false,
+      "minimum_metrics": {
+        "binding_advantage_over_order_destroyed": 0.9341772124171257,
+        "binding_other_fields_stability": 1.0,
+        "coordination_advantage_over_split": 1.0,
+        "joint_advantage_over_permuted": 1.0,
+        "shared_access_payload_follow": 1.0,
+        "shared_binding_payload_follow": 1.0,
+        "shared_joint_payload_follow": 1.0,
+        "shared_task_joint_accuracy": 1.0,
+        "split_task_joint_accuracy": 1.0
+      },
+      "support_boundary": "Seed-robust transfer would establish the engineered assay on a different benchmark, but not independent emergence because relational matching and shared state remain explicit architectural features.",
+      "temporal_relay_multi_seed_engineering_support": true
+    },
     "engineering_only_families_excluded": {
       "branch_e_engineering_gates_pass": true,
       "branch_e_theoretical_support": false,
@@ -54,8 +70,8 @@
     }
   },
   "gate_counts": {
-    "fail": 1,
-    "partial": 4,
+    "fail": 0,
+    "partial": 5,
     "pass": 3
   },
   "gates": {
@@ -76,8 +92,8 @@
       "status": "partial"
     },
     "different_benchmark_replication": {
-      "reason": "Surface-vocabulary/cardinality variants preserve their synthetic task structure and do not satisfy the roadmap's different-benchmark requirement.",
-      "status": "fail"
+      "reason": "The engineered shared-state assay passes every frozen gate over three fresh seeds on the structurally different temporal-relay task. Relational matching and state sharing remain explicit, so independent robust replication is open.",
+      "status": "partial"
     },
     "non_reportability_family": {
       "reason": "Perturbational evidence is seed/checkpoint/RNN replicated and Branch C is seed/cross-model strong bounded, but both lack a genuinely different benchmark.",
@@ -92,7 +108,7 @@
       "status": "partial"
     }
   },
-  "next_decisive_experiment": "Remove forced state sharing and test whether a neutral jointly trained controller develops the same directional overlap beyond a matched split-state null, then replicate the package on a structurally different task.",
+  "next_decisive_experiment": "Remove forced state sharing on both benchmarks and replicate temporal relay with a different sequence architecture before treating either partial gate as robust.",
   "stage8_supported": false,
-  "verdict": "not_met: three gates pass, four are partial, and one fails. Same-content causal overlap now has a seed-robust engineered assay, but qualifying independent-family overlap and a genuinely different benchmark remain open."
+  "verdict": "not_met: three gates pass and five are partial. Same-content causal overlap and different-benchmark transfer now have seed-robust engineered assays, but both still impose the key relational/shared-state mechanisms."
 }
