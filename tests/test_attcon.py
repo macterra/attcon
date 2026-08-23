@@ -56,6 +56,7 @@ from attcon.nl_report import NLExample
 from attcon.train import train_experiment
 from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
+import scripts.stage7_external_llm_audit as external_llm_audit
 
 
 class AttentionControlTests(unittest.TestCase):
@@ -99,6 +100,55 @@ class AttentionControlTests(unittest.TestCase):
         )
         self.assertTrue(regulatory["any_scale_policy_consistent_avoidance"])
         self.assertTrue(regulatory["any_scale_supported"])
+
+    def test_external_llm_support_uses_paired_exact_significance(self) -> None:
+        example_ids = [f"example_{index}" for index in range(8)]
+        latent_correct = {
+            example_id: {"current": True, "memory": True, "content_only": True}
+            for example_id in example_ids
+        }
+        observation_correct = {
+            example_id: {"current": False, "memory": False, "content_only": False}
+            for example_id in example_ids
+        }
+        latent = {
+            "kind": "latent",
+            "current_content_joint_accuracy": 1.0,
+            "memory_content_joint_accuracy": 1.0,
+            "content_only_joint_accuracy": 1.0,
+        }
+        observation = {
+            "kind": "observation",
+            "current_content_joint_accuracy": 0.0,
+            "memory_content_joint_accuracy": 0.0,
+            "content_only_joint_accuracy": 0.0,
+        }
+
+        original = external_llm_audit._joint_correctness
+        external_llm_audit._joint_correctness = lambda scored: (
+            latent_correct if scored["kind"] == "latent" else observation_correct
+        )
+        try:
+            comparison = external_llm_audit._paired_llm_comparison(latent, observation)
+        finally:
+            external_llm_audit._joint_correctness = original
+
+        self.assertTrue(comparison["content_supported_directional"])
+        self.assertTrue(comparison["content_supported_paired_significance"])
+        self.assertTrue(comparison["content_supported"])
+        self.assertAlmostEqual(
+            comparison["metrics"]["memory"]["one_sided_exact_p_value"],
+            1.0 / 256.0,
+        )
+        self.assertEqual(
+            external_llm_audit._one_sided_exact_sign_p_value(0, 0), 1.0
+        )
+        self.assertTrue(
+            external_llm_audit._terminal_api_blocker(
+                "429 insufficient_quota: credit_balance_exhausted"
+            )
+        )
+        self.assertFalse(external_llm_audit._terminal_api_blocker("temporary timeout"))
 
     def test_stage3_robustness_is_enabled_in_repo_configs(self) -> None:
         for path in (

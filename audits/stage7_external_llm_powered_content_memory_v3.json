@@ -1,0 +1,40 @@
+{
+  "status": "partial",
+  "note": "Powered live external-LLM Stage 7 audit with an exact paired latent-vs-observation sign test. A support claim requires all three joint-content families to show a positive, p<0.05 paired advantage.",
+  "config_base": "configs/stage7_content_memory_v3.yaml",
+  "checkpoint": "outputs/stage7_content_memory_v3/experiment.pt",
+  "model": "gpt-5-mini",
+  "probe_scenes": 32,
+  "calibration_examples": 8,
+  "evaluation_examples": 12,
+  "translator_train_examples": 48,
+  "state_key": "content_memory_state_seq",
+  "slices_requested": [
+    "default",
+    "cue_switch",
+    "intervention_intervened"
+  ],
+  "estimated_api_requests": 72,
+  "latent_interface": {
+    "num_chunks": 32,
+    "num_levels": 8
+  },
+  "slices": {
+    "default": {
+      "status": "blocked",
+      "reason": "RuntimeError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}"
+    },
+    "cue_switch": {
+      "status": "not_attempted",
+      "reason": "terminal API account blocker encountered on an earlier slice"
+    },
+    "intervention_intervened": {
+      "status": "not_attempted",
+      "reason": "terminal API account blocker encountered on an earlier slice"
+    }
+  },
+  "completed_slices": 0,
+  "terminal_api_blocker": "RuntimeError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+  "content_supported_slices": [],
+  "content_supported": false
+}

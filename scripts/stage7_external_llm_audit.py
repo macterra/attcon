@@ -1,9 +1,9 @@
-"""Tiny external-LLM Stage 7 audit for the latent-only reporter route.
+"""External-LLM Stage 7 audit for the latent-only reporter route.
 
-This is intentionally small because it makes live API calls. It compares an external LLM
-on the stricter latent-only interface against observation-only on the same held-out examples.
-If the API/model/quota is unavailable, the script writes a blocked audit artifact instead of
-failing silently.
+It compares an external LLM on the stricter latent-only interface against the same model on
+observation-only prompts for aligned held-out examples. The powered route uses an exact paired
+sign test over per-example joint-content correctness. If the API/model/quota is unavailable,
+the script writes a blocked or partial audit artifact instead of failing silently.
 
 Usage:
     .venv/bin/python scripts/stage7_external_llm_audit.py
@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 from typing import Any
@@ -37,7 +38,7 @@ from attcon.nl_report import (
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run a tiny external-LLM Stage 7 audit.")
+    parser = argparse.ArgumentParser(description="Run an external-LLM Stage 7 audit.")
     parser.add_argument("--config", default="configs/tune_prob_035.yaml")
     parser.add_argument("--checkpoint", default="outputs/tune_prob_035/experiment.pt")
     parser.add_argument("--out", default="audits/stage7_external_llm_tiny_tune_prob_035.json")
@@ -84,10 +85,137 @@ def _summarize_against_observation(scored: dict[str, Any], observation: dict[str
     }
 
 
-def _write(path: Path, payload: dict[str, Any]) -> None:
+def _write(path: Path, payload: dict[str, Any], *, verbose: bool = True) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2))
-    print(json.dumps(payload, indent=2))
-    print(f"\nwrote {path}")
+    if verbose:
+        print(json.dumps(payload, indent=2))
+        print(f"\nwrote {path}")
+
+
+def _joint_correctness(scored: dict[str, Any]) -> dict[str, dict[str, bool]]:
+    """Recover the scorer's per-example Stage 7 joint-content decisions."""
+
+    correctness: dict[str, dict[str, bool]] = {}
+    for item in scored.get("examples", []):
+        response = item["response"]
+        expected = item["expected"]
+        current = bool(
+            response["attended_visible_type"] == expected["attended_visible_type"]
+            and response["attended_digit"] == expected["attended_digit"]
+            and response["glimpse_digit"] == expected["glimpse_digit"]
+            and bool(response["glimpse_target_match"]) == expected["glimpse_target_match"]
+        )
+        memory = bool(
+            response["previous_attended_visible_type"]
+            == expected["previous_attended_visible_type"]
+            and response["previous_attended_digit"] == expected["previous_attended_digit"]
+            and response["previous_glimpse_digit"] == expected["previous_glimpse_digit"]
+        )
+        content_only = bool(
+            response["previous_search_type"] == expected["previous_search_type"]
+            and bool(response["cue_switched"]) == expected["cue_switched"]
+            and bool(response["previous_found_target"]) == expected["previous_found_target"]
+            and response["inspected_count"] == expected["inspected_count"]
+            and response["previous_inspected_count"] == expected["previous_inspected_count"]
+            and bool(response["attended_cell_previously_inspected"])
+            == expected["attended_cell_previously_inspected"]
+            and response["attended_visible_type"] == expected["attended_visible_type"]
+            and response["attended_digit"] == expected["attended_digit"]
+            and response["glimpse_digit"] == expected["glimpse_digit"]
+            and response["previous_attended_visible_type"]
+            == expected["previous_attended_visible_type"]
+            and response["previous_attended_digit"] == expected["previous_attended_digit"]
+            and response["previous_glimpse_digit"] == expected["previous_glimpse_digit"]
+            and bool(response["glimpse_target_match"]) == expected["glimpse_target_match"]
+            and bool(response["found_target"]) == expected["found_target"]
+            and bool(response["relevant_region_inspected"])
+            == expected["relevant_region_inspected"]
+            and bool(response["unresolved_search"]) == expected["unresolved_search"]
+            and bool(response["current_wrong_candidate"])
+            == expected["current_wrong_candidate"]
+            and bool(response["wrong_candidate_history"])
+            == expected["wrong_candidate_history"]
+            and bool(response["revisit_unresolved"]) == expected["revisit_unresolved"]
+            and bool(response["allocation_error"]) == expected["allocation_error"]
+        )
+        correctness[item["example_id"]] = {
+            "current": current,
+            "memory": memory,
+            "content_only": content_only,
+        }
+    return correctness
+
+
+def _one_sided_exact_sign_p_value(wins: int, losses: int) -> float:
+    discordant = wins + losses
+    if discordant == 0:
+        return 1.0
+    return sum(math.comb(discordant, value) for value in range(wins, discordant + 1)) / (
+        2**discordant
+    )
+
+
+def _paired_llm_comparison(
+    latent: dict[str, Any],
+    observation: dict[str, Any],
+    *,
+    alpha: float = 0.05,
+) -> dict[str, Any]:
+    latent_correct = _joint_correctness(latent)
+    observation_correct = _joint_correctness(observation)
+    if latent_correct.keys() != observation_correct.keys():
+        raise ValueError("latent and observation LLM results are not example-aligned")
+
+    metrics: dict[str, Any] = {}
+    for name, aggregate_key in (
+        ("current", "current_content_joint_accuracy"),
+        ("memory", "memory_content_joint_accuracy"),
+        ("content_only", "content_only_joint_accuracy"),
+    ):
+        wins = sum(
+            latent_correct[example_id][name] and not observation_correct[example_id][name]
+            for example_id in latent_correct
+        )
+        losses = sum(
+            observation_correct[example_id][name] and not latent_correct[example_id][name]
+            for example_id in latent_correct
+        )
+        advantage = float(latent[aggregate_key] - observation[aggregate_key])
+        p_value = _one_sided_exact_sign_p_value(wins, losses)
+        metrics[name] = {
+            "latent_accuracy": latent[aggregate_key],
+            "observation_accuracy": observation[aggregate_key],
+            "accuracy_advantage": advantage,
+            "latent_only_wins": wins,
+            "observation_only_wins": losses,
+            "ties": len(latent_correct) - wins - losses,
+            "one_sided_exact_p_value": p_value,
+            "significant_advantage": bool(advantage > 0.0 and p_value < alpha),
+        }
+    directional = all(metrics[name]["accuracy_advantage"] > 0.0 for name in metrics)
+    significant = all(metrics[name]["significant_advantage"] for name in metrics)
+    return {
+        "evaluation_examples": len(latent_correct),
+        "alpha": alpha,
+        "metrics": metrics,
+        "content_supported_directional": directional,
+        "content_supported_paired_significance": significant,
+        "content_supported": significant,
+    }
+
+
+def _terminal_api_blocker(reason: str) -> bool:
+    lowered = reason.lower()
+    return any(
+        marker in lowered
+        for marker in (
+            "insufficient_quota",
+            "credit_balance_exhausted",
+            "no credits remaining",
+            "invalid_api_key",
+        )
+    )
 
 
 def _score_slice(
@@ -158,6 +286,7 @@ def _score_slice(
         },
         "latent_only_llm_summary": _summarize_against_observation(latent_llm, observation),
         "observation_only_llm_summary": _summarize_against_observation(observation_llm, observation),
+        "latent_vs_observation_llm": _paired_llm_comparison(latent_llm, observation_llm),
         "latent_only_llm": latent_llm,
         "observation_only_llm": observation_llm,
     }
@@ -230,62 +359,75 @@ def main() -> None:
         slice_examples["intervention_baseline"] = intervention["baseline_examples"]
         slice_examples["intervention_intervened"] = intervention["intervened_examples"]
 
-    try:
-        slices = {
-            name: _score_slice(
+    payload: dict[str, Any] = {
+        "status": "running",
+        "note": (
+            "Powered live external-LLM Stage 7 audit with an exact paired latent-vs-observation "
+            "sign test. A support claim requires all three joint-content families to show a "
+            "positive, p<0.05 paired advantage."
+            if args.evaluation_examples >= 8
+            else "Small live external-LLM Stage 7 plumbing audit; not powered for support."
+        ),
+        "config_base": args.config,
+        "checkpoint": args.checkpoint,
+        "model": args.model,
+        "probe_scenes": args.probe_scenes,
+        "calibration_examples": args.calibration_examples,
+        "evaluation_examples": args.evaluation_examples,
+        "translator_train_examples": args.translator_train_examples,
+        "state_key": args.state_key,
+        "slices_requested": args.slices,
+        "estimated_api_requests": len(args.slices) * args.evaluation_examples * 2,
+        "latent_interface": {
+            "num_chunks": args.latent_num_chunks,
+            "num_levels": args.latent_num_levels,
+        },
+        "slices": {},
+    }
+    _write(out_path, payload, verbose=False)
+    terminal_blocker = None
+    for slice_index, name in enumerate(args.slices):
+        try:
+            payload["slices"][name] = _score_slice(
                 args=args,
                 examples=slice_examples[name],
                 grid_size=task_cfg.grid_size,
             )
-            for name in args.slices
-        }
-    except Exception as exc:
-        _write(
-            out_path,
-            {
+        except Exception as exc:
+            payload["slices"][name] = {
                 "status": "blocked",
                 "reason": f"{type(exc).__name__}: {exc}",
-                "config_base": args.config,
-                "checkpoint": args.checkpoint,
-                "model": args.model,
-                "probe_scenes": args.probe_scenes,
-                "calibration_examples": args.calibration_examples,
-                "evaluation_examples": args.evaluation_examples,
-                "translator_train_examples": args.translator_train_examples,
-                "state_key": args.state_key,
-                "slices": args.slices,
-                "latent_interface": {
-                    "num_chunks": args.latent_num_chunks,
-                    "num_levels": args.latent_num_levels,
-                },
-            },
-        )
-        return
+            }
+        _write(out_path, payload, verbose=False)
+        print(f"completed slice {name}: {payload['slices'][name]['status']}", flush=True)
+        reason = payload["slices"][name].get("reason", "")
+        if payload["slices"][name]["status"] == "blocked" and _terminal_api_blocker(reason):
+            terminal_blocker = reason
+            for remaining_name in args.slices[slice_index + 1 :]:
+                payload["slices"][remaining_name] = {
+                    "status": "not_attempted",
+                    "reason": "terminal API account blocker encountered on an earlier slice",
+                }
+            break
 
-    _write(
-        out_path,
-        {
-            "status": "complete",
-            "note": (
-                "Tiny live external-LLM Stage 7 audit. This is a plumbing and smoke result, "
-                "not enough sample size for a support claim."
-            ),
-            "config_base": args.config,
-            "checkpoint": args.checkpoint,
-            "model": args.model,
-            "probe_scenes": args.probe_scenes,
-            "calibration_examples": args.calibration_examples,
-            "evaluation_examples": args.evaluation_examples,
-            "translator_train_examples": args.translator_train_examples,
-            "state_key": args.state_key,
-            "slices_requested": args.slices,
-            "latent_interface": {
-                "num_chunks": args.latent_num_chunks,
-                "num_levels": args.latent_num_levels,
-            },
-            "slices": slices,
-        },
+    completed = sum(
+        slice_result.get("status") == "complete"
+        for slice_result in payload["slices"].values()
     )
+    payload["completed_slices"] = completed
+    payload["terminal_api_blocker"] = terminal_blocker
+    payload["status"] = "complete" if completed == len(args.slices) else "partial"
+    payload["content_supported_slices"] = [
+        name
+        for name, slice_result in payload["slices"].items()
+        if slice_result.get("latent_vs_observation_llm", {}).get("content_supported", False)
+    ]
+    payload["content_supported"] = bool(
+        completed == len(args.slices)
+        and payload["content_supported_slices"]
+        and len(payload["content_supported_slices"]) == len(args.slices)
+    )
+    _write(out_path, payload)
 
 
 if __name__ == "__main__":
