@@ -25,6 +25,7 @@ def build_stage8_convergence_audit() -> dict:
     integrated_directional = _load(
         "stage8_integrated_content_directional_multiseed.json"
     )
+    task_induced_routing = _load("stage8_task_induced_routing_sweep.json")
 
     rnn_perturbation = next(
         checkpoint
@@ -89,6 +90,15 @@ def build_stage8_convergence_audit() -> dict:
                 "stage8_same_content_gate_satisfied"
             ],
             "support_boundary": integrated_directional["support_boundary"],
+            "task_induced_routing_pilot_supported": task_induced_routing[
+                "task_induced_routing_pilot_supported"
+            ],
+            "task_induced_supported_endpoint": task_induced_routing["summary"][
+                "supported_endpoint"
+            ],
+            "task_induced_support_boundary": task_induced_routing[
+                "support_boundary"
+            ],
         },
         "comparators": {
             "base_comparators_fail_as_intended": full[
@@ -127,8 +137,9 @@ def build_stage8_convergence_audit() -> dict:
             "reason": (
                 "The integrated assay tracks one identity through binding and access and shows "
                 "seed-robust, disjoint-split directional causal overlap against permuted and "
-                "split-state nulls. It remains an architecturally imposed shared bottleneck, "
-                "not overlap emerging independently across qualifying theory families."
+                "split-state nulls. A learned route also emerges under severe private-lane "
+                "robustness pressure, but not ordinary joint supervision; that result is "
+                "single-seed and remains short of independent qualifying theory families."
             ),
         },
         "comparators_fail_as_predicted": {

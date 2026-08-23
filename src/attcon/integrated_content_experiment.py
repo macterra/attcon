@@ -207,6 +207,80 @@ class IntegratedContentModel(nn.Module):
         )
 
 
+class NeutralRoutingContentModel(IntegratedContentModel):
+    """Dual content lanes with an optional learned binding-to-access route.
+
+    The learned and blocked variants have exactly the same parameters. The routing gate is
+    initialized near closed; no loss directly supervises its value or representational overlap.
+    """
+
+    def __init__(
+        self,
+        config: IntegratedContentConfig,
+        hidden_size: int = 64,
+        *,
+        routing: Literal["learned", "blocked"] = "learned",
+        initial_routing_weight: float = 0.05,
+        private_access_dropout: float = 0.0,
+    ) -> None:
+        if routing not in {"learned", "blocked"}:
+            raise ValueError(f"unknown routing condition: {routing}")
+        if not 0.0 < initial_routing_weight < 1.0:
+            raise ValueError("initial_routing_weight must be strictly between zero and one")
+        if not 0.0 <= private_access_dropout < 1.0:
+            raise ValueError("private_access_dropout must be in [0, 1)")
+        super().__init__(config, hidden_size, mode="split")
+        self.routing = routing
+        self.private_access_dropout = private_access_dropout
+        initial_logit = torch.logit(torch.tensor(float(initial_routing_weight)))
+        self.routing_logit = nn.Parameter(initial_logit)
+
+    def routing_weight(self) -> torch.Tensor:
+        if self.routing == "blocked":
+            return torch.zeros((), device=self.routing_logit.device)
+        return torch.sigmoid(self.routing_logit)
+
+    def forward(
+        self,
+        initial_features: torch.Tensor,
+        content_ids: torch.Tensor,
+        query: torch.Tensor,
+        transition: torch.Tensor,
+        *,
+        binding_state_override: torch.Tensor | None = None,
+    ) -> IntegratedPrediction:
+        binding_state, private_access_state = self.initial_states(
+            initial_features, content_ids, query
+        )
+        if binding_state_override is not None:
+            binding_state = binding_state_override
+        if self.training and self.private_access_dropout:
+            keep = torch.rand(
+                private_access_state.shape[0],
+                1,
+                device=private_access_state.device,
+            ).ge(self.private_access_dropout)
+            private_access_state = (
+                private_access_state
+                * keep
+                / (1.0 - self.private_access_dropout)
+            )
+        weight = self.routing_weight()
+        access_initial_state = (
+            weight * binding_state + (1.0 - weight) * private_access_state
+        )
+        access_state = self.transition(transition, access_initial_state)
+        return IntegratedPrediction(
+            location=self.location_head(binding_state),
+            feature_type=self.feature_type_head(binding_state),
+            value=self.value_head(binding_state),
+            access_answer=self.access_head(access_state),
+            binding_state=binding_state,
+            access_initial_state=access_initial_state,
+            access_state=access_state,
+        )
+
+
 def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 

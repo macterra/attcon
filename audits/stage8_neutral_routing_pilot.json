@@ -1,0 +1,142 @@
+{
+  "all_neutral_routing_gates_pass": false,
+  "all_routing_gates_pass": false,
+  "audit": "stage8_neutral_routing_pilot",
+  "config": {
+    "alpha": 1.0,
+    "batch_size": 256,
+    "content_id_vocab_size": 16,
+    "data_seed": 997,
+    "device": "cpu",
+    "episode_count": 2048,
+    "epochs": 30,
+    "feature_type_vocab_size": 5,
+    "grid_size": 5,
+    "heldout_count": 1644,
+    "heldout_modulus": 5,
+    "hidden_size": 64,
+    "initial_routing_weight": 0.05,
+    "learning_rate": 0.003,
+    "model_seed": 1009,
+    "null_seed": 1013,
+    "num_objects": 7,
+    "private_access_dropout": 0.0,
+    "train_count": 6548,
+    "value_vocab_size": 10
+  },
+  "gates": {
+    "binding_other_fields_stability": true,
+    "blocked_task_joint_accuracy": true,
+    "final_routing_weight": false,
+    "joint_advantage_over_permuted_direction": false,
+    "joint_coordination_advantage_over_blocked": false,
+    "learned_joint_directional_follow": false,
+    "learned_task_joint_accuracy": true,
+    "parameters_exactly_matched": true,
+    "routing_weight_increase": false
+  },
+  "models": {
+    "blocked": {
+      "final_epoch_loss": 0.007756193584911002,
+      "final_routing_weight": 0.0,
+      "heldout": {
+        "access_accuracy": 1.0,
+        "access_accuracy_by_status": {
+          "counterfactually_accessible": 1.0,
+          "merely_visible": 1.0,
+          "previously_attended": 1.0,
+          "unavailable": 1.0
+        },
+        "binding_and_access_joint_accuracy": 1.0,
+        "binding_joint_accuracy": 1.0,
+        "count": 1644,
+        "false_binding_lure_rejection": 1.0
+      },
+      "initial_epoch_loss": 8.393287491492549,
+      "initial_routing_weight": 0.05000000074505806,
+      "learned_logit_sigmoid": 0.05000000074505806,
+      "parameter_count": 22004,
+      "permuted_label_direction": {
+        "accessible_access_donor_follow_rate": 0.0,
+        "accessible_binding_access_joint_donor_follow_rate": 0.0,
+        "alpha": 1.0,
+        "binding_other_fields_stability": 1.0,
+        "binding_value_donor_follow_rate": 0.0,
+        "mean_direction_norm": 0.2549089789390564,
+        "unavailable_unknown_retention_rate": 1.0
+      },
+      "true_direction": {
+        "accessible_access_donor_follow_rate": 0.0,
+        "accessible_binding_access_joint_donor_follow_rate": 0.0,
+        "alpha": 1.0,
+        "binding_other_fields_stability": 1.0,
+        "binding_value_donor_follow_rate": 1.0,
+        "mean_direction_norm": 3.570870876312256,
+        "unavailable_unknown_retention_rate": 1.0
+      }
+    },
+    "learned": {
+      "final_epoch_loss": 0.007753401991291678,
+      "final_routing_weight": 0.04027264192700386,
+      "heldout": {
+        "access_accuracy": 1.0,
+        "access_accuracy_by_status": {
+          "counterfactually_accessible": 1.0,
+          "merely_visible": 1.0,
+          "previously_attended": 1.0,
+          "unavailable": 1.0
+        },
+        "binding_and_access_joint_accuracy": 1.0,
+        "binding_joint_accuracy": 1.0,
+        "count": 1644,
+        "false_binding_lure_rejection": 1.0
+      },
+      "initial_epoch_loss": 8.40366859121445,
+      "initial_routing_weight": 0.05000000074505806,
+      "learned_logit_sigmoid": 0.04027264192700386,
+      "parameter_count": 22004,
+      "permuted_label_direction": {
+        "accessible_access_donor_follow_rate": 0.0,
+        "accessible_binding_access_joint_donor_follow_rate": 0.0,
+        "alpha": 1.0,
+        "binding_other_fields_stability": 1.0,
+        "binding_value_donor_follow_rate": 0.0,
+        "mean_direction_norm": 0.2549037039279938,
+        "unavailable_unknown_retention_rate": 1.0
+      },
+      "true_direction": {
+        "accessible_access_donor_follow_rate": 0.0,
+        "accessible_binding_access_joint_donor_follow_rate": 0.0,
+        "alpha": 1.0,
+        "binding_other_fields_stability": 1.0,
+        "binding_value_donor_follow_rate": 1.0,
+        "mean_direction_norm": 3.569288492202759,
+        "unavailable_unknown_retention_rate": 1.0
+      }
+    }
+  },
+  "next_experiment": "If routing emerges, repeat across seeds and architectures; if it does not, vary task pressure without directly supervising the gate or overlap.",
+  "observed": {
+    "binding_other_fields_stability": 1.0,
+    "blocked_task_joint_accuracy": 1.0,
+    "final_routing_weight": 0.04027264192700386,
+    "joint_advantage_over_permuted_direction": 0.0,
+    "joint_coordination_advantage_over_blocked": 0.0,
+    "learned_joint_directional_follow": 0.0,
+    "learned_task_joint_accuracy": 1.0,
+    "routing_weight_increase": -0.0097273588180542
+  },
+  "predeclared_thresholds": {
+    "binding_other_fields_stability": 0.9,
+    "blocked_task_joint_accuracy": 0.9,
+    "final_routing_weight": 0.2,
+    "joint_advantage_over_permuted_direction": 0.4,
+    "joint_coordination_advantage_over_blocked": 0.4,
+    "learned_joint_directional_follow": 0.6,
+    "learned_task_joint_accuracy": 0.9,
+    "routing_weight_increase": 0.1
+  },
+  "scope": "single-seed dual-lane pilot; the cross-lane gate starts near closed and receives no direct overlap supervision or private-lane robustness pressure",
+  "stage8_same_content_gate_satisfied": false,
+  "status": "neutral_routing_unsupported"
+}

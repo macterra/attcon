@@ -77,6 +77,7 @@ from attcon.integrated_content import (
 )
 from attcon.integrated_content_experiment import (
     IntegratedContentModel,
+    NeutralRoutingContentModel,
     parameter_count as integrated_parameter_count,
     tensorize_integrated_content_examples,
     value_direction_intervention_metrics,
@@ -130,6 +131,7 @@ from attcon.train import load_config
 from scripts.stage4b_emergence import _scale_sweep_summary
 from scripts.stage8_convergence_audit import build_stage8_convergence_audit
 from scripts.stage8_integrated_content_scaffold import build_scaffold_audit
+from scripts.stage8_task_induced_routing_sweep import build_sweep
 import scripts.stage7_external_llm_audit as external_llm_audit
 from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
@@ -229,6 +231,20 @@ class AttentionControlTests(unittest.TestCase):
                     self.assertGreaterEqual(value, 0.0)
                     self.assertLessEqual(value, 1.0)
         self.assertGreater(real["mean_direction_norm"], null["mean_direction_norm"])
+
+    def test_stage8_neutral_routing_control_is_exactly_parameter_matched(self) -> None:
+        config = IntegratedContentConfig()
+        learned = NeutralRoutingContentModel(config, hidden_size=16, routing="learned")
+        blocked = NeutralRoutingContentModel(config, hidden_size=16, routing="blocked")
+        self.assertEqual(
+            integrated_parameter_count(learned), integrated_parameter_count(blocked)
+        )
+        self.assertAlmostEqual(learned.routing_weight().item(), 0.05, places=6)
+        self.assertEqual(blocked.routing_weight().item(), 0.0)
+        sweep = build_sweep()
+        self.assertTrue(sweep["task_induced_routing_pilot_supported"])
+        self.assertFalse(sweep["summary"]["no_pressure_supported"])
+        self.assertEqual(sweep["summary"]["supported_condition_count"], 1)
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)
