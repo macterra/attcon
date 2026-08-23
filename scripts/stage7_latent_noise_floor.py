@@ -1,11 +1,10 @@
 """Stage 7 latent-only permuted-label noise floor.
 
-The latent-only decoder's ``content_supported`` gate (in ``scripts/stage7_latent_followup.py``
-and the content-memory pilots) is a bare directional test: ``current_adv > 0 and memory_adv > 0
-and content_adv > 0``. On a 24-example evaluation slice, a joint-accuracy advantage of ``+1/24``
-(``0.0417``) is enough to flip it to ``True`` — with no significance floor. This audit supplies
-the missing floor, mirroring :func:`attcon.eval.noise_floor_metrics` (built for the Stage 6A
-controller-vs-observation advantage): it refits the latent decoder many times with the fit-time
+The latent-only decoder originally used a bare directional gate: ``current_adv > 0 and
+memory_adv > 0 and content_adv > 0``. On a 24-example evaluation slice, a joint-accuracy
+advantage of ``+1/24`` (``0.0417``) was enough to flip it to ``True``. The shared reporter now
+uses this permuted-label floor as its primary support gate. This standalone audit remains the
+powered runner for published artifacts: it refits the latent decoder many times with fit-time
 labels permuted (features held fixed), so the feature-to-label association is destroyed and no
 real state-to-content signal can survive. The p95 of the permuted advantage is a data-driven
 significance floor; a real advantage that does not clear it is indistinguishable from probe-fit
@@ -25,7 +24,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import torch
 
 from attcon.data import generate_batch
@@ -40,16 +38,11 @@ from attcon.eval import (
     make_generator,
 )
 from attcon.nl_report import (
-    run_latent_only_report_mode,
+    run_latent_content_noise_floor,
     run_observation_only_heuristic_report_mode,
 )
 
 INTERFACES = ((8, 4), (16, 8), (32, 8), (48, 8))
-JOINT_KEYS = (
-    ("current_content_joint_accuracy", "current"),
-    ("memory_content_joint_accuracy", "memory"),
-    ("content_only_joint_accuracy", "content_only"),
-)
 
 
 def parse_args() -> argparse.Namespace:
@@ -131,65 +124,21 @@ def _score_interface(
     num_chunks: int,
     num_levels: int,
     permutations: int,
-    rng: torch.Generator,
+    permutation_seed: int,
     init_seed: int,
 ) -> dict[str, Any]:
-    # Fix the probe weight-init RNG before every decode so the observed and permuted decodes
-    # differ *only* by the fit-time labels — a pure label-permutation test, not a test polluted
-    # by probe-init variance. The permutation draws come from a separate generator (`rng`), so
-    # reseeding the global RNG here does not disturb the permutation sequence.
-    torch.manual_seed(init_seed)
-    observed = run_latent_only_report_mode(
+    return run_latent_content_noise_floor(
         fit_examples=fit,
         evaluation_examples=evaluation,
+        observation_metrics=observation,
         grid_size=grid_size,
         num_chunks=num_chunks,
         num_levels=num_levels,
-    )
-    observed_adv = {
-        name: float(observed[key] - observation[key]) for key, name in JOINT_KEYS
-    }
-
-    null_adv: dict[str, list[float]] = {name: [] for _, name in JOINT_KEYS}
-    n = len(fit)
-    for _ in range(permutations):
-        perm = torch.randperm(n, generator=rng).tolist()
-        torch.manual_seed(init_seed)
-        scored = run_latent_only_report_mode(
-            fit_examples=fit,
-            evaluation_examples=evaluation,
-            grid_size=grid_size,
-            num_chunks=num_chunks,
-            num_levels=num_levels,
-            label_permutation=perm,
-        )
-        for key, name in JOINT_KEYS:
-            null_adv[name].append(float(scored[key] - observation[key]))
-
-    result: dict[str, Any] = {"permutations": permutations}
-    all_cleared = True
-    for _, name in JOINT_KEYS:
-        arr = np.asarray(null_adv[name], dtype=float)
-        p95 = float(np.percentile(arr, 95))
-        cleared = bool(observed_adv[name] > p95)
-        all_cleared = all_cleared and cleared
-        result[name] = {
-            "observed_advantage": round(observed_adv[name], 6),
-            "permuted_mean": round(float(arr.mean()), 6),
-            "permuted_p95": round(p95, 6),
-            "permuted_max": round(float(arr.max()), 6),
-            "clears_floor": cleared,
-        }
-    # Directional gate (what the pilots currently report) vs floor-aware gate.
-    result["content_supported_directional"] = bool(
-        observed_adv["current"] > 0.0 and observed_adv["memory"] > 0.0 and observed_adv["content_only"] > 0.0
-    )
-    result["content_supported_vs_floor"] = bool(
-        result["current"]["clears_floor"]
-        and result["memory"]["clears_floor"]
-        and result["content_only"]["clears_floor"]
-    )
-    return result
+        permutations=permutations,
+        percentile=95.0,
+        permutation_seed=permutation_seed,
+        probe_init_seed=init_seed,
+    )["noise_floor"]
 
 
 def main() -> None:
@@ -240,11 +189,8 @@ def main() -> None:
         "intervention_intervened": intervention["intervened_examples"],
     }
 
-    rng = torch.Generator()
-    rng.manual_seed(args.permutation_seed)
-
     slices: dict[str, Any] = {}
-    for slice_name, examples in slice_examples.items():
+    for slice_index, (slice_name, examples) in enumerate(slice_examples.items()):
         fit, evaluation, observation = _build_fit_eval(
             examples,
             grid_size=task_cfg.grid_size,
@@ -253,7 +199,11 @@ def main() -> None:
             translator_train_examples=args.translator_train_examples,
         )
         interfaces: dict[str, Any] = {}
-        for num_chunks, num_levels in _selected_interfaces(args.interfaces):
+        for interface_index, (num_chunks, num_levels) in enumerate(
+            _selected_interfaces(args.interfaces)
+        ):
+            # Give each cell a deterministic independent permutation stream.
+            cell_seed = args.permutation_seed + slice_index * 1000 + interface_index
             interfaces[f"{num_chunks}x{num_levels}"] = _score_interface(
                 fit=fit,
                 evaluation=evaluation,
@@ -262,7 +212,7 @@ def main() -> None:
                 num_chunks=num_chunks,
                 num_levels=num_levels,
                 permutations=args.permutations,
-                rng=rng,
+                permutation_seed=cell_seed,
                 init_seed=args.permutation_seed,
             )
         slices[slice_name] = {
@@ -277,8 +227,9 @@ def main() -> None:
             "interface width, the decoder is refit `permutations` times with fit-time labels "
             "shuffled (features fixed), giving a null distribution of the content advantage. A "
             "content claim is credible only if the observed advantage clears the permuted-label "
-            "p95 floor; `content_supported_directional` is the bare >0 gate the pilots currently "
-            "report, shown alongside for contrast."
+            "p95 floor. `content_supported` and `content_supported_vs_floor` are the primary "
+            "significance-aware gates; `content_supported_directional` is retained only for "
+            "comparison with older pilots."
         ),
         "config_base": args.config,
         "checkpoint": args.checkpoint,

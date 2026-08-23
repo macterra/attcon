@@ -46,6 +46,7 @@ from attcon.nl_report import (
     collect_intervention_nl_examples,
     collect_nl_examples,
     run_calibrated_token_report_mode,
+    run_latent_content_noise_floor,
     run_latent_only_report_mode,
     run_nl_report_mode,
     run_observation_only_heuristic_report_mode,
@@ -765,6 +766,73 @@ class AttentionControlTests(unittest.TestCase):
         # A malformed permutation is rejected rather than silently mis-scored.
         with self.assertRaises(ValueError):
             run_latent_only_report_mode(**kwargs, label_permutation=[0] * len(examples))
+
+    def test_latent_content_support_is_gated_by_permuted_label_floor(self) -> None:
+        examples = [object(), object(), object()]
+        observation = {
+            "current_content_joint_accuracy": 0.0,
+            "memory_content_joint_accuracy": 0.0,
+            "content_only_joint_accuracy": 0.0,
+        }
+
+        def fake_latent_decoder(**kwargs):
+            # The observed result is directionally positive, but every permuted-label result
+            # is larger. This is the exact false-positive case the calibrated gate must reject.
+            score = 0.1 if kwargs.get("label_permutation") is None else 0.2
+            return {
+                "current_content_joint_accuracy": score,
+                "memory_content_joint_accuracy": score,
+                "content_only_joint_accuracy": score,
+            }
+
+        # The audit must not alter later evaluation randomness.
+        torch.manual_seed(31415)
+        expected_next_random = torch.rand(1)
+        torch.manual_seed(31415)
+        original_decoder = nl_report_module.run_latent_only_report_mode
+        nl_report_module.run_latent_only_report_mode = fake_latent_decoder
+        try:
+            audit = run_latent_content_noise_floor(
+                fit_examples=examples,
+                evaluation_examples=examples,
+                observation_metrics=observation,
+                grid_size=self.task_cfg.grid_size,
+                num_chunks=8,
+                num_levels=4,
+                permutations=3,
+                permutation_seed=19,
+                probe_init_seed=23,
+            )
+        finally:
+            nl_report_module.run_latent_only_report_mode = original_decoder
+        actual_next_random = torch.rand(1)
+
+        floor = audit["noise_floor"]
+        self.assertTrue(torch.equal(actual_next_random, expected_next_random))
+        self.assertEqual(floor["permutations"], 3)
+        self.assertEqual(floor["percentile"], 95.0)
+        self.assertTrue(floor["content_supported_directional"])
+        self.assertFalse(floor["content_supported_vs_floor"])
+        self.assertFalse(floor["content_supported"])
+        self.assertEqual(
+            floor["content_supported"], floor["content_supported_vs_floor"]
+        )
+        self.assertEqual(
+            floor["content_supported_vs_floor"],
+            all(floor[name]["clears_floor"] for name in ("current", "memory", "content_only")),
+        )
+        for name in ("current", "memory", "content_only"):
+            self.assertIn("permuted_p95", floor[name])
+            self.assertIn("observed_advantage", floor[name])
+
+        with self.assertRaises(ValueError):
+            run_latent_content_noise_floor(
+                fit_examples=examples,
+                evaluation_examples=examples,
+                observation_metrics=observation,
+                grid_size=self.task_cfg.grid_size,
+                permutations=0,
+            )
 
     def test_nl_report_metrics_include_capacity_audit_for_local_reporter(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)

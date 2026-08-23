@@ -159,9 +159,16 @@ Remaining sub-steps (the real next work):
   single-init-seed, current-content recovery is partly circular by construction (the visible-glimpse
   is fed into the report state it is scored from), and cross-seed/architecture/benchmark replication
   is absent. Significance is established; robustness and non-circularity are not.
-- [ ] Replace the bare `content_supported = (current>0 and memory>0 and content_only>0)` gate in the
+- [x] Replace the bare `content_supported = (current>0 and memory>0 and content_only>0)` gate in the
   latent pilots with the permuted-label floor gate (`content_supported_vs_floor`), so future Stage 7
-  checkpoints report significance rather than direction.
+  checkpoints report significance rather than direction. Implemented in
+  `run_latent_content_noise_floor`: the observed and null decoders share probe initialization, only
+  fit-time labels are permuted, and global RNG state is preserved. The follow-up pilot now runs a
+  configurable p95 audit (12 permutations by default) for every slice/interface and assigns its
+  primary `content_supported` field from the calibrated gate; the old result remains explicitly
+  labeled `content_supported_directional`. Published claims should continue to use a powered
+  standalone run (80-200 permutations), because the integrated default is a regression guard rather
+  than a high-resolution estimate of the null tail.
 - [x] Replicate v3 across 3 fresh training seeds (107/207/307, stride 100 from v3's seed 7;
   `configs/stage7_content_memory_v3_seed*.yaml`, `scripts/stage7_multiseed_v3.sh`,
   `audits/stage7_latent_noise_floor_v3_seed*.json`). All three checkpoints are task-viable

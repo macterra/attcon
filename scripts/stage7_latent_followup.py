@@ -39,7 +39,7 @@ from attcon.nl_report import (
     _fit_multiclass_probe,
     _latent_multiclass_fields,
     _score_local_report_payloads,
-    run_latent_only_report_mode,
+    run_latent_content_noise_floor,
     run_observation_only_heuristic_report_mode,
 )
 
@@ -86,6 +86,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--translator-train-examples", type=int, default=TRANSLATOR_TRAIN_EXAMPLES)
     parser.add_argument("--seed-offset", type=int, default=SEED_OFFSET)
     parser.add_argument("--state-key", default="controller_state_seq")
+    parser.add_argument("--permutations", type=int, default=12)
+    parser.add_argument("--noise-floor-percentile", type=float, default=95.0)
+    parser.add_argument("--permutation-seed", type=int, default=20260705)
     return parser.parse_args()
 
 
@@ -246,6 +249,9 @@ def _score_slice(
     calibration_examples: int,
     evaluation_examples: int,
     translator_train_examples: int,
+    permutations: int,
+    noise_floor_percentile: float,
+    permutation_seed: int,
 ) -> dict[str, Any]:
     examples = [example for example in examples if example.step_index > 0]
     required = calibration_examples + evaluation_examples
@@ -273,7 +279,11 @@ def _score_slice(
         grid_size=grid_size,
     )
 
-    def summarize(scored: dict[str, Any]) -> dict[str, Any]:
+    def summarize(
+        scored: dict[str, Any],
+        *,
+        noise_floor: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         current_adv = scored["current_content_joint_accuracy"] - observation["current_content_joint_accuracy"]
         memory_adv = scored["memory_content_joint_accuracy"] - observation["memory_content_joint_accuracy"]
         content_adv = scored["content_only_joint_accuracy"] - observation["content_only_joint_accuracy"]
@@ -296,17 +306,29 @@ def _score_slice(
             ),
             key=lambda item: (item["accuracy"], item["advantage"], item["field"]),
         )
-        summary = {
+        directional_support = bool(
+            current_adv > 0.0 and memory_adv > 0.0 and content_adv > 0.0
+        )
+        summary: dict[str, Any] = {
             "current_content_joint_accuracy_advantage": round(current_adv, 6),
             "memory_content_joint_accuracy_advantage": round(memory_adv, 6),
             "content_only_joint_accuracy_advantage": round(content_adv, 6),
-            "content_supported": bool(
-                current_adv > 0.0 and memory_adv > 0.0 and content_adv > 0.0
-            ),
+            "content_supported_directional": directional_support,
             "content_only_field_accuracies": field_accuracies,
             "content_only_field_accuracy_advantages": field_advantages,
             "content_only_bottleneck_fields": bottleneck_fields[:5],
         }
+        if noise_floor is not None:
+            summary["noise_floor"] = noise_floor
+            summary["content_supported_vs_floor"] = bool(
+                noise_floor["content_supported_vs_floor"]
+            )
+            # The primary support field now means statistically calibrated support. The bare
+            # directional result remains available above, but can no longer flip this claim.
+            summary["content_supported"] = summary["content_supported_vs_floor"]
+        else:
+            # Continuous probes are bottleneck diagnostics, not calibrated reporter claims.
+            summary["content_supported"] = None
         for field in (
             "attended_visible_type_accuracy",
             "attended_digit_accuracy",
@@ -319,15 +341,24 @@ def _score_slice(
         return summary
 
     quantized_runs = {}
-    for num_chunks, num_levels in ((8, 4), (16, 8), (32, 8), (48, 8)):
-        scored = run_latent_only_report_mode(
+    for interface_index, (num_chunks, num_levels) in enumerate(
+        ((8, 4), (16, 8), (32, 8), (48, 8))
+    ):
+        audit = run_latent_content_noise_floor(
             fit_examples=fit,
             evaluation_examples=evaluation,
+            observation_metrics=observation,
             grid_size=grid_size,
             num_chunks=num_chunks,
             num_levels=num_levels,
+            permutations=permutations,
+            percentile=noise_floor_percentile,
+            permutation_seed=permutation_seed + interface_index,
+            probe_init_seed=permutation_seed,
         )
-        quantized_runs[f"{num_chunks}x{num_levels}"] = summarize(scored)
+        quantized_runs[f"{num_chunks}x{num_levels}"] = summarize(
+            audit["observed"], noise_floor=audit["noise_floor"]
+        )
 
     continuous = _run_continuous_state_probe(
         fit_examples=fit,
@@ -426,6 +457,12 @@ def main() -> None:
         "evaluation_examples": args.evaluation_examples,
         "translator_train_examples": args.translator_train_examples,
         "state_key": args.state_key,
+        "noise_floor": {
+            "permutations": args.permutations,
+            "percentile": args.noise_floor_percentile,
+            "permutation_seed": args.permutation_seed,
+            "claim_gate": "content_supported_vs_floor",
+        },
         "slices": {
             "default": _score_slice(
                 default_examples,
@@ -433,6 +470,9 @@ def main() -> None:
                 calibration_examples=args.calibration_examples,
                 evaluation_examples=args.evaluation_examples,
                 translator_train_examples=args.translator_train_examples,
+                permutations=args.permutations,
+                noise_floor_percentile=args.noise_floor_percentile,
+                permutation_seed=args.permutation_seed,
             ),
             "cue_switch": _score_slice(
                 cue_switch_examples,
@@ -440,6 +480,9 @@ def main() -> None:
                 calibration_examples=args.calibration_examples,
                 evaluation_examples=args.evaluation_examples,
                 translator_train_examples=args.translator_train_examples,
+                permutations=args.permutations,
+                noise_floor_percentile=args.noise_floor_percentile,
+                permutation_seed=args.permutation_seed + 1000,
             ),
             "intervention_baseline": _score_slice(
                 intervention["baseline_examples"],
@@ -447,6 +490,9 @@ def main() -> None:
                 calibration_examples=args.calibration_examples,
                 evaluation_examples=args.evaluation_examples,
                 translator_train_examples=args.translator_train_examples,
+                permutations=args.permutations,
+                noise_floor_percentile=args.noise_floor_percentile,
+                permutation_seed=args.permutation_seed + 2000,
             ),
             "intervention_intervened": _score_slice(
                 intervention["intervened_examples"],
@@ -454,6 +500,9 @@ def main() -> None:
                 calibration_examples=args.calibration_examples,
                 evaluation_examples=args.evaluation_examples,
                 translator_train_examples=args.translator_train_examples,
+                permutations=args.permutations,
+                noise_floor_percentile=args.noise_floor_percentile,
+                permutation_seed=args.permutation_seed + 3000,
             ),
         },
     }

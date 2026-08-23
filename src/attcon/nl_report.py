@@ -1141,6 +1141,113 @@ def run_latent_only_report_mode(
     return scored
 
 
+def run_latent_content_noise_floor(
+    *,
+    fit_examples: list[NLExample],
+    evaluation_examples: list[NLExample],
+    observation_metrics: dict[str, Any],
+    grid_size: int,
+    num_chunks: int = LATENT_NUM_CHUNKS,
+    num_levels: int = LATENT_NUM_LEVELS,
+    permutations: int = 12,
+    percentile: float = 95.0,
+    permutation_seed: int = 20260705,
+    probe_init_seed: int | None = None,
+) -> dict[str, Any]:
+    """Evaluate latent content recovery against a permuted-label noise floor.
+
+    The observed decoder and every null decoder use the same probe initialization; only the
+    association between fit-time features and labels changes. The returned ``content_supported``
+    field is therefore significance-aware. ``content_supported_directional`` preserves the old
+    bare ``> 0`` pilot criterion for diagnosis, but must not be used as the research claim gate.
+
+    Global torch RNG state is restored on return so enabling the audit cannot perturb later
+    evaluation routines.
+    """
+
+    if permutations < 1:
+        raise ValueError("permutations must be at least 1")
+    if not 0.0 <= percentile <= 100.0:
+        raise ValueError("percentile must be between 0 and 100")
+    if not fit_examples:
+        raise ValueError("fit_examples must not be empty")
+
+    joint_keys = (
+        ("current_content_joint_accuracy", "current"),
+        ("memory_content_joint_accuracy", "memory"),
+        ("content_only_joint_accuracy", "content_only"),
+    )
+    init_seed = permutation_seed if probe_init_seed is None else probe_init_seed
+    permutation_generator = torch.Generator().manual_seed(permutation_seed)
+
+    with torch.random.fork_rng(devices=[]):
+        torch.manual_seed(init_seed)
+        observed = run_latent_only_report_mode(
+            fit_examples=fit_examples,
+            evaluation_examples=evaluation_examples,
+            grid_size=grid_size,
+            num_chunks=num_chunks,
+            num_levels=num_levels,
+        )
+        observed_advantages = {
+            name: float(observed[key] - observation_metrics[key])
+            for key, name in joint_keys
+        }
+
+        null_advantages: dict[str, list[float]] = {name: [] for _, name in joint_keys}
+        for _ in range(permutations):
+            label_permutation = torch.randperm(
+                len(fit_examples), generator=permutation_generator
+            ).tolist()
+            torch.manual_seed(init_seed)
+            permuted = run_latent_only_report_mode(
+                fit_examples=fit_examples,
+                evaluation_examples=evaluation_examples,
+                grid_size=grid_size,
+                num_chunks=num_chunks,
+                num_levels=num_levels,
+                label_permutation=label_permutation,
+            )
+            for key, name in joint_keys:
+                null_advantages[name].append(
+                    float(permuted[key] - observation_metrics[key])
+                )
+
+    floor_metrics: dict[str, Any] = {
+        "permutations": permutations,
+        "percentile": percentile,
+        "permutation_seed": permutation_seed,
+        "probe_init_seed": init_seed,
+    }
+    for _, name in joint_keys:
+        null_tensor = torch.tensor(null_advantages[name], dtype=torch.float64)
+        floor = float(torch.quantile(null_tensor, percentile / 100.0).item())
+        observed_advantage = observed_advantages[name]
+        floor_metrics[name] = {
+            "observed_advantage": round(observed_advantage, 6),
+            "permuted_mean": round(float(null_tensor.mean().item()), 6),
+            "permuted_percentile": round(floor, 6),
+            "permuted_max": round(float(null_tensor.max().item()), 6),
+            "clears_floor": bool(observed_advantage > floor),
+        }
+        if percentile == 95.0:
+            # Preserve the established audit schema for its standard p95 configuration.
+            floor_metrics[name]["permuted_p95"] = round(floor, 6)
+
+    floor_metrics["content_supported_directional"] = all(
+        observed_advantages[name] > 0.0
+        for name in ("current", "memory", "content_only")
+    )
+    floor_metrics["content_supported_vs_floor"] = all(
+        floor_metrics[name]["clears_floor"]
+        for name in ("current", "memory", "content_only")
+    )
+    # Primary claim gate. Keep the explicit alias above so old and new audit artifacts remain
+    # easy to compare without allowing a directional result to masquerade as support.
+    floor_metrics["content_supported"] = floor_metrics["content_supported_vs_floor"]
+    return {"observed": observed, "noise_floor": floor_metrics}
+
+
 def _render_observation_only(
     visible_types: torch.Tensor,
     observation: torch.Tensor,
