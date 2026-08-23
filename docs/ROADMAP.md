@@ -810,8 +810,8 @@ Branch F should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold only (`attcon.broadcast`); trained shared-broadcast experiment not yet implemented
-- positive evidence: no
+- implemented: benchmark scaffold plus exactly matched shared/private consumer models, onset tests, shared-state ablation, and content-swap interventions
+- positive evidence: yes, engineering support under an imposed shared bottleneck and supervised consumers
 - supported: no
 
 Implementation note:
@@ -826,6 +826,21 @@ it. The 4,095-case audit (`audits/branch_f_broadcast_dataset.json`) contains 819
 consumer onset alignment, and below-threshold broad-consumer unavailability. The next experiment
 must compare a shared broadcast bottleneck against capacity-matched private heads and produce
 coordinated, content-specific intervention effects. The scaffold itself is not evidence for Branch F.
+
+The first trained pilot (`audits/branch_f_broadcast_pilot.json`) gives the shared and private-
+shortcut systems exactly 12,309 parameters. Both reach `1.00` held-out accuracy on action,
+structured report, uncertainty, reallocation, memory, and language-shaped report, demonstrating
+that the comparator is fully viable. Shared onset accuracy and alignment are `1.00`; independently
+routed private onset reaches `0.674` accuracy and `0.557` alignment. Zeroing the shared broadcast
+state drops mean broad-consumer accuracy by `0.900`, while zeroing one private route drops the five-
+consumer mean by `0.183`, a `0.717` coordinated-ablation advantage. Swapping the shared content
+state moves all broad outputs to the donor target at `1.00` while leaving local action unchanged.
+All predeclared engineering gates pass.
+
+This remains engineering support rather than Branch F theoretical support. The benchmark directly
+supervises every consumer and the architecture imposes the candidate bottleneck. Spontaneous
+broadcast would require aligned multi-consumer availability and coordinated causal dependence to
+emerge without shared-state or ignition supervision, ideally in the original controller family.
 
 Consciousness-evidence role:
 
@@ -1133,7 +1148,7 @@ Branch builds:
 - [x] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
 - [~] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state (engineering gates pass; unsupervised/task-only emergence remains)
 - [x] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
-- [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests
+- [~] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests (engineering gates pass; spontaneous/task-only emergence remains)
 - [ ] add perturbational-complexity diagnostics over controller and self-model state
 
 Cross-system replication:

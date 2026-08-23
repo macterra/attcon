@@ -47,6 +47,13 @@ from attcon.broadcast import (
     validate_broadcast_example,
     validate_broadcast_sweep,
 )
+from attcon.broadcast_experiment import (
+    BroadcastConsumerModel,
+    broadcast_intervention_metrics,
+    broadcast_metrics as trained_broadcast_metrics,
+    parameter_count as broadcast_parameter_count,
+    tensorize_broadcast_examples,
+)
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.higher_order import (
     HIGHER_ORDER_STATUSES,
@@ -233,6 +240,30 @@ class AttentionControlTests(unittest.TestCase):
         self.assertEqual(
             {example.split for example in examples},
             {"train", "heldout_content_strength"},
+        )
+
+    def test_branch_f_shared_and_private_models_are_exactly_parameter_matched(self) -> None:
+        config = BroadcastConfig()
+        examples = generate_broadcast_examples(50, config=config, seed=53)
+        tensors = tensorize_broadcast_examples(examples, config)
+        shared = BroadcastConsumerModel(config, hidden_size=16, shared=True)
+        private = BroadcastConsumerModel(config, hidden_size=16, shared=False)
+        self.assertEqual(
+            broadcast_parameter_count(shared), broadcast_parameter_count(private)
+        )
+        metrics = trained_broadcast_metrics(shared, tensors)
+        self.assertEqual(set(metrics["consumer_accuracy"]), set(CONSUMERS))
+        interventions = broadcast_intervention_metrics(shared, private, tensors)
+        self.assertEqual(
+            set(interventions),
+            {
+                "shared_broad_accuracy_drop_after_zero",
+                "private_mean_broad_accuracy_drop_after_one_route_zero",
+                "coordinated_ablation_drop_advantage",
+                "shared_content_swap_broad_follow_rate",
+                "local_action_invariance_under_shared_swap",
+                "ignited_intervention_count",
+            },
         )
 
     def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
