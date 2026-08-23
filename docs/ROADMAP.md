@@ -595,9 +595,9 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold plus an exactly matched recurrent-access/no-cache pilot and causal cache/observation interventions
-- positive evidence: no
-- supported: no
+- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent-access/no-cache pilot, and causal cache/observation interventions
+- positive evidence: yes, for relational access; no for an unstructured GRU
+- supported: yes, bounded; not robust
 
 Implementation note:
 
@@ -620,8 +620,19 @@ no-cache comparator is exactly parameter matched. The access route reaches `1.00
 state; the no-cache route is also `0.00`. All held-out keys and answers occur individually in
 training, while zero held-out pairs leak. This is a substantive negative result: the unstructured
 GRU memorizes query/value conjunctions rather than learning flexible access. All predeclared gates
-fail, including cache-erasure and observation-conflict gates. A relational key/value architecture
-can be tested next under the frozen split, with this GRU retained as the negative control.
+fail, including cache-erasure and observation-conflict gates. This GRU is retained as the negative
+control.
+
+The prespecified relational follow-up (`audits/branch_d_access_relational.json`) uses exact query-key
+addressing but passes remembered values through recurrent outputs; the report decoder never receives
+the explicit cache. It uses the identical held-out pairs, thresholds, training budget, and an exactly
+parameter-matched no-cache model. The access route reaches `1.00` accuracy on all 3,228 held-out
+cases and each of the four access states. The no-cache route reaches `1.00` only for unavailable and
+merely visible targets and `0.00` for previous-memory and counterfactual-tension targets. Erasing the
+queried cache drops memory/tension accuracy by `1.00`; changing the conflicting visible value leaves
+the cache answer invariant and correct at `1.00`. All frozen gates pass. This supplies bounded
+Branch D support while sharply localizing it to a relational inductive bias. Multiple seeds and an
+alternate relational architecture remain necessary for robust support.
 
 Consciousness-evidence role:
 
@@ -1059,7 +1070,7 @@ Branch builds:
 - [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
 - [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (strong bounded support: multi-seed, two surface variants, and exactly matched cross-model replication)
 - [x] extend the benchmark with query-change and alternative-target conditions for Branch D
-- [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
+- [x] add Branch D counterfactual-access experiments for non-current but query-available contents (bounded relational support; unstructured GRU fails as intended)
 - [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
 - [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
 - [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths

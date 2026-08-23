@@ -16,6 +16,7 @@ import torch
 
 import attcon.eval as eval_module
 from attcon.access_experiment import (
+    RelationalRecurrentAccessModel,
     RecurrentAccessModel,
     access_intervention_metrics,
     evaluate_access_model,
@@ -171,6 +172,18 @@ class AttentionControlTests(unittest.TestCase):
                 "counterfactual_cache_answer_retention_after_observation_change",
             },
         )
+        relational = RelationalRecurrentAccessModel(
+            config, hidden_size=32, fusion_size=48
+        )
+        relational_no_cache = RelationalRecurrentAccessModel(
+            config, hidden_size=32, fusion_size=48
+        )
+        self.assertEqual(
+            access_parameter_count(relational),
+            access_parameter_count(relational_no_cache),
+        )
+        relational_eval = evaluate_access_model(relational, tensors)
+        self.assertEqual(relational_eval["count"], 32)
 
     def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
         config = BindingConfig()

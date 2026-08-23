@@ -14,6 +14,7 @@ if str(SRC) not in sys.path:
 import torch
 
 from attcon.access_experiment import (
+    RelationalRecurrentAccessModel,
     RecurrentAccessModel,
     access_intervention_metrics,
     evaluate_access_model,
@@ -61,6 +62,10 @@ def _baseline_metrics(tensors, config: CounterfactualAccessConfig) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--architecture", choices=("unstructured_gru", "relational_gru"),
+        default="unstructured_gru",
+    )
     parser.add_argument("--count", type=int, default=16384)
     parser.add_argument("--data-seed", type=int, default=11)
     parser.add_argument("--model-seed", type=int, default=71)
@@ -89,10 +94,15 @@ def main() -> None:
         (example.switched_query_key, example.expected_answer)
         for example in train_examples
     }
+    model_class = (
+        RelationalRecurrentAccessModel
+        if args.architecture == "relational_gru"
+        else RecurrentAccessModel
+    )
     torch.manual_seed(args.model_seed)
-    internal = RecurrentAccessModel(config, args.hidden_size, args.fusion_size)
+    internal = model_class(config, args.hidden_size, args.fusion_size)
     torch.manual_seed(args.model_seed)
-    no_cache = RecurrentAccessModel(config, args.hidden_size, args.fusion_size)
+    no_cache = model_class(config, args.hidden_size, args.fusion_size)
     internal_losses = train_access_model(
         internal,
         train,
@@ -172,6 +182,7 @@ def main() -> None:
             "hidden_size": args.hidden_size,
             "fusion_size": args.fusion_size,
             "device": args.device,
+            "architecture": args.architecture,
         },
         "split_coverage": {
             "all_heldout_keys_seen_individually_in_train": all(
@@ -187,7 +198,11 @@ def main() -> None:
             ),
         },
         "internal_access": {
-            "architecture": "GRU-compressed access events plus current scene and switched query",
+            "architecture": (
+                "query-key-addressed recurrent value states plus current scene"
+                if args.architecture == "relational_gru"
+                else "GRU-compressed access events plus current scene and switched query"
+            ),
             "reads_explicit_cache_at_report_time": False,
             "parameter_count": parameter_count(internal),
             "initial_epoch_loss": internal_losses[0],
@@ -211,7 +226,8 @@ def main() -> None:
         "predeclared_thresholds": THRESHOLDS,
         "gates": gates,
         "all_pilot_gates_pass": all(gates.values()),
-        "branch_d_supported": False,
+        "branch_d_supported": all(gates.values()),
+        "support_level": "bounded" if all(gates.values()) else "unsupported",
         "support_boundary": (
             "A passing run is bounded evidence for an engineered recurrent access cache. "
             "Branch D still requires multi-seed and alternate-architecture replication, and "

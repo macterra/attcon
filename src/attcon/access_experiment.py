@@ -153,12 +153,65 @@ class RecurrentAccessModel(nn.Module):
         )
 
 
+class RelationalRecurrentAccessModel(nn.Module):
+    """Address recurrent value states by query-key equality.
+
+    Keys are used only to select a recurrent output; the GRU never receives the key identity.
+    This forces value representations to transfer to held-out key/value conjunctions while
+    retaining a recurrent bottleneck between access events and report.
+    """
+
+    def __init__(
+        self,
+        config: CounterfactualAccessConfig,
+        hidden_size: int = 96,
+        fusion_size: int = 128,
+    ) -> None:
+        super().__init__()
+        self.config = config
+        value_event_dim = config.value_vocab_size + 3
+        self.memory = nn.GRU(value_event_dim, hidden_size, batch_first=True)
+        self.scene_value_encoder = nn.Linear(config.value_vocab_size, hidden_size)
+        self.decoder = nn.Sequential(
+            nn.Linear(hidden_size * 2 + 2, fusion_size),
+            nn.Tanh(),
+            nn.Linear(fusion_size, config.value_vocab_size + 1),
+        )
+
+    def forward(
+        self,
+        events: torch.Tensor,
+        scene: torch.Tensor,
+        query: torch.Tensor,
+    ) -> torch.Tensor:
+        key_width = self.config.key_vocab_size
+        event_values = events[:, :, key_width:]
+        memory_outputs, _ = self.memory(event_values)
+        key_matches = torch.einsum(
+            "bok,bk->bo", events[:, :, :key_width], query
+        )
+        memory_context = torch.einsum("bo,boh->bh", key_matches, memory_outputs)
+        memory_present = key_matches.sum(dim=-1, keepdim=True).clamp(max=1.0)
+
+        scene_by_key = scene.reshape(
+            -1, self.config.key_vocab_size, self.config.value_vocab_size
+        )
+        scene_value = torch.einsum("bk,bkv->bv", query, scene_by_key)
+        scene_context = torch.tanh(self.scene_value_encoder(scene_value))
+        scene_present = scene_value.sum(dim=-1, keepdim=True).clamp(max=1.0)
+        return self.decoder(
+            torch.cat(
+                (memory_context, scene_context, memory_present, scene_present), dim=-1
+            )
+        )
+
+
 def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 
 
 def train_access_model(
-    model: RecurrentAccessModel,
+    model: nn.Module,
     train: AccessTensors,
     *,
     erase_cache: bool = False,
@@ -194,7 +247,7 @@ def train_access_model(
 
 @torch.no_grad()
 def evaluate_access_model(
-    model: RecurrentAccessModel,
+    model: nn.Module,
     data: AccessTensors,
     *,
     erase_cache: bool = False,
@@ -224,7 +277,7 @@ def evaluate_access_model(
 
 @torch.no_grad()
 def access_intervention_metrics(
-    model: RecurrentAccessModel,
+    model: nn.Module,
     data: AccessTensors,
     config: CounterfactualAccessConfig,
     *,
