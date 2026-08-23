@@ -810,8 +810,8 @@ Branch F should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold plus exactly matched shared/private consumer models, onset tests, shared-state ablation, and content-swap interventions
-- positive evidence: yes, engineering support under an imposed shared bottleneck and supervised consumers
+- implemented: benchmark scaffold, exactly matched shared/private consumer models, onset tests, shared-state ablation, content swaps, and a three-run multi-seed audit
+- positive evidence: yes and seed-robust as engineering support under an imposed shared bottleneck and supervised consumers
 - supported: no
 
 Implementation note:
@@ -841,6 +841,13 @@ This remains engineering support rather than Branch F theoretical support. The b
 supervises every consumer and the architecture imposes the candidate bottleneck. Spontaneous
 broadcast would require aligned multi-consumer availability and coordinated causal dependence to
 emerge without shared-state or ignition supervision, ideally in the original controller family.
+
+The three-run audit (`audits/branch_f_broadcast_multiseed.json`) repeats the exactly matched
+comparison with fresh data/model seeds and a fixed 8,190-case/25-epoch budget. All nine gates pass
+in every run. The weakest shared joint accuracy is `0.962`, shared-ablation drop `0.841`, coordinated
+drop advantage `0.659`, and donor-content follow rate `0.984`; onset accuracy/alignment and local-
+action invariance remain `1.00`, while private single-route damage never exceeds `0.192`. This makes
+the engineering result seed-robust without changing its theoretical status.
 
 Consciousness-evidence role:
 
