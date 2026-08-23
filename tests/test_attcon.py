@@ -96,6 +96,11 @@ from attcon.temporal_relay import (
     validate_temporal_relay_example,
     validate_temporal_relay_group,
 )
+from attcon.temporal_relay_experiment import (
+    TemporalRelayModel,
+    parameter_count as temporal_parameter_count,
+    tensorize_temporal_relay_examples,
+)
 from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
@@ -286,6 +291,14 @@ class AttentionControlTests(unittest.TestCase):
         scaffold = build_temporal_relay_scaffold(64, 1117)
         self.assertTrue(scaffold["all_scaffold_gates_pass"])
         self.assertFalse(scaffold["different_benchmark_replication_established"])
+        tensors = tensorize_temporal_relay_examples(examples, config)
+        shared = TemporalRelayModel(config, hidden_size=16, mode="shared")
+        pooled = TemporalRelayModel(config, hidden_size=16, mode="pooled")
+        self.assertEqual(
+            temporal_parameter_count(shared), temporal_parameter_count(pooled)
+        )
+        output = shared(tensors.events, tensors.query, tensors.transition)
+        self.assertEqual(output.payload.shape, (len(examples), config.payload_vocab_size))
 
     def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
         config = BindingConfig(heldout_modulus=3)
