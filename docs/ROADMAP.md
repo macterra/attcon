@@ -810,9 +810,22 @@ Branch F should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
+- implemented: benchmark scaffold only (`attcon.broadcast`); trained shared-broadcast experiment not yet implemented
 - positive evidence: no
 - supported: no
+
+Implementation note:
+
+The scaffold separates six downstream interfaces: action, structured report, uncertainty,
+reallocation, memory write, and language-shaped report. Each five-case cue-strength sweep holds
+content and evidence fixed and crosses an evidence-modulated ignition threshold. A specialized
+action path remains available throughout, so local task success cannot satisfy the branch; the
+other five consumers are jointly unavailable below threshold and acquire the same onset step above
+it. The 4,095-case audit (`audits/branch_f_broadcast_dataset.json`) contains 819 complete sweeps and
+819 held-out content/strength conjunctions, with `1.00` threshold-crossing completeness, broad-
+consumer onset alignment, and below-threshold broad-consumer unavailability. The next experiment
+must compare a shared broadcast bottleneck against capacity-matched private heads and produce
+coordinated, content-specific intervention effects. The scaffold itself is not evidence for Branch F.
 
 Consciousness-evidence role:
 
@@ -1119,7 +1132,7 @@ Branch builds:
 - [x] add Branch D counterfactual-access experiments for non-current but query-available contents (bounded relational support; unstructured GRU fails as intended)
 - [x] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
 - [~] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state (engineering gates pass; unsupervised/task-only emergence remains)
-- [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
+- [x] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
 - [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests
 - [ ] add perturbational-complexity diagnostics over controller and self-model state
 

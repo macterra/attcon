@@ -40,6 +40,13 @@ from attcon.binding_experiment import (
     parameter_count,
     tensorize_binding_examples,
 )
+from attcon.broadcast import (
+    CONSUMERS,
+    BroadcastConfig,
+    generate_broadcast_examples,
+    validate_broadcast_example,
+    validate_broadcast_sweep,
+)
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.higher_order import (
     HIGHER_ORDER_STATUSES,
@@ -208,6 +215,25 @@ class AttentionControlTests(unittest.TestCase):
         interventions = paired_wrong_access_intervention(model, examples, config)
         self.assertEqual(interventions["first_order_content_held_fixed_rate"], 1.0)
         self.assertGreater(interventions["pair_count"], 0)
+
+    def test_branch_f_broadcast_sweeps_hold_content_and_align_consumers(self) -> None:
+        config = BroadcastConfig(heldout_modulus=3)
+        examples = generate_broadcast_examples(100, config=config, seed=47)
+        self.assertEqual(
+            examples, generate_broadcast_examples(100, config=config, seed=47)
+        )
+        sweeps = {}
+        for example in examples:
+            self.assertEqual(validate_broadcast_example(example), [])
+            self.assertEqual(len(example.consumer_targets), len(CONSUMERS))
+            sweeps.setdefault(example.sweep_group, []).append(example)
+        self.assertEqual(len(sweeps), 20)
+        for cases in sweeps.values():
+            self.assertEqual(validate_broadcast_sweep(cases), [])
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_strength"},
+        )
 
     def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
         config = CounterfactualAccessConfig()
