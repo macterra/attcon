@@ -595,7 +595,7 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: benchmark scaffold only (`attcon.counterfactual_access`); trained internal-access experiment not yet implemented
+- implemented: benchmark scaffold plus an exactly matched recurrent-access/no-cache pilot and causal cache/observation interventions
 - positive evidence: no
 - supported: no
 
@@ -612,6 +612,16 @@ attention rate, a `1.00` counterfactual-tension rate, and no invariant failures.
 is `1.00` for merely visible/unavailable targets and `0.00` for previously attended/counterfactual
 targets. The next step is a trained access route plus matched no-cache, scene-only, current-glimpse,
 and symbolic upper-bound controls; the scaffold itself is not positive Branch D evidence.
+
+The first trained pilot (`audits/branch_d_access_pilot.json`) uses a GRU to compress access events
+before the switched query is decoded, so the report path does not receive the explicit cache. Its
+no-cache comparator is exactly parameter matched. The access route reaches `1.00` accuracy on all
+13,156 training cases but `0.00` on all 3,228 held-out query/value conjunctions and every access
+state; the no-cache route is also `0.00`. All held-out keys and answers occur individually in
+training, while zero held-out pairs leak. This is a substantive negative result: the unstructured
+GRU memorizes query/value conjunctions rather than learning flexible access. All predeclared gates
+fail, including cache-erasure and observation-conflict gates. A relational key/value architecture
+can be tested next under the frozen split, with this GRU retained as the negative control.
 
 Consciousness-evidence role:
 

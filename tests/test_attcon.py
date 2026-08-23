@@ -15,6 +15,13 @@ if str(SRC) not in sys.path:
 import torch
 
 import attcon.eval as eval_module
+from attcon.access_experiment import (
+    RecurrentAccessModel,
+    access_intervention_metrics,
+    evaluate_access_model,
+    parameter_count as access_parameter_count,
+    tensorize_access_examples,
+)
 import attcon.nl_report as nl_report_module
 from attcon.binding import (
     BindingConfig,
@@ -144,6 +151,26 @@ class AttentionControlTests(unittest.TestCase):
                 self.assertEqual(example.expected_answer, UNKNOWN_ANSWER)
             if example.target_status == "counterfactually_accessible":
                 self.assertNotEqual(example.scene_only_answer, example.expected_answer)
+
+    def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
+        config = CounterfactualAccessConfig()
+        examples = generate_counterfactual_access_examples(32, config=config, seed=37)
+        tensors = tensorize_access_examples(examples, config)
+        internal = RecurrentAccessModel(config, hidden_size=32, fusion_size=48)
+        no_cache = RecurrentAccessModel(config, hidden_size=32, fusion_size=48)
+        self.assertEqual(access_parameter_count(internal), access_parameter_count(no_cache))
+        evaluated = evaluate_access_model(internal, tensors)
+        self.assertEqual(evaluated["count"], 32)
+        self.assertEqual(set(evaluated["by_status"]), set(TARGET_STATUSES))
+        interventions = access_intervention_metrics(internal, tensors, config)
+        self.assertEqual(
+            set(interventions),
+            {
+                "memory_target_cache_erasure_accuracy_drop",
+                "counterfactual_observation_change_invariance",
+                "counterfactual_cache_answer_retention_after_observation_change",
+            },
+        )
 
     def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
         config = BindingConfig()
