@@ -514,9 +514,20 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
+- implemented: benchmark scaffold only (`attcon.binding`); controller experiment not yet implemented
 - positive evidence: no
 - supported: no
+
+Implementation note:
+
+The first benchmark-side prerequisite is now concrete. `attcon.binding` generates objects whose
+location, visible type, digit, cue tag, and inspection state are independently recombinable; assigns
+target conjunctions to a deterministic train/held-out split; and constructs false-binding lures from
+feature values that all occur in the scene even though the lure conjunction itself does not. The
+4,096-case audit (`audits/branch_c_binding_dataset.json`) contains 808 held-out conjunctions, retains
+the full individual feature vocabulary in training, and reports no invalid lures. This is dataset
+infrastructure only. Branch C remains unsupported until an integrated binding state beats matched
+independent-feature recombination and passes the required intervention and benchmark-variant tests.
 
 Consciousness-evidence role:
 

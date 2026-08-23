@@ -16,6 +16,12 @@ import torch
 
 import attcon.eval as eval_module
 import attcon.nl_report as nl_report_module
+from attcon.binding import (
+    BindingConfig,
+    _heldout_conjunction,
+    generate_binding_examples,
+    validate_binding_example,
+)
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
 from attcon.eval import (
     build_evidence_summary,
@@ -74,6 +80,31 @@ class AttentionControlTests(unittest.TestCase):
             pos = target_positions.item()
             self.assertEqual(pos, batch.target_pos[idx].item())
             self.assertEqual(batch.digits[idx, pos].item(), batch.target[idx].item())
+
+    def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
+        config = BindingConfig(heldout_modulus=3)
+        examples = generate_binding_examples(256, config=config, seed=17)
+        self.assertEqual(examples, generate_binding_examples(256, config=config, seed=17))
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_conjunction"},
+        )
+        for example in examples:
+            self.assertEqual(validate_binding_example(example), [])
+            self.assertEqual(
+                sum(obj.cue_tag == example.cue for obj in example.objects),
+                1,
+            )
+            expected_heldout = _heldout_conjunction(
+                example.target,
+                example.cue,
+                config.heldout_modulus,
+            )
+            self.assertEqual(example.split == "heldout_conjunction", expected_heldout)
+            self.assertNotIn(
+                example.false_binding_lure.conjunction(),
+                {obj.conjunction() for obj in example.objects},
+            )
 
     def test_stage4b_scale_sweep_requires_policy_consistent_reallocation(self) -> None:
         def result(report_gap: float, attention_gap: float, supported: bool = False):

@@ -259,7 +259,7 @@ GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
 
 GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 
-- [ ] Extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C.
+- [~] Extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C. The standalone benchmark scaffold is implemented in `attcon.binding` and audited over 4,096 cases in `audits/branch_c_binding_dataset.json`: 808 deterministic held-out conjunctions, complete train coverage of every individual target feature value, and zero invalid false-binding lures. It is not yet wired into a trained controller, so this remains partial rather than evidence for Branch C.
 - [ ] Add Branch C unity/binding experiments with bound-content probes and intervention tests.
 - [ ] Extend the benchmark with query-change and alternative-target conditions for Branch D.
 - [ ] Add Branch D counterfactual-access experiments for non-current but query-available contents.
