@@ -43,7 +43,12 @@ In practice this roadmap now distinguishes two levels of support:
 
 Some sections also include a `consciousness-evidence status` note. That is not a third support tier. It is an interpretive warning about whether a technically supported benchmark result should count as an input to Stage 8. A result can have bounded engineering support while still having no consciousness-evidence status if it depends on direct supervision, symbolic scaffolding, or benchmark-specific shortcuts.
 
-Only robust support should be treated as strong evidence for Stage 8. No stage in the current repo yet meets that robust-support bar, because the capacity audits and negative-control runs below have not been completed. Current `supported` labels should therefore be read as bounded engineering/evaluation milestones rather than settled philosophical premises.
+Only robust support should be treated as strong evidence for Stage 8. Stage 3 now meets a
+seed/checkpoint-family robust foundation bar, and the perturbational family is replicated across
+perturbation seeds, checkpoint families, and an ungated RNN. Neither result is by itself robust
+Stage 8 evidence: cross-benchmark independence and same-content convergence remain partial. Other
+`supported` labels should therefore be read as bounded engineering/evaluation milestones rather
+than settled philosophical premises.
 
 Several items in this roadmap do not yet meet bounded support. Stage 6B has only provisional positive evidence, the external API LLM and VLM versions of Stage 7 are implemented or planned but not supported, and complete zero-shaping resilience for Stage 3 is not established.
 
@@ -72,7 +77,11 @@ Across Stages 3 through 7, the following standards should apply:
 - the strongest tests should place observation and internal state under tension so that faithfulness can be distinguished from post-hoc guessing
 - robust support claims should survive multiple seeds and should be reported with explicit effect sizes or margins over baseline
 
-The current repo does not yet include a complete capacity audit for every observation-only baseline. That is a known weakness. Before any later-stage claim is promoted from bounded support to robust support, the report should include either parameter-count matching or an explicit argument that the baseline is not capacity-limited in the relevant comparison.
+The repo now includes capacity-matched observation controls and empirical noise floors for the main
+Stage 6A, Stage 6B, and latent Stage 7 claims, plus exact parameter matching in several later
+branches. Coverage is not universal across every branch and replicated system. Before a later-stage
+claim is promoted from bounded to robust support, its own report should include parameter matching
+or an explicit argument that the relevant baseline is not capacity-limited.
 
 To move a stage from bounded to robust support, the repo should show all of the following for that stage:
 
@@ -693,14 +702,20 @@ Current status in this repo:
   perturbation propagates to later attention (KL `~0.66`) far more than under the no-recurrence
   feedforward control (`~0.13`), while the state trajectory partially recovers (recovery ratio
   `~0.42`) unlike the rigid frozen-state control (`~0.0`)
+- the standardized multi-seed audit passes on 100% of 25 perturbation seeds across the primary
+  checkpoint and three independently trained v3 content-memory checkpoints
+- the result also replicates on the ungated RNN controller: 100% of 25 perturbation seeds pass,
+  with recurrent attention propagation `0.316` versus feedforward `0.068`
 
 Current assessment:
 
 - implemented: yes
 - positive evidence: yes
-- supported: bounded support on a single checkpoint, as the first non-reportability evidence
-  family. Robust support still needs multiple magnitudes/seeds with the localization and
-  trajectory-complexity criteria above, plus cross-architecture/benchmark replication.
+- supported: seed/checkpoint/RNN-replicated support for the first non-reportability evidence
+  family. The Stage 8 gate remains partial because this family has not independently replicated on
+  a different benchmark and the RNN is still a close recurrent-family architecture. See
+  `audits/perturbational_multiseed.json` and
+  `audits/perturbational_multiseed_with_rnn.json`.
 
 ## Branch E: Higher-Order State Representation
 
@@ -914,12 +929,20 @@ Current status in this repo:
 - the symbolic baseline is strong and currently achieves near-perfect or perfect structured reports on small evaluation slices
 - on the current tuned checkpoint, the local calibrated token reporter beats the observation-only reporter on default, cue-switch, and intervention slices
 - a latent-only decoder (`run_latent_only_report_mode`) is implemented and runnable in CI: it recovers the scored content from an opaque quantised view of internal state alone (content tokens withheld), so the held-out and counterfactual slices are genuine faithfulness tests. On the current checkpoint it does not clear the faithful-access bar (marginal, non-robust current-content advantage; no remembered/counterfactual recovery; `content_supported = false`), so the bounded Stage 7 claim still rests on the schema-aware round-trip reporter (see the "Latent-only decoder" note below and `audits/stage7_latent_only_tune_prob_035.json`)
+- under the explicit v3 content-memory objective, latent remembered-content recovery clears a
+  permuted-label p95 floor on all four training seeds and all 32 tested slice/interface cells
+  (mean advantages `+0.41..+0.64` versus p95 `~0.08`). The strict `content_only` leg is
+  seed-fragile: full on two seeds, partial on one, absent on one. This is robust remembered-content
+  reportability under engineering supervision, not spontaneous Stage 7 or robust strict-content
+  support (`audits/stage7_latent_noise_floor_v3_seed*.json`).
 
 Current assessment:
 
 - implemented: yes
 - positive evidence: yes
-- supported: bounded support for the local calibrated opaque-token reporter; powered external LLM and VLM variants are unsupported on the current v3 interface
+- supported: bounded support for the schema-aware local reporter and seed-robust remembered-content
+  recovery under explicit content-memory regularization; strict `content_only`, spontaneous, and
+  powered external LLM/VLM variants remain unsupported
 
 Interpretation:
 
@@ -943,10 +966,11 @@ remapping is invariant by construction (the decoder is schema-aware), and held-o
 combinations do not bite content fields that are directly encoded rather than learned. The
 genuine anti-memorization / faithfulness test therefore requires either a decoder forced to
 recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that
-is not told the schema. The latent-only route remains open for a better representation; the
-powered external-LLM and VLM tests on the current interface are complete and negative.
+is not told the schema. The powered external-LLM and VLM tests on the current interface are
+complete and negative; the latent-only route was subsequently tested with explicit content-memory
+regularization, as summarized below.
 
-Latent-only decoder (implemented; honest negative-to-marginal):
+Latent-only decoder (original checkpoint negative; engineered memory result positive):
 
 The unblocked resolution route is now implemented (`run_latent_only_report_mode`). It recovers the
 scored content from an opaque, quantised view of the controller/attention/memory state alone
@@ -966,7 +990,12 @@ as the caveat above warns. This is a disciplined negative, not a hidden failure:
 are a checkpoint whose remembered-attention state is more separably encoded (memory-regularised or
 longer-trained) and/or a richer opaque interface. The current external-LLM interface is now
 empirically unsupported rather than blocked; the powered VLM interface is likewise unsupported.
-See NEXT_STEPS "Current Focus".
+The subsequent v3 content-memory recipe makes remembered content separably available. Across the
+original v3 checkpoint and three fresh training seeds, remembered-content joint advantage clears
+the permuted-label floor in every tested slice/interface cell. Current-content recovery also
+replicates but is partly circular because the visible glimpse enters the report state. The strict
+`content_only` advantage is significant when present but disappears on one seed, so it is not
+robust. See `docs/NEXT_STEPS.md` and `audits/stage7_latent_noise_floor_v3_seed*.json`.
 
 Falsification criterion:
 
@@ -1105,7 +1134,7 @@ This should not be read as a simple victory ladder. Several stages can be implem
 
 The stage labels are not independent checkmarks. Later claims inherit the uncertainty of earlier ones, and Stage 8 depends on a conjunction of empirical and philosophical assumptions. A bounded pass at each stage should not be multiplied into confidence by rhetoric alone; it should remain a scoped input to the next experiment.
 
-For this reason, the current status snapshot separates bounded support from robust support. Bounded support is enough to continue building the benchmark. Robust support, with multiple seeds, checkpoint families, stress tests, negative controls, capacity-matched baselines, alternative-explanation falsifiers, cross-architecture replication, and cross-benchmark replication, is the level that would be relevant to a serious Stage 8 discussion. The current repo has bounded support only; no stage should currently be cited as robust support for Stage 8.
+For this reason, the current status snapshot separates bounded support from robust support. Bounded support is enough to continue building the benchmark. Stage 3 is robust as a foundation claim, and perturbational dynamics have seed/checkpoint/RNN replication, but no result should be cited as robust support for Stage 8: the current convergence audit remains three pass, five partial, zero fail, and unsupported.
 
 ## Execution Checklist
 
@@ -1127,12 +1156,12 @@ The local calibrated token reporter passes default, cue-switch, and intervention
 - [x] add plots or diagnostics for switched-cue, self-state, and self-model trajectories
 The repo now emits switched-cue comparison plots, self-state diagnostics plots, self-model trajectory plots, Stage 6B uncertainty diagnostics plots, and Stage 7 visual report panels.
 
-Immediate engineering and audit work:
-
-Current focus (unblocked next cycle):
+Completed latent-reportability engineering and audit work:
 
 - [x] build a latent-only Stage 7 decoder that recovers the scored content from an opaque quantised view of internal state alone (directly-encoded content bases withheld), so held-out and counterfactual-tension faithfulness tests become meaningful. **Implemented and runnable in CI; honest finding: does not clear the faithful-access bar on the current checkpoint** (marginal, non-robust current-content advantage; no remembered/counterfactual recovery; `content_supported = false`). See the Stage 7 "Latent-only decoder" note and `audits/stage7_latent_only_tune_prob_035.json`.
-- [ ] **next:** re-run the latent-only decoder on a checkpoint with more separably encoded remembered-attention state (memory-regularised or longer-trained), and/or a richer opaque interface, to test whether faithful remembered-content recovery is reachable; otherwise fall back to the external LLM/VLM path
+- [x] re-run the latent-only decoder on memory-regularized checkpoints and calibrate against a
+  permuted-label noise floor. Remembered-content recovery is seed-robust across four v3 checkpoints;
+  strict `content_only` recovery is significant when present but seed-fragile.
 
 Completed in the Priority 1 audit pass:
 
@@ -1158,12 +1187,20 @@ Branch builds:
 - [~] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state (engineering gates pass; unsupervised/task-only emergence remains)
 - [x] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
 - [~] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests (engineering gates pass; spontaneous/task-only emergence remains)
-- [ ] add perturbational-complexity diagnostics over controller and self-model state
+- [x] add perturbational-complexity diagnostics over controller and self-model state
+- [x] repeat perturbational diagnostics across 25 perturbation seeds, four checkpoints, and the
+  ungated RNN controller
 
 Cross-system replication:
 
-- [ ] replicate supported claims on a structurally different controller architecture
-- [ ] replicate supported claims on a second benchmark with different surface task structure
+- [~] replicate supported claims on a structurally different controller architecture (ungated RNN
+  replicates 6/7 base claims; temporal-relay transformer passes one seed; broader architecture and
+  comparator replication remain)
+- [~] replicate supported claims on a second benchmark with different task structure (relational
+  temporal relay passes three GRU seeds and one transformer seed, but matching and sharing are
+  imposed)
+- [~] establish same-content causal overlap without an imposed shared state (engineered shared-state
+  assay passes; corrected task-induced routing reaches at most `0.021` and is unsupported)
 
 ## Current Status Snapshot
 
@@ -1174,7 +1211,7 @@ lost to the static baseline), so every "supported" label from that era was a pro
 The dispositions below are from the regenerated discrete-attention full eval
 (`audits/post_rehab_full_eval_tune_prob_035_summary.json`).
 
-Bounded support (real, capacity-audited, comparator-resistant on the current checkpoint):
+Supported foundation and bounded claims:
 
 - attention
 - closed-loop attention control (recurrent acc `0.44` vs static `0.17`; all negative controls
@@ -1184,11 +1221,11 @@ Bounded support (real, capacity-audited, comparator-resistant on the current che
 - engineered self-state tracking (Stage 4A; native cell accuracy `~0.99`)
 - flexible reallocation under changed priorities in the current cue-switch setting
 - structured reportability of a bounded set of internal variables (Stage 6A; capacity audit passes)
-- faithful natural-language-shaped reportability from opaque tokenized internal state using the
-  local calibrated reporter (Stage 7; capacity audit passes)
-- perturbational complexity (first non-reportability family): perturbing the recurrent state
-  produces rich-but-recoverable dynamics that propagate far more than a no-recurrence control
-  and recover unlike a frozen-state control
+- local Stage 7 schema-aware report round-trip, plus seed-robust remembered-content recovery under
+  explicit v3 content-memory regularization; strict `content_only` recovery is seed-fragile
+- perturbational complexity across 25 perturbation seeds, four checkpoints, and the ungated RNN
+- Branch C binding and Branch D counterfactual access: strong bounded support across seeds,
+  surface variants, and model families, with explicit relational inductive biases
 
 Positive but still provisional evidence:
 
@@ -1205,23 +1242,29 @@ Positive but still provisional evidence:
   everywhere" global falsifier, but a negative result for Stage 4B regulatory use.
 - external API LLM and VLM natural-language reportability infrastructure (implemented, but both
   powered v3 interfaces are empirically unsupported)
+- Branch E higher-order state and Branch F broadcast: engineering gates pass, but access-sensitive
+  supervision and an imposed shared bottleneck exclude them from the Stage 8 theory-family count
+- same-content directional overlap: seed-robust against permuted and split-state controls inside
+  the explicitly shared assay; corrected unforced routing reaches at most `0.021`
+- different-benchmark transfer: relational temporal relay passes all ten gates over three GRU seeds
+  and one transformer seed, but query matching and state sharing are explicit
 
 What is not yet established:
 
-- robust support for any stage under the capacity-audit and negative-control standard
-- robust support for any stage under the cross-architecture and cross-benchmark replication standard
-- cross-architecture or cross-benchmark replication
-- first-class comparator-system discrimination
 - complete zero-shaping resilience for Stage 3
-- learned self-modeling of attention without the dedicated self-model feedback objective
-- unity/binding evidence
-- counterfactual access beyond current attention
-- higher-order state-representation evidence
-- broadcast/ignition evidence
-- robust (multi-seed, cross-system) perturbational-complexity evidence beyond the current bounded single-checkpoint result
-- multi-theory convergence across consciousness-theory branches
+- policy-consistent Stage 4B regulatory self-model emergence
+- full Stage 6B support under both recall and accuracy noise floors
+- strict seed-robust Stage 7 `content_only` recovery or powered external LLM/VLM reporting
+- spontaneous higher-order state or broadcast without direct access-sensitive objectives/bottlenecks
+- same-content convergence across independently learned access/report and non-reportability families
+- independent cross-benchmark replication after forced relational matching and shared state are removed
+- full comparator/negative-control reruns on every replicated architecture and benchmark
 - faithful natural-language reportability grounded in minimally labeled visual internal-state renderings
-- faithful Stage 7 reportability from opaque latent internal state alone: the latent-only decoder is implemented and runnable, but on the current checkpoint it does not clear the faithful-access bar (`content_supported = false` across interface widths and slices), so the bounded Stage 7 claim still rests on the schema-aware round-trip reporter
 - minimal consciousness-like content
+
+Executable Stage 8 verdict: **not met**. `audits/stage8_convergence_current.json` records three
+passed, five partial, and zero failed gates. The next decisive work is transformer multi-seed
+replication, removal of forced sharing on both integrated-content and temporal-relay assays, and
+same-content alignment across independently learned theory families.
 
 That distinction is important. The current result is already meaningful. The roadmap exists to keep the stronger claims disciplined, staged, and experimentally grounded.

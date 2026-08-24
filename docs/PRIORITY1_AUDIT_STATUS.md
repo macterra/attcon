@@ -1,4 +1,10 @@
-# Priority 1 Audit Status (post-rehab)
+# Priority 1 Audit Status (post-rehab snapshot)
+
+> **Scope note.** This records the completed Priority 1 audit of the base discrete-attention
+> checkpoint. It is not the current status of the entire research program. Later Branch C-F,
+> perturbational, cross-architecture, and temporal-relay results are summarized in `README.md`,
+> `docs/ROADMAP.md`, and `docs/NEXT_STEPS.md`; the executable Stage 8 verdict is
+> `audits/stage8_convergence_current.json`.
 
 This note supersedes the earlier Priority 1 disposition. The earlier disposition
 described audits run on a **non-functional** checkpoint: under the shipped soft-attention
@@ -64,7 +70,9 @@ Tracked artifacts:
 ## Current claim boundary
 
 These are real, capacity-audited, comparator-resistant results on a single working
-checkpoint/seed-family. They are **bounded support**, not robust support for a Stage 8
-consciousness claim: cross-architecture and cross-benchmark replication, non-reportability
-theory branches, and emergent (non-supervised) self-modeling are still required. Stage 6B
-remains provisional and complete zero-shaping resilience is still a known weakness.
+checkpoint/seed-family. They are **bounded support**, not by themselves robust support for a
+Stage 8 consciousness claim. Subsequent work added non-reportability branches, ungated-RNN
+replication, and an engineered temporal-relay benchmark, but the current Stage 8 audit still
+returns `stage8_supported = false` because same-content overlap and benchmark transfer depend on
+imposed relational/shared-state mechanisms. Stage 6B remains provisional and complete
+zero-shaping resilience is still a known weakness.

@@ -1,4 +1,9 @@
-# Roadmap Feedback
+# Archived Roadmap Feedback
+
+> **Historical review log (2026-05-16).** This file preserves the review sequence that shaped the
+> roadmap and Priority 1 audit. Its line-number links and “open” items describe the reviewed commits,
+> not the current repository. Current program status lives in `README.md`; current gates and work
+> items live in `docs/ROADMAP.md` and `docs/NEXT_STEPS.md`.
 
 Closing review of ROADMAP.md after the convergence-counting and execution-checklist consistency pass, followed by a separate review of the Priority 1 audit implementation.
 
@@ -36,7 +41,9 @@ Initial review of commits 5044e4d → 615681c (2026-05-16) added Stage 4B/6A/6B/
 - **Comparator training budget asymmetry.** `match_recurrent_training: True` by default ([train.py:131-135](../src/attcon/train.py#L131-L135)); the transformer inherits the recurrent's training budget. `training_budget.matched_to_recurrent` recorded in output ([eval.py:2789-2795](../src/attcon/eval.py#L2789-L2795)).
 - **`large_lm_without_loop_proxy` double-counts.** Explicitly marked `independent_comparator: False` and `double_counts_stage7_observation_only: True` ([eval.py:2813-2814](../src/attcon/eval.py#L2813-L2814)). Excluded from the comparator-level `failed_as_intended` check.
 - **Checkpoint migration silently masks staleness.** Now requires `--allow-stale-checkpoint` CLI flag or `evaluation.allow_stale_checkpoint: true` ([eval.py:119-124](../src/attcon/eval.py#L119-L124), [eval.py:5033-5040](../src/attcon/eval.py#L5033-L5040)). Migration metadata recorded under `_checkpoint_migration`. Stage 4B `passed` gated on `not stale_checkpoint` ([eval.py:1560](../src/attcon/eval.py#L1560)). Smoke artifact correctly shows `migrated: true, passed: false, probe_effect_positive: true`.
-- **Disposition unbacked by on-disk results.** `audits/priority1_smoke_tune_prob_035.json` is now committed and referenced by the status doc. The doc no longer presents smoke output as bounded-claim support and adds a "this is sanity-check only" caveat.
+- **Disposition unbacked by on-disk results.** The then-current `priority1_smoke_tune_prob_035.json`
+  artifact was committed and referenced by the status doc. That obsolete smoke artifact is no
+  longer retained on `main`; the post-rehab consolidation artifact supersedes it.
 
 ### Partially addressed
 
@@ -58,7 +65,10 @@ Two claims in `PRIORITY1_AUDIT_STATUS.md` contradict the smoke artifact it cites
 
 Both should flip to `false` in the doc (or, for negative controls, "feedforward and high-capacity passed; shuffle-feedback did not"). The negative-control miss is the same finding the tightened threshold is supposed to surface honestly — letting the doc claim the opposite undercuts the point of the tightening.
 
-Subtler third item: in [audits/priority1_smoke_tune_prob_035.json](../audits/priority1_smoke_tune_prob_035.json) the `stage6b.positive_recall_advantages` dict lists `relevant_region_inspected: -0.25` and `unresolved_search: -0.96` next to `passed: true`. Those two signals aren't part of `capacity_audit_signals`, so the pass is correct, but a casual reader will see strongly negative numbers next to a green flag. Either split the dict into `audit_signals` vs `informational` or annotate which entries gate `passed`.
+Subtler third item: in the reviewed (now superseded) `priority1_smoke_tune_prob_035.json`, the
+`stage6b.positive_recall_advantages` dict listed `relevant_region_inspected: -0.25` and
+`unresolved_search: -0.96` next to `passed: true`. Those two signals were not part of
+`capacity_audit_signals`, so the pass was correct, but the presentation was ambiguous.
 
 ### What was solid from the start
 
@@ -89,4 +99,4 @@ The tightening commit lands the structural feedback cleanly — naming, threshol
 - Round 9: convergence-counting rule generalized at Stage 8; Stage 4B role explicit as bridge; Branch E placement bidirectional; checklist grouped. Critique: four items, all cosmetic or already answered.
 - Round 10: no substantive open items. The roadmap document has stabilized.
 - Round 11 (audit-implementation review, 2026-05-16): roadmap unchanged; review pivots to the Priority 1 audit code. Status doc claims results not present in any committed eval report; "matched-capacity" matches probe-input-dim only; pass thresholds are directional > 0 with no noise floor; high-capacity negative control sees no temporal context; matched-transformer comparator undertrained relative to recurrent; checkpoint migration silently loads stale heads at random init.
-- Round 12 (audit-implementation tightening review, 2026-05-16): commit be5660f addresses six of the seven structural items cleanly — probe-capacity naming, temporal-context observation control, relative accuracy-drop threshold for ablations, matched comparator training budget, proxy-bookkeeping flag, and CLI-gated stale-checkpoint migration. Pass thresholds raised from `> 0.0` to configurable non-zero defaults with `nonnegative_directional_effect` reported alongside, but still hardcoded constants rather than empirically calibrated. Smoke artifact `audits/priority1_smoke_tune_prob_035.json` now committed and referenced. Two doc/JSON disagreements introduced by the tightening (Stage 6A `passed`, negative-controls `failed_as_intended`). Full evaluation on a post-ba75ae5 checkpoint still not run.
+- Round 12 (audit-implementation tightening review, 2026-05-16): commit be5660f addresses six of the seven structural items cleanly — probe-capacity naming, temporal-context observation control, relative accuracy-drop threshold for ablations, matched comparator training budget, proxy-bookkeeping flag, and CLI-gated stale-checkpoint migration. Pass thresholds raised from `> 0.0` to configurable non-zero defaults with `nonnegative_directional_effect` reported alongside, but still hardcoded constants rather than empirically calibrated. The now-superseded Priority 1 smoke artifact was committed and referenced. Two doc/JSON disagreements were introduced by the tightening (Stage 6A `passed`, negative-controls `failed_as_intended`). A full evaluation on a post-ba75ae5 checkpoint had not yet been run at that review point.

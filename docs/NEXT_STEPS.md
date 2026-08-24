@@ -7,14 +7,33 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > to uniform attention and lost to the static baseline). After the discrete-glimpse fix, the
 > audits, negative controls, and comparator suite were re-run on a model that actually does the
 > task: dissociation/Stage 3/Stage 4A/Stage 5/Stage 6A are genuinely supported (Stage 3
-> robustly), Stage 7 is bounded (schema-aware round-trip only; the faithful-latent leg is open —
-> see [Current Focus](#current-focus-latent-only-stage-7-decoder)), Stage 6B has bounded
+> robustly), Stage 7 has a bounded schema-aware route plus seed-robust remembered-content recovery
+> under explicit content-memory regularization (strict `content_only` remains seed-fragile), Stage 6B has bounded
 > positive evidence but fails its full calibrated support gate, and all negative controls + comparators fail as
 > intended. See `audits/post_rehab_full_eval_tune_prob_035_summary.json` and
-> `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore now genuinely validated,
-> not artifacts. Remaining open work below (Priorities 2-5) is unchanged.
+> `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore genuinely validated,
+> not artifacts. The active work has moved to the partial Stage 8 gates.
 
-## Current Focus: Latent-Only Stage 7 Decoder
+## Current Focus: Remove Imposed Stage 8 Mechanisms
+
+The executable convergence audit is **not met**: three gates pass and five are partial. The
+highest-value next experiments are:
+
+- repeat the temporal-relay transformer over fresh data/model seeds
+- remove forced shared state from the integrated-content and temporal-relay assays without losing
+  task viability
+- induce routing through a naturally coupled task or resource constraint with identical training
+  and evaluation scaling, then require transfer against the neutral dual-lane control
+- align access/report and non-reportability interventions on independently learned
+  representations of the same target content
+- rerun comparator and negative-control suites on the replicated architectures and benchmark
+
+The latest evidence is in `audits/stage8_convergence_current.json`,
+`audits/stage8_task_induced_routing_correction.json`,
+`audits/stage8_temporal_relay_multiseed.json`, and
+`audits/stage8_temporal_relay_transformer_pilot.json`.
+
+## Completed Focus: Latent-Only Stage 7 Decoder
 
 A **latent-only decoder** for Stage 7 is now **implemented** (`run_latent_only_report_mode` in
 `src/attcon/nl_report.py`, wired through `nl_report_metrics`, enabled in `configs/tune_prob_035.yaml`,
@@ -49,7 +68,7 @@ Finding on the current discrete-attention checkpoint (`audits/stage7_latent_only
   signal at best and no reliable remembered or counterfactual content. This **bounds** the Stage 7
   faithful-access claim to the schema-aware round-trip; the genuine faithfulness leg stays open.
 
-Remaining sub-steps (the real next work):
+Experiment record (chronological):
 
 - [x] Add a bottleneck diagnostic that compares the shipped quantised latent interface against a
   richer continuous-internal-state-only probe, without exposing directly encoded content tokens.
@@ -63,7 +82,7 @@ Remaining sub-steps (the real next work):
   `~+0.08` to `+0.21` depending on slice), but still does not recover full joint content, so the
   remaining target is a checkpoint that carries sensory feedback into separable controller state
   rather than only leaving it available as immediate recurrent input.
-- [ ] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
+- [x] Re-run the latent-only decoder on a checkpoint whose remembered-attention state is more
   separably encoded (e.g. a memory-regularised or longer-trained recipe), to test whether faithful
   remembered-content recovery is reachable at all.
 - [~] First widened-checkpoint pilot completed (`configs/stage7_longer_wide.yaml`,
@@ -91,7 +110,7 @@ Remaining sub-steps (the real next work):
   default, cue-switch, and intervened examples completed with `gpt-5-mini`; every slice remained
   negative for latent-only joint current, remembered, and content-only recovery. This is still only a
   route/plumbing result, but it removes "external path not runnable" as the reason Stage 7 is open.
-- [ ] **Solution direction:** stop treating Stage 7 as a decoder problem. The local latent probes,
+- [x] **Solution direction:** stop treating Stage 7 as a decoder problem. The local latent probes,
   richer continuous-state probes, feedback-channel diagnostic, widened checkpoint, and external LLM
   smoke tests all point the same way: the current checkpoint uses glimpse content transiently but
   does not carry current/remembered attended content in a separable report state. The next experiment
@@ -252,7 +271,7 @@ GitHub issue: [#5](https://github.com/macterra/attcon/issues/5)
   latent heatmap `0/8` on current/memory/full content in every slice; symbolic upper bound `8/8`
   throughout; `content_supported = false`.
 - [~] Add token-remapping and held-out combination tests for the local opaque-token reporter. **Investigated: not meaningful against the current local reporter.** The local decoder reads the scored content fields from attended-content token bases the renderer fills *directly* from the model's attended content (not the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware structural round-trip: a consistent token remapping is invariant by construction and held-out combinations do not bite directly-encoded fields. The genuine anti-memorization test needs a **latent-only decoder** (forced to recover content from the opaque latent-bit tokens alone) or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".
-- [x] **Implemented — see [Current Focus](#current-focus-latent-only-stage-7-decoder).** Built a latent-only decoder (`run_latent_only_report_mode`) that recovers the scored content from an opaque quantised view of internal state alone, with the directly-encoded content bases withheld, so held-out-combination and counterfactual-tension slices become meaningful. **Honest finding:** it does not yet clear the faithful-access bar on the current checkpoint (marginal, non-robust current-content advantage; no remembered/counterfactual recovery); `content_supported = false`. See `audits/stage7_latent_only_tune_prob_035.json`. Remaining: re-run on a checkpoint with more separable remembered-attention state, or fall back to the external LLM/VLM path.
+- [x] **Implemented — see [Completed Focus](#completed-focus-latent-only-stage-7-decoder).** Built a latent-only decoder (`run_latent_only_report_mode`) that recovers the scored content from an opaque quantised view of internal state alone, with the directly-encoded content bases withheld. The original checkpoint remains negative-to-marginal; the v3 memory-regularized recipe yields seed-robust remembered-content recovery, while strict `content_only` recovery is seed-fragile. See `audits/stage7_latent_only_tune_prob_035.json` and `audits/stage7_latent_noise_floor_v3_seed*.json`.
 - [x] Keep the symbolic dump as an upper-bound baseline, not the main Stage 7 claim.
 
 ## Priority 4: Build New Theory Branches
@@ -267,7 +286,7 @@ GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 - [~] Add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state. The first pilot (`audits/branch_e_higher_order_pilot.json`) withholds the exact six-way status labels from representation learning and trains one shared latent through report, confidence, reinspection, and correction behavior. On 3,267 held-out content/status conjunctions, its frozen status probe reaches `1.00`, versus `0.00` first-order and `0.302` observation-only using identical 4,550-parameter probes. Across 537 fresh-current/wrong-access pairs with identical first-order content and observation, latent swaps raise confidence, disable reinspection/correction, and recover the newly accessible content at `1.00`. Every engineering gate passes. This is engineering support only because three behavior targets directly reward access-sensitive distinctions. Branch E remains theoretically unsupported until comparable structure emerges under objectives without those higher-order rewards.
 - [x] Add separable downstream consumers for Branch F: action, report, uncertainty, reallocation, memory, and language-shaped report paths. `attcon.broadcast` defines all six interfaces in cue-strength sweeps that hold content and evidence fixed. The 4,095-case audit (`audits/branch_f_broadcast_dataset.json`) contains 819 complete threshold crossings and 819 held-out content/strength conjunctions. Local action availability is `1.00` below and above threshold, while the five broad consumers are jointly unavailable below ignition and have perfectly aligned onset above it. This is benchmark infrastructure, not broadcast evidence.
 - [~] Add Branch F broadcast/ignition experiments with coordinated intervention tests. The first exactly matched pilot passes every engineering gate. The three-run robustness audit (`audits/branch_f_broadcast_multiseed.json`) repeats it with fresh data/model seeds and a fixed reduced budget: every gate passes in every run. Minimum shared joint accuracy is `0.962`, onset accuracy/alignment `1.00`, shared-ablation drop `0.841`, coordination advantage `0.659`, and donor-content follow rate `0.984`; maximum private single-route damage is `0.192`, and local action remains invariant. This makes the imposed-bottleneck result seed-robust engineering support. Because all consumers and the shared bottleneck are directly supervised, spontaneous broadcast remains unsupported.
-- [x] Add perturbational-complexity diagnostics over controller and self-model state. (`perturbational_complexity_metrics`; first non-reportability evidence family, bounded support: rich-but-recoverable dynamics that propagate far more than a no-recurrence control and recover unlike a frozen-state control. Robust support still needs multiple seeds and cross-system replication.)
+- [x] Add perturbational-complexity diagnostics over controller and self-model state. (`perturbational_complexity_metrics`; initial bounded result: rich-but-recoverable dynamics propagate farther than a no-recurrence control and recover unlike a frozen-state control. The multi-seed and RNN replication is recorded in the next item.)
 - [x] Multi-seed + cross-checkpoint robustness for the perturbational family (`scripts/perturbational_multiseed.py`, `audits/perturbational_multiseed.json`). Under a standardized perturbation config, `supported` (rich-but-recoverable AND integration>feedforward AND recovery>freeze) holds on **100% of 25 perturbation seeds on all 4 checkpoints** — the primary `tune_prob_035` controller plus the 3 independently-trained v3 content-memory controllers (seeds 107/207/307). Recurrent attention-propagation exceeds the feedforward control on every seed (`tune_prob_035` `~0.59` vs `~0.13`; v3 seeds `~0.15` vs `~0.06` — smaller margin on the content-memory recipe but still robust), and recurrent recovery (`~0.39-0.46`) exceeds the frozen-state control (`0.000`) everywhere. So the non-reportability family is now **perturbation-seed robust and cross-training-seed / cross-recipe replicated**. Boundary: all four are the *same* recurrent controller architecture, so this does **not** yet satisfy the Stage 8 cross-architecture requirement (item d) — that still needs a structurally different controller.
 
 ## Priority 5: Replicate Across Systems
@@ -289,14 +308,16 @@ passing gates, five partial gates, and zero failures. Same-content causal conver
 different-benchmark transfer now each have seed-robust engineered assays. They remain partial
 because the shared bottleneck and relational matching are imposed rather than independently
 emerging across qualifying families. Branch E/F engineering results remain excluded from
-theoretical-family counts. The next decisive experiments remove forced sharing on both benchmarks
-and replicate temporal relay with a different sequence architecture.
+theoretical-family counts. The next decisive experiments remove forced sharing on both benchmarks,
+repeat the temporal-relay transformer across seeds, and rerun matched controls on the replicated
+systems.
 The methodology now produces one of each partition type (a robust access/report family and a
 non-reportability family) and comparators fail as intended. Both families' headline claims now
 also replicate on a second (ungated-RNN) controller architecture — so cross-*architecture*
 replication is under way (6/7 supported claims transfer; `cue_switch_adaptation` drops). Still
-open: content-identity across families is unestablished, replication is within one task/benchmark,
-and the strict Stage 7 content-only leg is not seed-robust.
+open: content-identity across independently learned families is unestablished, temporal-relay
+transfer still imposes relational matching/shared state, and the strict Stage 7 content-only leg
+is not seed-robust.
 
 - [~] At least one access/report family has robust support. (Stage 3 explicit-attention-modeling is robust; Stage 6A is capacity-audited and now backed by an empirical noise floor; Stage 7's local-reporter content claim is weak — a symbolic round-trip. The latent-only decoder does **not** clear the bar on the shipped `tune_prob_035` checkpoint (`audits/stage7_latent_only_tune_prob_035.json`). On the memory-regularized v3 recipe, a permuted-label noise floor plus a 3-seed replication (`audits/stage7_latent_noise_floor_v3_seed*.json`) splits the claim: **remembered-content (`memory`) latent recovery clears the floor on all 4 seeds** (means `+0.41..+0.64` vs p95 `~0.08`; non-circular) — a genuinely seed-robust reportability result for *remembered* attended content under content-memory regularization — while the strict `content_only` leg is significant-when-present but **seed-fragile** (full on 2/4 seeds, partial on 1, null on 1) and partly circular for current content. So the access/report side is strong and now has one seed-robust latent reportability leg (remembered content) on an engineered recipe; the strict content-only claim is not yet robust, and the spontaneous/emergent version still needs a checkpoint with separably encoded remembered-attention state or the external path. Stage 3 and Stage 6A (the robust access/report claims) now also **replicate on a different architecture** — an ungated RNN controller, Stage 6A clearing its own noise floor there; benchmark replication remains absent. See gate item (d).)
 - [~] At least one non-reportability family has robust support. (Perturbational complexity is now **perturbation-seed robust and cross-training-seed replicated** — `supported` on 100% of 25 seeds across `tune_prob_035` + 3 independently-trained v3 controllers; `audits/perturbational_multiseed.json`. It **also replicates on a structurally different architecture** — the ungated RNN controller (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds, recurrent propagation `0.316` vs feedforward `0.068`). So this leg is now multi-seed robust *and* cross-architecture and cross-training-seed replicated; the remaining gap is a more distant (non-recurrent-family) architecture and a second benchmark.)
@@ -304,4 +325,4 @@ and the strict Stage 7 content-only leg is not seed-robust.
 - [x] Comparator systems fail in predicted ways. (All negative controls and comparators fail as intended; `shuffle_feedback` drops accuracy by `0.27`.)
 - [~] Results replicate across at least one different architecture. (First cross-architecture pass: an ungated `nn.RNNCell` controller vs the gated GRU replicates 6 of 7 supported claims — Stage 3 robust, Stage 6A noise-floor-clearing, dissociation, closed-loop, cue-dependence, and perturbational; `cue_switch_adaptation` drops on the weaker RNN. See Priority 5 and `audits/cross_architecture_rnn_summary.json` + `audits/perturbational_multiseed_with_rnn.json`. Substantially met for both families' headline claims; a more distant architecture and the comparator/negative-control re-run remain.)
 - [~] Results replicate across at least one different benchmark. (The relational temporal-relay audit passes all ten gates across three fresh seeds, with `1.00` minimum task/causal/null metrics and `0.934` minimum order-destroyed advantage. This is structurally different and seed-robust at the engineering level, but explicit relational matching and forced shared state prevent a robust Stage 8 pass. See `audits/stage8_temporal_relay_multiseed.json`.)
-- [ ] The final claim is framed as consciousness-relevant evidence, not proof of consciousness.
+- [x] The final claim is framed as consciousness-relevant evidence, not proof of consciousness.

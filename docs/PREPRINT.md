@@ -10,7 +10,7 @@
 
 ## Abstract
 
-Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. Because a fully-soft glimpse averages the digits of every same-type cell, the readout is discretised (each glimpse reads the single most-attended cell via a straight-through estimator) so the closed-loop search is learnable. On the regenerated discrete-attention checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.44` vs. `0.17`; chance `0.10`) and in target-inspected rate (`0.39` vs. `0.08`), while all negative controls and comparator systems fail as intended (e.g. shuffling the feedback channel drops accuracy by `0.27`). Additional evaluations extend the benchmark beyond closed-loop control: predictive probes and causal interventions make the Stage 3 explicit-attention-modeling claim **robust** across seeds and a checkpoint family; explicit inspected-state variables support engineered self-state tracking (Stage 4A; native cell accuracy `~0.99`); controller-state probes support structured reportability of search type and attended cell (Stage 6A, capacity-audited); and a local calibrated reporter over opaque tokenized internal state supports faithful natural-language-shaped reporting (Stage 7, capacity-audited). Stage 6B (uncertainty / allocation-error reportability) is bounded/provisional — positive controller-state recall advantage but not a clean accuracy-guarded capacity audit. The Stage 4B learned-self-model *causal feedback* path is disabled in the base config (it destabilises the discrete-glimpse base task) and learned-self-model emergence under task-only objectives is treated as open. Complete zero-shaping resilience remains a known weakness (the model collapses to near-static accuracy without attention shaping). Stronger consciousness-relevant claims remain provisional or open pending non-reportability theory branches and cross-system replication.
+Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. Because a fully-soft glimpse averages the digits of every same-type cell, the readout is discretised (each glimpse reads the single most-attended cell via a straight-through estimator) so the closed-loop search is learnable. On the regenerated discrete-attention checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.44` vs. `0.17`; chance `0.10`) and in target-inspected rate (`0.39` vs. `0.08`), while all negative controls and comparator systems fail as intended (e.g. shuffling the feedback channel drops accuracy by `0.27`). Additional evaluations make Stage 3 explicit-attention modeling robust across seeds and a checkpoint family, support engineered self-state tracking (Stage 4A) and capacity-audited structured reportability (Stage 6A), and establish seed-robust remembered-content recovery under explicit Stage 7 content-memory regularization. Branch C binding and Branch D counterfactual-access assays have strong bounded support across seeds and model families; perturbational dynamics replicate across checkpoints and an ungated RNN; and a structurally different temporal-relay assay passes across three relational-GRU seeds and one transformer seed. These remain engineering results where relational matching, shared state, or content-memory objectives are imposed. The executable Stage 8 audit therefore remains **not met** (`3` pass, `5` partial, `0` fail), and the work does not establish consciousness or minimal consciousness-like content.
 
 ## 1. Introduction
 
@@ -112,29 +112,31 @@ The current repository now evaluates a broader staged set of claims:
 - structured reportability of bounded internal content,
 - natural-language reportability.
 
-The revised roadmap treats those as one branch of a larger consciousness-relevant methodology rather than as a sufficient ladder. Serious consciousness evidence would also require comparator systems, cross-architecture and cross-benchmark replication, unity/binding tests, counterfactual-access tests, perturbational-complexity diagnostics, and convergence across multiple theory-derived evidence families.
+The revised roadmap treats those as one branch of a larger consciousness-relevant methodology rather than as a sufficient ladder. The repository now implements comparator systems, cross-architecture and engineered cross-benchmark assays, unity/binding, counterfactual access, perturbational diagnostics, and higher-order/broadcast pilots. The remaining problem is not branch absence but independent convergence: the successful later assays still build in important relational, shared-state, or supervision assumptions.
 
 ## 5. Current Results
 
-The current default report in `outputs/minimal/evaluation_report.json` supports a richer picture than the original benchmark alone.
+The committed consolidation artifact `audits/post_rehab_full_eval_tune_prob_035_summary.json`
+summarizes the regenerated `tune_prob_035` evaluation. The executable report can be regenerated at
+`outputs/tune_prob_035/evaluation_report.json`.
 
 ### 5.1 Main Comparison
 
-On the current default checkpoint:
+On the current tuned discrete-attention checkpoint:
 
-- Static baseline accuracy: `0.229`
-- Recurrent controller accuracy: `0.312`
-- Static baseline target attention: `0.065`
-- Recurrent controller target attention: `0.070`
+- Static baseline accuracy: `0.167`
+- Recurrent controller accuracy: `0.442`
+- Static baseline target-inspected rate: `0.078`
+- Recurrent controller target-inspected rate: `0.387`
 
-The absolute target-attention gap on this checkpoint is smaller than in some earlier runs, but the recurrent controller still produces meaningfully better final task performance.
+The recurrent controller therefore improves both final task performance and actual target inspection.
 
 ### 5.2 Closed-Loop Dynamics
 
 - Static temporal reallocation: `0.000`
-- Recurrent temporal reallocation: `0.751`
+- Recurrent temporal reallocation: `0.129`
 - Static target-attention gain: `0.000`
-- Recurrent target-attention gain: `0.125`
+- Recurrent target-attention gain: `0.247`
 
 These are the clearest Stage 2 signals in the current run. The recurrent controller does not merely learn a better static map; it changes its attention over time in a task-relevant way.
 
@@ -144,21 +146,20 @@ The repository now includes predictive-probe and intervention tests.
 
 Predictive probe:
 
-- controller-state test cross-entropy: `1.752`
-- observation-only test cross-entropy: `2.269`
-- controller top-1 advantage: `0.276`
+- controller-state test cross-entropy: `2.817`
+- observation-only test cross-entropy: `3.181`
+- controller top-1 advantage: `0.229`
 
 Causal intervention:
 
-- attention-change KL: `0.0181`
-- original-target attention drop: `0.00241`
-- alternate-target attention gain: `0.0174`
+- attention-change KL: `1.625`
+- original-target attention drop: `0.233`
+- alternate-target attention gain: `0.205`
 
 Reduced-shaping condition:
 
-- at `attention_target_weight = 0.25`, accuracy remains `0.320`
-- temporal reallocation remains `0.0662`
-- target-attention gain remains `0.0448`
+- at `attention_target_weight = 0.25`, accuracy remains `0.337`
+- at zero shaping, accuracy falls to `0.187`, approximately the static baseline
 
 Together, these results now support the bounded Stage 3 claim: controller state is not merely generic recurrent memory, but carries structured information about future attention and causally influences later allocation under substantially reduced shaping. In the revised roadmap and evaluator, this stage counts as supported only when predictive, intervention, and reduced-shaping thresholds are all met together and the repeated-seed robustness gate also passes. The evaluator explicitly distinguishes a weaker single-run pass from the stricter robust pass, and it also extends that robustness check across the default checkpoint and a reduced-shaping checkpoint family. On the current `tune_prob_035` report, the default and `0.25` reduced-shaping families both pass; complete zero-shaping resilience remains outside the supported claim, so the shaping-objective alternative is weakened rather than fully eliminated.
 
@@ -169,9 +170,9 @@ The recurrent controller now maintains an explicit inspected-cell state and a na
 Current default results:
 
 - native inspected-map cell accuracy: `0.990`
-- observation-only inspected-map accuracy: `0.973`
-- native target-inspected accuracy: `0.988`
-- native target-inspected positive recall: `0.721`
+- observation-only inspected-map accuracy: `0.925`
+- native target-inspected accuracy: `0.995`
+- native target-inspected positive recall: `0.980`
 
 This supports a bounded Stage 4A-style claim: the model contains an explicit internal variable about where it has already attended, and that variable supports more faithful reporting than observation-only baselines. The stronger Stage 4B-style claim is handled separately below because it requires a hidden-state-only self-model and evidence that the learned self-model route can affect downstream attention.
 
@@ -209,10 +210,10 @@ The current default training mixes stationary and switched-cue episodes, and the
 
 Current default results:
 
-- baseline switch-target gain: `0.0233`
-- recurrent switch-target gain: `0.1169`
+- baseline switch-target gain: `0.0150`
+- recurrent switch-target gain: `0.0976`
 - baseline switch accuracy: `0.000`
-- recurrent switch accuracy: `0.500`
+- recurrent switch accuracy: `0.250`
 
 This supports Stage 5 in the current benchmark: the recurrent controller can redirect attention under changed priorities better than the static baseline.
 
@@ -222,10 +223,10 @@ The current report probes test whether controller state supports explicit readou
 
 Current default results:
 
-- search-type accuracy advantage over observation-only: `0.308`
-- attended-cell accuracy advantage: `0.287`
-- target-found accuracy advantage: `0.0124`
-- unresolved-region advantage from native self-model: `0.0172`
+- search-type accuracy advantage over a capacity-matched observation probe: `0.388`
+- attended-cell accuracy advantage: `0.427`
+- target-found accuracy advantage: `0.008`
+- target-found positive-recall advantage: `0.029`
 
 This supports a bounded Stage 6A-style claim: the same controller state that guides attention also supports structured reports about current search type, attended cell, target-found state, and unresolved regions. An empirical permuted-label noise floor backs the strong signals: the real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above the permuted-label 95th-percentile floor (`~0.004`, `~0.003`), with the permuted null centred at `~0`, so the advantage is significant rather than a probe-capacity artifact. The stronger Stage 6B-style target, reportability of uncertainty and allocation error, is now implemented as a distinct evaluation family. A matched-capacity 12-permutation audit finds that all four gated positive-recall advantages clear their empirical p95 floors. However, revisit-under-unresolved-search and allocation error retain slightly negative accuracy advantages (`-0.0015`, `-0.0020`) and fail their accuracy noise floors. The result is therefore bounded positive evidence, not Stage 6B support.
 
@@ -262,6 +263,39 @@ This supports a bounded Stage 7 claim: faithful natural-language-shaped reportab
 
 A sharper caveat further narrows the local claim. On inspection, the local decoder reads the scored content fields (current and previous attended visible type, attended digit, and glimpse digit) from dedicated attended-content token bases that the renderer fills *directly from the model's attended content*, not from the calibration-fit translator's predictions (those occupy separate token bases the decoder ignores for these fields), and not from the opaque latent-bit tokens. The local content report is therefore a schema-aware structural round-trip of directly-encoded attended-content tokens — closer to the symbolic-dump baseline (relabelled with opaque IDs whose schema the decoder is told) than to "learn to attach labels to opaque latent state". Two consequences follow: the local reporter's advantage over the observation-only baseline comes from the tokenized stream *containing* the attended-content tokens rather than from a learned decode of opaque state, and the two named anti-memorization falsifiers — consistent token remapping and held-out cue/content combinations — are not meaningful against it (the former is invariant by construction for a schema-aware decoder; the latter does not bite directly-encoded fields). The genuine faithfulness / anti-memorization test therefore requires a decoder forced to recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that is not told the schema. The narrower local result is still useful because it is runnable in CI and confirms the attended-content is recoverable from the token interface, but it should not be read as the stronger learned-decode claim.
 
+The latent-only follow-up now separates two claims. On the original checkpoint it remains negative
+to marginal. Under explicit content-memory regularization, however, remembered attended content
+clears a permuted-label noise floor on all four training seeds and all tested slices/interfaces
+(mean advantages `+0.41..+0.64` versus a p95 floor near `0.08`). The strict `content_only` joint
+advantage is seed-fragile: full on two seeds, partial on one, and absent on one. This supports
+seed-robust remembered-content reportability under an engineered memory objective, not spontaneous
+faithful reporting and not the strict beyond-observation content claim.
+
+### 5.9 Theory Branches and Stage 8 Audit
+
+The wider program now has executable results rather than roadmap-only proposals:
+
+- Branch C binding and Branch D counterfactual access have strong bounded support across seeds,
+  surface variants, and GRU/transformer-style model families; their successful models use explicit
+  relational selection or addressing.
+- Perturbational complexity passes 25 perturbation seeds across four checkpoints and replicates on
+  an ungated RNN controller. Six of seven base claims replicate from GRU to RNN; cue-switch
+  adaptation is the exception.
+- Branch E higher-order state and Branch F broadcast pass their engineering gates, including a
+  three-seed Branch F audit, but direct access-sensitive objectives or an imposed broadcast
+  bottleneck prevent them from counting as independent theory-family evidence.
+- A same-content binding/access assay has seed-robust directional causal overlap against permuted
+  and split-state controls, but only with an explicitly shared state. Corrected task-induced routing
+  reaches at most `0.021` transfer, so emergent shared routing is unsupported.
+- On the structurally different temporal-relay benchmark, a generic GRU memorizes training
+  conjunctions and reaches only `0.020` held-out joint accuracy. A relational GRU passes all ten
+  gates across three seeds (minimum order-destroyed advantage `0.934`), and a position-aware
+  transformer passes all ten on one seed (`0.951` order-destroyed advantage). Relational matching
+  and state sharing remain explicit.
+
+Accordingly, `audits/stage8_convergence_current.json` records three pass, five partial, and zero
+failed gates, with `stage8_supported = false`.
+
 ## 6. Interpretation
 
 The main result is no longer just that recurrence is generally useful. The more specific repo-level result is that a small recurrent controller, given access to previous attention and its consequences, can support:
@@ -272,7 +306,9 @@ The main result is no longer just that recurrence is generally useful. The more 
 - weak task-induced (not supervision-induced) self-modeling of inspection history (Stage 4B emergence probe),
 - flexible reallocation under changed priorities (Stage 5),
 - structured internal report variables (Stage 6A),
-- a first non-reportability evidence family via rich-but-recoverable perturbational dynamics.
+- seed/checkpoint/RNN-replicated perturbational dynamics,
+- strong bounded binding and counterfactual-access assays,
+- engineered same-content and different-benchmark causal-transfer assays.
 
 That is already stronger than the original attention-control benchmark framing.
 
@@ -283,16 +319,18 @@ The stronger claim should still be stated carefully. The current evidence suppor
 - the model tracks inspected history explicitly through an engineered self-state scaffold (Stage 4A),
 - structured internal contents are available for bounded report (Stage 6A, capacity-audited),
 - changed-priority reallocation can be trained successfully (Stage 5),
-- a first non-reportability evidence family: perturbing the recurrent state produces rich-but-recoverable dynamics that propagate far more than a no-recurrence control and recover unlike a frozen-state control (perturbational branch, bounded support).
+- a non-reportability family in which recurrent-state perturbations produce rich-but-recoverable dynamics across checkpoints, perturbation seeds, and an ungated RNN,
+- bounded binding and counterfactual-access results that survive seed and model-family checks,
+- engineered causal transfer on the same-content and temporal-relay assays.
 
 It does **not yet** support:
 
-- the Stage 4B learned-self-model *causal feedback* claim (the path is disabled in the base config because it destabilises the discrete-glimpse base task) or self-modeling that emerges without a direct self-model objective,
+- the Stage 4B learned-self-model *causal feedback* claim (the path is disabled in the base config because it destabilises the discrete-glimpse base task); weak task-induced inspection-history decoding exists, but its causal direction has the wrong regulatory sign,
 - a broad or fully stable Stage 6B-style claim of uncertainty and allocation-error reportability (positive controller-state recall advantage but not a clean accuracy-guarded capacity audit),
 - faithful external API LLM or VLM reports from tokenized or minimally labeled visual internal state,
-- unity/binding or counterfactual-access evidence, or robust (multi-seed, cross-system) perturbational complexity beyond the current bounded result,
-- cross-architecture or cross-benchmark replication,
-- multi-theory convergence across consciousness-theory branches,
+- spontaneous binding, counterfactual access, higher-order state, or broadcast without the successful assays' engineered relational/supervisory mechanisms,
+- independent same-content convergence or benchmark transfer after forced sharing and relational matching are removed,
+- Stage 8 multi-theory convergence (`stage8_supported` remains false),
 - a strong claim that the controller’s internal state is already a sufficient consciousness-like schema in anything but a speculative sense.
 
 ### 6.1 Relation to Theory Families
@@ -307,7 +345,13 @@ The benchmark still admits a natural interpretation in the language of the Good 
 
 What the current repository adds is a sharper boundary around that interpretation. A weak inspection-history self-model is task-induced (Stage 4B emergence probe), bounded structured reportability is supported for a limited set of internal variables (Stage 6A, capacity-audited), Stage 6B-style uncertainty reporting is bounded/provisional through positive controller-state recall advantages that do not clear the accuracy-guarded capacity audit, and Stage 7 is supported for a local calibrated opaque-token reporter. The broader uncertainty/allocation-error bundle and external LLM/VLM reportability are not yet settled.
 
-For consciousness-relevant evidence, however, this is insufficient. The repository now has a first non-reportability family (bounded perturbational complexity: rich-but-recoverable dynamics that degrade under no-recurrence and frozen-state controls), but Stage 8 convergence still needs that family to be robust, a second non-reportability family, the content-identity criterion, and cross-architecture/cross-benchmark replication. Higher-order and global-workspace-style framings would still need explicit self-representation or broad multi-consumer availability tests, and unity-oriented framings would need binding tests. The current benchmark work is therefore one branch of a future convergence program, not a direct argument for consciousness-like content by itself.
+For consciousness-relevant evidence, however, this is insufficient. The repository now has
+multiple implemented theory branches, robust perturbational checks, cross-model replications, an
+integrated same-content assay, and a structurally different temporal-relay benchmark. The limiting
+issue is independence: the positive binding/access, higher-order, broadcast, and relay results rely
+on explicit relational addressing, shared bottlenecks, or access-sensitive supervision. The current
+benchmark work is therefore an active convergence program, not a direct argument for
+consciousness-like content by itself.
 
 ### 6.2 Philosophical Scope
 
@@ -320,15 +364,15 @@ The intended claim is narrower: the benchmark is a methodology platform for deve
 This system is still intentionally minimal.
 
 - The environment is synthetic and low-dimensional.
-- Attention is soft rather than hard fixation.
+- The policy is soft, but the glimpse is a straight-through discrete fixation; conclusions may depend on that estimator and shaping recipe.
 - Some checkpoint-level metrics vary across training recipes.
-- Current support labels are bounded benchmark claims rather than robust multi-seed, multi-checkpoint claims with capacity audits and negative controls.
+- Later-branch support labels are mostly bounded engineering claims; Stage 3 and the perturbational family have stronger seed/checkpoint evidence, but no result closes the Stage 8 audit.
 - The Stage 4B closeout applies to fresh checkpoints trained with the self-model feedback objective, not automatically to older checkpoints.
 - Supervised self-modeling is weak evidence for consciousness; the stronger target is self-model emergence without direct self-model rewards.
-- The current documentation still needs a full capacity audit for observation-only baselines before later-stage claims should be promoted to robust support.
-- Negative controls such as feedforward, shuffled-feedback, and high-capacity observation-only systems remain important next checks.
-- Comparator systems, cross-architecture replication, and cross-benchmark replication are not yet implemented.
-- Unity/binding, counterfactual-access, and perturbational-complexity branches remain roadmap items rather than current evidence.
+- Capacity-matched baselines and empirical noise floors exist for the main reportability claims, but not every later branch has a complete end-to-end capacity audit.
+- The base negative-control and comparator suite passes; equivalent suites still need to be repeated on every replicated system.
+- Cross-architecture and temporal-relay replications are implemented but partial under the Stage 8 standard.
+- Unity/binding, counterfactual-access, higher-order, broadcast, and perturbational branches are implemented; several remain engineering-only because their target mechanisms are imposed.
 - External API LLM Stage 7 reporting is unsupported on the current powered v3 interface and should be treated as separate from the local calibrated reporter claim.
 - VLM-based Stage 7 reporting is unsupported on the current powered heatmap interface; its symbolic-image upper-bound control passes perfectly.
 - The sharper memory-focused probe makes the present Stage 7 result more informative, but also harder to pass.
@@ -337,15 +381,13 @@ So while the repository now supports much stronger claims than the original benc
 
 ## 8. Immediate Next Work
 
-The next highest-value experiments are now concentrated on turning the current attention-control methodology into a convergence-oriented program:
+The next highest-value experiments target the five partial Stage 8 gates:
 
-1. test whether Stage 3 can also survive complete removal of direct target-attention shaping,
-2. rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling,
-3. add capacity-matched baseline audits, negative-control runs, and first-class comparator systems,
-4. add unity/binding, counterfactual-access, and perturbational-complexity branches,
-5. strengthen the Stage 6B bundle beyond wrong-candidate history so unresolved search and allocation-error reports also beat observation-only baselines,
-6. replicate supported claims on a structurally different architecture and a second benchmark,
-7. redesign the opaque interface or representation before retesting either external text or vision reporters; both current powered v3 routes are negative.
+1. remove forced state sharing from the integrated-content and temporal-relay assays while keeping task viability,
+2. repeat the temporal-relay transformer across fresh seeds and rerun matched comparator/negative-control suites,
+3. test naturally coupled tasks or resource constraints that can induce shared routing without train/evaluation scaling mismatches,
+4. align access/report and non-reportability interventions on independently learned representations of the same content,
+5. retain the unresolved base limitations: complete zero-shaping, policy-consistent Stage 4B emergence, full Stage 6B capacity support, and strict seed-robust Stage 7 `content_only` recovery.
 
 ## 9. Reproducibility
 
@@ -369,6 +411,6 @@ Current evaluation artifacts also include intervention comparison plots, switche
 
 ## 10. Conclusion
 
-The repository now goes well beyond a minimal Stage 2 benchmark. In the current discrete-attention setup, a recurrent attention controller outperforms a static baseline, supports a robust Stage 3 explicit-attention-modeling claim through predictive, intervention, multi-seed, and checkpoint-family checks, maintains an explicit engineered state about inspected history (Stage 4A), shows weak task-induced inspection-history self-modeling (Stage 4B emergence probe, with the causal feedback path disabled in base), supports structured internal report variables (Stage 6A), and adds a first non-reportability evidence family via bounded perturbational complexity. The evaluator also now exposes repeated-seed and checkpoint-family Stage 3 summaries plus dedicated Stage 3 diagnostics plots, switched-cue artifacts, self-state artifacts, self-model artifacts, and Stage 6B uncertainty diagnostics artifacts, which make current weaknesses easier to inspect rather than masking them behind a single headline run. Those results are enough to support a bounded attention-control methodology, but not enough to claim consciousness-relevant convergence.
+The repository now goes well beyond a minimal Stage 2 benchmark. In the current discrete-attention setup, a recurrent controller outperforms a static baseline; Stage 3 is robust across seeds and a checkpoint family; Stage 4A and Stage 6A pass their bounded audits; remembered-content Stage 7 recovery replicates under explicit memory regularization; and binding, counterfactual-access, perturbational, higher-order, broadcast, integrated-content, and temporal-relay experiments make the convergence criteria executable. These results support a serious methodology-development program, but not consciousness-relevant convergence: the current Stage 8 audit remains `3` pass, `5` partial, `0` fail and explicitly unsupported.
 
-The strongest remaining open problem is no longer only the local tokenized Stage 7 path, but the broader convergence problem: comparator systems, emergent rather than supervised self-modeling, unity/binding, counterfactual access, perturbational dynamics, cross-architecture replication, cross-benchmark replication, and external LLM/VLM reportability. The local calibrated token reporter now closes a bounded Stage 7 claim, but that should be read as a disciplined stepping stone rather than a consciousness claim.
+The strongest remaining problem is independence: successful theory-branch assays must survive when relational matching, shared bottlenecks, and access-sensitive objectives are not built in. Multi-seed transformer relay replication, unforced shared routing, same-content alignment across independently learned families, and comparator reruns are the immediate tests. The local and memory-regularized Stage 7 results remain disciplined stepping stones rather than consciousness claims.

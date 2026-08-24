@@ -1,5 +1,10 @@
 # Minimal Attention Control System
 
+> **Design record.** This is the original conceptual specification. The implemented benchmark
+> keeps a soft attention policy but uses a straight-through discrete glimpse that reads the
+> highest-attended cell; the fully soft glimpse proposed below did not learn the task. For current
+> results and claim boundaries, see `README.md`, `docs/ROADMAP.md`, and `docs/NEXT_STEPS.md`.
+
 A system displays **genuine attention control** only if it has:
 
 1. an **object-level process** that allocates attention over inputs,
