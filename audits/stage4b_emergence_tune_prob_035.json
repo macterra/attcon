@@ -1,19 +1,265 @@
 {
+  "task_only_checkpoint": "outputs/stage4b_emergence/experiment.pt",
+  "supervised_checkpoint": "outputs/tune_prob_035/experiment.pt",
   "task_only_recurrent_accuracy": 0.525,
+  "supervised_base_recurrent_accuracy": 0.451171875,
   "emergent_self_model_probe": {
     "hidden_cell_accuracy_advantage": 0.009461820125579834,
-    "hidden_cell_bce_advantage": 0.0867161750793457,
+    "hidden_cell_bce_advantage": 0.08671614527702332,
     "hidden_target_accuracy_advantage": -0.07530385255813599,
     "hidden_target_positive_recall_advantage": -0.2721145749092102
   },
   "supervised_base_self_model_probe": {
     "hidden_cell_accuracy_advantage": 0.011909723281860352,
-    "hidden_cell_bce_advantage": 0.09129413962364197,
+    "hidden_cell_bce_advantage": 0.09129415452480316,
     "hidden_target_accuracy_advantage": -0.0607638955116272,
     "hidden_target_positive_recall_advantage": -0.2644003629684448
   },
-  "interpretation": "Nuanced. A WEAK cell-level inspection-history self-model emerges from the search task alone: the raw hidden state beats a previous-observation baseline on the full inspection map (BCE advantage ~+0.09; accuracy advantage only ~+0.01, near noise). The dedicated self-model objective adds almost nothing to this representation (supervision_cell_bce_advantage_gain ~0), so it is task-induced rather than supervision-induced -- the positive direction for the global falsifier. However TARGET-level inspection is NOT encoded better than observation in either model (negative advantage), so the emergent self-model is partial and weak. Bounded evidence against the \"supervised self-model required everywhere\" falsifier, not a strong emergence claim.",
+  "task_only_probe_direction_intervention": {
+    "step": 2,
+    "controller_state_sequence_index": 3,
+    "controller_state_export_alignment": "The model currently exports the state used at step t at controller_state_seq[t+1] because the sequence prepends the initial state and drops the final appended state.",
+    "scale": 2.0,
+    "probe_scenes": 128,
+    "probe_metrics": {
+      "train_bce": 0.20038652420043945,
+      "test_bce": 0.20507365465164185,
+      "train_cell_accuracy": 0.9296397566795349,
+      "test_cell_accuracy": 0.9278385639190674
+    },
+    "direction_target": "pre-intervention cell with the largest local inspection-report sensitivity",
+    "selected_cell_inspected_rate": 0.4609375,
+    "selected_cell_is_task_target_fraction": 0.078125,
+    "directed_effect": {
+      "selected_cell_report_gap": 0.9779059886932373,
+      "intervention_step_attention_symmetric_kl": 0.2575163245201111,
+      "future_attention_symmetric_kl": 0.46518978476524353,
+      "intervention_step_selected_attention_gap": 0.06279147416353226,
+      "future_selected_attention_gap": 0.016762953251600266,
+      "final_prediction_symmetric_kl": 1.1672356128692627,
+      "final_prediction_change_fraction": 0.5
+    },
+    "random_direction_control": {
+      "num_directions": 32,
+      "percentile": 95.0,
+      "metrics": {
+        "selected_cell_report_gap": {
+          "mean": 0.02764111712895101,
+          "percentile": 0.058568271994590755,
+          "max": 0.06966082751750946
+        },
+        "intervention_step_attention_symmetric_kl": {
+          "mean": 0.4260164014995098,
+          "percentile": 0.44368654787540435,
+          "max": 0.44840511679649353
+        },
+        "future_attention_symmetric_kl": {
+          "mean": 0.48728306870907545,
+          "percentile": 0.5662293553352356,
+          "max": 0.6289474964141846
+        },
+        "intervention_step_selected_attention_gap": {
+          "mean": 0.004745410158648156,
+          "percentile": 0.009740688884630798,
+          "max": 0.01227785274386406
+        },
+        "future_selected_attention_gap": {
+          "mean": 0.003471423461633094,
+          "percentile": 0.006563872960396111,
+          "max": 0.007989144884049892
+        },
+        "final_prediction_symmetric_kl": {
+          "mean": 1.0839702654629946,
+          "percentile": 1.2797116398811341,
+          "max": 1.4147144556045532
+        },
+        "final_prediction_change_fraction": {
+          "mean": 0.443359375,
+          "percentile": 0.5078125,
+          "max": 0.53125
+        }
+      }
+    },
+    "directed_exceeds_random_floor": {
+      "selected_cell_report_gap": true,
+      "intervention_step_attention_symmetric_kl": false,
+      "future_attention_symmetric_kl": false,
+      "intervention_step_selected_attention_gap": true,
+      "future_selected_attention_gap": true,
+      "final_prediction_symmetric_kl": false,
+      "final_prediction_change_fraction": false
+    },
+    "report_direction_effect": true,
+    "attention_policy_specificity": true,
+    "policy_consistent_avoidance": false,
+    "supported": false,
+    "claim_boundary": "A positive result shows that a linearly decodable inspection-history direction has policy effects larger than matched random hidden-state directions and that raising the 'already inspected' report reduces attention to that cell. It does not prove that the controller represents the direction as self-related, and the probe-defined report shift is expected by construction."
+  },
+  "supervised_base_probe_direction_intervention": {
+    "step": 2,
+    "controller_state_sequence_index": 3,
+    "controller_state_export_alignment": "The model currently exports the state used at step t at controller_state_seq[t+1] because the sequence prepends the initial state and drops the final appended state.",
+    "scale": 2.0,
+    "probe_scenes": 128,
+    "probe_metrics": {
+      "train_bce": 0.18194109201431274,
+      "test_bce": 0.18744634091854095,
+      "train_cell_accuracy": 0.9371961951255798,
+      "test_cell_accuracy": 0.9348784685134888
+    },
+    "direction_target": "pre-intervention cell with the largest local inspection-report sensitivity",
+    "selected_cell_inspected_rate": 0.4140625,
+    "selected_cell_is_task_target_fraction": 0.0859375,
+    "directed_effect": {
+      "selected_cell_report_gap": 0.9714835286140442,
+      "intervention_step_attention_symmetric_kl": 0.45665547251701355,
+      "future_attention_symmetric_kl": 0.3624829053878784,
+      "intervention_step_selected_attention_gap": 0.17283327877521515,
+      "future_selected_attention_gap": 0.04401595890522003,
+      "final_prediction_symmetric_kl": 0.8353855609893799,
+      "final_prediction_change_fraction": 0.59375
+    },
+    "random_direction_control": {
+      "num_directions": 32,
+      "percentile": 95.0,
+      "metrics": {
+        "selected_cell_report_gap": {
+          "mean": 0.024142094698618166,
+          "percentile": 0.052477695420384406,
+          "max": 0.05716678500175476
+        },
+        "intervention_step_attention_symmetric_kl": {
+          "mean": 0.3913559475913644,
+          "percentile": 0.41028766334056854,
+          "max": 0.4114004373550415
+        },
+        "future_attention_symmetric_kl": {
+          "mean": 0.4242540495470166,
+          "percentile": 0.5160375207662582,
+          "max": 0.5218605399131775
+        },
+        "intervention_step_selected_attention_gap": {
+          "mean": 0.005130822932187584,
+          "percentile": 0.010724449483677744,
+          "max": 0.015226099640130997
+        },
+        "future_selected_attention_gap": {
+          "mean": 0.004824566751267412,
+          "percentile": 0.009536738321185113,
+          "max": 0.009618564508855343
+        },
+        "final_prediction_symmetric_kl": {
+          "mean": 0.9191465117037296,
+          "percentile": 1.0914958119392395,
+          "max": 1.1667886972427368
+        },
+        "final_prediction_change_fraction": {
+          "mean": 0.55322265625,
+          "percentile": 0.609375,
+          "max": 0.6171875
+        }
+      }
+    },
+    "directed_exceeds_random_floor": {
+      "selected_cell_report_gap": true,
+      "intervention_step_attention_symmetric_kl": true,
+      "future_attention_symmetric_kl": false,
+      "intervention_step_selected_attention_gap": true,
+      "future_selected_attention_gap": true,
+      "final_prediction_symmetric_kl": false,
+      "final_prediction_change_fraction": false
+    },
+    "report_direction_effect": true,
+    "attention_policy_specificity": true,
+    "policy_consistent_avoidance": false,
+    "supported": false,
+    "claim_boundary": "A positive result shows that a linearly decodable inspection-history direction has policy effects larger than matched random hidden-state directions and that raising the 'already inspected' report reduces attention to that cell. It does not prove that the controller represents the direction as self-related, and the probe-defined report shift is expected by construction."
+  },
+  "probe_direction_intervention_scale_sweep": {
+    "primary_scale": 2.0,
+    "task_only": {
+      "by_scale": {
+        "0.25": {
+          "selected_cell_report_gap": 0.2734665870666504,
+          "intervention_step_selected_attention_gap": 0.007714768406003714,
+          "future_selected_attention_gap": 0.00120823597535491,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "0.5": {
+          "selected_cell_report_gap": 0.5094934105873108,
+          "intervention_step_selected_attention_gap": 0.015443271026015282,
+          "future_selected_attention_gap": 0.001998094841837883,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "1.0": {
+          "selected_cell_report_gap": 0.8100926280021667,
+          "intervention_step_selected_attention_gap": 0.030995018780231476,
+          "future_selected_attention_gap": 0.007709710858762264,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "2.0": {
+          "selected_cell_report_gap": 0.9779059886932373,
+          "intervention_step_selected_attention_gap": 0.06279147416353226,
+          "future_selected_attention_gap": 0.016762953251600266,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        }
+      },
+      "all_scales_shift_report_positive": true,
+      "all_scales_increase_selected_cell_attention": true,
+      "any_scale_policy_consistent_avoidance": false,
+      "any_scale_supported": false
+    },
+    "supervised_base": {
+      "by_scale": {
+        "0.25": {
+          "selected_cell_report_gap": 0.2618171274662018,
+          "intervention_step_selected_attention_gap": 0.01784958504140377,
+          "future_selected_attention_gap": 0.002579711377620697,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "0.5": {
+          "selected_cell_report_gap": 0.4900815486907959,
+          "intervention_step_selected_attention_gap": 0.03610234707593918,
+          "future_selected_attention_gap": 0.006138404831290245,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "1.0": {
+          "selected_cell_report_gap": 0.789745569229126,
+          "intervention_step_selected_attention_gap": 0.07535777986049652,
+          "future_selected_attention_gap": 0.01769826002418995,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        },
+        "2.0": {
+          "selected_cell_report_gap": 0.9714835286140442,
+          "intervention_step_selected_attention_gap": 0.17283327877521515,
+          "future_selected_attention_gap": 0.04401595890522003,
+          "attention_policy_specificity": true,
+          "policy_consistent_avoidance": false,
+          "supported": false
+        }
+      },
+      "all_scales_shift_report_positive": true,
+      "all_scales_increase_selected_cell_attention": true,
+      "any_scale_policy_consistent_avoidance": false,
+      "any_scale_supported": false
+    }
+  },
   "cell_inspection_self_model_emerges_task_only": true,
   "target_inspection_self_model_emerges_task_only": false,
-  "supervision_cell_bce_advantage_gain": 0.004577964544296265
+  "supervision_cell_bce_advantage_gain": 0.004578009247779846,
+  "interpretation": "Nuanced. A WEAK cell-level inspection-history self-model emerges from the search task alone: the raw hidden state beats a previous-observation baseline on the full inspection map (BCE advantage ~+0.09; accuracy advantage only ~+0.01, near noise). Crucially the dedicated self-model objective adds almost nothing to this representation (supervision_cell_bce_advantage_gain ~0), so the representation is task-induced rather than supervision-induced -- the positive direction for the global falsifier. However, TARGET-level inspection ('have I inspected the target?') is NOT encoded better than observation in either model (negative advantage), so the emergent self-model is partial and weak. The probe-direction intervention separately tests whether that decodable cell-level direction affects attention more than matched random hidden-state directions; its result must be read from the intervention fields rather than inferred from probe accuracy. This remains bounded evidence against the 'supervised self-model required everywhere' falsifier, not a strong emergence claim."
 }

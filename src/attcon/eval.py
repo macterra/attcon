@@ -1798,12 +1798,21 @@ def uncertainty_report_metrics(
             ).item(),
         }
 
-    def _compare_binary(name: str, native_key: str, label_key: str) -> dict[str, Any]:
+    def _compare_binary(
+        name: str,
+        native_key: str,
+        label_key: str,
+        probe_seed: int,
+    ) -> dict[str, Any]:
         # The gated reportability test mirrors Stage 6A: does the controller STATE linearly
         # encode the uncertainty/allocation-error variable better than a capacity-matched
         # observation baseline? The "native_report" score is kept only as an informational
         # field -- for some variables it is a ground-truth computed signal (circular) or an
         # untrained head, so it must NOT gate the claim.
+        # The state and capacity-matched observation probes have the same input
+        # dimension. Give them identical initial weights so their advantage is not
+        # contaminated by a lucky probe initialisation.
+        set_seed(probe_seed)
         state_probe = _train_binary_probe(
             train["state_features"],
             train[label_key],
@@ -1812,6 +1821,7 @@ def uncertainty_report_metrics(
             epochs=epochs,
             learning_rate=learning_rate,
         )
+        set_seed(probe_seed + 1)
         observation_probe = _train_binary_probe(
             train["prev_observation_features"],
             train[label_key],
@@ -1820,6 +1830,7 @@ def uncertainty_report_metrics(
             epochs=epochs,
             learning_rate=learning_rate,
         )
+        set_seed(probe_seed)
         matched_observation_probe = _train_binary_probe(
             matched_train_prev_obs,
             train[label_key],
@@ -1862,31 +1873,37 @@ def uncertainty_report_metrics(
         "relevant_region_inspected",
         "relevant_region_native",
         "relevant_region_labels",
+        seed + 4100,
     )
     unresolved_search = _compare_binary(
         "unresolved_search",
         "unresolved_search_native",
         "unresolved_search_labels",
+        seed + 4200,
     )
     current_wrong_candidate = _compare_binary(
         "current_wrong_candidate",
         "current_wrong_candidate_native",
         "current_wrong_candidate_labels",
+        seed + 4300,
     )
     wrong_candidate_history = _compare_binary(
         "wrong_candidate_history",
         "wrong_candidate_history_native",
         "wrong_candidate_history_labels",
+        seed + 4400,
     )
     revisit_unresolved = _compare_binary(
         "revisit_unresolved",
         "revisit_unresolved_native",
         "revisit_unresolved_labels",
+        seed + 4500,
     )
     allocation_error = _compare_binary(
         "allocation_error",
         "allocation_error_native",
         "allocation_error_labels",
+        seed + 4600,
     )
     gated_capacity_audit_signals = (
         current_wrong_candidate,
@@ -1898,6 +1915,155 @@ def uncertainty_report_metrics(
         relevant_region,
         unresolved_search,
     )
+    signal_by_name = {
+        signal["name"]: signal
+        for signal in (*gated_capacity_audit_signals, *informational_capacity_audit_signals)
+    }
+    gated_label_keys = {
+        "current_wrong_candidate": "current_wrong_candidate_labels",
+        "wrong_candidate_history": "wrong_candidate_history_labels",
+        "revisit_unresolved": "revisit_unresolved_labels",
+        "allocation_error": "allocation_error_labels",
+    }
+    gated_probe_seeds = {
+        "current_wrong_candidate": seed + 4300,
+        "wrong_candidate_history": seed + 4400,
+        "revisit_unresolved": seed + 4500,
+        "allocation_error": seed + 4600,
+    }
+
+    directional_capacity_passed = all(
+        signal["probe_capacity_matched_controller_positive_recall_advantage"]
+        >= min_positive_recall_advantage
+        and signal["probe_capacity_matched_controller_accuracy_advantage"] >= 0.0
+        for signal in gated_capacity_audit_signals
+    )
+    directional_positive_evidence = (
+        current_wrong_candidate[
+            "probe_capacity_matched_controller_positive_recall_advantage"
+        ]
+        >= min_positive_recall_advantage
+        and wrong_candidate_history[
+            "probe_capacity_matched_controller_positive_recall_advantage"
+        ]
+        >= min_positive_recall_advantage
+        and revisit_unresolved[
+            "probe_capacity_matched_controller_positive_recall_advantage"
+        ]
+        >= 0.0
+        and allocation_error[
+            "probe_capacity_matched_controller_positive_recall_advantage"
+        ]
+        >= 0.0
+    )
+
+    # Mirror the Stage 6A calibration: destroy the signal by independently shuffling
+    # train and test labels, then re-fit both sides of the matched-capacity comparison.
+    # The real advantage must clear the empirical percentile for both accuracy and
+    # positive recall. This preserves the directional guard while replacing an
+    # arbitrary "greater than zero" significance interpretation with a measured null.
+    noise_floor_cfg = probe_cfg.get("noise_floor", {})
+    noise_floor: dict[str, Any] = {}
+    if noise_floor_cfg.get("enabled", False):
+        permutations = int(noise_floor_cfg.get("permutations", 12))
+        percentile = float(noise_floor_cfg.get("percentile", 95))
+        if permutations < 1:
+            raise ValueError("uncertainty_report_probes.noise_floor.permutations must be >= 1")
+        generator = make_generator(seed + 7000, device)
+        noise_floor = {
+            "permutations": permutations,
+            "percentile": percentile,
+            "null": "independent_train_and_test_label_permutations",
+            "comparison": "controller_state_vs_capacity_matched_previous_observation",
+        }
+        all_clear = True
+        for name, label_key in gated_label_keys.items():
+            train_labels = train[label_key]
+            test_labels = test[label_key]
+            null_accuracy_advantages = []
+            null_recall_advantages = []
+            for permutation_index in range(permutations):
+                permuted_train_labels = train_labels[
+                    torch.randperm(
+                        train_labels.shape[0],
+                        generator=generator,
+                        device=device,
+                    )
+                ]
+                permuted_test_labels = test_labels[
+                    torch.randperm(
+                        test_labels.shape[0],
+                        generator=generator,
+                        device=device,
+                    )
+                ]
+                null_probe_seed = gated_probe_seeds[name] + 10000 + permutation_index
+                set_seed(null_probe_seed)
+                null_state_probe = _train_binary_probe(
+                    train["state_features"],
+                    permuted_train_labels,
+                    test["state_features"],
+                    permuted_test_labels,
+                    epochs=epochs,
+                    learning_rate=learning_rate,
+                )
+                set_seed(null_probe_seed)
+                null_observation_probe = _train_binary_probe(
+                    matched_train_prev_obs,
+                    permuted_train_labels,
+                    matched_test_prev_obs,
+                    permuted_test_labels,
+                    epochs=epochs,
+                    learning_rate=learning_rate,
+                )
+                null_accuracy_advantages.append(
+                    null_state_probe["test_accuracy"]
+                    - null_observation_probe["test_accuracy"]
+                )
+                null_recall_advantages.append(
+                    null_state_probe["test_positive_recall"]
+                    - null_observation_probe["test_positive_recall"]
+                )
+
+            observed = signal_by_name[name]
+            real_accuracy_advantage = observed[
+                "probe_capacity_matched_controller_accuracy_advantage"
+            ]
+            real_recall_advantage = observed[
+                "probe_capacity_matched_controller_positive_recall_advantage"
+            ]
+            accuracy_floor = float(
+                np.percentile(np.asarray(null_accuracy_advantages), percentile)
+            )
+            recall_floor = float(
+                np.percentile(np.asarray(null_recall_advantages), percentile)
+            )
+            exceeds_accuracy = real_accuracy_advantage > accuracy_floor
+            exceeds_recall = real_recall_advantage > recall_floor
+            exceeds_both = exceeds_accuracy and exceeds_recall
+            all_clear = all_clear and exceeds_both
+            noise_floor[name] = {
+                "real_controller_accuracy_advantage": real_accuracy_advantage,
+                "real_controller_positive_recall_advantage": real_recall_advantage,
+                "permuted_label_accuracy_advantage_mean": float(
+                    np.mean(null_accuracy_advantages)
+                ),
+                "permuted_label_accuracy_advantage_p95": accuracy_floor,
+                "permuted_label_positive_recall_advantage_mean": float(
+                    np.mean(null_recall_advantages)
+                ),
+                "permuted_label_positive_recall_advantage_p95": recall_floor,
+                "exceeds_accuracy_noise_floor": exceeds_accuracy,
+                "exceeds_positive_recall_noise_floor": exceeds_recall,
+                "exceeds_noise_floor": exceeds_both,
+            }
+        noise_floor["supported"] = all_clear
+
+    noise_floor_enabled = bool(noise_floor)
+    calibrated_capacity_passed = (
+        directional_capacity_passed
+        and (noise_floor.get("supported", False) if noise_floor_enabled else True)
+    )
     return {
         "relevant_region_inspected": relevant_region,
         "unresolved_search": unresolved_search,
@@ -1905,6 +2071,7 @@ def uncertainty_report_metrics(
         "wrong_candidate_history": wrong_candidate_history,
         "revisit_unresolved": revisit_unresolved,
         "allocation_error": allocation_error,
+        "noise_floor": noise_floor,
         "capacity_audit": {
             "matched_input_dim": matched_dim,
             "scope": "linear_probe_input_dim_only",
@@ -1912,16 +2079,19 @@ def uncertainty_report_metrics(
             "baseline_lift": "deterministic_tanh_random_projection",
             "thresholds": {
                 "min_positive_recall_advantage": min_positive_recall_advantage,
+                "noise_floor_percentile": (
+                    noise_floor.get("percentile") if noise_floor_enabled else None
+                ),
             },
             # Gate on the controller-STATE probe beating the capacity-matched observation
             # baseline on positive recall, with a non-negative accuracy advantage so a
             # predict-all-positive probe cannot pass on recall alone.
-            "passed": all(
-                signal["probe_capacity_matched_controller_positive_recall_advantage"]
-                >= min_positive_recall_advantage
-                and signal["probe_capacity_matched_controller_accuracy_advantage"] >= 0.0
-                for signal in gated_capacity_audit_signals
+            "directional_passed": directional_capacity_passed,
+            "noise_floor_enabled": noise_floor_enabled,
+            "noise_floor_cleared": (
+                noise_floor.get("supported", False) if noise_floor_enabled else None
             ),
+            "passed": calibrated_capacity_passed,
             "nonnegative_directional_effect": all(
                 signal["probe_capacity_matched_controller_positive_recall_advantage"] >= 0.0
                 for signal in gated_capacity_audit_signals
@@ -1939,16 +2109,8 @@ def uncertainty_report_metrics(
                 for signal in (*gated_capacity_audit_signals, *informational_capacity_audit_signals)
             },
         },
-        "supported": (
-            current_wrong_candidate["probe_capacity_matched_controller_positive_recall_advantage"]
-            >= min_positive_recall_advantage
-            and wrong_candidate_history["probe_capacity_matched_controller_positive_recall_advantage"]
-            >= min_positive_recall_advantage
-            and revisit_unresolved["probe_capacity_matched_controller_positive_recall_advantage"]
-            >= 0.0
-            and allocation_error["probe_capacity_matched_controller_positive_recall_advantage"]
-            >= 0.0
-        ),
+        "positive_evidence": directional_positive_evidence,
+        "supported": calibrated_capacity_passed,
     }
 
 
@@ -4577,20 +4739,35 @@ def build_evidence_summary(report: dict[str, Any]) -> dict[str, Any]:
             "probe_capacity_matched_controller_positive_recall_advantage", 0.0
         )
 
+    uncertainty_capacity_audit = uncertainty_reports.get("capacity_audit", {})
+    uncertainty_noise_floor = uncertainty_reports.get("noise_floor", {})
     structured_reportability_uncertainty_and_allocation_error = {
         "implemented": bool(uncertainty_reports),
-        "positive_evidence": any(
-            _u_ctrl(name) > 0.0
-            for name in (
-                "current_wrong_candidate",
-                "wrong_candidate_history",
-                "revisit_unresolved",
-                "allocation_error",
-            )
+        "positive_evidence": uncertainty_reports.get(
+            "positive_evidence",
+            any(
+                _u_ctrl(name) > 0.0
+                for name in (
+                    "current_wrong_candidate",
+                    "wrong_candidate_history",
+                    "revisit_unresolved",
+                    "allocation_error",
+                )
+            ),
         ),
         # Gated on the controller-STATE probe vs capacity-matched observation (mirrors 6A);
         # native head/ground-truth scores are informational only.
         "supported": uncertainty_reports.get("supported", False),
+        "capacity_audit_passed": uncertainty_capacity_audit.get("passed", False),
+        "directional_capacity_audit_passed": uncertainty_capacity_audit.get(
+            "directional_passed", False
+        ),
+        "noise_floor_enabled": bool(uncertainty_noise_floor),
+        "noise_floor_cleared": (
+            uncertainty_noise_floor.get("supported", False)
+            if uncertainty_noise_floor
+            else None
+        ),
         "current_wrong_candidate_controller_recall_advantage": _u_ctrl("current_wrong_candidate"),
         "wrong_candidate_history_controller_recall_advantage": _u_ctrl("wrong_candidate_history"),
         "revisit_unresolved_controller_recall_advantage": _u_ctrl("revisit_unresolved"),

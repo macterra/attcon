@@ -29,6 +29,11 @@ class ModelConfig:
     scene_embedding_dim: int = 16
     temperature: float = 0.6
     hard_attention: bool = False
+    # Recurrent cell for the controller. "gru" (gated, default) is the original architecture;
+    # "rnn" is a structurally different ungated tanh recurrence used for cross-architecture
+    # replication of the supported claims (Stage 8 gate item d). Both cells share the
+    # (input, hidden) -> hidden call signature, so only the cell construction changes.
+    controller_kind: str = "gru"
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "ModelConfig":
@@ -323,7 +328,15 @@ class RecurrentAttentionController(BaseAttentionModel):
 
     def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
         super().__init__(task_config, model_config)
-        self.controller = nn.GRUCell(self.summary_dim, model_config.hidden_size)
+        controller_kind = getattr(model_config, "controller_kind", "gru")
+        if controller_kind == "gru":
+            self.controller = nn.GRUCell(self.summary_dim, model_config.hidden_size)
+        elif controller_kind == "rnn":
+            # Ungated tanh recurrence: structurally different from the gated GRU, same
+            # (input, hidden) -> hidden call signature so the forward loop is unchanged.
+            self.controller = nn.RNNCell(self.summary_dim, model_config.hidden_size)
+        else:
+            raise ValueError(f"unknown controller_kind: {controller_kind!r} (expected 'gru' or 'rnn')")
         self.summary_adapter = nn.Sequential(
             nn.Linear(self.summary_dim, model_config.hidden_size),
             nn.Tanh(),

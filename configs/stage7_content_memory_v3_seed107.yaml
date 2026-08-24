@@ -1,0 +1,59 @@
+seed: 107
+output_dir: outputs/stage7_content_memory_v3_seed107
+device: cpu
+task:
+  grid_size: 5
+  num_types: 4
+  digit_vocab_size: 10
+  min_type_count: 6
+  num_steps: 6
+model:
+  hidden_size: 32
+  cue_embedding_dim: 8
+  scene_embedding_dim: 16
+  temperature: 1.0
+  hard_attention: true
+training:
+  batch_size: 128
+  train_steps: 3000
+  val_batches: 20
+  val_interval: 500
+  log_interval: 100
+  learning_rate: 0.001
+  weight_decay: 0.0
+  aux_loss_weight: 0.15
+  attention_target_weight: 3.0
+  stepwise_attention_target_weight: 3.0
+  cue_switch_transition_weight: 0.2
+  attention_entropy_weight: 0.0
+  cue_switch_probability: 0.35
+  cue_switch_step: 3
+  self_model_weight: 0.5
+  hidden_self_model_weight: 0.5
+  self_model_policy_feedback_weight: 0.0
+  self_model_policy_feedback_scale: 4.0
+  content_memory_weight: 0.5
+evaluation:
+  test_batches: 40
+  probe_scenes: 4
+  cue_switch:
+    enabled: true
+    probe_scenes: 4
+    switch_step: 3
+  intervention_test:
+    enabled: true
+    probe_scenes: 16
+    step: 5
+  nl_report:
+    enabled: true
+    model: local-calibrated-token-decoder
+    calibration_examples: 8
+    evaluation_examples: 24
+    translator_train_examples: 64
+    probe_scenes: 32
+    local_decoder:
+      enabled: true
+      latent_only:
+        enabled: true
+        num_chunks: 16
+        num_levels: 8

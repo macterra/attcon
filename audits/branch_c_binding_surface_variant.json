@@ -1,0 +1,104 @@
+{
+  "all_pilot_gates_pass": true,
+  "audit": "branch_c_binding_pilot",
+  "branch_c_support_blocker": "Even a passing pilot requires replication on a benchmark variant with different surface attributes.",
+  "branch_c_supported": false,
+  "comparisons": {
+    "heldout_joint_advantage": 0.9923113887198269,
+    "lure_rejection_advantage": 0.48750603199005127
+  },
+  "config": {
+    "batch_size": 256,
+    "count": 16384,
+    "data_seed": 73,
+    "device": "cpu",
+    "digit_vocab_size": 7,
+    "epochs": 30,
+    "grid_size": 4,
+    "heldout_count": 4162,
+    "heldout_modulus": 4,
+    "hidden_size": 64,
+    "learning_rate": 0.003,
+    "model_seed": 131,
+    "num_cues": 5,
+    "num_objects": 10,
+    "num_visible_types": 6,
+    "train_count": 12222
+  },
+  "gates": {
+    "heldout_joint_advantage": true,
+    "integrated_heldout_joint_accuracy": true,
+    "lure_rejection_advantage": true,
+    "non_target_all_field_invariance": true,
+    "target_other_field_joint_stability": true,
+    "target_type_follow_rate": true
+  },
+  "integrated_interventions": {
+    "non_target_all_field_invariance": 1.0,
+    "target_other_field_joint_stability": 1.0,
+    "target_other_field_mean_stability": 1.0,
+    "target_selection_stability": 1.0,
+    "target_type_follow_rate": 1.0
+  },
+  "models": {
+    "baseline_to_integrated_parameter_ratio": 1.242012331838565,
+    "independent_feature_baseline": {
+      "architecture": "object-identity-destroying mean pool feeding four heads",
+      "final_epoch_loss": 6.209857161082919,
+      "heldout": {
+        "count": 4162,
+        "false_binding_lure_rejection": 0.5124939680099487,
+        "field_accuracy": {
+          "digit": 0.3243632912635803,
+          "inspected": 0.623978853225708,
+          "location": 0.09754925221204758,
+          "visible_type": 0.3407015800476074
+        },
+        "joint_accuracy": 0.007688611280173063
+      },
+      "initial_epoch_loss": 7.111792120093157,
+      "parameter_count": 8863
+    },
+    "integrated": {
+      "architecture": "one shared soft object selection feeding all four heads",
+      "final_epoch_loss": 0.0015743794333832248,
+      "heldout": {
+        "count": 4162,
+        "false_binding_lure_rejection": 1.0,
+        "field_accuracy": {
+          "digit": 1.0,
+          "inspected": 1.0,
+          "location": 1.0,
+          "visible_type": 1.0
+        },
+        "joint_accuracy": 1.0,
+        "mean_target_attention": 0.9653040766716003,
+        "target_selection_accuracy": 1.0
+      },
+      "initial_epoch_loss": 7.119361700470915,
+      "parameter_count": 7136
+    }
+  },
+  "predeclared_thresholds": {
+    "heldout_joint_advantage": 0.25,
+    "integrated_heldout_joint_accuracy": 0.75,
+    "lure_rejection_advantage": 0.15,
+    "non_target_all_field_invariance": 0.9,
+    "target_other_field_joint_stability": 0.9,
+    "target_type_follow_rate": 0.75
+  },
+  "scope": "single synthetic surface-attribute benchmark; a second variant is required for Branch C support",
+  "status": "supported_pilot",
+  "surface_schema": {
+    "cue_tag": "color_key",
+    "digit": "texture_pattern",
+    "inspected": "illumination_flag",
+    "location": "tile_slot",
+    "visible_type": "geometric_shape"
+  },
+  "uncertainty": {
+    "integrated_joint_wilson_95_lower": 0.9990778672547511,
+    "integrated_lure_wilson_95_lower": 0.9990778672547511
+  },
+  "variant": "surface_v2"
+}

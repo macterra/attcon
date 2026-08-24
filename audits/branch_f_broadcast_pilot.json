@@ -1,0 +1,103 @@
+{
+  "all_engineering_gates_pass": true,
+  "audit": "branch_f_broadcast_pilot",
+  "branch_f_supported": false,
+  "config": {
+    "batch_size": 256,
+    "content_vocab_size": 12,
+    "count": 16380,
+    "cue_strength_levels": 5,
+    "data_seed": 17,
+    "device": "cpu",
+    "epochs": 35,
+    "evidence_levels": 4,
+    "heldout_count": 3276,
+    "heldout_modulus": 5,
+    "hidden_size": 32,
+    "learning_rate": 0.003,
+    "model_seed": 107,
+    "num_steps": 5,
+    "train_count": 13104
+  },
+  "gates": {
+    "content_swap_follow_rate": true,
+    "coordinated_ablation_advantage": true,
+    "local_action_invariance": true,
+    "private_broad_joint_accuracy": true,
+    "private_single_route_accuracy_drop_ceiling": true,
+    "shared_ablation_accuracy_drop": true,
+    "shared_broad_joint_accuracy": true,
+    "shared_onset_accuracy": true,
+    "shared_onset_alignment": true
+  },
+  "interventions": {
+    "coordinated_ablation_drop_advantage": 0.7166361808776855,
+    "ignited_intervention_count": 1641.0,
+    "local_action_invariance_under_shared_swap": 1.0,
+    "private_mean_broad_accuracy_drop_after_one_route_zero": 0.1833028793334961,
+    "shared_broad_accuracy_drop_after_zero": 0.8999390602111816,
+    "shared_content_swap_broad_follow_rate": 1.0
+  },
+  "observed_gate_metrics": {
+    "content_swap_follow_rate": 1.0,
+    "coordinated_ablation_advantage": 0.7166361808776855,
+    "local_action_invariance": 1.0,
+    "private_broad_joint_accuracy": 1.0,
+    "private_single_route_accuracy_drop_ceiling": 0.1833028793334961,
+    "shared_ablation_accuracy_drop": 0.8999390602111816,
+    "shared_broad_joint_accuracy": 1.0,
+    "shared_onset_accuracy": 1.0,
+    "shared_onset_alignment": 1.0
+  },
+  "predeclared_thresholds": {
+    "content_swap_follow_rate": 0.8,
+    "coordinated_ablation_advantage": 0.6,
+    "local_action_invariance": 0.95,
+    "private_broad_joint_accuracy": 0.85,
+    "private_single_route_accuracy_drop_ceiling": 0.25,
+    "shared_ablation_accuracy_drop": 0.75,
+    "shared_broad_joint_accuracy": 0.85,
+    "shared_onset_accuracy": 0.9,
+    "shared_onset_alignment": 0.95
+  },
+  "private_shortcut_upper_bound": {
+    "final_epoch_loss": 0.6504517390468909,
+    "heldout": {
+      "broad_joint_accuracy": 1.0,
+      "consumer_accuracy": {
+        "action": 1.0,
+        "language_report": 1.0,
+        "memory_write": 1.0,
+        "reallocation": 1.0,
+        "structured_report": 1.0,
+        "uncertainty": 1.0
+      },
+      "onset_accuracy": 0.6744199991226196,
+      "onset_alignment_rate": 0.5567765831947327
+    },
+    "initial_epoch_loss": 9.484702803130842,
+    "parameter_count": 12309,
+    "parameters_exactly_matched": true,
+    "receives_private_target_shortcuts": true
+  },
+  "shared_model": {
+    "final_epoch_loss": 0.005533014437790974,
+    "heldout": {
+      "broad_joint_accuracy": 1.0,
+      "consumer_accuracy": {
+        "action": 1.0,
+        "language_report": 1.0,
+        "memory_write": 1.0,
+        "reallocation": 1.0,
+        "structured_report": 1.0,
+        "uncertainty": 1.0
+      },
+      "onset_accuracy": 1.0,
+      "onset_alignment_rate": 1.0
+    },
+    "initial_epoch_loss": 10.814568028199659,
+    "parameter_count": 12309
+  },
+  "status": "engineering_support",
+  "support_boundary": "The benchmark directly supervises all consumer outputs and the shared architecture imposes a broadcast bottleneck. A pass is engineering support only; spontaneous broadcast requires emergence without shared-state or ignition supervision."
+}

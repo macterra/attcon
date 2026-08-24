@@ -329,7 +329,14 @@ Current assessment:
 
 Interpretation:
 
-The bounded Stage 4B claim is now closed for the hidden-self-model feedback route: the controller learns a hidden-state-only inspected-cell model, that representation beats a previous-observation baseline on held-out inspected-state prediction, hidden-state interventions move self-model report output, and direct hidden-self-model overrides measurably affect attention through the learned policy feedback path. On a fresh closeout probe with the Stage 4B feedback objective, the learned-self-model metrics passed with positive hidden cell BCE advantage, positive target BCE/separation advantage, a bidirectional self-model intervention gap, and nonzero policy-feedback causal effect. This remains a benchmark-local claim rather than a broad self-awareness claim, and older checkpoints trained before the feedback objective should not be counted as Stage 4B-supported.
+The task-only emergence experiment finds weak decodable inspection-history structure, but the causal
+follow-up does not establish a regulatory self-model. A fitted inspection-map direction moves its
+decoded report and has cell-specific attention effects above matched random hidden-state directions.
+Yet across intervention scales `0.25`, `0.5`, `1.0`, and `2.0`, raising the direction's "already
+inspected" report increases attention to the same cell at both the intervention and following step.
+That is the opposite of the avoidance/reallocation semantics required by this stage. The same pattern
+appears in the supervised base checkpoint. Stage 4B therefore remains unsupported: decodability and
+generic/cell-specific causal overlap are present, but policy-consistent regulatory use is not.
 
 Engineered-objective caveat:
 
@@ -459,11 +466,11 @@ Current assessment:
 
 - implemented: yes
 - positive evidence: yes, in a bounded sense
-- supported: provisional and benchmark-specific, not yet broad
+- supported: no; bounded benchmark-specific positive evidence only
 
 Interpretation:
 
-This stage now has a meaningful foothold in the benchmark. The current evaluator includes native variables for relevant-region inspection, unresolved search, current wrong-candidate pursuit, wrong-candidate history, revisit-under-unresolved-search, and allocation error. That finer split matters because it distinguishes an active local mistake from a cumulative search-history trace and from unresolved revisits. The current wrong-candidate and wrong-candidate-history signals now provide bounded positive evidence beyond observation-only reporting on some runs, while revisit-under-unresolved-search and allocation error remain weaker. That is enough to count as bounded positive evidence for Stage 6B, while still falling short of a broad or fully stable support claim.
+This stage now has a meaningful foothold in the benchmark. The current evaluator includes native variables for relevant-region inspection, unresolved search, current wrong-candidate pursuit, wrong-candidate history, revisit-under-unresolved-search, and allocation error. That finer split matters because it distinguishes an active local mistake from a cumulative search-history trace and from unresolved revisits. The calibrated audit compares controller-state probes against capacity-matched previous-observation probes and repeats each comparison under 12 independently permuted train/test label assignments. All four gated positive-recall advantages clear their empirical p95 floors, but revisit-under-unresolved-search and allocation error retain slightly negative accuracy advantages and fail their accuracy floors. This counts as bounded positive evidence, not Stage 6B support. See `audits/stage6b_noise_floor_tune_prob_035.json`.
 
 Falsification criterion:
 
@@ -507,9 +514,48 @@ Branch C should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no
-- supported: no
+- implemented: benchmark scaffold, trained shared-selection pilot, causal feature interventions, frozen-gate surface replication, six-run multi-seed audit, and an exactly matched cue-token transformer replication
+- positive evidence: yes, across two synthetic surface variants, three independent shared-selector data/model-seed pairs per variant, and a structurally different model family
+- supported: yes, strong bounded; not robust for Stage 8
+
+Implementation note:
+
+The benchmark-side prerequisite is now concrete. `attcon.binding` generates objects whose
+location, visible type, digit, cue tag, and inspection state are independently recombinable; assigns
+target conjunctions to a deterministic train/held-out split; and constructs false-binding lures from
+feature values that all occur in the scene even though the lure conjunction itself does not. The
+4,096-case audit (`audits/branch_c_binding_dataset.json`) contains 808 held-out conjunctions, retains
+the full individual feature vocabulary in training, and reports no invalid lures.
+
+The first powered pilot (`audits/branch_c_binding_pilot.json`) forces every answer through one shared
+soft object selection and compares it with an object-identity-destroying pooled baseline that has
+13% more parameters. On 3,288 untouched held-out conjunctions, the integrated route reaches `1.00`
+joint accuracy and `1.00` false-binding-lure rejection; the independent-feature route reaches
+`0.015` and `0.511`. Changing the target object's type changes that reported type while preserving
+the other three fields, and changing a non-target type leaves all four reports invariant; every
+predeclared pilot gate passes.
+
+The frozen-gate replication (`audits/branch_c_binding_surface_variant.json`) changes the semantics to
+tile position, geometric shape, texture, color key, and illumination; changes every non-binary
+vocabulary size plus the object count; and uses new data and model seeds. On 4,162 held-out
+conjunctions, the integrated route again reaches `1.00` joint accuracy, lure rejection, and all
+intervention scores. Its 24%-larger pooled baseline reaches `0.008` joint accuracy and `0.512` lure
+rejection. The aggregate audit (`audits/branch_c_binding_replication.json`) confirms identical
+thresholds and different schemas/cardinalities, so Branch C now has bounded support under the
+predeclared threshold. The multi-seed audit (`audits/branch_c_binding_multiseed.json`) repeats both
+variants with three independent data/model-seed pairs each. All six runs pass every gate; the
+minimum integrated joint accuracy, lure rejection, target-edit coherence, and non-target invariance
+are all `1.00`.
+
+The cross-model audit (`audits/branch_c_binding_cross_model.json`) removes the explicit scalar
+selector. A permutation-equivariant transformer binds through a cue token and self-attention; its
+control has the identical 20,073-parameter (original) or 19,487-parameter (surface-v2) transformer
+after object identities are mean-pooled away. The integrated transformer reaches `1.00` joint
+accuracy, lure rejection, and all intervention scores on both variants. The controls reach
+`0.014`/`0.499` and `0.006`/`0.500` joint/lure performance. Branch C therefore clears its
+predeclared support threshold with multi-seed and cross-model evidence. The status remains strong
+bounded rather than robust for Stage 8 because the transformer replication is single-seed per
+variant and both benchmarks retain the same synthetic selection-task structure.
 
 Consciousness-evidence role:
 
@@ -549,9 +595,61 @@ Branch D should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no
-- supported: no
+- implemented: benchmark scaffold, unstructured-GRU negative control, relational recurrent pilot, causal interventions, three-run multi-seed audit, and a set-transformer replication across two surface variants
+- positive evidence: yes across seeds, relational architectures, and surface variants; no for an unstructured GRU
+- supported: yes, strong bounded; not spontaneous in the original controller or robust for Stage 8
+
+Implementation note:
+
+The scaffold makes the required contrasts explicit instead of inferring them from ordinary search
+episodes. Each case changes from a currently attended anchor query to a non-current target while
+holding the fixation index fixed. Targets are balanced across unavailable, merely visible,
+previously attended, and counterfactually accessible states. Counterfactual-access cases retain an
+unattended task-access cache while exposing a conflicting current observation, so reconstruction
+from the scene predicts the wrong answer by construction. The 4,096-case audit
+(`audits/branch_d_access_dataset.json`) contains 831 held-out query/value pairs, a `1.00` fixed-
+attention rate, a `1.00` counterfactual-tension rate, and no invariant failures. Scene-only accuracy
+is `1.00` for merely visible/unavailable targets and `0.00` for previously attended/counterfactual
+targets. The next step is a trained access route plus matched no-cache, scene-only, current-glimpse,
+and symbolic upper-bound controls; the scaffold itself is not positive Branch D evidence.
+
+The first trained pilot (`audits/branch_d_access_pilot.json`) uses a GRU to compress access events
+before the switched query is decoded, so the report path does not receive the explicit cache. Its
+no-cache comparator is exactly parameter matched. The access route reaches `1.00` accuracy on all
+13,156 training cases but `0.00` on all 3,228 held-out query/value conjunctions and every access
+state; the no-cache route is also `0.00`. All held-out keys and answers occur individually in
+training, while zero held-out pairs leak. This is a substantive negative result: the unstructured
+GRU memorizes query/value conjunctions rather than learning flexible access. All predeclared gates
+fail, including cache-erasure and observation-conflict gates. This GRU is retained as the negative
+control.
+
+The prespecified relational follow-up (`audits/branch_d_access_relational.json`) uses exact query-key
+addressing but passes remembered values through recurrent outputs; the report decoder never receives
+the explicit cache. It uses the identical held-out pairs, thresholds, training budget, and an exactly
+parameter-matched no-cache model. The access route reaches `1.00` accuracy on all 3,228 held-out
+cases and each of the four access states. The no-cache route reaches `1.00` only for unavailable and
+merely visible targets and `0.00` for previous-memory and counterfactual-tension targets. Erasing the
+queried cache drops memory/tension accuracy by `1.00`; changing the conflicting visible value leaves
+the cache answer invariant and correct at `1.00`. All frozen gates pass. This supplies bounded
+Branch D support while sharply localizing it to a relational inductive bias. The single-run result
+is followed by the multi-seed audit below; an alternate relational architecture remains necessary
+for robust support.
+
+The three-run audit (`audits/branch_d_access_multiseed.json`) uses fresh data/model-seed pairs and a
+reduced but fixed 8,192-case/25-epoch budget. Every gate passes in every run. Minimum held-out
+accuracy, memory/tension advantage over no-cache, cache-erasure accuracy drop, and conflicting-
+observation cache retention are all `1.00`. This makes the bounded result seed-robust.
+
+The cross-model audit (`audits/branch_d_access_cross_model.json`) replaces the GRU with a
+permutation-equivariant event-set transformer and repeats both the original task and a surface-v2
+task with different query/answer semantics, item count, key and value vocabularies, holdout ratio,
+and seeds. Exactly parameter-matched no-cache controls are retained. Both variants pass every gate;
+minimum held-out accuracy, memory/tension advantage, cache-erasure drop, and observation-change
+retention are `1.00`. This establishes strong bounded evidence across seeds, architectures, and two
+surface variants. The important remaining falsifier is that both successful families use explicit
+relational key addressing. The result therefore shows flexible access once that inductive bias is
+provided, not spontaneous access in the original attention controller, and is not robust Stage 8
+evidence.
 
 Consciousness-evidence role:
 
@@ -637,9 +735,38 @@ Branch E should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no
+- implemented: benchmark scaffold plus a shared-latent behavior model, capacity-matched frozen probes, and paired wrong-access interventions
+- positive evidence: yes, engineering support under direct access-sensitive behavior objectives
 - supported: no
+
+Implementation note:
+
+The scaffold counterbalances identical first-order key/value content across fresh-current,
+fresh-memory, inferred-content, unavailable, stale-access-lure, and wrong-access-lure conditions.
+The current observation is exactly identical in every fresh-current/wrong-access pair while the
+access gate, report source, confidence, correction, and reinspection targets differ. The 4,092-case
+audit (`audits/branch_e_higher_order_dataset.json`) contains 682 complete six-way groups and 816
+held-out content/status conjunctions with no invariant failures. The best content-only status oracle
+is `0.167`; adding the current observation raises the oracle ceiling only to `0.333`. The next
+experiment must learn a candidate higher-order state without supervising these exact evaluation
+labels, beat both baselines, and survive interventions that preserve first-order content. The
+scaffold alone is not positive Branch E evidence.
+
+The first trained pilot (`audits/branch_e_higher_order_pilot.json`) never uses the exact six-way
+status labels to learn the representation. Instead, a shared latent is trained through report
+answer, confidence band, reinspection, and correction outputs; status labels are used only by
+post-hoc frozen-state probes. On 3,267 held-out content/status conjunctions, the capacity-matched
+latent probe reaches `1.00` status accuracy, versus `0.00` for first-order content and `0.302` for
+observation-only features; every probe has 4,550 trainable parameters. In 537 fresh-current/wrong-
+access pairs where content and current observation are identical, swapping only the candidate latent
+state raises confidence, turns off reinspection and correction, and yields the newly accessible
+content at `1.00`. All predeclared engineering gates pass.
+
+This is engineering support, not Branch E theoretical support. Confidence, reinspection, and
+correction directly reward the access distinctions the latent later exposes. The decisive next test
+is whether comparable higher-order structure and causal behavior emerge under objectives that do
+not supervise those access-sensitive targets, with report templates and observation-only systems
+retained as matched controls.
 
 Consciousness-evidence role:
 
@@ -683,9 +810,44 @@ Branch F should count as supported only if all of the following hold:
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no
+- implemented: benchmark scaffold, exactly matched shared/private consumer models, onset tests, shared-state ablation, content swaps, and a three-run multi-seed audit
+- positive evidence: yes and seed-robust as engineering support under an imposed shared bottleneck and supervised consumers
 - supported: no
+
+Implementation note:
+
+The scaffold separates six downstream interfaces: action, structured report, uncertainty,
+reallocation, memory write, and language-shaped report. Each five-case cue-strength sweep holds
+content and evidence fixed and crosses an evidence-modulated ignition threshold. A specialized
+action path remains available throughout, so local task success cannot satisfy the branch; the
+other five consumers are jointly unavailable below threshold and acquire the same onset step above
+it. The 4,095-case audit (`audits/branch_f_broadcast_dataset.json`) contains 819 complete sweeps and
+819 held-out content/strength conjunctions, with `1.00` threshold-crossing completeness, broad-
+consumer onset alignment, and below-threshold broad-consumer unavailability. The next experiment
+must compare a shared broadcast bottleneck against capacity-matched private heads and produce
+coordinated, content-specific intervention effects. The scaffold itself is not evidence for Branch F.
+
+The first trained pilot (`audits/branch_f_broadcast_pilot.json`) gives the shared and private-
+shortcut systems exactly 12,309 parameters. Both reach `1.00` held-out accuracy on action,
+structured report, uncertainty, reallocation, memory, and language-shaped report, demonstrating
+that the comparator is fully viable. Shared onset accuracy and alignment are `1.00`; independently
+routed private onset reaches `0.674` accuracy and `0.557` alignment. Zeroing the shared broadcast
+state drops mean broad-consumer accuracy by `0.900`, while zeroing one private route drops the five-
+consumer mean by `0.183`, a `0.717` coordinated-ablation advantage. Swapping the shared content
+state moves all broad outputs to the donor target at `1.00` while leaving local action unchanged.
+All predeclared engineering gates pass.
+
+This remains engineering support rather than Branch F theoretical support. The benchmark directly
+supervises every consumer and the architecture imposes the candidate bottleneck. Spontaneous
+broadcast would require aligned multi-consumer availability and coordinated causal dependence to
+emerge without shared-state or ignition supervision, ideally in the original controller family.
+
+The three-run audit (`audits/branch_f_broadcast_multiseed.json`) repeats the exactly matched
+comparison with fresh data/model seeds and a fixed 8,190-case/25-epoch budget. All nine gates pass
+in every run. The weakest shared joint accuracy is `0.962`, shared-ablation drop `0.841`, coordinated
+drop advantage `0.659`, and donor-content follow rate `0.984`; onset accuracy/alignment and local-
+action invariance remain `1.00`, while private single-route damage never exceeds `0.192`. This makes
+the engineering result seed-robust without changing its theoretical status.
 
 Consciousness-evidence role:
 
@@ -757,11 +919,11 @@ Current assessment:
 
 - implemented: yes
 - positive evidence: yes
-- supported: bounded support, for the local calibrated opaque-token reporter; external API LLM and VLM variants remain open
+- supported: bounded support for the local calibrated opaque-token reporter; powered external LLM and VLM variants are unsupported on the current v3 interface
 
 Interpretation:
 
-Stage 7 is now closed for a bounded local reporter claim. The opaque token stream carries current and remembered attended location/content, and a calibrated local reporter can decode those tokens into the same structured report schema while beating an observation-only reporter on default, cue-switch, and intervention slices. This should not be overstated as a general LLM/VLM reporting result: the external API LLM path is currently quota-limited and the VLM path remains future work. The right claim is narrower but now runnable and reproducible in CI: faithful reportability from opaque tokenized internal state is supported for the local calibrated reporter.
+Stage 7 is now closed for a bounded local reporter claim. The opaque token stream carries current and remembered attended location/content, and a calibrated local reporter can decode those tokens into the same structured report schema while beating an observation-only reporter on default, cue-switch, and intervention slices. This should not be overstated as a general LLM/VLM reporting result. A powered 72-request GPT-5 mini text audit on the v3 content-memory checkpoint was negative: latent-only current-content joint accuracy was `0/12`, `1/12`, and `0/12`, while remembered and full-content joint accuracy were zero throughout. A separate 72-request VLM audit rendered the same state as a fixed eight-level, label-free heatmap and scored `0/8` on current, remembered, and full content in every slice. The explicit symbolic-state image control scored `8/8` on all joint metrics and the complete report in every slice, so the VLM negative is not explained by an unreadable image/API path. The supported claim therefore remains the narrower local reporter result.
 
 Decoder caveat:
 
@@ -781,7 +943,8 @@ remapping is invariant by construction (the decoder is schema-aware), and held-o
 combinations do not bite content fields that are directly encoded rather than learned. The
 genuine anti-memorization / faithfulness test therefore requires either a decoder forced to
 recover content from the opaque latent-bit tokens alone, or the external API LLM / VLM path that
-is not told the schema. Both are open (the latter is currently quota/model-limited).
+is not told the schema. The latent-only route remains open for a better representation; the
+powered external-LLM and VLM tests on the current interface are complete and negative.
 
 Latent-only decoder (implemented; honest negative-to-marginal):
 
@@ -801,8 +964,9 @@ interface on this checkpoint carries marginal current-attended signal at best; t
 faithful-access claim therefore remains **bounded to the schema-aware round-trip reporter**, exactly
 as the caveat above warns. This is a disciplined negative, not a hidden failure: the remaining routes
 are a checkpoint whose remembered-attention state is more separably encoded (memory-regularised or
-longer-trained) and/or a richer opaque interface, or the external API LLM / VLM path that is not told
-the schema (still quota/model-blocked). See NEXT_STEPS "Current Focus".
+longer-trained) and/or a richer opaque interface. The current external-LLM interface is now
+empirically unsupported rather than blocked; the powered VLM interface is likewise unsupported.
+See NEXT_STEPS "Current Focus".
 
 Falsification criterion:
 
@@ -868,9 +1032,11 @@ No single experiment should count toward multiple convergence families unless it
 
 Current assessment:
 
-- implemented: no
-- positive evidence: no, except for bounded ingredients in the self-model/reportability branch
+- implemented: yes, as an artifact-level convergence audit (`audits/stage8_convergence_current.json`)
+- positive evidence: partial. The current package contains bounded access/report and non-reportability ingredients, predicted comparator failures, and some cross-architecture replication. Branch E and Branch F remain engineering-only results and are excluded from the theory-family count.
 - supported: no
+
+The current audit records three passed, five partial, and zero failed gates. Same-content overlap is partial because the explicitly shared integrated assay is seed-robust, but forced sharing cannot be removed: ordinary joint supervision is null, and corrected task pressure yields at most `0.021` transfer (`audits/stage8_task_induced_routing_correction.json`). Different-benchmark replication also advances to partial. On temporal relay, the generic GRU memorizes (`0.020` held-out joint), while the relational GRU clears all ten gates in all three fresh runs with `1.00` minimum task/causal/null metrics and `0.934` minimum order-destroyed advantage (`audits/stage8_temporal_relay_multiseed.json`). A position-aware relational transformer independently clears every gate at `1.00` on its first seed, with `0.951` order-destroyed advantage (`audits/stage8_temporal_relay_transformer_pilot.json`). This is seed-robust GRU and single-seed cross-architecture engineering transfer, but query matching and shared state remain explicit. Next are transformer seed replication and removal of forced sharing on both benchmarks.
 
 Philosophical bridge:
 
@@ -976,20 +1142,22 @@ Completed in the Priority 1 audit pass:
 
 Still open (blocked or larger):
 
-- [ ] evaluate external API LLM reporting under cue switches and interventions once quota is available
-- [ ] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines
-- [ ] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward self-modeling
+- [x] evaluate external API LLM reporting under cue switches and interventions (powered paired audit complete; unsupported on the current v3 interface)
+- [x] add a parallel VLM-based Stage 7 path that tests minimally labeled visual internal-state renderings against scene-only and explicit-dump baselines (powered result unsupported; symbolic upper-bound control passes perfectly)
+- [x] rebuild Stage 4B around self-model emergence under task objectives that do not directly reward
+  self-modeling. The experiment and causal follow-up are complete; the result is a substantive
+  negative for policy-consistent regulation, not Stage 4B support.
 
 Branch builds:
 
-- [ ] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
-- [ ] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests
-- [ ] extend the benchmark with query-change and alternative-target conditions for Branch D
-- [ ] add Branch D counterfactual-access experiments for non-current but query-available contents
-- [ ] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
-- [ ] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state
-- [ ] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
-- [ ] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests
+- [x] extend the benchmark with independently recombinable attributes, held-out conjunctions, and false-binding lures for Branch C
+- [x] add Branch C unity/binding experiments with multi-feature conjunction lures and bound-content intervention tests (strong bounded support: multi-seed, two surface variants, and exactly matched cross-model replication)
+- [x] extend the benchmark with query-change and alternative-target conditions for Branch D
+- [x] add Branch D counterfactual-access experiments for non-current but query-available contents (bounded relational support; unstructured GRU fails as intended)
+- [x] extend the benchmark with stale-access, inferred-content, and wrong-access lures for Branch E
+- [~] add Branch E higher-order state-representation experiments that separate first-order content from access, confidence, and report-grounding state (engineering gates pass; unsupervised/task-only emergence remains)
+- [x] add separable downstream consumer interfaces for Branch F, including action, report, uncertainty, reallocation, memory, and language-shaped report paths
+- [~] add Branch F broadcast/ignition experiments over multiple downstream consumers with coordinated intervention tests (engineering gates pass; spontaneous/task-only emergence remains)
 - [ ] add perturbational-complexity diagnostics over controller and self-model state
 
 Cross-system replication:
@@ -1030,9 +1198,13 @@ Positive but still provisional evidence:
   emerges from the search task alone (raw hidden state beats a previous-observation baseline on the
   inspection map, BCE advantage `~+0.09`), and the dedicated self-model objective adds almost nothing
   to it (`~+0.005`), so the representation is task-induced, not supervision-induced. But target-level
-  inspection is not encoded better than observation, so emergence is partial and weak. This is bounded
-  evidence against the "supervised self-model required everywhere" global falsifier, not a strong claim.
-- external API LLM and VLM natural-language reportability infrastructure
+  inspection is not encoded better than observation, so emergence is partial and weak. The causal
+  follow-up moves the probe-defined report and cell-specific attention above random-direction controls,
+  but with the wrong regulatory sign at all four tested scales: higher "already inspected" report means
+  more attention to that cell. This is bounded evidence against the "supervised self-model required
+  everywhere" global falsifier, but a negative result for Stage 4B regulatory use.
+- external API LLM and VLM natural-language reportability infrastructure (implemented, but both
+  powered v3 interfaces are empirically unsupported)
 
 What is not yet established:
 

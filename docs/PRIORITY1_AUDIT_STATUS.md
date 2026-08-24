@@ -31,24 +31,29 @@ Tracked artifacts:
   supported on every seed (`stage3_multi_seed` 1.0/1.0); `stage3_checkpoint_family` verdict
   `robust` across the default and `0.25` reduced-shaping checkpoints.
 - **Stage 4A engineered self-state**: supported (native cell accuracy `~0.99`).
-- **Stage 4B learned self-model feedback**: not supported in the base config (feedback path off
-  by design; emergence is Phase 3).
+- **Stage 4B learned self-model feedback / emergence**: not supported. The feedback path remains
+  off in the base config. A task-only hidden state weakly predicts the inspection map, but a
+  matched-random-control intervention sweep finds policy-inconsistent causality: increasing the
+  fitted "already inspected" direction increases attention to that cell across all tested scales,
+  rather than driving avoidance or reallocation.
 - **Stage 5 cue-switch**: supported (recurrent switch accuracy `0.25` vs baseline `0.0`).
 - **Stage 6A structured reportability**: supported, capacity audit passes. An empirical
   permuted-label noise floor (`noise_floor_metrics`) now backs the strong report signals: the
   real controller-vs-observation accuracy advantages (`~0.38`, `~0.42`) are roughly 100x above
   the permuted-label p95 floor (`~0.004`, `~0.003`), so the claim is significant rather than a
   probe-capacity artifact. This replaces the hardcoded directional thresholds for those signals.
-- **Stage 6B uncertainty / allocation error**: bounded / provisional. Positive controller-state
-  recall advantage on all four gated signals; the accuracy-guarded capacity audit does not pass
-  (`revisit_unresolved`, `allocation_error` have marginally negative accuracy advantage).
-- **Stage 7 local opaque-token reporter**: supported, capacity audit passes. External API LLM and
-  VLM routes remain open. Sharper caveat: the local decoder reads the scored content fields from
+- **Stage 6B uncertainty / allocation error**: bounded positive evidence; full support false.
+  All four controller-state recall advantages clear their empirical permuted-label p95 floors,
+  but the calibrated capacity audit does not pass: `revisit_unresolved` and `allocation_error`
+  retain marginally negative accuracy advantages and fail their accuracy noise floors. See
+  `audits/stage6b_noise_floor_tune_prob_035.json`.
+- **Stage 7 local opaque-token reporter**: supported, capacity audit passes. Powered external API
+  LLM and VLM routes are unsupported on the current v3 interface. Sharper caveat: the local decoder reads the scored content fields from
   attended-content token bases the renderer fills *directly* from the model's attended content (not
   the learned translator's predictions, nor the opaque latent-bit tokens), so it is a schema-aware
   structural round-trip. Consequently consistent token-remapping and held-out-combination
   anti-memorization tests do not bite it; the genuine faithfulness test needs a latent-only decoder
-  or the external LLM/VLM path. See ROADMAP "Sharper decoder caveat".
+  or a redesigned external LLM/VLM interface. See ROADMAP "Sharper decoder caveat".
 - **Negative controls**: all fail as intended. `shuffle_feedback` accuracy drop `0.27`,
   `feedforward_summary` `0.21`, high-capacity observation-only and the matched-transformer /
   trivial-regulator comparators all fail as intended.

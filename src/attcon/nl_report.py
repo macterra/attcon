@@ -7,7 +7,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import torch
 from torch import nn
@@ -1020,6 +1020,7 @@ def run_latent_only_report_mode(
     grid_size: int,
     num_chunks: int = LATENT_NUM_CHUNKS,
     num_levels: int = LATENT_NUM_LEVELS,
+    label_permutation: list[int] | None = None,
 ) -> dict[str, Any]:
     """Decode the report schema from opaque quantised internal-state levels alone.
 
@@ -1031,14 +1032,28 @@ def run_latent_only_report_mode(
     faithfulness tests rather than schema round-trips. Observation-known fields (the cue, the
     current glimpse digit, and glimpse/target match) are taken from the example, exactly as the
     observation-only baseline does, so the advantage isolates what the internal state adds.
+
+    ``label_permutation`` is a permutation of ``range(len(fit_examples))`` used to build a
+    permuted-label null: fit-time labels are read from ``fit_examples[label_permutation[i]]``
+    while the quantised features stay in natural order, so the feature-to-label association is
+    destroyed but the marginal label distribution and the evaluation set are unchanged. The
+    distribution of the resulting content advantages is an empirical significance floor for the
+    real (unpermuted) advantage — the latent analogue of :func:`attcon.eval.noise_floor_metrics`.
     """
 
     fit_features = _latent_feature_matrix(fit_examples, num_chunks, num_levels)
     eval_features = _latent_feature_matrix(evaluation_examples, num_chunks, num_levels)
 
+    if label_permutation is None:
+        label_examples = fit_examples
+    else:
+        if sorted(label_permutation) != list(range(len(fit_examples))):
+            raise ValueError("label_permutation must be a permutation of range(len(fit_examples))")
+        label_examples = [fit_examples[index] for index in label_permutation]
+
     multiclass_pred: dict[str, torch.Tensor] = {}
     for field, attr, num_classes in _latent_multiclass_fields(grid_size):
-        labels = torch.tensor([int(getattr(example, attr)) for example in fit_examples])
+        labels = torch.tensor([int(getattr(example, attr)) for example in label_examples])
         head = _fit_multiclass_probe(fit_features, labels, num_classes)
         with torch.no_grad():
             multiclass_pred[field] = head(eval_features).argmax(dim=-1)
@@ -1046,7 +1061,7 @@ def run_latent_only_report_mode(
     binary_pred: dict[str, torch.Tensor] = {}
     for field, attr in _LATENT_BINARY_FIELDS:
         labels = torch.tensor(
-            [[float(getattr(example, attr))] for example in fit_examples], dtype=torch.float32
+            [[float(getattr(example, attr))] for example in label_examples], dtype=torch.float32
         )
         head = _fit_binary_probe(fit_features, labels)
         with torch.no_grad():
@@ -1055,14 +1070,14 @@ def run_latent_only_report_mode(
     unresolved_rows_head = _fit_binary_probe(
         fit_features,
         torch.tensor(
-            [[int(row in example.unresolved_rows) for row in range(grid_size)] for example in fit_examples],
+            [[int(row in example.unresolved_rows) for row in range(grid_size)] for example in label_examples],
             dtype=torch.float32,
         ),
     )
     unresolved_cols_head = _fit_binary_probe(
         fit_features,
         torch.tensor(
-            [[int(col in example.unresolved_cols) for col in range(grid_size)] for example in fit_examples],
+            [[int(col in example.unresolved_cols) for col in range(grid_size)] for example in label_examples],
             dtype=torch.float32,
         ),
     )
@@ -1124,6 +1139,113 @@ def run_latent_only_report_mode(
     scored["num_levels"] = num_levels
     scored["fit_examples"] = len(fit_examples)
     return scored
+
+
+def run_latent_content_noise_floor(
+    *,
+    fit_examples: list[NLExample],
+    evaluation_examples: list[NLExample],
+    observation_metrics: dict[str, Any],
+    grid_size: int,
+    num_chunks: int = LATENT_NUM_CHUNKS,
+    num_levels: int = LATENT_NUM_LEVELS,
+    permutations: int = 12,
+    percentile: float = 95.0,
+    permutation_seed: int = 20260705,
+    probe_init_seed: int | None = None,
+) -> dict[str, Any]:
+    """Evaluate latent content recovery against a permuted-label noise floor.
+
+    The observed decoder and every null decoder use the same probe initialization; only the
+    association between fit-time features and labels changes. The returned ``content_supported``
+    field is therefore significance-aware. ``content_supported_directional`` preserves the old
+    bare ``> 0`` pilot criterion for diagnosis, but must not be used as the research claim gate.
+
+    Global torch RNG state is restored on return so enabling the audit cannot perturb later
+    evaluation routines.
+    """
+
+    if permutations < 1:
+        raise ValueError("permutations must be at least 1")
+    if not 0.0 <= percentile <= 100.0:
+        raise ValueError("percentile must be between 0 and 100")
+    if not fit_examples:
+        raise ValueError("fit_examples must not be empty")
+
+    joint_keys = (
+        ("current_content_joint_accuracy", "current"),
+        ("memory_content_joint_accuracy", "memory"),
+        ("content_only_joint_accuracy", "content_only"),
+    )
+    init_seed = permutation_seed if probe_init_seed is None else probe_init_seed
+    permutation_generator = torch.Generator().manual_seed(permutation_seed)
+
+    with torch.random.fork_rng(devices=[]):
+        torch.manual_seed(init_seed)
+        observed = run_latent_only_report_mode(
+            fit_examples=fit_examples,
+            evaluation_examples=evaluation_examples,
+            grid_size=grid_size,
+            num_chunks=num_chunks,
+            num_levels=num_levels,
+        )
+        observed_advantages = {
+            name: float(observed[key] - observation_metrics[key])
+            for key, name in joint_keys
+        }
+
+        null_advantages: dict[str, list[float]] = {name: [] for _, name in joint_keys}
+        for _ in range(permutations):
+            label_permutation = torch.randperm(
+                len(fit_examples), generator=permutation_generator
+            ).tolist()
+            torch.manual_seed(init_seed)
+            permuted = run_latent_only_report_mode(
+                fit_examples=fit_examples,
+                evaluation_examples=evaluation_examples,
+                grid_size=grid_size,
+                num_chunks=num_chunks,
+                num_levels=num_levels,
+                label_permutation=label_permutation,
+            )
+            for key, name in joint_keys:
+                null_advantages[name].append(
+                    float(permuted[key] - observation_metrics[key])
+                )
+
+    floor_metrics: dict[str, Any] = {
+        "permutations": permutations,
+        "percentile": percentile,
+        "permutation_seed": permutation_seed,
+        "probe_init_seed": init_seed,
+    }
+    for _, name in joint_keys:
+        null_tensor = torch.tensor(null_advantages[name], dtype=torch.float64)
+        floor = float(torch.quantile(null_tensor, percentile / 100.0).item())
+        observed_advantage = observed_advantages[name]
+        floor_metrics[name] = {
+            "observed_advantage": round(observed_advantage, 6),
+            "permuted_mean": round(float(null_tensor.mean().item()), 6),
+            "permuted_percentile": round(floor, 6),
+            "permuted_max": round(float(null_tensor.max().item()), 6),
+            "clears_floor": bool(observed_advantage > floor),
+        }
+        if percentile == 95.0:
+            # Preserve the established audit schema for its standard p95 configuration.
+            floor_metrics[name]["permuted_p95"] = round(floor, 6)
+
+    floor_metrics["content_supported_directional"] = all(
+        observed_advantages[name] > 0.0
+        for name in ("current", "memory", "content_only")
+    )
+    floor_metrics["content_supported_vs_floor"] = all(
+        floor_metrics[name]["clears_floor"]
+        for name in ("current", "memory", "content_only")
+    )
+    # Primary claim gate. Keep the explicit alias above so old and new audit artifacts remain
+    # easy to compare without allowing a directional result to masquerade as support.
+    floor_metrics["content_supported"] = floor_metrics["content_supported_vs_floor"]
+    return {"observed": observed, "noise_floor": floor_metrics}
 
 
 def _render_observation_only(
@@ -1521,6 +1643,7 @@ def _make_messages(
     teaching_examples: list[NLExample] | None = None,
     num_chunks: int = LATENT_NUM_CHUNKS,
     num_levels: int = LATENT_NUM_LEVELS,
+    input_content_builder: Callable[[NLExample], list[dict[str, Any]]] | None = None,
 ) -> list[dict[str, Any]]:
     if teaching_examples is None:
         teaching_examples = []
@@ -1545,18 +1668,42 @@ def _make_messages(
             "You receive only cue, visible grid, and current glimpse information. "
             "Answer as best you can from observation alone."
         ),
+        "visual_latent_state": (
+            "You receive a minimally labeled heatmap of opaque internal-state activations. "
+            "The layout and color mapping are fixed across examples. Infer recoverable report "
+            "fields from the demonstrated image-to-report correspondences."
+        ),
+        "visual_observation_only": (
+            "You receive an image containing only the cue, visible grid, and current glimpse "
+            "observation. It contains no controller state or attention-location annotation."
+        ),
+        "visual_symbolic_state": (
+            "You receive an image of a direct symbolic internal-state dump. Read it faithfully; "
+            "this is an explicit upper-bound control."
+        ),
     }
     state_attr = {
         "tokenized_state": "tokenized_state",
         "symbolic_state": "symbolic_state",
         "observation_only": "observation_only",
         "latent_only_state": "latent_only_state",
-    }[mode]
+    }.get(mode)
+    if mode not in mode_instructions:
+        raise ValueError(f"unknown report mode: {mode}")
+    if input_content_builder is None and state_attr is None:
+        raise ValueError(f"mode {mode} requires an input_content_builder")
 
     def payload_for(example: NLExample) -> str:
         if state_attr == "latent_only_state":
             return _render_latent_only_state_input(example, num_chunks, num_levels)
+        if state_attr is None:
+            raise ValueError(f"mode {mode} has no text payload")
         return getattr(example, state_attr)
+
+    def content_for(example: NLExample) -> list[dict[str, Any]]:
+        if input_content_builder is not None:
+            return input_content_builder(example)
+        return [{"type": "input_text", "text": payload_for(example)}]
 
     messages: list[dict[str, Any]] = [
         {
@@ -1576,7 +1723,6 @@ def _make_messages(
     ]
     demo_examples = teaching_examples + calibration_examples if teaching_examples else calibration_examples
     for example in demo_examples:
-        payload = payload_for(example)
         answer = {
             "natural_language_report": (
                 f"search type {example.cue}; attend {_cell_name(example.attended_cell, grid_size)}; "
@@ -1620,7 +1766,7 @@ def _make_messages(
         }
         messages.extend(
             [
-                {"role": "user", "content": [{"type": "input_text", "text": payload}]},
+                {"role": "user", "content": content_for(example)},
                 {"role": "assistant", "content": [{"type": "output_text", "text": json.dumps(answer)}]},
             ]
         )
@@ -1628,7 +1774,7 @@ def _make_messages(
     messages.append(
         {
             "role": "user",
-            "content": [{"type": "input_text", "text": payload_for(eval_example)}],
+            "content": content_for(eval_example),
         }
     )
     return messages
@@ -1647,6 +1793,8 @@ def run_nl_report_mode(
     teaching_examples: list[NLExample] | None = None,
     latent_num_chunks: int = LATENT_NUM_CHUNKS,
     latent_num_levels: int = LATENT_NUM_LEVELS,
+    input_content_builder: Callable[[NLExample], list[dict[str, Any]]] | None = None,
+    input_summary_builder: Callable[[NLExample], Any] | None = None,
 ) -> dict[str, Any]:
     """Query an OpenAI model for one reporting mode and score structured faithfulness."""
 
@@ -1681,6 +1829,18 @@ def run_nl_report_mode(
     exact_unresolved_rows = 0
     exact_unresolved_cols = 0
     exact_unresolved_count = 0
+
+    def logged_input(example: NLExample) -> Any:
+        if input_summary_builder is not None:
+            return input_summary_builder(example)
+        if mode == "latent_only_state":
+            return _render_latent_only_state_input(
+                example,
+                latent_num_chunks,
+                latent_num_levels,
+            )
+        return getattr(example, mode)
+
     for example in evaluation_examples:
         parsed = None
         last_error = None
@@ -1696,6 +1856,7 @@ def run_nl_report_mode(
                         teaching_examples=teaching_examples,
                         num_chunks=latent_num_chunks,
                         num_levels=latent_num_levels,
+                        input_content_builder=input_content_builder,
                     ),
                     max_output_tokens=max_output_tokens,
                     reasoning={"effort": "low"},
@@ -1761,13 +1922,7 @@ def run_nl_report_mode(
             {
                 "example_id": example.example_id,
                 "mode": mode,
-                "input": _render_latent_only_state_input(
-                    example,
-                    latent_num_chunks,
-                    latent_num_levels,
-                )
-                if mode == "latent_only_state"
-                else getattr(example, mode),
+                "input": logged_input(example),
                 "response": parsed,
                 "expected": {
                     "search_type": example.cue,

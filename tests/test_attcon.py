@@ -15,8 +15,94 @@ if str(SRC) not in sys.path:
 import torch
 
 import attcon.eval as eval_module
+from attcon.access_experiment import (
+    RelationalRecurrentAccessModel,
+    RecurrentAccessModel,
+    SetTransformerAccessModel,
+    access_intervention_metrics,
+    evaluate_access_model,
+    parameter_count as access_parameter_count,
+    tensorize_access_examples,
+)
 import attcon.nl_report as nl_report_module
+from attcon.binding import (
+    BindingConfig,
+    _heldout_conjunction,
+    generate_binding_examples,
+    validate_binding_example,
+)
+from attcon.binding_experiment import (
+    IndependentFeatureBaseline,
+    SharedSelectionBindingModel,
+    SetTransformerBindingModel,
+    binding_intervention_metrics,
+    evaluate_binding_model,
+    parameter_count,
+    tensorize_binding_examples,
+)
+from attcon.broadcast import (
+    CONSUMERS,
+    BroadcastConfig,
+    generate_broadcast_examples,
+    validate_broadcast_example,
+    validate_broadcast_sweep,
+)
+from attcon.broadcast_experiment import (
+    BroadcastConsumerModel,
+    broadcast_intervention_metrics,
+    broadcast_metrics as trained_broadcast_metrics,
+    parameter_count as broadcast_parameter_count,
+    tensorize_broadcast_examples,
+)
 from attcon.data import TaskConfig, expand_cues_for_probe, generate_batch
+from attcon.higher_order import (
+    HIGHER_ORDER_STATUSES,
+    HigherOrderConfig,
+    generate_higher_order_examples,
+    validate_counterbalance_group,
+    validate_higher_order_example,
+)
+from attcon.higher_order_experiment import (
+    HigherOrderBehaviorModel,
+    behavior_metrics as higher_order_behavior_metrics,
+    paired_wrong_access_intervention,
+    tensorize_higher_order_examples,
+)
+from attcon.integrated_content import (
+    IntegratedContentConfig,
+    TARGET_STATUSES as INTEGRATED_TARGET_STATUSES,
+    generate_integrated_content_examples,
+    validate_integrated_content_example,
+    validate_paired_content_group,
+)
+from attcon.integrated_content_experiment import (
+    IntegratedContentModel,
+    NeutralRoutingContentModel,
+    parameter_count as integrated_parameter_count,
+    tensorize_integrated_content_examples,
+    value_direction_intervention_metrics,
+)
+from attcon.counterfactual_access import (
+    CounterfactualAccessConfig,
+    TARGET_STATUSES,
+    UNKNOWN_ANSWER,
+    generate_counterfactual_access_examples,
+    validate_counterfactual_access_example,
+)
+from attcon.temporal_relay import (
+    RELAY_STATUSES,
+    TemporalRelayConfig,
+    generate_temporal_relay_examples,
+    validate_temporal_relay_example,
+    validate_temporal_relay_group,
+)
+from attcon.temporal_relay_experiment import (
+    RelationalTemporalRelayModel,
+    RelationalTemporalTransformerModel,
+    TemporalRelayModel,
+    parameter_count as temporal_parameter_count,
+    tensorize_temporal_relay_examples,
+)
 from attcon.eval import (
     build_evidence_summary,
     build_stage3_checkpoint_family_summary,
@@ -46,14 +132,24 @@ from attcon.nl_report import (
     collect_intervention_nl_examples,
     collect_nl_examples,
     run_calibrated_token_report_mode,
+    run_latent_content_noise_floor,
     run_latent_only_report_mode,
     run_nl_report_mode,
     run_observation_only_heuristic_report_mode,
     tokenized_state_payload_metrics,
 )
 from attcon.nl_report import NLExample
+from attcon.vlm_report import VLMImageRenderer, render_vlm_png
 from attcon.train import train_experiment
 from attcon.train import load_config
+from scripts.stage4b_emergence import _scale_sweep_summary
+from scripts.stage8_convergence_audit import build_stage8_convergence_audit
+from scripts.stage8_integrated_content_scaffold import build_scaffold_audit
+from scripts.stage8_task_induced_routing_sweep import build_sweep
+from scripts.stage8_task_induced_routing_correction import build_correction
+from scripts.stage8_temporal_relay_scaffold import build_temporal_relay_scaffold
+import scripts.stage7_external_llm_audit as external_llm_audit
+from scripts.branch_c_binding_pilot import THRESHOLDS as BINDING_THRESHOLDS, VARIANTS
 
 
 class AttentionControlTests(unittest.TestCase):
@@ -70,6 +166,522 @@ class AttentionControlTests(unittest.TestCase):
             pos = target_positions.item()
             self.assertEqual(pos, batch.target_pos[idx].item())
             self.assertEqual(batch.digits[idx, pos].item(), batch.target[idx].item())
+
+    def test_stage8_integrated_cases_preserve_identity_across_statuses(self) -> None:
+        config = IntegratedContentConfig(heldout_modulus=3)
+        examples = generate_integrated_content_examples(64, config=config, seed=817)
+        self.assertEqual(len(examples), 64 * len(INTEGRATED_TARGET_STATUSES))
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_integrated_content_example(example), [])
+            self.assertEqual(
+                example.binding_cue_content_id,
+                example.switched_query_content_id,
+            )
+            groups.setdefault(example.pair_group_id, []).append(example)
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_bundle"},
+        )
+        for group in groups.values():
+            self.assertEqual(validate_paired_content_group(group), [])
+
+    def test_stage8_integrated_scaffold_does_not_claim_causal_overlap(self) -> None:
+        audit = build_scaffold_audit(64, 819)
+        self.assertTrue(audit["all_scaffold_gates_pass"])
+        self.assertFalse(audit["same_content_causal_overlap_established"])
+        self.assertEqual(audit["counts"]["pair_groups"], 64)
+
+    def test_stage8_shared_and_split_interventions_are_parameter_matched(self) -> None:
+        config = IntegratedContentConfig()
+        examples = generate_integrated_content_examples(4, config=config, seed=823)
+        tensors = tensorize_integrated_content_examples(examples, config)
+        torch.manual_seed(829)
+        shared = IntegratedContentModel(config, hidden_size=16, mode="shared")
+        torch.manual_seed(829)
+        split = IntegratedContentModel(config, hidden_size=16, mode="split")
+        self.assertEqual(
+            integrated_parameter_count(shared), integrated_parameter_count(split)
+        )
+        shared_state, _ = shared.initial_states(
+            tensors.initial_features, tensors.content_ids, tensors.query
+        )
+        split_binding, split_access = split.initial_states(
+            tensors.initial_features, tensors.content_ids, tensors.query
+        )
+        donor = torch.arange(len(tensors)).roll(1)
+        shared_output = shared(
+            tensors.initial_features,
+            tensors.content_ids,
+            tensors.query,
+            tensors.transition,
+            binding_state_override=shared_state[donor],
+        )
+        split_output = split(
+            tensors.initial_features,
+            tensors.content_ids,
+            tensors.query,
+            tensors.transition,
+            binding_state_override=split_binding[donor],
+        )
+        self.assertTrue(
+            torch.equal(shared_output.binding_state, shared_output.access_initial_state)
+        )
+        self.assertTrue(
+            torch.equal(split_output.access_initial_state, split_access)
+        )
+
+    def test_stage8_directional_intervention_exposes_permuted_null(self) -> None:
+        config = IntegratedContentConfig()
+        examples = generate_integrated_content_examples(128, config=config, seed=919)
+        tensors = tensorize_integrated_content_examples(examples, config)
+        model = IntegratedContentModel(config, hidden_size=16, mode="shared")
+        real = value_direction_intervention_metrics(model, tensors, tensors)
+        null = value_direction_intervention_metrics(
+            model, tensors, tensors, permute_fit_labels=True, seed=929
+        )
+        for result in (real, null):
+            self.assertEqual(result["alpha"], 1.0)
+            for key, value in result.items():
+                if key.endswith("rate") or key.endswith("stability"):
+                    self.assertGreaterEqual(value, 0.0)
+                    self.assertLessEqual(value, 1.0)
+        self.assertGreater(real["mean_direction_norm"], null["mean_direction_norm"])
+
+    def test_stage8_neutral_routing_control_is_exactly_parameter_matched(self) -> None:
+        config = IntegratedContentConfig()
+        learned = NeutralRoutingContentModel(config, hidden_size=16, routing="learned")
+        blocked = NeutralRoutingContentModel(config, hidden_size=16, routing="blocked")
+        self.assertEqual(
+            integrated_parameter_count(learned), integrated_parameter_count(blocked)
+        )
+        self.assertAlmostEqual(learned.routing_weight().item(), 0.05, places=6)
+        self.assertEqual(blocked.routing_weight().item(), 0.0)
+        sweep = build_sweep()
+        self.assertTrue(sweep["task_induced_routing_pilot_supported"])
+        self.assertFalse(sweep["summary"]["no_pressure_supported"])
+        self.assertEqual(sweep["summary"]["supported_condition_count"], 1)
+        correction = build_correction()
+        self.assertFalse(correction["task_induced_routing_supported"])
+        self.assertFalse(
+            correction["rescaled_dropout_result_retained_as_diagnostic_only"][
+                "valid_for_task_induced_support"
+            ]
+        )
+        self.assertLess(
+            correction["corrected_summary"]["maximum_joint_directional_follow"],
+            0.1,
+        )
+
+    def test_stage8_temporal_relay_is_ordered_and_pair_stable(self) -> None:
+        config = TemporalRelayConfig(heldout_modulus=3)
+        examples = generate_temporal_relay_examples(64, config=config, seed=1109)
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_temporal_relay_example(example), [])
+            self.assertEqual(
+                example.target,
+                [
+                    event for event in example.events
+                    if event.entity == example.query_entity
+                ][-1],
+            )
+            groups.setdefault(example.pair_group_id, []).append(example)
+        self.assertEqual(len(examples), 64 * len(RELAY_STATUSES))
+        for group in groups.values():
+            self.assertEqual(validate_temporal_relay_group(group), [])
+        scaffold = build_temporal_relay_scaffold(64, 1117)
+        self.assertTrue(scaffold["all_scaffold_gates_pass"])
+        self.assertFalse(scaffold["different_benchmark_replication_established"])
+        tensors = tensorize_temporal_relay_examples(examples, config)
+        shared = TemporalRelayModel(config, hidden_size=16, mode="shared")
+        pooled = TemporalRelayModel(config, hidden_size=16, mode="pooled")
+        self.assertEqual(
+            temporal_parameter_count(shared), temporal_parameter_count(pooled)
+        )
+        output = shared(tensors.events, tensors.query, tensors.transition)
+        self.assertEqual(output.payload.shape, (len(examples), config.payload_vocab_size))
+        relational = RelationalTemporalRelayModel(
+            config, hidden_size=16, mode="shared"
+        )
+        relational_control = RelationalTemporalRelayModel(
+            config, hidden_size=16, mode="pooled"
+        )
+        self.assertEqual(
+            temporal_parameter_count(relational),
+            temporal_parameter_count(relational_control),
+        )
+        transformer = RelationalTemporalTransformerModel(
+            config, hidden_size=16, mode="shared"
+        )
+        transformer_control = RelationalTemporalTransformerModel(
+            config, hidden_size=16, mode="pooled"
+        )
+        self.assertEqual(
+            temporal_parameter_count(transformer),
+            temporal_parameter_count(transformer_control),
+        )
+
+    def test_branch_c_binding_cases_hold_out_conjunctions_and_guarantee_lures(self) -> None:
+        config = BindingConfig(heldout_modulus=3)
+        examples = generate_binding_examples(256, config=config, seed=17)
+        self.assertEqual(examples, generate_binding_examples(256, config=config, seed=17))
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_conjunction"},
+        )
+        for example in examples:
+            self.assertEqual(validate_binding_example(example), [])
+            self.assertEqual(
+                sum(obj.cue_tag == example.cue for obj in example.objects),
+                1,
+            )
+            expected_heldout = _heldout_conjunction(
+                example.target,
+                example.cue,
+                config.heldout_modulus,
+            )
+            self.assertEqual(example.split == "heldout_conjunction", expected_heldout)
+            self.assertNotIn(
+                example.false_binding_lure.conjunction(),
+                {obj.conjunction() for obj in example.objects},
+            )
+
+    def test_branch_d_access_cases_separate_statuses_under_fixed_attention(self) -> None:
+        config = CounterfactualAccessConfig(heldout_modulus=3)
+        examples = generate_counterfactual_access_examples(256, config=config, seed=29)
+        self.assertEqual(
+            examples,
+            generate_counterfactual_access_examples(256, config=config, seed=29),
+        )
+        self.assertEqual({example.target_status for example in examples}, set(TARGET_STATUSES))
+        self.assertEqual(
+            {example.split for example in examples}, {"train", "heldout_query_value"}
+        )
+        for example in examples:
+            self.assertEqual(validate_counterfactual_access_example(example), [])
+            self.assertEqual(
+                example.current_attention_before, example.current_attention_after
+            )
+            self.assertNotEqual(example.target_index, example.current_attention_before)
+            if example.target_status == "unavailable":
+                self.assertEqual(example.expected_answer, UNKNOWN_ANSWER)
+            if example.target_status == "counterfactually_accessible":
+                self.assertNotEqual(example.scene_only_answer, example.expected_answer)
+
+    def test_branch_e_higher_order_cases_hold_content_constant_across_access_states(self) -> None:
+        config = HigherOrderConfig(heldout_modulus=3)
+        examples = generate_higher_order_examples(120, config=config, seed=41)
+        self.assertEqual(
+            examples, generate_higher_order_examples(120, config=config, seed=41)
+        )
+        groups = {}
+        for example in examples:
+            self.assertEqual(validate_higher_order_example(example), [])
+            groups.setdefault(example.counterbalance_group, []).append(example)
+        self.assertEqual(len(groups), 20)
+        for cases in groups.values():
+            self.assertEqual(validate_counterbalance_group(cases), [])
+            self.assertEqual({case.status for case in cases}, set(HIGHER_ORDER_STATUSES))
+            self.assertEqual(
+                len({(case.content_key, case.content_value) for case in cases}), 1
+            )
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_status"},
+        )
+
+    def test_branch_e_behavior_model_exposes_shared_latent_and_paired_intervention(self) -> None:
+        config = HigherOrderConfig()
+        examples = generate_higher_order_examples(120, config=config, seed=43)
+        tensors = tensorize_higher_order_examples(examples, config)
+        model = HigherOrderBehaviorModel(config, hidden_size=16)
+        prediction = model(tensors.model_input)
+        self.assertEqual(prediction.hidden.shape, (120, 16))
+        self.assertEqual(
+            set(higher_order_behavior_metrics(model, tensors)),
+            {
+                "report_accuracy",
+                "confidence_accuracy",
+                "reinspect_accuracy",
+                "correction_accuracy",
+            },
+        )
+        interventions = paired_wrong_access_intervention(model, examples, config)
+        self.assertEqual(interventions["first_order_content_held_fixed_rate"], 1.0)
+        self.assertGreater(interventions["pair_count"], 0)
+
+    def test_branch_f_broadcast_sweeps_hold_content_and_align_consumers(self) -> None:
+        config = BroadcastConfig(heldout_modulus=3)
+        examples = generate_broadcast_examples(100, config=config, seed=47)
+        self.assertEqual(
+            examples, generate_broadcast_examples(100, config=config, seed=47)
+        )
+        sweeps = {}
+        for example in examples:
+            self.assertEqual(validate_broadcast_example(example), [])
+            self.assertEqual(len(example.consumer_targets), len(CONSUMERS))
+            sweeps.setdefault(example.sweep_group, []).append(example)
+        self.assertEqual(len(sweeps), 20)
+        for cases in sweeps.values():
+            self.assertEqual(validate_broadcast_sweep(cases), [])
+        self.assertEqual(
+            {example.split for example in examples},
+            {"train", "heldout_content_strength"},
+        )
+
+    def test_branch_f_shared_and_private_models_are_exactly_parameter_matched(self) -> None:
+        config = BroadcastConfig()
+        examples = generate_broadcast_examples(50, config=config, seed=53)
+        tensors = tensorize_broadcast_examples(examples, config)
+        shared = BroadcastConsumerModel(config, hidden_size=16, shared=True)
+        private = BroadcastConsumerModel(config, hidden_size=16, shared=False)
+        self.assertEqual(
+            broadcast_parameter_count(shared), broadcast_parameter_count(private)
+        )
+        metrics = trained_broadcast_metrics(shared, tensors)
+        self.assertEqual(set(metrics["consumer_accuracy"]), set(CONSUMERS))
+        interventions = broadcast_intervention_metrics(shared, private, tensors)
+        self.assertEqual(
+            set(interventions),
+            {
+                "shared_broad_accuracy_drop_after_zero",
+                "private_mean_broad_accuracy_drop_after_one_route_zero",
+                "coordinated_ablation_drop_advantage",
+                "shared_content_swap_broad_follow_rate",
+                "local_action_invariance_under_shared_swap",
+                "ignited_intervention_count",
+            },
+        )
+
+    def test_branch_d_recurrent_access_and_no_cache_paths_are_parameter_matched(self) -> None:
+        config = CounterfactualAccessConfig()
+        examples = generate_counterfactual_access_examples(32, config=config, seed=37)
+        tensors = tensorize_access_examples(examples, config)
+        internal = RecurrentAccessModel(config, hidden_size=32, fusion_size=48)
+        no_cache = RecurrentAccessModel(config, hidden_size=32, fusion_size=48)
+        self.assertEqual(access_parameter_count(internal), access_parameter_count(no_cache))
+        evaluated = evaluate_access_model(internal, tensors)
+        self.assertEqual(evaluated["count"], 32)
+        self.assertEqual(set(evaluated["by_status"]), set(TARGET_STATUSES))
+        interventions = access_intervention_metrics(internal, tensors, config)
+        self.assertEqual(
+            set(interventions),
+            {
+                "memory_target_cache_erasure_accuracy_drop",
+                "counterfactual_observation_change_invariance",
+                "counterfactual_cache_answer_retention_after_observation_change",
+            },
+        )
+        relational = RelationalRecurrentAccessModel(
+            config, hidden_size=32, fusion_size=48
+        )
+        relational_no_cache = RelationalRecurrentAccessModel(
+            config, hidden_size=32, fusion_size=48
+        )
+        self.assertEqual(
+            access_parameter_count(relational),
+            access_parameter_count(relational_no_cache),
+        )
+        relational_eval = evaluate_access_model(relational, tensors)
+        self.assertEqual(relational_eval["count"], 32)
+        set_access = SetTransformerAccessModel(
+            config, hidden_size=16, fusion_size=32, num_heads=4
+        )
+        set_no_cache = SetTransformerAccessModel(
+            config, hidden_size=16, fusion_size=32, num_heads=4
+        )
+        self.assertEqual(
+            access_parameter_count(set_access), access_parameter_count(set_no_cache)
+        )
+        set_eval = evaluate_access_model(set_access, tensors)
+        self.assertEqual(set_eval["count"], 32)
+
+    def test_branch_c_binding_models_share_selection_and_destroy_identity_in_baseline(self) -> None:
+        config = BindingConfig()
+        examples = generate_binding_examples(32, config=config, seed=19)
+        tensors = tensorize_binding_examples(examples, config)
+        integrated = SharedSelectionBindingModel(config, hidden_size=64)
+        baseline = IndependentFeatureBaseline(config, hidden_size=64)
+        integrated_prediction = integrated(tensors.attributes, tensors.cues)
+        baseline_prediction = baseline(tensors.attributes, tensors.cues)
+        self.assertEqual(integrated_prediction.attention.shape, (32, config.num_objects))
+        self.assertIsNone(baseline_prediction.attention)
+        self.assertEqual(integrated_prediction.location.shape, (32, config.num_cells))
+        self.assertGreater(parameter_count(baseline), parameter_count(integrated))
+        evaluated = evaluate_binding_model(integrated, tensors)
+        self.assertEqual(evaluated["count"], 32)
+        self.assertIn("false_binding_lure_rejection", evaluated)
+        interventions = binding_intervention_metrics(integrated, tensors, config)
+        self.assertEqual(
+            set(interventions),
+            {
+                "target_type_follow_rate",
+                "target_other_field_mean_stability",
+                "target_other_field_joint_stability",
+                "non_target_all_field_invariance",
+                "target_selection_stability",
+            },
+        )
+
+    def test_branch_c_surface_replication_changes_schema_but_freezes_gates(self) -> None:
+        original = VARIANTS["original"]
+        replication = VARIANTS["surface_v2"]
+        self.assertNotEqual(original["surface_schema"], replication["surface_schema"])
+        self.assertNotEqual(original["config"], replication["config"])
+        self.assertEqual(
+            BINDING_THRESHOLDS,
+            {
+                "integrated_heldout_joint_accuracy": 0.75,
+                "heldout_joint_advantage": 0.25,
+                "lure_rejection_advantage": 0.15,
+                "target_type_follow_rate": 0.75,
+                "target_other_field_joint_stability": 0.90,
+                "non_target_all_field_invariance": 0.90,
+            },
+        )
+
+    def test_branch_c_set_transformer_control_is_exactly_parameter_matched(self) -> None:
+        config = BindingConfig()
+        examples = generate_binding_examples(8, config=config, seed=23)
+        tensors = tensorize_binding_examples(examples, config)
+        integrated = SetTransformerBindingModel(config, hidden_size=16, num_heads=4)
+        pooled = SetTransformerBindingModel(
+            config, hidden_size=16, num_heads=4, pool_objects=True
+        )
+        self.assertEqual(parameter_count(integrated), parameter_count(pooled))
+        prediction = integrated(tensors.attributes, tensors.cues)
+        self.assertEqual(prediction.location.shape, (8, config.num_cells))
+        self.assertIsNone(prediction.attention)
+
+    def test_stage4b_scale_sweep_requires_policy_consistent_reallocation(self) -> None:
+        def result(report_gap: float, attention_gap: float, supported: bool = False):
+            return {
+                "directed_effect": {
+                    "selected_cell_report_gap": report_gap,
+                    "intervention_step_selected_attention_gap": attention_gap,
+                    "future_selected_attention_gap": attention_gap / 2.0,
+                },
+                "attention_policy_specificity": True,
+                "policy_consistent_avoidance": attention_gap < 0.0,
+                "supported": supported,
+            }
+
+        wrong_sign = _scale_sweep_summary(
+            {"0.5": result(0.4, 0.02), "1.0": result(0.7, 0.05)}
+        )
+        self.assertTrue(wrong_sign["all_scales_shift_report_positive"])
+        self.assertTrue(wrong_sign["all_scales_increase_selected_cell_attention"])
+        self.assertFalse(wrong_sign["any_scale_policy_consistent_avoidance"])
+        self.assertFalse(wrong_sign["any_scale_supported"])
+
+        regulatory = _scale_sweep_summary(
+            {"0.5": result(0.4, -0.02, supported=True)}
+        )
+        self.assertTrue(regulatory["any_scale_policy_consistent_avoidance"])
+        self.assertTrue(regulatory["any_scale_supported"])
+
+    def test_stage8_convergence_audit_keeps_open_blockers_explicit(self) -> None:
+        result = build_stage8_convergence_audit()
+        self.assertFalse(result["stage8_supported"])
+        self.assertEqual(result["gate_counts"], {"pass": 3, "partial": 5, "fail": 0})
+        self.assertEqual(
+            result["gates"]["same_internal_content_across_families"]["status"],
+            "partial",
+        )
+        self.assertTrue(
+            result["evidence"]["integrated_same_content_assay"][
+                "multi_seed_directional_engineering_support"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "stage8_same_content_gate_satisfied"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "task_induced_routing_supported"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["integrated_same_content_assay"][
+                "rescaled_dropout_valid_for_support"
+            ]
+        )
+        self.assertEqual(
+            result["gates"]["different_benchmark_replication"]["status"],
+            "partial",
+        )
+        self.assertTrue(
+            result["evidence"]["different_benchmark_assay"][
+                "temporal_relay_multi_seed_engineering_support"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["different_benchmark_assay"][
+                "different_benchmark_replication_established"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["engineering_only_families_excluded"][
+                "branch_e_theoretical_support"
+            ]
+        )
+        self.assertFalse(
+            result["evidence"]["engineering_only_families_excluded"][
+                "branch_f_theoretical_support"
+            ]
+        )
+
+    def test_external_llm_support_uses_paired_exact_significance(self) -> None:
+        example_ids = [f"example_{index}" for index in range(8)]
+        latent_correct = {
+            example_id: {"current": True, "memory": True, "content_only": True}
+            for example_id in example_ids
+        }
+        observation_correct = {
+            example_id: {"current": False, "memory": False, "content_only": False}
+            for example_id in example_ids
+        }
+        latent = {
+            "kind": "latent",
+            "current_content_joint_accuracy": 1.0,
+            "memory_content_joint_accuracy": 1.0,
+            "content_only_joint_accuracy": 1.0,
+        }
+        observation = {
+            "kind": "observation",
+            "current_content_joint_accuracy": 0.0,
+            "memory_content_joint_accuracy": 0.0,
+            "content_only_joint_accuracy": 0.0,
+        }
+
+        original = external_llm_audit._joint_correctness
+        external_llm_audit._joint_correctness = lambda scored: (
+            latent_correct if scored["kind"] == "latent" else observation_correct
+        )
+        try:
+            comparison = external_llm_audit._paired_llm_comparison(latent, observation)
+        finally:
+            external_llm_audit._joint_correctness = original
+
+        self.assertTrue(comparison["content_supported_directional"])
+        self.assertTrue(comparison["content_supported_paired_significance"])
+        self.assertTrue(comparison["content_supported"])
+        self.assertAlmostEqual(
+            comparison["metrics"]["memory"]["one_sided_exact_p_value"],
+            1.0 / 256.0,
+        )
+        self.assertEqual(
+            external_llm_audit._one_sided_exact_sign_p_value(0, 0), 1.0
+        )
+        self.assertTrue(
+            external_llm_audit._terminal_api_blocker(
+                "429 insufficient_quota: credit_balance_exhausted"
+            )
+        )
+        self.assertFalse(external_llm_audit._terminal_api_blocker("temporary timeout"))
 
     def test_stage3_robustness_is_enabled_in_repo_configs(self) -> None:
         for path in (
@@ -539,6 +1151,24 @@ class AttentionControlTests(unittest.TestCase):
         self.assertIsInstance(example.current_wrong_candidate, bool)
         self.assertIsInstance(example.wrong_candidate_history, bool)
         self.assertIsInstance(example.revisit_unresolved, bool)
+
+        latent_png = render_vlm_png(example, "visual_latent_state")
+        self.assertTrue(latent_png.startswith(b"\x89PNG\r\n\x1a\n"))
+        renderer = VLMImageRenderer("visual_latent_state")
+        image_content = renderer.content(example)
+        self.assertEqual(image_content[1]["type"], "input_image")
+        self.assertTrue(image_content[1]["image_url"].startswith("data:image/png;base64,"))
+        self.assertFalse(renderer.summary(example)["contains_symbolic_field_names"])
+        messages = nl_report_module._make_messages(
+            "visual_latent_state",
+            [example],
+            example,
+            self.task_cfg.grid_size,
+            input_content_builder=renderer.content,
+        )
+        self.assertEqual(messages[-1]["content"][1]["type"], "input_image")
+        symbolic_renderer = VLMImageRenderer("visual_symbolic_state")
+        self.assertTrue(symbolic_renderer.summary(example)["contains_symbolic_field_names"])
         self.assertIsInstance(example.allocation_error, bool)
         self.assertIsInstance(example.inspected_count, int)
         self.assertIsInstance(example.previous_inspected_count, int)
@@ -715,6 +1345,123 @@ class AttentionControlTests(unittest.TestCase):
                 _latent_feature_matrix(corrupted, 8, 4),
             )
         )
+
+    def test_latent_only_decoder_label_permutation_is_a_permuted_label_null(self) -> None:
+        examples = [
+            replace(
+                self._make_latent_example(idx),
+                tokenized_state="x11100 x11200 x11300 x21100 x21200 x21300",
+            )
+            for idx in range(12)
+        ]
+        kwargs = dict(
+            fit_examples=examples,
+            evaluation_examples=examples,
+            grid_size=self.task_cfg.grid_size,
+            num_chunks=8,
+            num_levels=4,
+        )
+
+        # Probe weights are randomly initialized off the global RNG, so pin it before each decode
+        # to isolate the label effect. An identity permutation must then reproduce the unpermuted
+        # decode exactly — the hook only reindexes fit-time labels, never the features.
+        torch.manual_seed(0)
+        base = run_latent_only_report_mode(**kwargs)
+        torch.manual_seed(0)
+        identity = run_latent_only_report_mode(
+            **kwargs, label_permutation=list(range(len(examples)))
+        )
+        self.assertAlmostEqual(
+            base["current_content_joint_accuracy"],
+            identity["current_content_joint_accuracy"],
+            places=9,
+        )
+        self.assertAlmostEqual(
+            base["content_only_joint_accuracy"],
+            identity["content_only_joint_accuracy"],
+            places=9,
+        )
+
+        # A shuffle that breaks the feature-to-label association must not recover current content
+        # better than the true labels — that is the whole point of the permuted-label null.
+        shuffled = list(reversed(range(len(examples))))
+        torch.manual_seed(0)
+        permuted = run_latent_only_report_mode(**kwargs, label_permutation=shuffled)
+        self.assertLessEqual(
+            permuted["current_content_joint_accuracy"],
+            base["current_content_joint_accuracy"],
+        )
+
+        # A malformed permutation is rejected rather than silently mis-scored.
+        with self.assertRaises(ValueError):
+            run_latent_only_report_mode(**kwargs, label_permutation=[0] * len(examples))
+
+    def test_latent_content_support_is_gated_by_permuted_label_floor(self) -> None:
+        examples = [object(), object(), object()]
+        observation = {
+            "current_content_joint_accuracy": 0.0,
+            "memory_content_joint_accuracy": 0.0,
+            "content_only_joint_accuracy": 0.0,
+        }
+
+        def fake_latent_decoder(**kwargs):
+            # The observed result is directionally positive, but every permuted-label result
+            # is larger. This is the exact false-positive case the calibrated gate must reject.
+            score = 0.1 if kwargs.get("label_permutation") is None else 0.2
+            return {
+                "current_content_joint_accuracy": score,
+                "memory_content_joint_accuracy": score,
+                "content_only_joint_accuracy": score,
+            }
+
+        # The audit must not alter later evaluation randomness.
+        torch.manual_seed(31415)
+        expected_next_random = torch.rand(1)
+        torch.manual_seed(31415)
+        original_decoder = nl_report_module.run_latent_only_report_mode
+        nl_report_module.run_latent_only_report_mode = fake_latent_decoder
+        try:
+            audit = run_latent_content_noise_floor(
+                fit_examples=examples,
+                evaluation_examples=examples,
+                observation_metrics=observation,
+                grid_size=self.task_cfg.grid_size,
+                num_chunks=8,
+                num_levels=4,
+                permutations=3,
+                permutation_seed=19,
+                probe_init_seed=23,
+            )
+        finally:
+            nl_report_module.run_latent_only_report_mode = original_decoder
+        actual_next_random = torch.rand(1)
+
+        floor = audit["noise_floor"]
+        self.assertTrue(torch.equal(actual_next_random, expected_next_random))
+        self.assertEqual(floor["permutations"], 3)
+        self.assertEqual(floor["percentile"], 95.0)
+        self.assertTrue(floor["content_supported_directional"])
+        self.assertFalse(floor["content_supported_vs_floor"])
+        self.assertFalse(floor["content_supported"])
+        self.assertEqual(
+            floor["content_supported"], floor["content_supported_vs_floor"]
+        )
+        self.assertEqual(
+            floor["content_supported_vs_floor"],
+            all(floor[name]["clears_floor"] for name in ("current", "memory", "content_only")),
+        )
+        for name in ("current", "memory", "content_only"):
+            self.assertIn("permuted_p95", floor[name])
+            self.assertIn("observed_advantage", floor[name])
+
+        with self.assertRaises(ValueError):
+            run_latent_content_noise_floor(
+                fit_examples=examples,
+                evaluation_examples=examples,
+                observation_metrics=observation,
+                grid_size=self.task_cfg.grid_size,
+                permutations=0,
+            )
 
     def test_nl_report_metrics_include_capacity_audit_for_local_reporter(self) -> None:
         batch = generate_batch(4, self.task_cfg.num_steps, self.task_cfg)
@@ -1695,6 +2442,11 @@ class AttentionControlTests(unittest.TestCase):
                         "test_batches": 1,
                         "epochs": 10,
                         "learning_rate": 0.05,
+                        "noise_floor": {
+                            "enabled": True,
+                            "permutations": 2,
+                            "percentile": 95,
+                        },
                     },
                     "nl_report": {
                         "enabled": False,
@@ -1752,6 +2504,17 @@ class AttentionControlTests(unittest.TestCase):
             self.assertIn("wrong_candidate_history", report["uncertainty_report_probes"])
             self.assertIn("revisit_unresolved", report["uncertainty_report_probes"])
             self.assertIn("allocation_error", report["uncertainty_report_probes"])
+            uncertainty_noise_floor = report["uncertainty_report_probes"]["noise_floor"]
+            self.assertEqual(uncertainty_noise_floor["permutations"], 2)
+            self.assertIn("current_wrong_candidate", uncertainty_noise_floor)
+            self.assertIn(
+                "permuted_label_positive_recall_advantage_p95",
+                uncertainty_noise_floor["current_wrong_candidate"],
+            )
+            self.assertEqual(
+                report["uncertainty_report_probes"]["supported"],
+                report["uncertainty_report_probes"]["capacity_audit"]["passed"],
+            )
             self.assertIn("recurrent", report["cue_switch"])
             self.assertIn("explicit_attention_modeling", report["evidence"])
             self.assertIn("engineered_self_state_tracking", report["evidence"])

@@ -1,0 +1,57 @@
+{
+  "audit": "stage8_task_induced_routing_correction",
+  "confound": "Whole-lane dropout used inverted-dropout scaling. At 0.95 dropout, the private access state was multiplied by 20 whenever present during training but had normal magnitude at evaluation. The apparent routing effect therefore does not isolate robustness to lane absence.",
+  "corrected_summary": {
+    "all_corrected_gates_pass": false,
+    "maximum_joint_directional_follow": 0.021086780354380608,
+    "minimum_blocked_task_joint_accuracy": 1.0,
+    "minimum_learned_task_joint_accuracy": 1.0
+  },
+  "corrected_tests": {
+    "from_scratch": {
+      "all_gates_pass": false,
+      "artifact": "audits/stage8_task_induced_routing_no_rescale.json",
+      "observed": {
+        "binding_other_fields_stability": 1.0,
+        "blocked_task_joint_accuracy": 1.0,
+        "final_routing_weight": 0.14149557054042816,
+        "joint_advantage_over_permuted_direction": 0.021086780354380608,
+        "joint_coordination_advantage_over_blocked": 0.021086780354380608,
+        "learned_joint_directional_follow": 0.021086780354380608,
+        "learned_task_joint_accuracy": 1.0,
+        "routing_weight_increase": 0.0914955697953701
+      }
+    },
+    "viability_first_curriculum": {
+      "all_gates_pass": false,
+      "artifact": "audits/stage8_task_induced_routing_curriculum_no_rescale.json",
+      "observed": {
+        "binding_other_fields_stability": 1.0,
+        "blocked_task_joint_accuracy": 1.0,
+        "final_routing_weight": 0.0880623608827591,
+        "joint_advantage_over_permuted_direction": 0.0008110299822874367,
+        "joint_coordination_advantage_over_blocked": 0.0008110299822874367,
+        "learned_joint_directional_follow": 0.0008110299822874367,
+        "learned_task_joint_accuracy": 1.0,
+        "routing_weight_increase": 0.047789718955755234
+      },
+      "pre_pressure_blocked_task_joint_accuracy": 1.0,
+      "pre_pressure_learned_task_joint_accuracy": 1.0
+    }
+  },
+  "next_experiment": "use a naturally coupled task or resource constraint with identical train/evaluation state scaling, and require emergence against the neutral dual-lane control",
+  "rescaled_dropout_result_retained_as_diagnostic_only": {
+    "minimum_joint_directional_follow": 0.9282407164573669,
+    "support_rate_90_epochs": 0.6666666666666666,
+    "valid_for_task_induced_support": false
+  },
+  "stage8_same_content_gate_satisfied": false,
+  "status": "task_induced_routing_unsupported",
+  "supersedes_support_interpretation_of": [
+    "audits/stage8_task_induced_routing_sweep.json",
+    "audits/stage8_task_induced_routing_multiseed.json",
+    "audits/stage8_task_induced_routing_duration.json"
+  ],
+  "support_boundary": "Corrected lane occlusion does not induce ordinary-condition causal overlap. The seed-robust directional result in the explicitly shared architecture remains an engineering assay result only.",
+  "task_induced_routing_supported": false
+}

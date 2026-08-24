@@ -1,0 +1,1600 @@
+{
+  "note": "Perturbational-complexity robustness across perturbation seeds and checkpoints, under a standardized perturbation config. `supported` = rich-but-recoverable AND integration>feedforward AND recovery>freeze. `robust_across_perturbation_seeds` requires every checkpoint supported on 100% of seeds; `replicates_across_checkpoints` requires >=90% per checkpoint. CAVEAT: the v3 seeds are cross-training-seed / mild cross-recipe replication of the SAME recurrent controller architecture -- this does NOT satisfy the Stage 8 cross-architecture requirement (item d), which needs a structurally different controller.",
+  "standardized_perturbational": {
+    "enabled": true,
+    "probe_scenes": 16,
+    "step": 2,
+    "magnitudes": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "min_recovery_ratio": 0.1,
+    "min_attention_propagation": 0.05
+  },
+  "num_perturbation_seeds": 25,
+  "robust_across_perturbation_seeds": true,
+  "replicates_across_checkpoints": true,
+  "checkpoints": [
+    {
+      "label": "tune_prob_035",
+      "config": "configs/tune_prob_035.yaml",
+      "checkpoint": "outputs/tune_prob_035/experiment.pt",
+      "num_seeds": 25,
+      "supported_fraction": 1.0,
+      "flag_fractions": {
+        "rich_but_recoverable": 1.0,
+        "integration_exceeds_feedforward": 1.0,
+        "recovery_exceeds_freeze": 1.0,
+        "supported": 1.0
+      },
+      "ratio_stats": {
+        "recurrent_mean_recovery_ratio": {
+          "mean": 0.407534,
+          "std": 0.032146,
+          "min": 0.34006,
+          "max": 0.476295
+        },
+        "recurrent_mean_attention_propagation": {
+          "mean": 0.591105,
+          "std": 0.073076,
+          "min": 0.471726,
+          "max": 0.768465
+        },
+        "feedforward_mean_attention_propagation": {
+          "mean": 0.126915,
+          "std": 0.023136,
+          "min": 0.080264,
+          "max": 0.172028
+        },
+        "freeze_mean_recovery_ratio": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 4000,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.34006,
+          "recurrent_mean_attention_propagation": 0.649704,
+          "feedforward_mean_attention_propagation": 0.115211,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4007,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.44202,
+          "recurrent_mean_attention_propagation": 0.562978,
+          "feedforward_mean_attention_propagation": 0.09437,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4014,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.476295,
+          "recurrent_mean_attention_propagation": 0.541789,
+          "feedforward_mean_attention_propagation": 0.172028,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4021,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.444338,
+          "recurrent_mean_attention_propagation": 0.595014,
+          "feedforward_mean_attention_propagation": 0.127124,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4028,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.384502,
+          "recurrent_mean_attention_propagation": 0.649941,
+          "feedforward_mean_attention_propagation": 0.12679,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4035,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.419617,
+          "recurrent_mean_attention_propagation": 0.570082,
+          "feedforward_mean_attention_propagation": 0.141852,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4042,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.416298,
+          "recurrent_mean_attention_propagation": 0.681508,
+          "feedforward_mean_attention_propagation": 0.141667,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4049,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.377113,
+          "recurrent_mean_attention_propagation": 0.746419,
+          "feedforward_mean_attention_propagation": 0.097485,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4056,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.4467,
+          "recurrent_mean_attention_propagation": 0.519932,
+          "feedforward_mean_attention_propagation": 0.129271,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4063,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.427946,
+          "recurrent_mean_attention_propagation": 0.567389,
+          "feedforward_mean_attention_propagation": 0.170386,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4070,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.369017,
+          "recurrent_mean_attention_propagation": 0.642261,
+          "feedforward_mean_attention_propagation": 0.144049,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4077,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.380081,
+          "recurrent_mean_attention_propagation": 0.768465,
+          "feedforward_mean_attention_propagation": 0.153253,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4084,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.461428,
+          "recurrent_mean_attention_propagation": 0.471726,
+          "feedforward_mean_attention_propagation": 0.132173,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4091,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.388746,
+          "recurrent_mean_attention_propagation": 0.579596,
+          "feedforward_mean_attention_propagation": 0.165272,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4098,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.377481,
+          "recurrent_mean_attention_propagation": 0.626901,
+          "feedforward_mean_attention_propagation": 0.105848,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4105,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.397699,
+          "recurrent_mean_attention_propagation": 0.605247,
+          "feedforward_mean_attention_propagation": 0.099724,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4112,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.434414,
+          "recurrent_mean_attention_propagation": 0.477789,
+          "feedforward_mean_attention_propagation": 0.118966,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4119,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.376556,
+          "recurrent_mean_attention_propagation": 0.603384,
+          "feedforward_mean_attention_propagation": 0.128672,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4126,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.435806,
+          "recurrent_mean_attention_propagation": 0.562925,
+          "feedforward_mean_attention_propagation": 0.122137,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4133,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.415291,
+          "recurrent_mean_attention_propagation": 0.492674,
+          "feedforward_mean_attention_propagation": 0.137898,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4140,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.375312,
+          "recurrent_mean_attention_propagation": 0.653777,
+          "feedforward_mean_attention_propagation": 0.127608,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4147,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.404724,
+          "recurrent_mean_attention_propagation": 0.572174,
+          "feedforward_mean_attention_propagation": 0.098996,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4154,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.40082,
+          "recurrent_mean_attention_propagation": 0.559664,
+          "feedforward_mean_attention_propagation": 0.125478,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4161,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.392032,
+          "recurrent_mean_attention_propagation": 0.556923,
+          "feedforward_mean_attention_propagation": 0.116365,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4168,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.404066,
+          "recurrent_mean_attention_propagation": 0.519353,
+          "feedforward_mean_attention_propagation": 0.080264,
+          "freeze_mean_recovery_ratio": 0.0
+        }
+      ]
+    },
+    {
+      "label": "v3_seed107",
+      "config": "configs/stage7_content_memory_v3_seed107.yaml",
+      "checkpoint": "outputs/stage7_content_memory_v3_seed107/experiment.pt",
+      "num_seeds": 25,
+      "supported_fraction": 1.0,
+      "flag_fractions": {
+        "rich_but_recoverable": 1.0,
+        "integration_exceeds_feedforward": 1.0,
+        "recovery_exceeds_freeze": 1.0,
+        "supported": 1.0
+      },
+      "ratio_stats": {
+        "recurrent_mean_recovery_ratio": {
+          "mean": 0.461407,
+          "std": 0.022153,
+          "min": 0.428097,
+          "max": 0.532822
+        },
+        "recurrent_mean_attention_propagation": {
+          "mean": 0.161877,
+          "std": 0.037612,
+          "min": 0.107221,
+          "max": 0.233755
+        },
+        "feedforward_mean_attention_propagation": {
+          "mean": 0.077365,
+          "std": 0.01657,
+          "min": 0.050273,
+          "max": 0.113921
+        },
+        "freeze_mean_recovery_ratio": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 4000,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.450185,
+          "recurrent_mean_attention_propagation": 0.140831,
+          "feedforward_mean_attention_propagation": 0.063865,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4007,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.454885,
+          "recurrent_mean_attention_propagation": 0.125934,
+          "feedforward_mean_attention_propagation": 0.075566,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4014,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.532822,
+          "recurrent_mean_attention_propagation": 0.127921,
+          "feedforward_mean_attention_propagation": 0.08504,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4021,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.453713,
+          "recurrent_mean_attention_propagation": 0.201626,
+          "feedforward_mean_attention_propagation": 0.09491,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4028,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.449732,
+          "recurrent_mean_attention_propagation": 0.147115,
+          "feedforward_mean_attention_propagation": 0.076828,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4035,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.458598,
+          "recurrent_mean_attention_propagation": 0.160174,
+          "feedforward_mean_attention_propagation": 0.050273,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4042,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.489132,
+          "recurrent_mean_attention_propagation": 0.156653,
+          "feedforward_mean_attention_propagation": 0.061424,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4049,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.428097,
+          "recurrent_mean_attention_propagation": 0.139791,
+          "feedforward_mean_attention_propagation": 0.101167,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4056,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.466617,
+          "recurrent_mean_attention_propagation": 0.224438,
+          "feedforward_mean_attention_propagation": 0.068675,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4063,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.433959,
+          "recurrent_mean_attention_propagation": 0.124439,
+          "feedforward_mean_attention_propagation": 0.093315,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4070,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.496107,
+          "recurrent_mean_attention_propagation": 0.196759,
+          "feedforward_mean_attention_propagation": 0.066842,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4077,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.44294,
+          "recurrent_mean_attention_propagation": 0.20283,
+          "feedforward_mean_attention_propagation": 0.089623,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4084,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.459294,
+          "recurrent_mean_attention_propagation": 0.233755,
+          "feedforward_mean_attention_propagation": 0.05116,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4091,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.453739,
+          "recurrent_mean_attention_propagation": 0.19791,
+          "feedforward_mean_attention_propagation": 0.094777,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4098,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.473645,
+          "recurrent_mean_attention_propagation": 0.107221,
+          "feedforward_mean_attention_propagation": 0.068199,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4105,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.432932,
+          "recurrent_mean_attention_propagation": 0.177418,
+          "feedforward_mean_attention_propagation": 0.082751,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4112,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.453882,
+          "recurrent_mean_attention_propagation": 0.198321,
+          "feedforward_mean_attention_propagation": 0.085401,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4119,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.465817,
+          "recurrent_mean_attention_propagation": 0.116832,
+          "feedforward_mean_attention_propagation": 0.05509,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4126,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.461404,
+          "recurrent_mean_attention_propagation": 0.136821,
+          "feedforward_mean_attention_propagation": 0.051785,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4133,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.468315,
+          "recurrent_mean_attention_propagation": 0.140063,
+          "feedforward_mean_attention_propagation": 0.084041,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4140,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.493056,
+          "recurrent_mean_attention_propagation": 0.157615,
+          "feedforward_mean_attention_propagation": 0.097256,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4147,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.453109,
+          "recurrent_mean_attention_propagation": 0.124572,
+          "feedforward_mean_attention_propagation": 0.075629,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4154,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.458789,
+          "recurrent_mean_attention_propagation": 0.173218,
+          "feedforward_mean_attention_propagation": 0.069096,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4161,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.442232,
+          "recurrent_mean_attention_propagation": 0.111651,
+          "feedforward_mean_attention_propagation": 0.077488,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4168,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.462176,
+          "recurrent_mean_attention_propagation": 0.223021,
+          "feedforward_mean_attention_propagation": 0.113921,
+          "freeze_mean_recovery_ratio": 0.0
+        }
+      ]
+    },
+    {
+      "label": "v3_seed207",
+      "config": "configs/stage7_content_memory_v3_seed207.yaml",
+      "checkpoint": "outputs/stage7_content_memory_v3_seed207/experiment.pt",
+      "num_seeds": 25,
+      "supported_fraction": 1.0,
+      "flag_fractions": {
+        "rich_but_recoverable": 1.0,
+        "integration_exceeds_feedforward": 1.0,
+        "recovery_exceeds_freeze": 1.0,
+        "supported": 1.0
+      },
+      "ratio_stats": {
+        "recurrent_mean_recovery_ratio": {
+          "mean": 0.413668,
+          "std": 0.030787,
+          "min": 0.339525,
+          "max": 0.466708
+        },
+        "recurrent_mean_attention_propagation": {
+          "mean": 0.145051,
+          "std": 0.034118,
+          "min": 0.095673,
+          "max": 0.237511
+        },
+        "feedforward_mean_attention_propagation": {
+          "mean": 0.048973,
+          "std": 0.008053,
+          "min": 0.025871,
+          "max": 0.064659
+        },
+        "freeze_mean_recovery_ratio": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 4000,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.466708,
+          "recurrent_mean_attention_propagation": 0.098078,
+          "feedforward_mean_attention_propagation": 0.057412,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4007,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.426362,
+          "recurrent_mean_attention_propagation": 0.192321,
+          "feedforward_mean_attention_propagation": 0.050857,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4014,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.437885,
+          "recurrent_mean_attention_propagation": 0.189641,
+          "feedforward_mean_attention_propagation": 0.052223,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4021,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.42384,
+          "recurrent_mean_attention_propagation": 0.121084,
+          "feedforward_mean_attention_propagation": 0.050424,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4028,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.413108,
+          "recurrent_mean_attention_propagation": 0.172985,
+          "feedforward_mean_attention_propagation": 0.046686,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4035,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.423009,
+          "recurrent_mean_attention_propagation": 0.111179,
+          "feedforward_mean_attention_propagation": 0.050067,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4042,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.42545,
+          "recurrent_mean_attention_propagation": 0.10528,
+          "feedforward_mean_attention_propagation": 0.050891,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4049,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.441856,
+          "recurrent_mean_attention_propagation": 0.191768,
+          "feedforward_mean_attention_propagation": 0.063333,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4056,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.427533,
+          "recurrent_mean_attention_propagation": 0.115064,
+          "feedforward_mean_attention_propagation": 0.025871,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4063,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.452605,
+          "recurrent_mean_attention_propagation": 0.133241,
+          "feedforward_mean_attention_propagation": 0.05136,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4070,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.392172,
+          "recurrent_mean_attention_propagation": 0.139802,
+          "feedforward_mean_attention_propagation": 0.05687,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4077,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.391892,
+          "recurrent_mean_attention_propagation": 0.142041,
+          "feedforward_mean_attention_propagation": 0.043935,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4084,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.415765,
+          "recurrent_mean_attention_propagation": 0.174025,
+          "feedforward_mean_attention_propagation": 0.042722,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4091,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.407345,
+          "recurrent_mean_attention_propagation": 0.125096,
+          "feedforward_mean_attention_propagation": 0.040304,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4098,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.34579,
+          "recurrent_mean_attention_propagation": 0.151038,
+          "feedforward_mean_attention_propagation": 0.043394,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4105,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.388177,
+          "recurrent_mean_attention_propagation": 0.237511,
+          "feedforward_mean_attention_propagation": 0.064659,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4112,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.441975,
+          "recurrent_mean_attention_propagation": 0.158218,
+          "feedforward_mean_attention_propagation": 0.050803,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4119,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.390522,
+          "recurrent_mean_attention_propagation": 0.139321,
+          "feedforward_mean_attention_propagation": 0.05002,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4126,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.448356,
+          "recurrent_mean_attention_propagation": 0.166783,
+          "feedforward_mean_attention_propagation": 0.041632,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4133,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.41564,
+          "recurrent_mean_attention_propagation": 0.156567,
+          "feedforward_mean_attention_propagation": 0.058086,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4140,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.431087,
+          "recurrent_mean_attention_propagation": 0.152179,
+          "feedforward_mean_attention_propagation": 0.052016,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4147,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.362556,
+          "recurrent_mean_attention_propagation": 0.117244,
+          "feedforward_mean_attention_propagation": 0.038454,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4154,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.42312,
+          "recurrent_mean_attention_propagation": 0.110427,
+          "feedforward_mean_attention_propagation": 0.051078,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4161,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.409428,
+          "recurrent_mean_attention_propagation": 0.095673,
+          "feedforward_mean_attention_propagation": 0.043299,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4168,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.339525,
+          "recurrent_mean_attention_propagation": 0.129708,
+          "feedforward_mean_attention_propagation": 0.04794,
+          "freeze_mean_recovery_ratio": 0.0
+        }
+      ]
+    },
+    {
+      "label": "v3_seed307",
+      "config": "configs/stage7_content_memory_v3_seed307.yaml",
+      "checkpoint": "outputs/stage7_content_memory_v3_seed307/experiment.pt",
+      "num_seeds": 25,
+      "supported_fraction": 1.0,
+      "flag_fractions": {
+        "rich_but_recoverable": 1.0,
+        "integration_exceeds_feedforward": 1.0,
+        "recovery_exceeds_freeze": 1.0,
+        "supported": 1.0
+      },
+      "ratio_stats": {
+        "recurrent_mean_recovery_ratio": {
+          "mean": 0.394145,
+          "std": 0.032971,
+          "min": 0.325766,
+          "max": 0.45441
+        },
+        "recurrent_mean_attention_propagation": {
+          "mean": 0.16707,
+          "std": 0.036612,
+          "min": 0.107046,
+          "max": 0.250835
+        },
+        "feedforward_mean_attention_propagation": {
+          "mean": 0.062402,
+          "std": 0.01864,
+          "min": 0.034794,
+          "max": 0.096459
+        },
+        "freeze_mean_recovery_ratio": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 4000,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.413263,
+          "recurrent_mean_attention_propagation": 0.148335,
+          "feedforward_mean_attention_propagation": 0.086708,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4007,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.391847,
+          "recurrent_mean_attention_propagation": 0.182998,
+          "feedforward_mean_attention_propagation": 0.038765,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4014,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.428648,
+          "recurrent_mean_attention_propagation": 0.140064,
+          "feedforward_mean_attention_propagation": 0.090933,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4021,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.397373,
+          "recurrent_mean_attention_propagation": 0.135693,
+          "feedforward_mean_attention_propagation": 0.052066,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4028,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.371904,
+          "recurrent_mean_attention_propagation": 0.204455,
+          "feedforward_mean_attention_propagation": 0.058165,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4035,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.333223,
+          "recurrent_mean_attention_propagation": 0.134688,
+          "feedforward_mean_attention_propagation": 0.049656,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4042,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.404114,
+          "recurrent_mean_attention_propagation": 0.233557,
+          "feedforward_mean_attention_propagation": 0.07749,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4049,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.325766,
+          "recurrent_mean_attention_propagation": 0.187088,
+          "feedforward_mean_attention_propagation": 0.045847,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4056,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.427567,
+          "recurrent_mean_attention_propagation": 0.134559,
+          "feedforward_mean_attention_propagation": 0.034794,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4063,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.38583,
+          "recurrent_mean_attention_propagation": 0.149826,
+          "feedforward_mean_attention_propagation": 0.068217,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4070,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.4335,
+          "recurrent_mean_attention_propagation": 0.118907,
+          "feedforward_mean_attention_propagation": 0.043009,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4077,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.342903,
+          "recurrent_mean_attention_propagation": 0.250835,
+          "feedforward_mean_attention_propagation": 0.065224,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4084,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.393605,
+          "recurrent_mean_attention_propagation": 0.150124,
+          "feedforward_mean_attention_propagation": 0.060935,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4091,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.389538,
+          "recurrent_mean_attention_propagation": 0.107046,
+          "feedforward_mean_attention_propagation": 0.041058,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4098,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.389131,
+          "recurrent_mean_attention_propagation": 0.174693,
+          "feedforward_mean_attention_propagation": 0.060433,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4105,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.417629,
+          "recurrent_mean_attention_propagation": 0.196595,
+          "feedforward_mean_attention_propagation": 0.084643,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4112,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.4272,
+          "recurrent_mean_attention_propagation": 0.1867,
+          "feedforward_mean_attention_propagation": 0.057748,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4119,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.339693,
+          "recurrent_mean_attention_propagation": 0.140819,
+          "feedforward_mean_attention_propagation": 0.041159,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4126,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.371455,
+          "recurrent_mean_attention_propagation": 0.204667,
+          "feedforward_mean_attention_propagation": 0.08698,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4133,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.394093,
+          "recurrent_mean_attention_propagation": 0.201085,
+          "feedforward_mean_attention_propagation": 0.065858,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4140,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.404601,
+          "recurrent_mean_attention_propagation": 0.172373,
+          "feedforward_mean_attention_propagation": 0.052814,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4147,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.369898,
+          "recurrent_mean_attention_propagation": 0.131888,
+          "feedforward_mean_attention_propagation": 0.036603,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4154,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.429284,
+          "recurrent_mean_attention_propagation": 0.171741,
+          "feedforward_mean_attention_propagation": 0.080875,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4161,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.417162,
+          "recurrent_mean_attention_propagation": 0.19995,
+          "feedforward_mean_attention_propagation": 0.096459,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4168,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.45441,
+          "recurrent_mean_attention_propagation": 0.118073,
+          "feedforward_mean_attention_propagation": 0.083619,
+          "freeze_mean_recovery_ratio": 0.0
+        }
+      ]
+    },
+    {
+      "label": "rnn_tune_prob_035",
+      "config": "configs/tune_prob_035_rnn.yaml",
+      "checkpoint": "outputs/tune_prob_035_rnn/experiment.pt",
+      "num_seeds": 25,
+      "supported_fraction": 1.0,
+      "flag_fractions": {
+        "rich_but_recoverable": 1.0,
+        "integration_exceeds_feedforward": 1.0,
+        "recovery_exceeds_freeze": 1.0,
+        "supported": 1.0
+      },
+      "ratio_stats": {
+        "recurrent_mean_recovery_ratio": {
+          "mean": 0.625043,
+          "std": 0.034114,
+          "min": 0.552299,
+          "max": 0.684503
+        },
+        "recurrent_mean_attention_propagation": {
+          "mean": 0.316054,
+          "std": 0.053081,
+          "min": 0.226006,
+          "max": 0.444232
+        },
+        "feedforward_mean_attention_propagation": {
+          "mean": 0.068385,
+          "std": 0.018181,
+          "min": 0.03144,
+          "max": 0.114034
+        },
+        "freeze_mean_recovery_ratio": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 4000,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.570747,
+          "recurrent_mean_attention_propagation": 0.420899,
+          "feedforward_mean_attention_propagation": 0.085205,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4007,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.608112,
+          "recurrent_mean_attention_propagation": 0.324912,
+          "feedforward_mean_attention_propagation": 0.114034,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4014,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.616108,
+          "recurrent_mean_attention_propagation": 0.306076,
+          "feedforward_mean_attention_propagation": 0.049272,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4021,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.634718,
+          "recurrent_mean_attention_propagation": 0.313653,
+          "feedforward_mean_attention_propagation": 0.05687,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4028,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.598611,
+          "recurrent_mean_attention_propagation": 0.291052,
+          "feedforward_mean_attention_propagation": 0.060357,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4035,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.669186,
+          "recurrent_mean_attention_propagation": 0.336549,
+          "feedforward_mean_attention_propagation": 0.063396,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4042,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.618296,
+          "recurrent_mean_attention_propagation": 0.278421,
+          "feedforward_mean_attention_propagation": 0.057061,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4049,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.578778,
+          "recurrent_mean_attention_propagation": 0.323559,
+          "feedforward_mean_attention_propagation": 0.063867,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4056,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.62531,
+          "recurrent_mean_attention_propagation": 0.356186,
+          "feedforward_mean_attention_propagation": 0.080401,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4063,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.552299,
+          "recurrent_mean_attention_propagation": 0.444232,
+          "feedforward_mean_attention_propagation": 0.07571,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4070,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.630604,
+          "recurrent_mean_attention_propagation": 0.277726,
+          "feedforward_mean_attention_propagation": 0.066246,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4077,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.620529,
+          "recurrent_mean_attention_propagation": 0.31314,
+          "feedforward_mean_attention_propagation": 0.068099,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4084,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.684503,
+          "recurrent_mean_attention_propagation": 0.248343,
+          "feedforward_mean_attention_propagation": 0.051081,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4091,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.655684,
+          "recurrent_mean_attention_propagation": 0.298414,
+          "feedforward_mean_attention_propagation": 0.061803,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4098,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.58368,
+          "recurrent_mean_attention_propagation": 0.342953,
+          "feedforward_mean_attention_propagation": 0.069128,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4105,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.623553,
+          "recurrent_mean_attention_propagation": 0.339155,
+          "feedforward_mean_attention_propagation": 0.03144,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4112,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.674334,
+          "recurrent_mean_attention_propagation": 0.226006,
+          "feedforward_mean_attention_propagation": 0.095934,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4119,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.589712,
+          "recurrent_mean_attention_propagation": 0.412934,
+          "feedforward_mean_attention_propagation": 0.064444,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4126,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.654625,
+          "recurrent_mean_attention_propagation": 0.30956,
+          "feedforward_mean_attention_propagation": 0.083593,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4133,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.645879,
+          "recurrent_mean_attention_propagation": 0.230255,
+          "feedforward_mean_attention_propagation": 0.061415,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4140,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.677843,
+          "recurrent_mean_attention_propagation": 0.239125,
+          "feedforward_mean_attention_propagation": 0.051784,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4147,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.624949,
+          "recurrent_mean_attention_propagation": 0.310906,
+          "feedforward_mean_attention_propagation": 0.052214,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4154,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.657161,
+          "recurrent_mean_attention_propagation": 0.309142,
+          "feedforward_mean_attention_propagation": 0.074456,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4161,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.62829,
+          "recurrent_mean_attention_propagation": 0.32936,
+          "feedforward_mean_attention_propagation": 0.108356,
+          "freeze_mean_recovery_ratio": 0.0
+        },
+        {
+          "seed": 4168,
+          "rich_but_recoverable": true,
+          "integration_exceeds_feedforward": true,
+          "recovery_exceeds_freeze": true,
+          "supported": true,
+          "recurrent_mean_recovery_ratio": 0.602576,
+          "recurrent_mean_attention_propagation": 0.318799,
+          "feedforward_mean_attention_propagation": 0.063469,
+          "freeze_mean_recovery_ratio": 0.0
+        }
+      ]
+    }
+  ]
+}
