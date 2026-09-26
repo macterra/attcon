@@ -8,7 +8,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Run routed fitted controllers across architectures and seeds.
 - [x] Run reward-only exploration and native answer/decline evaluation.
 - [x] Fit independent reports and run controlled report/policy interventions.
-- [ ] Evaluate reserved stress contexts.
+- [x] Evaluate reserved stress contexts.
 - [ ] Validate artifact manifest, reproduction entry point, and full test suite.
 - [ ] Publish final evidence map and completed-project status, preserving failures.
 
@@ -122,3 +122,17 @@ for a uniquely introspective readout. The corrected comparisons are expressly
 post-registration diagnostics on reused tests.
 Sources: [routing GRU reports](../audits/prospective_reporting_routing_gru_summary.json),
 [routing RNN reports](../audits/prospective_reporting_routing_rnn_summary.json).
+
+## Reserved stress matrix
+
+All12 task/architecture/seed systems were evaluated on disjoint reserved contexts
+under baseline, five-blank delay, and unannounced0.15 sensor degradation. No
+model or threshold was refit. Routing-GRU returns at cost0.25 fall from0.7434–0.7595
+to0.6237–0.6571 under misspecification. Routing-RNN returns at that cost fall from
+0.5957–0.6463 to0.3824–0.5030 under long delay. Effects vary by cost and recipe.
+
+Five of108 individual stress seed/cost cells pass all gates, including some
+serial-GRU delay cells. These diagnostic exceptions do not satisfy the registered
+all-cost/all-seed/cross-architecture promotion rule and are retained explicitly.
+Analytic stress policies know actual reliability; learned policies see the old
+cue. The full final manifest contains every stress condition and viability gate.
