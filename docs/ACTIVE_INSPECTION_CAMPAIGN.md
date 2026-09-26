@@ -6,7 +6,7 @@ Fixed protocol: [ACTIVE_INSPECTION_PROTOCOL.md](ACTIVE_INSPECTION_PROTOCOL.md).
 | --- | --- | --- |
 | 1 | Environment, partitions, and analytic policy | Complete |
 | 2 | Three-controller pilot, seed 2309 | Complete |
-| 3 | Replication, seeds 2333 and 2351 | Pending |
+| 3 | Replication, seeds 2333 and 2351 | Complete |
 | 4 | Recurrent-history and choice-preserving interventions | Pending |
 | 5 | Frozen-controller verified-information reporting | Pending |
 | 6 | Untouched stress contexts and consolidation | Pending |
@@ -52,3 +52,22 @@ stopping at the cost-0.25 indifference point; expected return is recorded too.
 
 Source: [pilot](../audits/acquisition_seed2309.json). Ten environment/training
 tests pass, including recurrent trajectory restoration and frozen selected weights.
+
+## Cycle 3
+
+Three-seed replication preserves matched parameter counts, initial weights,
+training budgets, and sources. At every cost and seed, the state controller beats
+each fixed inspection count by at least 0.02 reward, and fresh-answer and forced
+verification accuracy pass 0.90. Returns range from 0.8613–0.8667 at cost 0.1,
+0.6476–0.6641 at 0.25, and 0.5413–0.5667 at 0.4.
+
+The required 0.02 gain over either learned comparator passes zero of three seeds
+at every cost. One seed has positive context bounds over both learned controls
+at cost 0.1, but it still misses the effect-size gate. No cost or seed is removed,
+and no threshold is relaxed. This replicates adaptive acquisition within the
+task, not an advantage of full-state inspection beyond confidence.
+
+Source: [replication](../audits/acquisition_multiseed.json). Four summary tests
+reject duplicate seeds, unequal initialization, and forged gates, and preserve
+the negative conclusion. The underlying artifacts retain every checkpoint
+selection, loss trace, conditional policy metric, and paired context interval.
