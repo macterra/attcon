@@ -5,7 +5,7 @@ Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 | Cycle | Experiment | Status |
 | --- | --- | --- |
 | 1 | Paired fixed/variable-delay GRU pilot, seed 2101 | Complete |
-| 2 | Paired replication, seeds 2111 and 2129 | Pending |
+| 2 | Paired replication, seeds 2111 and 2129 | Complete |
 | 3 | Near-parameter-matched RNN comparison | Pending |
 | 4 | Confidence and choice-preserving intervention controls | Pending |
 | 5 | Reward-trained inspection pilot | Pending |
@@ -29,3 +29,23 @@ delay assignments. Variable training has additional recurrent compute. Sources:
 [fixed](../audits/regulation_gru_fixed_seed2101.json),
 [variable](../audits/regulation_gru_variable_seed2101.json).
 Validation: 91 unit tests passed; source and dataset fingerprints are recorded.
+
+## Cycle 2: paired replication
+
+All three variable-delay GRUs improve over their fixed-delay counterparts.
+Mixed-delay seen choice is 95.2–97.4% versus 86.2–89.8%; delay-9 choice is
+91.4–94.8% versus 53.3–59.5%. Paired report accuracy is 67.7–70.6% versus
+43.4–55.9%. The context-bootstrap paired-report improvement interval excludes
+zero at every seed. These are pointwise within-seed intervals, not population
+uncertainty across independently sampled systems.
+
+Variable training passes 12/15 gates in every seed (individual totals 13,12,12),
+versus 8/15 universally for fixed training (individual totals 9,11,9). Unavailable
+and paired reporting fail universally; access stability passes only one seed.
+The paired checks pass, including equal initial weights and 7,680 optimizer
+updates. Variable training processes about 1.42 times the recurrent steps.
+
+Sources: [paired replication](../audits/regulation_delay_replication.json),
+[fixed aggregation](../audits/regulation_gru_fixed_multiseed.json),
+[variable aggregation](../audits/regulation_gru_variable_multiseed.json).
+Aggregation checks validate source/configuration comparability and recompute gates.
