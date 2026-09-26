@@ -29,9 +29,12 @@ and follow-ups are retained in `audits/paired_history_reporting*.json`.
 
 The first three-seed coverage replication reaches 94.8–95.7% held-out choice
 accuracy and 74.0–79.6% joint action/report donor following. The unavailable-report
-accuracy is only 57.8–68.0%, so the full reporting gates are not met. Next: isolate
-readout/calibration limits using state, action-logit, and entropy-based access
-baselines on fresh evaluation groups before advancing to selective access erasure.
+accuracy is only 57.8–68.0%, so the full reporting gates are not met. The subsequent
+[calibration diagnostic](REPORTING_CALIBRATION_RESULTS.md) improves unavailable
+reports by 13.3–14.1 points within each fresh seed, reaching 78.1–83.6%, while
+reducing seen-content accuracy. Its gates also remain unmet. Next: capacity-matched
+nonlinear readouts and a full-history observer to separate representation limits
+from decoder limits before advancing to selective access erasure.
 
 ## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
 

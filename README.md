@@ -17,6 +17,12 @@ under selective content interventions. Unavailable-content reports remain weak
 (57.8–68.0% correct), so its full reporting gates are **not met**. This result does
 not change the Stage 8 verdict.
 
+A [fresh-seed calibration diagnostic](docs/REPORTING_CALIBRATION_RESULTS.md)
+improves unavailable reports to 78.1–83.6%, a 13.3–14.1 percentage-point gain over
+the original reporter on the same agents, while reducing seen-content report
+accuracy. Its full reporting gates also remain unmet; action-score and entropy
+reporters remain competitive with access to the full hidden state.
+
 The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each scene contains visible cell types plus hidden target/digit information that only becomes useful through attention.
 
 ## Benchmark Mechanism (discrete glimpse)

@@ -163,13 +163,19 @@ Evidence:
 - `audits/paired_history_reporting_seed1729.json` and
   `audits/paired_history_reporting_v2_seed1741.json`: retained unsuccessful pilots.
 
-Next execution priority is an availability-readout diagnostic before architectural
-replication. Compare state, action logits, and an entropy-based access baseline;
-select normalization/regularization only within reporter-fit/validation data, then
-use fresh seed/test groups. Keep the original unavailable, paired-report, and
-intervention gates. This must distinguish poor measurement from inaccessible
-content before progressing to access erasure, stale memories, and endogenous
-inspection. Full-history observers and a second architecture remain outstanding.
+The availability-readout diagnostic has now been executed on three fresh seeds
+under a [fixed protocol](REPORTING_CALIBRATION.md). Its
+[results](REPORTING_CALIBRATION_RESULTS.md) show a 13.3–14.1 percentage-point gain
+in unavailable reports, but a 3.1–6.4 point loss in seen-content reports. Every
+seed still fails the complete reporting criteria; simple action-score and entropy
+reporters remain competitive. Calibration is a partial measurement limitation,
+not a complete explanation of the remaining failures.
+
+Next: a preregistered representation-sufficiency diagnostic with capacity-matched
+nonlinear reporters and a full-history observer, using fresh seeds and validation-
+only selection. Keep the original unavailable, paired-report, and intervention
+gates. Reliable access reports must precede access erasure, stale-memory tests,
+and endogenous inspection. A second architecture remains outstanding.
 
 ## Reproduction and validation
 
