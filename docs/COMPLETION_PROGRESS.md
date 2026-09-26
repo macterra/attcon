@@ -5,7 +5,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Freeze completion criteria, experiment matrix, and scientific stopping rule.
 - [x] Validate prospective environments, analytic policies, and equal-capacity controls.
 - [x] Run serial fitted controllers across architectures and seeds.
-- [ ] Run routed fitted controllers across architectures and seeds.
+- [x] Run routed fitted controllers across architectures and seeds.
 - [x] Run reward-only exploration and native answer/decline evaluation.
 - [ ] Fit independent reports and run controlled report/policy interventions.
 - [ ] Evaluate reserved stress contexts.
@@ -94,3 +94,13 @@ controller reaches the0.02 fair-cue advantage at any cost. This confirms the
 need to represent prospective information quality, but not a benefit beyond a
 comparator given that same quality information.
 Source: [routing GRU summary](../audits/prospective_routing_gru_summary.json).
+
+## Routing RNN and full fitted matrix
+
+All36 fitted controllers have completed with no failed jobs. Routing RNN returns
+are lower and variable; one seed fails forced-observation viability. Only one
+seed passes the fair gain at each cost, while other seeds lose substantially to
+the fair comparator. No task/architecture group clears all registered costs and
+seeds. The protocol's prerequisite for promoting independent-content convergence
+is therefore not met; the earlier unforced-convergence evidence stays unchanged.
+Source: [routing RNN summary](../audits/prospective_routing_rnn_summary.json).
