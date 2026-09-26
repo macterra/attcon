@@ -6,7 +6,7 @@ Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 | --- | --- | --- |
 | 1 | Paired fixed/variable-delay GRU pilot, seed 2101 | Complete |
 | 2 | Paired replication, seeds 2111 and 2129 | Complete |
-| 3 | Near-parameter-matched RNN comparison | Pending |
+| 3 | Near-parameter-matched RNN comparison | Complete |
 | 4 | Confidence and choice-preserving intervention controls | Pending |
 | 5 | Reward-trained inspection pilot | Pending |
 | 6 | Inspection replication and causal sensitivity | Pending |
@@ -49,3 +49,19 @@ Sources: [paired replication](../audits/regulation_delay_replication.json),
 [fixed aggregation](../audits/regulation_gru_fixed_multiseed.json),
 [variable aggregation](../audits/regulation_gru_variable_multiseed.json).
 Aggregation checks validate source/configuration comparability and recompute gates.
+
+## Cycle 3: near-parameter-matched recurrent architecture
+
+The width-115 ungated RNN has 15,876 parameters versus the width-64 GRU's 15,942
+(66 fewer, about 0.4%). All three comparisons preserve task contexts, delay
+assignments, optimizer updates, recurrent-example steps, and reporter capacity.
+Mixed-delay seen choice accuracy is 62.2–70.1%, below the 85% viability gate;
+seen reporting is 53.1–62.1%, and paired reporting is 9.9–18.1%. Individual runs
+pass 6,4,6 of 15 reporting gates. This recipe provides no cross-architecture
+replication. Different optimization requirements remain a live explanation;
+near parameter matching does not establish a necessity of gates.
+
+Sources: [architecture comparison](../audits/regulation_architecture_comparison.json),
+[RNN replication](../audits/regulation_rnn_variable_multiseed.json).
+Validation: comparison checks pass; full suite passes 100 tests, including the
+forthcoming intervention and reward-policy implementation checks.

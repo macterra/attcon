@@ -55,7 +55,7 @@ def main() -> None:
             } for baseline in reference["evaluations"]["test"]["reports"]
         },
         "thresholds": reference["thresholds"],
-        "claim_boundary": "Replication within one synthetic task and one GRU architecture. Reporters are supervised measurements of a frozen task-trained state. Gate failures remain failures; no Stage 8 upgrade or consciousness claim.",
+        "claim_boundary": "Replication within one synthetic task and one architecture. Reporters are supervised measurements of a frozen task-trained state. Gate failures remain failures; no Stage 8 upgrade or consciousness claim.",
     }
     if all("uncalibrated_state" in run["evaluations"]["test"]["reports"] for run in runs):
         result["within_seed_calibration_changes"] = {
