@@ -18,3 +18,11 @@ conscious-access or Stage 8 result is not presumed.
 Environment validation: seven tests pass; GRU48 has13,704 parameters and RNN87
 has13,683 (21 fewer). All three head families have identical initial weights
 within architecture/seed. Six task/seed partitions are disjoint.
+
+## Serial GRU fitted replication
+
+All three state controllers pass task viability and beat every fixed policy at
+every cost. None reaches the required0.02 advantage over the fair cue comparator
+at any cost (one gain is0.019965 and remains a failure). Source/configuration,
+initialization, update-count, and gate-consistency checks pass.
+Source: [serial GRU summary](../audits/prospective_serial_gru_summary.json).
