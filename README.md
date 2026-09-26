@@ -23,6 +23,13 @@ the original reporter on the same agents, while reducing seen-content report
 accuracy. Its full reporting gates also remain unmet; action-score and entropy
 reporters remain competitive with access to the full hidden state.
 
+The subsequent [six-cycle campaign](docs/REPORTING_CAMPAIGN.md) tests matched
+nonlinear reporters and history controls. More reporter-fitting data raises seen
+reporting to 91.4–94.8%, but unavailable reporting remains 76.6–78.1%. An ungated
+RNN fails task viability, and extra delays degrade performance. Selective content
+lesions elicit unavailable reports but leave incorrect-value reports in some cases.
+These are bounded diagnostic results; full reporting support and Stage 8 remain unmet.
+
 The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each scene contains visible cell types plus hidden target/digit information that only becomes useful through attention.
 
 ## Benchmark Mechanism (discrete glimpse)
@@ -41,6 +48,7 @@ the target on a single decisive fixation and carries the digit forward, mean
 
 ## Repository Guide
 
+- [REPORTING_CAMPAIGN.md](docs/REPORTING_CAMPAIGN.md): six completed reporting experiments, controls, and next decisions
 - [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): active reporting-first experiment plan, frozen criteria, and results
 - [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
 - [ROADMAP.md](/home/david/dev/attcon/docs/ROADMAP.md): claim definitions, evidence standards, and current status

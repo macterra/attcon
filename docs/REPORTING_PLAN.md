@@ -171,11 +171,18 @@ seed still fails the complete reporting criteria; simple action-score and entrop
 reporters remain competitive. Calibration is a partial measurement limitation,
 not a complete explanation of the remaining failures.
 
-Next: a preregistered representation-sufficiency diagnostic with capacity-matched
-nonlinear reporters and a full-history observer, using fresh seeds and validation-
-only selection. Keep the original unavailable, paired-report, and intervention
-gates. Reliable access reports must precede access erasure, stale-memory tests,
-and endogenous inspection. A second architecture remains outstanding.
+The [six-cycle campaign](REPORTING_CAMPAIGN.md) has now tested matched nonlinear
+reporters, full-history observers, reporting-data coverage, an ungated RNN, delay
+stress, and diagnostic content lesions. More fitting data improves decoding on
+identical frozen agents, but unavailable reporting remains below threshold. The
+RNN recipe fails task viability; extra delays weaken both choices and reports.
+Lesion-induced unavailable reports provide bounded sensitivity, with residual
+incorrect-value reports and no proof of inaccessible content.
+
+Next: establish variable-delay task viability and a parameter-aware architecture
+comparison; compare state and action/entropy responses to the same lesions. Keep
+all reporting gates and the separation of reporter supervision from agent training.
+Reliable usable-access reporting and endogenous inspection remain open.
 
 ## Reproduction and validation
 

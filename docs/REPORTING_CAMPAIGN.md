@@ -9,7 +9,7 @@ Protocol: [REPORTING_SIX_CYCLE_PROTOCOL.md](REPORTING_SIX_CYCLE_PROTOCOL.md).
 | 3 | Fixed-agent reporter-data comparison, 128 vs 512 groups | Complete; more data helps, gates unmet |
 | 4 | Ungated RNN replication, three fresh seeds | Complete; task viability fails |
 | 5 | Frozen-pipeline delay stress | Complete; temporal generalization weak |
-| 6 | Selective content erasure and restoration diagnostic | Results being validated |
+| 6 | Selective content erasure and restoration diagnostic | Complete; bounded sensitivity, residual false reports |
 
 Results, checks, and interpretations are added after each experiment. Failures
 remain failures; the protocol's thresholds will not be relaxed.
@@ -129,3 +129,52 @@ Artifact: `audits/report_delay_stress.json`, covering six systems and four delay
 conditions, with conditional paired context-bootstrap intervals. Its four basic
 task/report checks are stress diagnostics, not substitutes for the full 15-gate
 assay. Tests verify history/query/label invariance and zero-delay identity.
+
+## Cycle 6: selective content erasure
+
+The fixed baseline-correct cohort contains 88.9–93.0% of seen cases: both choice
+and report are initially correct. This is a single-case cohort, distinct from the
+donor/recipient eligibility criterion in the transplant assay.
+
+At full-strength content-subspace erasure, cohort choice accuracy falls to
+14.8–17.8%, and true-value reporting falls to 4.2–5.8%. Unavailable reports rise
+to 70.9–78.3%, versus 5.4–10.5% under norm-matched random perturbations and
+15.7–21.8% under norm-matched permuted-content perturbations. This is repeatable
+direction-specific sensitivity of the fitted reporter to disrupted content.
+
+The reporter still asserts an incorrect value in 17.4–23.3% of the cohort.
+Among choice-error trials, 71.6–79.3% receive unavailable reports, 20.0–26.4%
+receive incorrect-value reports, and 0.7–2.0% retain a correct report despite the
+choice error. Those retained correct reports are not counted as unavailable.
+All norm-matching checks pass, and restoring the perturbation recovers the original
+choice and report on every case in every condition.
+
+This is an off-distribution lesion diagnostic. It does not prove that all internal
+access was removed, that an unavailable report is introspective, or that ordinary
+confidence/rejection mechanisms cannot explain the effect. The original reporting
+gates still fail. The assay explicitly separates decoder failure, retained correct
+reports, incorrect-value reports, and unavailable responses.
+
+Artifact: `audits/report_content_erasure_diagnostic.json`, covering three frozen
+systems, four strengths, and three perturbation subspaces. The complete final suite
+passes **85 tests**, including selective projection, restoration, per-case norm
+matching, and separation of correct reports from choice failure.
+
+## Campaign decision
+
+All six cycles are complete. Six agents were trained (three GRUs and three RNNs);
+nine sufficiency runs include the three fixed-GRU data comparisons. Every run and
+negative result is retained. `audits/reporting_campaign_status.json` consolidates
+the conservative verdict and source artifacts.
+
+The clearest progress is better measurement: report-data coverage improves decoding
+on unchanged agents, history controls expose decoder limitations, and targeted
+lesions causally change content and unavailable reports. The remaining obstacles
+are reliable unavailable reporting, temporal generalization, and task-viable
+cross-architecture replication. Full reporting support and Stage 8 remain unmet.
+
+Next work should establish task viability under variable delays and a parameter-
+aware architecture comparison, while testing whether state reports add anything
+beyond action-score/entropy responses to the same lesions. Keep reporter supervision
+outside agent training. Endogenous information seeking and stronger access claims
+remain later steps, not conclusions of this campaign.

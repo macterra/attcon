@@ -16,7 +16,7 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Current Focus: Reporting From Task-Trained Internal State
 
-The active follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
+The completed follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
 covering matched nonlinear reporters, replication, reporting-data coverage,
 another recurrent architecture, delay stress, and selective-erasure diagnostics.
 Its [fixed protocol](REPORTING_SIX_CYCLE_PROTOCOL.md) retains the reporting gates
@@ -38,9 +38,12 @@ accuracy and 74.0–79.6% joint action/report donor following. The unavailable-r
 accuracy is only 57.8–68.0%, so the full reporting gates are not met. The subsequent
 [calibration diagnostic](REPORTING_CALIBRATION_RESULTS.md) improves unavailable
 reports by 13.3–14.1 points within each fresh seed, reaching 78.1–83.6%, while
-reducing seen-content accuracy. Its gates also remain unmet. Next: capacity-matched
-nonlinear readouts and a full-history observer to separate representation limits
-from decoder limits before advancing to selective access erasure.
+reducing seen-content accuracy. Its gates also remain unmet. The subsequent nonlinear
+campaign reaches 91.4–94.8% seen reporting with more fitting data but still only
+76.6–78.1% unavailable reporting. RNN task viability and delay generalization fail;
+targeted content lesions produce unavailable reports with residual incorrect-value
+reports. Next: variable-delay task viability, a parameter-aware architecture
+comparison, and state-versus-action/entropy lesion controls before stronger claims.
 
 ## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
 
