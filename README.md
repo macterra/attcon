@@ -85,6 +85,9 @@ the target on a single decisive fixation and carries the digit forward, mean
 
 ## Repository Guide
 
+Browse the [documentation site](https://macterra.org/attcon/) or the
+[documentation index](docs/index.md).
+
 - [PROJECT_RESULTS.md](docs/PROJECT_RESULTS.md): final reporting accuracy, evidence, and limitations
 - [FINAL_REPRODUCTION.md](docs/FINAL_REPRODUCTION.md): verify archived metrics or reproduce the final study
 - [REPORTING_CAMPAIGN.md](docs/REPORTING_CAMPAIGN.md): historical six-cycle reporting experiments and controls
