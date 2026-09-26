@@ -24,6 +24,9 @@ def main() -> None:
         for setting in ("epochs", "probe_steps", "null_fits", "norm_matched_controls", "train_groups"):
             if run["settings"][setting] != reference["settings"][setting]:
                 parser.error(f"incomparable {setting}")
+        for setting in ("architecture", "fit_groups"):
+            if run["settings"].get(setting) != reference["settings"].get(setting):
+                parser.error(f"incomparable {setting}")
         if not all(run["dataset_checks"].values()):
             parser.error("invalid dataset checks")
         if "source_sha256" in reference and run.get("source_sha256") != reference["source_sha256"]:

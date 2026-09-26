@@ -16,6 +16,12 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Current Focus: Reporting From Task-Trained Internal State
 
+The active follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
+covering matched nonlinear reporters, replication, reporting-data coverage,
+another recurrent architecture, delay stress, and selective-erasure diagnostics.
+Its [fixed protocol](REPORTING_SIX_CYCLE_PROTOCOL.md) retains the reporting gates
+and does not automatically promote any result to Stage 8.
+
 The [reporting-first plan](REPORTING_PLAN.md) is the active execution sequence as
 of 2026-09-26. Establish faithful reports on independently tested task-trained
 memory before extending the engineered Stage 8 assays. The new paired-history
