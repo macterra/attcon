@@ -8,7 +8,7 @@ Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 | 2 | Paired replication, seeds 2111 and 2129 | Complete |
 | 3 | Near-parameter-matched RNN comparison | Complete |
 | 4 | Confidence and choice-preserving intervention controls | Complete |
-| 5 | Reward-trained inspection pilot | Pending |
+| 5 | Reward-trained inspection pilot | Complete |
 | 6 | Inspection replication and causal sensitivity | Pending |
 
 All results, including failures, will be retained. Report fitting and policy
@@ -86,3 +86,25 @@ distinguish a reliable access report from confidence-related behavior.
 Source: [all strengths, controls, cohorts, and restoration checks](../audits/regulation_report_interventions.json).
 Validation: five focused tests cover pairing, rank deficiency, choice invariance,
 matched norms, and invalid directions; all pass within the 100-test suite.
+
+## Cycle 5: reward-trained inspection pilot
+
+Seed 2101 learns three equal-capacity policies from immediate-answer correctness
+rewards only; report/access labels do not enter training or model selection.
+The recurrent agent remains frozen. Validation selects between two L2 settings,
+and twenty shuffled-reward fits repeat that selection.
+
+| Inspection cost | State-policy return | Action-score return | Confidence return |
+| --- | --- | --- | --- |
+| 0.2 | 0.7788 | 0.8352 | 0.8352 |
+| 0.4 | 0.6647 | 0.7228 | 0.7117 |
+| 0.6 | 0.5941 | 0.6327 | 0.6329 |
+
+The state policy fails the advantage gate at every cost. It improves over never
+inspecting, but at cost 0.2 also loses to always inspecting (return 0.8). No
+beneficial full-state advantage beyond confidence is demonstrated. This is
+external one-step reward learning, not endogenous recurrent regulation.
+
+Source: [inspection pilot, delay-9 stress, null fits, and paired intervals](../audits/inspection_seed2101.json).
+Validation: four focused tests cover reward accounting, context resampling,
+fit-only normalization/frozen agents, and action/confidence invariance; all pass.
