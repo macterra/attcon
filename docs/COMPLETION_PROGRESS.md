@@ -72,3 +72,15 @@ Initial answer logits and restoration checks pass. The effect is a prospective
 quality representation shared by readout and control, not a uniquely
 introspective mechanism or a gain over fair policies.
 Source: [serial GRU reporting](../audits/prospective_reporting_serial_gru_summary.json).
+
+## Serial RNN reports and coupling
+
+The original report gates also pass in the RNN, but the corrected identity-cue
+reporter again exceeds state accuracy in all seeds (state gains-0.0414 to-0.0257).
+All answer-invariance and restoration checks pass. Quality transplants change
+86.5–93.0% of quality reports and6.1–16.7% of inspection trajectories. Random
+controls sometimes change more trajectories and improve return, so the RNN
+policy effect is not selective evidence of beneficial access monitoring.
+The cross-architecture result is a decodable prospective cue, not a replicated
+fair-report or fair-control advantage.
+Source: [serial RNN reporting](../audits/prospective_reporting_serial_rnn_summary.json).
