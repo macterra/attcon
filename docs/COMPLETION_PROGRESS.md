@@ -26,3 +26,13 @@ every cost. None reaches the required0.02 advantage over the fair cue comparator
 at any cost (one gain is0.019965 and remains a failure). Source/configuration,
 initialization, update-count, and gate-consistency checks pass.
 Source: [serial GRU summary](../audits/prospective_serial_gru_summary.json).
+
+## Reward-only serial exploration
+
+All three from-scratch state controllers learn useful sequential acquisition and
+pass fresh-answer/forced-verification viability. At cost0.25, two seeds exceed
+the fair comparator by0.02; this does not replicate at all costs/seeds. At cost0.4,
+answer coverage ranges46.1–100%, showing that native decline is used in some runs.
+The complete support gate remains unmet. The learner trains only on experienced
+chosen-action correctness/costs, with no full answer vector or report labels.
+Source: [serial exploration](../audits/exploration_serial_summary.json).
