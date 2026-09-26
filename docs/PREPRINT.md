@@ -1,5 +1,13 @@
 # Accurate Reporting from Internal States in Small Recurrent Systems
 
+> **Theory and goal correction (2026-09-26).** The theory under test is that the
+> attention-control model is the source of qualia. The intended evidence combines
+> faithful reports of that model's state with independently specified features of
+> consciousness reports. The prior study established neither that its task reports
+> tracked this model nor that correspondence. Its matrix is complete; the actual
+> theory-testing objective remains unresolved. See the
+> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
+
 Updated 2026-09-26. This manuscript describes the completed Attcon reporting
 study. It replaces the earlier attention-control-centered draft; that benchmark
 and the broader theory program remain documented in the [original specification](SPEC.md)

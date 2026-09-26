@@ -1,5 +1,13 @@
 # Final research results
 
+> **Theory and goal correction (2026-09-26).** The theory under test is that the
+> attention-control model is the source of qualia. The intended evidence combines
+> faithful reports of that model's state with independently specified features of
+> consciousness reports. The prior study established neither that its task reports
+> tracked this model nor that correspondence. Its matrix is complete; the actual
+> theory-testing objective remains unresolved. See the
+> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
+
 **The study demonstrates accurate reporting through trained internal-state
 readouts in bounded settings.** The project goal is to test whether the system can
 report accurately about its internal informational state. It does not require

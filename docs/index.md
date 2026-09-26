@@ -3,7 +3,15 @@ layout: default
 title: Attcon — Internal-state reporting
 ---
 
-# Attcon: reporting internal informational states
+# Attcon: reporting attention-control model state
+
+> **Theory and goal correction (2026-09-26).** The theory under test is that the
+> attention-control model is the source of qualia. The intended evidence combines
+> faithful reports of that model's state with independently specified features of
+> consciousness reports. The prior study established neither that its task reports
+> tracked this model nor that correspondence. Its matrix is complete; the actual
+> theory-testing objective remains unresolved. See the
+> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
 
 Attcon tests whether a system can accurately report its internal informational
 state, using small recurrent attention and memory tasks.
@@ -21,6 +29,7 @@ claims remain separate, unsupported hypotheses.
 
 ## Start here
 
+- [Active attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md): the corrected goal, state specification, and fidelity tests.
 - [Final results](PROJECT_RESULTS.md): reporting accuracy, evidence, comparator correction, and limitations.
 - [Verify or reproduce the study](FINAL_REPRODUCTION.md): archived checkpoints, metric replay, and full experiment commands.
 - [Evaluation progress](COMPLETION_PROGRESS.md): completed experiments and links to their evidence.

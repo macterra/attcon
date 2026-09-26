@@ -1,5 +1,13 @@
 # Study closure and research extensions
 
+> **Theory and goal correction (2026-09-26).** The theory under test is that the
+> attention-control model is the source of qualia. The intended evidence combines
+> faithful reports of that model's state with independently specified features of
+> consciousness reports. The prior study established neither that its task reports
+> tracked this model nor that correspondence. Its matrix is complete; the actual
+> theory-testing objective remains unresolved. See the
+> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
+
 The bounded final evaluation is complete; see [PROJECT_RESULTS.md](PROJECT_RESULTS.md)
 and the [completion audit](../audits/project_completion.json). All registered
 experiments, corrections, stress evaluations, replay checks, and deliverables are
