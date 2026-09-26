@@ -57,3 +57,18 @@ Only one seed at cost0.4 passes the fair gain; no complete support gate replicat
 This is a viable second architecture with weaker acquisition under this fixed
 recipe, not evidence that gating is necessary. Serial cross-architecture work
 is complete. Source: [serial RNN summary](../audits/prospective_serial_rnn_summary.json).
+
+## Serial GRU reports and coupling, with comparator correction
+
+Registered report gates pass, but the omitted-identity flaw prevents interpreting
+that as fair superiority. The corrected full-answer-logit-plus-cue reporter
+matches or exceeds the state reporter in every seed (state gains-0.0150 to0).
+See [correction](COMPLETION_CORRECTIONS.md); original results are retained.
+
+Answer-preserving quality transplants change94.5–99.2% of quality reports and
+36.1–58.6% of later inspection trajectories, with zero initial inspect/answer
+switches. Random controls change0–4.7% of reports and3.5–27.3% of trajectories.
+Initial answer logits and restoration checks pass. The effect is a prospective
+quality representation shared by readout and control, not a uniquely
+introspective mechanism or a gain over fair policies.
+Source: [serial GRU reporting](../audits/prospective_reporting_serial_gru_summary.json).
