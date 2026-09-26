@@ -7,8 +7,8 @@ Protocol: [REPORTING_SIX_CYCLE_PROTOCOL.md](REPORTING_SIX_CYCLE_PROTOCOL.md).
 | 1 | Nonlinear reporter and full-history pilot, seed 1901 | Complete; reporting gates unmet |
 | 2 | Fresh-seed replication, seeds 1907 and 1913 | Complete; failures replicate |
 | 3 | Fixed-agent reporter-data comparison, 128 vs 512 groups | Complete; more data helps, gates unmet |
-| 4 | Ungated RNN replication, three fresh seeds | In progress |
-| 5 | Frozen-pipeline delay stress | Pending |
+| 4 | Ungated RNN replication, three fresh seeds | Complete; task viability fails |
+| 5 | Frozen-pipeline delay stress | Results being validated |
 | 6 | Selective content erasure and restoration diagnostic | Pending |
 
 Results, checks, and interpretations are added after each experiment. Failures
@@ -82,3 +82,26 @@ Artifacts: `audits/report_sufficiency_gru_fit512_multiseed.json` and
 is the prespecified repeated-test comparison, not a new independent confirmation
 sample. Earlier split-invariance tests and the checkpoint/fingerprint checks protect
 its interpretation; no agent was retrained for the larger-reporting-data condition.
+
+## Cycle 4: cross-architecture boundary
+
+The ungated RNN reaches 95.3–96.0% choice accuracy on training contexts but only
+67.6–72.9% on held-out contexts. All three seeds fail the task-viability gate.
+Seen reporting is 57.8–66.8%, unavailable reporting 30.5–33.6%, and paired reporting
+20.2–20.4%. Joint donor following is 49.1–55.2%, below the 70% threshold.
+
+This is a failed cross-architecture replication under the fixed recipe. It cannot
+support a higher-level claim about reporting independently of the task failure.
+The RNN has 5,574 agent parameters versus the GRU's 15,942: width and training
+recipe are matched, not parameter count, and seeds differ. The result therefore
+does not establish that GRU gating is necessary or isolate architectural superiority.
+
+Full-history observers remain capable (81.6–86.8% balanced accuracy), while
+untrained RNN-state readouts reach 64.4–70.5%, exceeding the trained-state
+45.7–49.4%. This further bounds claims that task training necessarily creates a
+privileged reporting representation. A viable, fairly matched architecture
+comparison remains open.
+
+Artifact: `audits/report_sufficiency_rnn_fit512_multiseed.json`, with three source
+audits and reconstructed, context-cluster intervals. The RNN checkpoint and
+variable-delay interfaces were tested in cycle 1; no thresholds changed.
