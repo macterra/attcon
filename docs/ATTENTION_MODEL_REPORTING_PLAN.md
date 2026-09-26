@@ -1,7 +1,9 @@
 # Plan: testing the attention-control model as a source of qualia
 
 Created 2026-09-26 following clarification of the project's actual goal.
-Status: planned; no results from this new evaluation yet.
+Status: in progress. See [state specification](ATTENTION_MODEL_STATE_SPEC.md),
+[frozen protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md), and
+[progress](ATTENTION_MODEL_PROGRESS.md).
 
 ## Objective and current verdict
 
@@ -44,7 +46,7 @@ sensor-quality experiments. Produce a diagram and a code-to-state inventory:
 | Recurrent `hidden_state` | Mixed task and control representation | Which coordinates or module represent attention control; do not label the entire state an attention model by default. |
 | `inspection_state` | Explicit inspection-history bookkeeping used in recurrence | Its scope as an engineered attention-state representation, including update timing. |
 | `hidden_self_model_head` | Learned inspection estimate from hidden state | Whether it represents a usable part of the attention-control model and which trained checkpoints use it. |
-| `policy_self_model_head` | Path from that estimate to attention logits | Whether it has an effective role in the checkpoint; the main configuration disables its feedback training path. |
+| `policy_self_model_head` | Path from that estimate to attention logits | Whether it has an effective role in the checkpoint; the auxiliary feedback loss is disabled, but the forward path and task gradients remain active (verified in the state specification). |
 | `attention_seq` and policy outputs | Allocation produced by the controller | Allocation is a validation signal, not by itself proof of a model of attention. |
 
 For every candidate report field, specify its authoritative internal tensor,
