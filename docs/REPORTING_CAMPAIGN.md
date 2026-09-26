@@ -8,8 +8,8 @@ Protocol: [REPORTING_SIX_CYCLE_PROTOCOL.md](REPORTING_SIX_CYCLE_PROTOCOL.md).
 | 2 | Fresh-seed replication, seeds 1907 and 1913 | Complete; failures replicate |
 | 3 | Fixed-agent reporter-data comparison, 128 vs 512 groups | Complete; more data helps, gates unmet |
 | 4 | Ungated RNN replication, three fresh seeds | Complete; task viability fails |
-| 5 | Frozen-pipeline delay stress | Results being validated |
-| 6 | Selective content erasure and restoration diagnostic | Pending |
+| 5 | Frozen-pipeline delay stress | Complete; temporal generalization weak |
+| 6 | Selective content erasure and restoration diagnostic | Results being validated |
 
 Results, checks, and interpretations are added after each experiment. Failures
 remain failures; the protocol's thresholds will not be relaxed.
@@ -105,3 +105,27 @@ comparison remains open.
 Artifact: `audits/report_sufficiency_rnn_fit512_multiseed.json`, with three source
 audits and reconstructed, context-cluster intervals. The RNN checkpoint and
 variable-delay interfaces were tested in cycle 1; no thresholds changed.
+
+## Cycle 5: temporal stress
+
+All six frozen pipelines reproduce their original zero-delay scores. Blank events
+preserve every historical record and the final query; the symbolic history oracle
+remains perfect at every delay. No agent or reporter is refitted.
+
+| Extra blank events | GRU choice accuracy | GRU seen-value reports | GRU paired reports |
+| --- | --- | --- | --- |
+| 0 | 93.6–97.7% | 91.4–94.8% | 71.7–73.7% |
+| 1 | 92.3–96.1% | 87.0–91.4% | 68.1–72.7% |
+| 3 | 83.7–87.5% | 69.9–76.7% | 50.8–58.3% |
+| 6 | 65.6–71.4% | 44.7–53.0% | 32.6–37.6% |
+
+The already nonviable RNN pipelines fall to 21.9–23.6% choice accuracy and
+11.5–15.5% seen reporting at six extra steps. This is evidence of weak temporal
+generalization under the fixed recipes, not an architecture superiority claim.
+The history retains the information; recurrent representations and their fitted
+readouts do not preserve their original performance under this timing shift.
+
+Artifact: `audits/report_delay_stress.json`, covering six systems and four delay
+conditions, with conditional paired context-bootstrap intervals. Its four basic
+task/report checks are stress diagnostics, not substitutes for the full 15-gate
+assay. Tests verify history/query/label invariance and zero-delay identity.
