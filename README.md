@@ -10,6 +10,13 @@ The current implementation trains and compares:
 - a recurrent attention controller
 - several ablations, including frozen recurrence and a feedforward summary controller
 
+The [active reporting-first plan](docs/REPORTING_PLAN.md) adds a separate
+paired-history assay trained only on value choice. Across three seeds it reaches
+94.8–95.7% held-out choice accuracy and 74.0–79.6% joint action/report following
+under selective content interventions. Unavailable-content reports remain weak
+(57.8–68.0% correct), so its full reporting gates are **not met**. This result does
+not change the Stage 8 verdict.
+
 The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each scene contains visible cell types plus hidden target/digit information that only becomes useful through attention.
 
 ## Benchmark Mechanism (discrete glimpse)
@@ -28,6 +35,7 @@ the target on a single decisive fixation and carries the digit forward, mean
 
 ## Repository Guide
 
+- [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): active reporting-first experiment plan, frozen criteria, and results
 - [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
 - [ROADMAP.md](/home/david/dev/attcon/docs/ROADMAP.md): claim definitions, evidence standards, and current status
 - [NEXT_STEPS.md](/home/david/dev/attcon/docs/NEXT_STEPS.md): completed work and active Stage 8 experiments

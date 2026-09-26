@@ -1,0 +1,317 @@
+{
+  "audit": "paired_history_reporting_v1",
+  "protocol": "docs/REPORTING_PLAN.md",
+  "status": "pilot_gates_not_met",
+  "settings": {
+    "seed": 1729,
+    "epochs": 40,
+    "probe_steps": 250,
+    "null_fits": 20,
+    "out": "audits/paired_history_reporting_seed1729.json"
+  },
+  "config": {
+    "keys": 8,
+    "values": 6,
+    "positions": 4,
+    "hidden": 64
+  },
+  "torch_version": "2.5.1+cpu",
+  "split_group_counts": {
+    "agent_train": 256,
+    "report_fit": 128,
+    "validation": 64,
+    "test": 128
+  },
+  "split_case_counts": {
+    "agent_train": 3072,
+    "report_fit": 1536,
+    "validation": 768,
+    "test": 1536
+  },
+  "dataset_checks": {
+    "context_groups_disjoint": true,
+    "input_sequences_disjoint": true,
+    "paired_final_observations_identical": true,
+    "unseen_inputs_identical_across_answers": true
+  },
+  "agent_losses": [
+    1.7872902949651082,
+    1.7578268945217133,
+    1.6758441925048828,
+    1.6045101284980774,
+    1.5670721431573231,
+    1.5417284468809764,
+    1.5304550727208455,
+    1.5230729679266612,
+    1.516908844312032,
+    1.5115009347597759,
+    1.5066311061382294,
+    1.5032187203566234,
+    1.4994738499323528,
+    1.496745189030965,
+    1.4955584307511647,
+    1.491738388935725,
+    1.4944068590799968,
+    1.4895201524098713,
+    1.484911213318507,
+    1.4837824404239655,
+    1.4798697431882222,
+    1.4776924053827922,
+    1.4767629206180573,
+    1.4755707780520122,
+    1.4721166789531708,
+    1.4691436886787415,
+    1.4713298777739208,
+    1.467588911453883,
+    1.463272790114085,
+    1.462115466594696,
+    1.459314078092575,
+    1.4568984508514404,
+    1.4544875025749207,
+    1.455451985200246,
+    1.4516039788722992,
+    1.4482898910840352,
+    1.4448768496513367,
+    1.440784881512324,
+    1.4384283423423767,
+    1.4338570733865101
+  ],
+  "report_probe_parameters": {
+    "state": 455,
+    "observation": 455,
+    "action_logits": 455,
+    "untrained_state": 455
+  },
+  "evaluations": {
+    "validation": {
+      "action": {
+        "seen_accuracy": 0.6302083134651184,
+        "unseen_accuracy": 0.1666666716337204,
+        "seen_entropy": 1.3481017351150513,
+        "unseen_entropy": 1.3462787866592407
+      },
+      "reports": {
+        "state": {
+          "seen_value_accuracy": 0.3072916567325592,
+          "unseen_unknown_accuracy": 0.59375,
+          "balanced_accuracy": 0.4505208283662796,
+          "paired_accuracy": 0.1666666716337204,
+          "availability_balanced_accuracy": 0.5481770932674408
+        },
+        "observation": {
+          "seen_value_accuracy": 0.0,
+          "unseen_unknown_accuracy": 1.0,
+          "balanced_accuracy": 0.5,
+          "paired_accuracy": 0.0,
+          "availability_balanced_accuracy": 0.5
+        },
+        "action_logits": {
+          "seen_value_accuracy": 0.1744791716337204,
+          "unseen_unknown_accuracy": 0.671875,
+          "balanced_accuracy": 0.4231770858168602,
+          "paired_accuracy": 0.1119791641831398,
+          "availability_balanced_accuracy": 0.4778645783662796
+        },
+        "untrained_state": {
+          "seen_value_accuracy": 0.0234375,
+          "unseen_unknown_accuracy": 0.984375,
+          "balanced_accuracy": 0.50390625,
+          "paired_accuracy": 0.02083333395421505,
+          "availability_balanced_accuracy": 0.50390625
+        }
+      },
+      "interventions": {
+        "content": {
+          "count": 384,
+          "action_donor_follow": 0.6302083134651184,
+          "report_donor_follow": 0.3359375,
+          "joint_donor_follow": 0.3020833432674408,
+          "eligible_fraction": 0.0598958320915699,
+          "eligible_joint_donor_follow": 0.782608687877655,
+          "report_access_stability": 0.5260416865348816,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 1.0,
+          "query_identity_stability": 1.0,
+          "mean_state_change_norm": 1.8088655471801758
+        },
+        "random": {
+          "count": 384,
+          "action_donor_follow": 0.1041666641831398,
+          "report_donor_follow": 0.0338541679084301,
+          "joint_donor_follow": 0.02604166604578495,
+          "eligible_fraction": 0.0598958320915699,
+          "eligible_joint_donor_follow": 0.0,
+          "report_access_stability": 0.4973958432674408,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 0.9947916865348816,
+          "query_identity_stability": 0.9947916865348816,
+          "mean_state_change_norm": 0.4627857208251953
+        },
+        "permuted": {
+          "count": 384,
+          "action_donor_follow": 0.3020833432674408,
+          "report_donor_follow": 0.0911458358168602,
+          "joint_donor_follow": 0.0885416641831398,
+          "eligible_fraction": 0.0598958320915699,
+          "eligible_joint_donor_follow": 0.21739129722118378,
+          "report_access_stability": 0.4348958432674408,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 0.8697916865348816,
+          "query_identity_stability": 0.8697916865348816,
+          "mean_state_change_norm": 1.3320364952087402
+        }
+      }
+    },
+    "test": {
+      "action": {
+        "seen_accuracy": 0.6015625,
+        "unseen_accuracy": 0.1666666716337204,
+        "seen_entropy": 1.3111655712127686,
+        "unseen_entropy": 1.3169139623641968
+      },
+      "reports": {
+        "state": {
+          "seen_value_accuracy": 0.3255208432674408,
+          "unseen_unknown_accuracy": 0.5234375,
+          "balanced_accuracy": 0.4244791716337204,
+          "paired_accuracy": 0.1653645783662796,
+          "availability_balanced_accuracy": 0.5006510466337204
+        },
+        "observation": {
+          "seen_value_accuracy": 0.0,
+          "unseen_unknown_accuracy": 1.0,
+          "balanced_accuracy": 0.5,
+          "paired_accuracy": 0.0,
+          "availability_balanced_accuracy": 0.5
+        },
+        "action_logits": {
+          "seen_value_accuracy": 0.2200520783662796,
+          "unseen_unknown_accuracy": 0.6953125,
+          "balanced_accuracy": 0.4576822891831398,
+          "paired_accuracy": 0.15234375,
+          "availability_balanced_accuracy": 0.5084635466337204
+        },
+        "untrained_state": {
+          "seen_value_accuracy": 0.014322916977107525,
+          "unseen_unknown_accuracy": 1.0,
+          "balanced_accuracy": 0.5071614584885538,
+          "paired_accuracy": 0.014322916977107525,
+          "availability_balanced_accuracy": 0.5071614584885538
+        }
+      },
+      "interventions": {
+        "content": {
+          "count": 768,
+          "action_donor_follow": 0.59765625,
+          "report_donor_follow": 0.3919270932674408,
+          "joint_donor_follow": 0.33984375,
+          "eligible_fraction": 0.0768229141831398,
+          "eligible_joint_donor_follow": 0.9152542352676392,
+          "report_access_stability": 0.5625,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 1.0,
+          "query_identity_stability": 1.0,
+          "mean_state_change_norm": 1.819989800453186
+        },
+        "random": {
+          "count": 768,
+          "action_donor_follow": 0.1119791641831398,
+          "report_donor_follow": 0.0325520820915699,
+          "joint_donor_follow": 0.02734375,
+          "eligible_fraction": 0.0768229141831398,
+          "eligible_joint_donor_follow": 0.0,
+          "report_access_stability": 0.4856770932674408,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 0.99609375,
+          "query_identity_stability": 0.99609375,
+          "mean_state_change_norm": 0.4689638912677765
+        },
+        "permuted": {
+          "count": 768,
+          "action_donor_follow": 0.2942708432674408,
+          "report_donor_follow": 0.0911458358168602,
+          "joint_donor_follow": 0.0859375,
+          "eligible_fraction": 0.0768229141831398,
+          "eligible_joint_donor_follow": 0.1525423675775528,
+          "report_access_stability": 0.4205729067325592,
+          "query_identity_accuracy_before": 1.0,
+          "query_identity_accuracy_after": 0.8645833134651184,
+          "query_identity_stability": 0.8645833134651184,
+          "mean_state_change_norm": 1.338022232055664
+        }
+      }
+    }
+  },
+  "permuted_report_null": {
+    "balanced_accuracies": [
+      0.4915364582557231,
+      0.4850260416860692,
+      0.4850260416860692,
+      0.4518229167442769,
+      0.490234375,
+      0.484375,
+      0.4947916667442769,
+      0.48958333337213844,
+      0.5,
+      0.4889322916860692,
+      0.5,
+      0.48177083337213844,
+      0.48828125,
+      0.4811197916860692,
+      0.5006510416860692,
+      0.4869791667442769,
+      0.49609375,
+      0.4869791667442769,
+      0.49739583337213844,
+      0.484375
+    ],
+    "p95": 0.5000325441360474
+  },
+  "thresholds": {
+    "seen_choice_accuracy": 0.85,
+    "seen_report_accuracy": 0.85,
+    "unseen_report_accuracy": 0.85,
+    "paired_report_accuracy": 0.75,
+    "report_advantage_over_observation": 0.25,
+    "report_advantage_over_null_p95": 0.2,
+    "joint_donor_follow": 0.7,
+    "joint_advantage_over_random": 0.25,
+    "joint_advantage_over_permuted": 0.25,
+    "report_access_stability": 0.9,
+    "query_identity_stability": 0.9,
+    "query_identity_accuracy_before": 0.85,
+    "eligible_fraction": 0.75
+  },
+  "observed": {
+    "seen_choice_accuracy": 0.6015625,
+    "seen_report_accuracy": 0.3255208432674408,
+    "unseen_report_accuracy": 0.5234375,
+    "paired_report_accuracy": 0.1653645783662796,
+    "report_advantage_over_observation": -0.0755208283662796,
+    "report_advantage_over_null_p95": -0.07555337250232697,
+    "joint_donor_follow": 0.33984375,
+    "joint_advantage_over_random": 0.3125,
+    "joint_advantage_over_permuted": 0.25390625,
+    "report_access_stability": 0.5625,
+    "query_identity_stability": 1.0,
+    "query_identity_accuracy_before": 1.0,
+    "eligible_fraction": 0.0768229141831398
+  },
+  "gates": {
+    "seen_choice_accuracy": false,
+    "seen_report_accuracy": false,
+    "unseen_report_accuracy": false,
+    "paired_report_accuracy": false,
+    "report_advantage_over_observation": false,
+    "report_advantage_over_null_p95": false,
+    "joint_donor_follow": false,
+    "joint_advantage_over_random": true,
+    "joint_advantage_over_permuted": true,
+    "report_access_stability": false,
+    "query_identity_stability": true,
+    "query_identity_accuracy_before": true,
+    "eligible_fraction": false
+  },
+  "checkpoint": "outputs/paired_history_reporting/seed1729.pt",
+  "claim_boundary": "Single-seed frozen-state decoding and content-intervention assay. Agent trained only on value choice, including unanswerable trials. Reporter is supervised; recurrent memory is provided. No spontaneous reporting, regulatory self-model, higher-order state, independent theory-family convergence, or Stage 8 claim."
+}

@@ -14,7 +14,26 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore genuinely validated,
 > not artifacts. The active work has moved to the partial Stage 8 gates.
 
-## Current Focus: Remove Imposed Stage 8 Mechanisms
+## Current Focus: Reporting From Task-Trained Internal State
+
+The [reporting-first plan](REPORTING_PLAN.md) is the active execution sequence as
+of 2026-09-26. Establish faithful reports on independently tested task-trained
+memory before extending the engineered Stage 8 assays. The new paired-history
+experiment keeps final observations identical while changing prior access;
+reporters are fitted only after the value-choice agent is frozen. Selective
+content interventions test whether reports and choices change together.
+
+The runner is `scripts/paired_history_reporting.py`; the protocol, frozen gates,
+diagnostics, and claim boundaries are in `docs/REPORTING_PLAN.md`. Initial results
+and follow-ups are retained in `audits/paired_history_reporting*.json`.
+
+The first three-seed coverage replication reaches 94.8–95.7% held-out choice
+accuracy and 74.0–79.6% joint action/report donor following. The unavailable-report
+accuracy is only 57.8–68.0%, so the full reporting gates are not met. Next: isolate
+readout/calibration limits using state, action-logit, and entropy-based access
+baselines on fresh evaluation groups before advancing to selective access erasure.
+
+## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
 
 The executable convergence audit is **not met**: three gates pass and five are partial. The
 highest-value next experiments are:

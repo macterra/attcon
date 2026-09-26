@@ -6,6 +6,11 @@ The project already supports a meaningful claim about **closed-loop attention co
 
 Because that goal is easy to overstate, this roadmap is intentionally conservative. It is meant to discipline the argument, not accelerate it.
 
+The active execution sequence is the [reporting-first plan](REPORTING_PLAN.md)
+(2026-09-26): test faithful reporting from task-trained memory, then endogenous
+regulation, independent content convergence, and cross-system replication. Its
+pilot results do not change the support thresholds in this roadmap.
+
 The current `5x5` attention-control benchmark should be treated as a methodology-development system, not as a system that is already large or rich enough to carry a serious consciousness claim. Even if every current benchmark-local stage passed robustly, the honest interpretation would be: this toy setting demonstrates an experimental approach that might scale to consciousness-relevant evidence in larger and more varied systems.
 
 ## Positive Operational Target
