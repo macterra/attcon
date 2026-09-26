@@ -177,6 +177,13 @@ def renderer(belief, preference):
     return f'The attention model favors cell {int(preference)}. It represents cells {cells} as inspected.'
 
 
+def render_transition(previous_belief, previous_preference, belief, preference):
+    persisted = torch.where(torch.as_tensor(previous_belief).bool() & torch.as_tensor(belief).bool())[0].tolist()
+    shift = int(previous_preference) != int(preference)
+    return (f'Model preference shifted: {str(shift).lower()}. '
+            f'Inspection beliefs retained for cells {persisted}.')
+
+
 def parse_rendered(text):
     import ast
     import re
