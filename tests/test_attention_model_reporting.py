@@ -76,3 +76,68 @@ class AttentionModelReportingTests(unittest.TestCase):
         self.assertEqual(scene_bootstrap(a, 107), scene_bootstrap(a[:, None].expand(-1, 6), 107))
 
 if __name__ == '__main__': unittest.main()
+
+class ThresholdAndArchiveTests(unittest.TestCase):
+    def test_exact_95_percent_shift_passes(self):
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+        from attention_model_study import correspondence
+        # 64 mistakes / 1280 transitions, with no true shift.
+        truth = {'preference': torch.zeros(256, 6, dtype=torch.long),
+                 'belief': torch.zeros(256, 6, 25, dtype=torch.bool),
+                 'physical': torch.zeros(256, 6, 25, dtype=torch.bool)}
+        pred = {'preference': truth['preference'].clone(), 'belief': truth['belief'].clone()}
+        pred['preference'][:64, -1] = 1
+        self.assertEqual(correspondence(pred, truth)['preference_shift_agreement'], .95)
+
+    def test_archive_rejects_traversal_before_writing(self):
+        import hashlib
+        import io
+        import sys
+        import tarfile
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+        import summarize_attention_model as packaging
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            archive = root / 'archive.tar.gz'
+            with tarfile.open(archive, 'w:gz') as tf:
+                member = tarfile.TarInfo('../escape')
+                member.size = 1
+                tf.addfile(member, io.BytesIO(b'x'))
+            reference = {'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+                         'checkpoint_sha256': {name: 'untrusted' for name in packaging.checkpoint_paths()}}
+            with patch.object(packaging, 'ROOT', root), patch.object(packaging, 'ARCHIVE', archive):
+                with self.assertRaisesRegex(ValueError, 'unexpected archive member'):
+                    packaging.restore(reference)
+            self.assertFalse((root / 'outputs').exists())
+
+    def test_restore_validates_all_hashes_before_writing(self):
+        import hashlib
+        import io
+        import sys
+        import tarfile
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+        import summarize_attention_model as packaging
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            archive = root / 'archive.tar.gz'
+            expected = {}
+            with tarfile.open(archive, 'w:gz') as tf:
+                for index, name in enumerate(packaging.checkpoint_paths()):
+                    content = str(index).encode()
+                    member = tarfile.TarInfo(name)
+                    member.size = len(content)
+                    tf.addfile(member, io.BytesIO(content))
+                    expected[name] = hashlib.sha256(content).hexdigest() if index < 2 else 'wrong'
+            reference = {'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'checkpoint_sha256': expected}
+            with patch.object(packaging, 'ROOT', root), patch.object(packaging, 'ARCHIVE', archive):
+                with self.assertRaisesRegex(ValueError, 'checkpoint hash mismatch'):
+                    packaging.restore(reference)
+            self.assertFalse((root / 'outputs').exists())

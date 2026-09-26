@@ -61,12 +61,12 @@ def correspondence(pred, trace):
     pred_persist = pred['belief'][:, 1:] & pred['belief'][:, :-1]
     true_persist = trace['belief'][:, 1:] & trace['belief'][:, :-1]
     disagree = trace['belief'] != trace['physical']
-    return {'preference_shift_agreement': (pred_shift == true_shift).float().mean().item(),
+    return {'preference_shift_agreement': (pred_shift == true_shift).double().mean().item(),
             'shift_positive_count': int(true_shift.sum()), 'transition_count': true_shift.numel(),
-            'belief_persistence_agreement': (pred_persist == true_persist).float().mean().item(),
+            'belief_persistence_agreement': (pred_persist == true_persist).double().mean().item(),
             'persistence_positive_count': int(true_persist.sum()),
             'model_physical_disagreement_count': int(disagree.sum()),
-            'disagreement_report_accuracy': (pred['belief'][disagree] == trace['belief'][disagree]).float().mean().item() if disagree.any() else None,
+            'disagreement_report_accuracy': (pred['belief'][disagree] == trace['belief'][disagree]).double().mean().item() if disagree.any() else None,
             'boundary': 'Operational relations only; the report vocabulary and relational definitions are authored.'}
 
 
@@ -187,21 +187,21 @@ def evaluation(agent, reporters, contexts, seed):
              'persistence_agreement': cor['belief_persistence_agreement'] >= .95,
              'model_disagreement': cor['disagreement_report_accuracy'] is not None and cor['disagreement_report_accuracy'] >= .95,
              'renderer_roundtrip': roundtrip}
-    return {'primary': primary, 'interventions': interventions, 'information_loss': nulls, 'outside_information': outside,
+    return {'direct_telemetry': {'metrics': scores(trace, trace), 'definitionally_exact': True, 'independent_phenomenology_evidence': False}, 'primary': primary, 'interventions': interventions, 'information_loss': nulls, 'outside_information': outside,
             'gates': gates, 'full_fidelity_supported': all(v for k,v in gates.items() if k not in ('shift_agreement', 'persistence_agreement', 'model_disagreement')),
             'structural_correspondences_supported': all(gates[k] for k in ('shift_agreement', 'persistence_agreement', 'model_disagreement')),
             'theory_verdict': 'underdetermined: supervised field decoding and authored relations; missing phenomenological mechanisms',
             'examples': examples, 'first_episode_trace': example_trace}, plain(cases)
 
 
-def run(seed, replay=False, smoke=False):
+def run(seed, replay=False, smoke=False, reevaluate=False, refit=False):
     torch.set_num_threads(1)
     torch.use_deterministic_algorithms(True)
     outdir = ROOT / ('outputs/attention_model_smoke' if smoke else 'audits/attention_model')
     checkpoint = ROOT / ('outputs/attention_model_smoke' if smoke else 'outputs/attention_model') / f'seed{seed}.pt'
     outdir.mkdir(parents=True, exist_ok=True)
     checkpoint.parent.mkdir(parents=True, exist_ok=True)
-    if replay:
+    if replay or reevaluate or refit:
         saved = torch.load(checkpoint, weights_only=False, map_location='cpu')
         config, agent_state = saved['config'], saved['agent']
         source_meta = saved['source_checkpoint']
@@ -217,7 +217,7 @@ def run(seed, replay=False, smoke=False):
     assert all(not a & b for i,a in enumerate(ids) for b in ids[i+1:])
     fingerprints = {name: fingerprint(c.scene, c.cues) for name,c in contexts.items()}
     reporters, training = {}, {}
-    if replay:
+    if replay or reevaluate:
         assert fingerprints == saved['split_fingerprints']
         training = saved['training']
         for family in FAMILIES:
@@ -258,5 +258,8 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, choices=SEEDS, required=True)
     parser.add_argument('--replay', action='store_true')
     parser.add_argument('--smoke', action='store_true')
+    parser.add_argument('--reevaluate', action='store_true', help='Recompute artifacts from saved models without training')
+    parser.add_argument('--refit', action='store_true', help='Refit reporters using archived controller/config, without original outputs')
     args = parser.parse_args()
-    run(args.seed, args.replay, args.smoke)
+    if sum((args.replay,args.reevaluate,args.refit)) > 1: parser.error('replay, reevaluate, and refit are exclusive')
+    run(args.seed, args.replay, args.smoke, args.reevaluate, args.refit)
