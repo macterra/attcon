@@ -7,12 +7,20 @@ achieved by closing the study.
 
 ## Goal and decision rule
 
-Develop a reproducible method for testing integrated, behaviorally accessible
-internal content. Reporting is useful evidence only when it tracks internal
-history, survives selective interventions, and connects to independent behavior.
-No result in this toy program establishes subjective experience.
+The clarified project goal is to test whether the system can accurately report
+its internal informational state. Accurate reporting is valuable evidence in its
+own right. Tracking history and selective interventions helps establish what a
+report measures; connecting it to independent behavior addresses a further causal
+question. Neither beating a simpler comparator nor showing conscious access to be
+necessary for task performance is required by the reporting goal.
 
-The next priority is to test reports on a task-trained representation without
+The historical sequence below pursued additional hypotheses about integrated,
+behaviorally accessible content. Its frozen gates and recorded results are retained.
+See the [final results](PROJECT_RESULTS.md) for the reporting-first interpretation
+and the distinction between external readouts and native reporting. No result in
+this toy program establishes subjective experience.
+
+The initial priority was to test reports on a task-trained representation without
 training the agent on reports, source labels, confidence, reinspection, or explicit
 access flags. A separately trained frozen-state reporter is still a supervised
 measurement instrument: successful decoding alone is not spontaneous self-report
@@ -195,10 +203,12 @@ controllers beat fixed inspection counts across three seeds, but full-state
 policies miss every required 0.02 gain over learned action/confidence controls.
 External verified-information reports are nearly perfect and also matched by
 action logits. The choice-preserving availability intervention causes no policy
-switches, and longer delays/degraded sensors reduce reward. Next: vary prospective
-sensor quality independently of current confidence, with cue-matched comparators
-and fresh confirmation. Native reporting, autonomous exploration, and a causal
-reward advantage for access monitoring remain open.
+switches, and longer delays/degraded sensors reduce reward. The final study then
+varied prospective sensor quality independently of current confidence, with
+cue-matched comparators and fresh seeds. Reward-only exploration and native
+answer/decline were tested. Native reports of content and verification status,
+and a replicated fair-control reward advantage, remain unestablished; accurate
+external readouts have bounded positive support.
 
 ## Reproduction and validation
 
@@ -224,10 +234,13 @@ checks pass. No paid APIs were used.
 
 The [completion protocol](COMPLETION_PROTOCOL.md) and
 [final results](PROJECT_RESULTS.md) close the finite research prototype and
-cross-system evaluation. Prospective acquisition, reward-only exploration, and
-causal report/control sensitivity have bounded support. A fair-comparator
+cross-system evaluation. Accurate reports through trained external readouts have
+bounded positive support, including all six final GRU systems passing the individual
+reporting accuracy thresholds. Prospective acquisition, reward-only exploration,
+and causal report/control sensitivity also have bounded support. A fair-comparator
 advantage does not replicate. An omitted-identity reporting confound was exposed
-and corrected without rewriting the original results. Independent-content
+and corrected without rewriting the original results. That correction limits
+superiority claims and does not negate the observed reporting accuracy. Independent-content
 promotion fails its prerequisite; earlier convergence results and Stage 8 remain
 unchanged. The full archive and reproduction path are delivered. Further
 experiments are optional research extensions, not outstanding work from this

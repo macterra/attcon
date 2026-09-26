@@ -1,14 +1,23 @@
 # attcon
 
-`attcon` is a minimal PyTorch benchmark for testing whether a model is merely computing attention or actually controlling it over time.
+`attcon` studies whether a system can accurately report its internal informational
+state, using small recurrent attention and memory tasks.
 
-**Status: the bounded research prototype and final evaluation are complete.**
-The [final results](docs/PROJECT_RESULTS.md) report 48 trained controllers across
-prospective verification, sensor routing, and reward-only exploration. Learned
-acquisition and causal prospective representations are supported within the toy
-tasks; consistent superiority over fair confidence controls and conscious-access
-claims are not. Stage 8 remains not met. The result includes a documented reporting
-comparator correction, 149 passing tests, a checkpoint archive, and
+**Status: accurate reporting through trained internal-state readouts is demonstrated
+in bounded settings; the final evaluation is complete.** Across six final GRU
+systems, readouts report verified values and unverified status with 100% accuracy,
+and remembered sensor quality with 96.0–100% accuracy on held-out contexts.
+The [final results](docs/PROJECT_RESULTS.md) cover 48 trained controllers across
+prospective verification, sensor routing, and reward-only exploration.
+
+The reporting goal does not require conscious access to be necessary for task
+performance, or full-state reports to outperform simpler reports. The corrected
+comparator matches or exceeds the state readouts; that limits claims of superiority
+without negating reporting accuracy. These are primarily supervised external
+readouts of frozen internal states. Native reporting was limited to answering or
+declining, and generalization is not uniformly reliable. Stage 8 is a separate,
+stronger research question and remains not met. The evaluation includes 149 passing
+tests, a checkpoint archive, and
 [one-command verification/reproduction](docs/FINAL_REPRODUCTION.md).
 
 The research roadmap treats Stages 1 through 3 as the sequential foundation, then splits into parallel lines of work around self-state tracking, reportability, binding, counterfactual access, higher-order state, broadcast, and perturbational dynamics. The repo now includes a bounded Stage 7 local-report route plus seed-robust remembered-content recovery under explicit content-memory regularization; powered external LLM and VLM variants remain negative on the current v3 interface. The executable Stage 8 audit is still not met (`3` pass, `5` partial, `0` fail): engineered same-content overlap and temporal-relay transfer are robust inside their assays, but the decisive relational/shared-state mechanisms are imposed.
@@ -76,17 +85,19 @@ the target on a single decisive fixation and carries the digit forward, mean
 
 ## Repository Guide
 
-- [REPORTING_CAMPAIGN.md](docs/REPORTING_CAMPAIGN.md): six completed reporting experiments, controls, and next decisions
-- [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): active reporting-first experiment plan, frozen criteria, and results
-- [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
-- [ROADMAP.md](/home/david/dev/attcon/docs/ROADMAP.md): claim definitions, evidence standards, and current status
-- [NEXT_STEPS.md](/home/david/dev/attcon/docs/NEXT_STEPS.md): historical work and optional research extensions
-- [PREPRINT.md](/home/david/dev/attcon/docs/PREPRINT.md): research-program narrative and consolidated results
-- [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml): default experiment config
-- [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py): training entrypoint
-- [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py): evaluation, ablations, and reporting
+- [PROJECT_RESULTS.md](docs/PROJECT_RESULTS.md): final reporting accuracy, evidence, and limitations
+- [FINAL_REPRODUCTION.md](docs/FINAL_REPRODUCTION.md): verify archived metrics or reproduce the final study
+- [REPORTING_CAMPAIGN.md](docs/REPORTING_CAMPAIGN.md): historical six-cycle reporting experiments and controls
+- [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): historical reporting-first experiment plan, frozen criteria, and results
+- [SPEC.md](docs/SPEC.md): original conceptual spec and motivation
+- [ROADMAP.md](docs/ROADMAP.md): claim definitions, evidence standards, and current status
+- [NEXT_STEPS.md](docs/NEXT_STEPS.md): historical work and optional research extensions
+- [PREPRINT.md](docs/PREPRINT.md): research-program narrative and consolidated results
+- [configs/minimal.yaml](configs/minimal.yaml): default experiment config
+- [src/attcon/train.py](src/attcon/train.py): training entrypoint
+- [src/attcon/eval.py](src/attcon/eval.py): evaluation, ablations, and reporting
 
-The latest local evaluation report is written to `outputs/minimal/evaluation_report.json` after running eval.
+The base attention benchmark evaluation report is written to `outputs/minimal/evaluation_report.json` after running eval.
 
 ## Quickstart
 
@@ -121,7 +132,7 @@ The evaluation report includes:
   `natural_language_reportability`, `causal_attention_intervention`, and
   `reduced_shaping_resilience`
 
-## Current Result Shape
+## Base Attention Benchmark Results
 
 On the current discrete-attention checkpoint (`configs/tune_prob_035.yaml`, 5000 steps),
 the recurrent controller solves the search task and clearly beats the static baseline and

@@ -1,5 +1,10 @@
 # Delay and information-seeking campaign
 
+> **Historical campaign report.** Results, test counts, and unresolved questions
+> below describe this campaign at closeout. The proposed follow-up was subsequently
+> executed in the [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md).
+> See [final results](PROJECT_RESULTS.md) for current reporting evidence and scope.
+
 Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 
 | Cycle | Experiment | Status |
@@ -129,16 +134,18 @@ Sources: [inspection replication](../audits/inspection_multiseed.json),
 [machine-readable campaign summary](../audits/regulation_campaign.json).
 All earlier artifacts and the Stage 8 audit are retained unchanged.
 
-## What remains
+## Campaign closeout and subsequent work
 
 Delay robustness is substantially better. Full reporting support remains unmet,
-and useful regulation beyond action confidence remains unsupported. The next
-substantive experiment should couple information acquisition to a recurrent
+and useful regulation beyond action confidence remains unsupported in this campaign.
+The follow-up proposed at closeout was to couple information acquisition to a recurrent
 policy in the environment, distinguish fresh, stale, and missing information,
 and predeclare matched confidence/action controls. Fit any access-report head
 only after task/control learning. Use fresh contexts and seeds for confirmation,
 and require a reward benefit as well as report sensitivity before advancing the
-regulation claim. These are proposed next steps, not completed results.
+regulation claim. That experiment was subsequently executed in the
+[recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md); see its results
+and the [final evaluation](PROJECT_RESULTS.md).
 
 ## Reproduction
 
@@ -172,6 +179,6 @@ Validation also rejects duplicate seeds, changed source fingerprints, and
 unearned inspection gate passes. Context-bootstrap intervals are pointwise and
 conditional on a trained system; they are not population-level uncertainty.
 
-Final validation: all 104 unit tests passed. Compilation, whitespace checks,
+Campaign validation: all 104 unit tests passed. Compilation, whitespace checks,
 source fingerprints, comparison controls, and unchanged Stage 8/protocol checks
 passed. No paid model APIs were used.

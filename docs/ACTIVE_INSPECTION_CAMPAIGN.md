@@ -1,5 +1,10 @@
 # Recurrent acquisition campaign
 
+> **Historical campaign report.** Results, test counts, and unresolved questions
+> below describe this campaign at closeout. The proposed follow-up was subsequently
+> executed in the [final evaluation](PROJECT_RESULTS.md).
+> See [final results](PROJECT_RESULTS.md) for current reporting evidence and scope.
+
 Fixed protocol: [ACTIVE_INSPECTION_PROTOCOL.md](ACTIVE_INSPECTION_PROTOCOL.md).
 
 | Cycle | Work | Status |
@@ -135,7 +140,7 @@ Sources: [stress audit](../audits/acquisition_stress.json),
 [campaign summary](../audits/active_inspection_campaign.json).
 The protocol, previous reporting results, and Stage 8 audit remain unchanged.
 
-## What this establishes and what comes next
+## Campaign conclusions and subsequent work
 
 Recurrent controllers now learn useful multi-step information acquisition from
 answer rewards and replayed transitions. They condition inspection on information
@@ -143,19 +148,18 @@ and price, preserve history, and exceed fixed inspection policies across seeds.
 This advances beyond the earlier external one-step inspection head. It remains
 full-information fitted learning rather than autonomous exploration.
 
-The stronger comparator-resistant goal remains open. Accurate verified-source
+The stronger comparative-advantage hypothesis was unsupported at closeout.
+It is separate from the goal of accurate reporting. Accurate verified-source
 reporting and adaptive acquisition are both explained by action/confidence
 representations in this task. Initial-state reset demonstrates broad memory
 dependence; the more specific choice-preserving availability intervention is null.
 The earlier paired-history reporting failures and Stage 8 verdict are not changed.
 
-A next experiment should vary expected information quality independently of
-current answer confidence, with remembered sensor-reliability cues and a
-comparator that receives the same cues. That can test prospective information
-value without awarding the state controller a trivial input advantage. Require
-fresh seeds, calibrated comparator policies, a reward benefit, and causal
-report/control coupling before claiming useful access monitoring. Testing
-native reporting and exploration remains additional work, not an achieved goal.
+The subsequent [final study](PROJECT_RESULTS.md) varied expected information
+quality independently of current answer confidence, with remembered sensor
+reliability cues and a comparator receiving the same cues. It tested reward
+benefits and causal report/control coupling across fresh seeds. Native
+answer/decline and reward-only exploration were also evaluated. Native reports of content and verification status remain unestablished.
 
 ## Reproduction
 
@@ -180,6 +184,6 @@ OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python -m unittest discover -s tes
 Context-bootstrap intervals are pointwise and conditional on a trained system.
 All registered seeds/costs and all negative comparisons are retained.
 
-Final validation: all 124 unit tests passed. Source compilation, whitespace,
+Campaign validation: all 124 unit tests passed. Source compilation, whitespace,
 finite JSON, source fingerprints, paired controls, and unchanged protocol/prior
 Stage 8 artifacts were verified. No paid model APIs were used.

@@ -12,8 +12,13 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Validate artifact manifest, reproduction entry point, and full test suite.
 - [x] Publish final evidence map and completed-project status, preserving failures.
 
-Completion concerns the bounded prototype and final evaluation. A positive
-conscious-access or Stage 8 result is not presumed.
+Completion concerns the bounded prototype and final evaluation. The clarified
+project goal is accurate reporting, with bounded positive evidence from trained
+external state readouts. It does not require conscious access to be necessary for
+task performance or superiority over simpler reports. Native reports of these
+informational distinctions remain unestablished. The historical gates below test
+additional hypotheses and retain their original outcomes; see the
+[final reporting results](PROJECT_RESULTS.md). Stage 8 remains a separate question.
 
 Environment validation: seven tests pass; GRU48 has13,704 parameters and RNN87
 has13,683 (21 fewer). All three head families have identical initial weights

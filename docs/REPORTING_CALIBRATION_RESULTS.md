@@ -1,5 +1,10 @@
 # Availability calibration results
 
+> **Historical campaign report.** Results, test counts, and unresolved questions
+> below describe this campaign at closeout. The proposed follow-up was subsequently
+> executed in the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md).
+> See [final results](PROJECT_RESULTS.md) for current reporting evidence and scope.
+
 Executed 2026-09-26 under the fixed
 [availability-readout protocol](REPORTING_CALIBRATION.md). All three fresh seeds
 are retained in `audits/paired_history_calibration_seed{1801,1811,1823}.json`;
@@ -49,9 +54,9 @@ stability, and eligibility gates. **Reporting gates remain unmet; Stage 8 is
 unchanged.** These are supervised measurement instruments on one task and one GRU
 architecture, with no demonstration of spontaneous reporting or regulatory use.
 
-## Next experiment
+## Follow-up executed after this campaign
 
-Before changing the agent or adding explicit access machinery, test representation
+The follow-up proposed at closeout was to test representation
 sufficiency with capacity-matched nonlinear reporters on state, action scores,
 untrained state, and the full observable history. The history observer supplies
 an information upper bound; its success is not evidence for the agent. Use fresh
@@ -76,7 +81,7 @@ Summarize without changing thresholds:
 .venv/bin/python scripts/summarize_history_reporting.py audits/paired_history_calibration_seed1801.json audits/paired_history_calibration_seed1811.json audits/paired_history_calibration_seed1823.json --audit-name paired_history_calibration_multiseed --out audits/paired_history_calibration_multiseed.json
 ```
 
-All 71 tests pass, including normalization isolation, validation-only selection,
+At campaign closeout, all 71 tests passed, including normalization isolation, validation-only selection,
 agent-gradient isolation, action-score adapter equivalence, and entropy behavior.
 The updated summary tool reproduces the prior coverage summary byte-for-byte and
 rejects inconsistent source fingerprints. New artifacts record source/data hashes,

@@ -66,5 +66,6 @@ use. Thresholds, seeds, and selection rules remain those in the protocol.
 
 The [original protocol](COMPLETION_PROTOCOL.md) and
 [correction record](COMPLETION_CORRECTIONS.md) state the claim boundaries.
-The [final results](PROJECT_RESULTS.md) distinguish completed evaluation from
-unsupported access-monitoring and Stage 8 hypotheses.
+The [final results](PROJECT_RESULTS.md) report bounded positive evidence for
+accurate external state readouts and distinguish it from native reporting,
+comparative advantage, and the separate Stage 8 hypotheses.

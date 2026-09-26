@@ -3,7 +3,16 @@
 The bounded final evaluation is complete; see [PROJECT_RESULTS.md](PROJECT_RESULTS.md)
 and the [completion audit](../audits/project_completion.json). All registered
 experiments, corrections, stress evaluations, replay checks, and deliverables are
-finished. The stronger access-monitoring and Stage 8 hypotheses remain unsupported.
+finished. Accurate reporting through trained internal-state readouts has bounded
+positive support. The reporting goal does not require conscious access to be
+necessary for performance or a full-state advantage over simpler reports. Stronger
+access-monitoring and Stage 8 hypotheses remain separate and unsupported.
+
+If reporting work is extended, the relevant priorities are native reports of
+content and availability, more reliable unavailable-content reports in the earlier
+paired-history assay, and direct reporting evaluations under memory damage and
+new contexts. These would extend the scope and reliability of reporting; a control
+advantage or Stage 8 promotion is not a prerequisite.
 
 The historical checklist below preserves broader scientific ambitions and prior
 work. Its unchecked hypotheses are not represented as achieved. Additional
@@ -20,7 +29,8 @@ the completed finite study.
 > positive evidence but fails its full calibrated support gate, and all negative controls + comparators fail as
 > intended. See `audits/post_rehab_full_eval_tune_prob_035_summary.json` and
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore genuinely validated,
-> not artifacts. The active work has moved to the partial Stage 8 gates.
+> not artifacts. Work subsequently explored the partial Stage 8 gates and the
+> reporting campaigns; the bounded final evaluation is now complete.
 
 ## Historical focus: reporting from task-trained internal state
 
@@ -36,8 +46,9 @@ changing the previous reporting gates or Stage 8 verdict.
 That prospective-quality follow-up is now complete in the final study: matched
 cue-informed comparators, fresh seeds, causal report/control assays, and
 reward-only exploration were evaluated. Native answer/decline behavior was
-learned, but introspective reporting and a replicated fair-control advantage
-were not established. The completed [delay and inspection campaign](REGULATION_CAMPAIGN.md) remains the
+learned. Accurate external state readouts were demonstrated; independently learned
+native reports of content and verification status, and a replicated fair-control
+advantage, were not established. The completed [delay and inspection campaign](REGULATION_CAMPAIGN.md) remains the
 preceding step and retains its earlier negative full-state policy comparison.
 
 The completed follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
@@ -46,9 +57,9 @@ another recurrent architecture, delay stress, and selective-erasure diagnostics.
 Its [fixed protocol](REPORTING_SIX_CYCLE_PROTOCOL.md) retains the reporting gates
 and does not automatically promote any result to Stage 8.
 
-The [reporting-first plan](REPORTING_PLAN.md) is the active execution sequence as
-of 2026-09-26. Establish faithful reports on independently tested task-trained
-memory before extending the engineered Stage 8 assays. The new paired-history
+The [reporting-first plan](REPORTING_PLAN.md) records the historical execution
+sequence from 2026-09-26. It prioritized faithful reports on independently tested
+task-trained memory before extending the engineered Stage 8 assays. The new paired-history
 experiment keeps final observations identical while changing prior access;
 reporters are fitted only after the value-choice agent is frozen. Selective
 content interventions test whether reports and choices change together.
@@ -68,12 +79,14 @@ campaign reaches 91.4–94.8% seen reporting with more fitting data but still on
 targeted content lesions produce unavailable reports with residual incorrect-value
 reports. Those follow-ups are now completed in the delay and inspection campaign
 above. Recurrent acquisition is now demonstrated in a separate explicit-cue task;
-its advantage beyond confidence and faithful internal-access reporting remain open.
+its advantage beyond confidence remains unsupported. Later external readouts
+accurately report verified content and remembered quality; native reports of
+these distinctions remain unestablished.
 
-## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
+## Optional Convergence Research: Remove Imposed Stage 8 Mechanisms
 
 The executable convergence audit is **not met**: three gates pass and five are partial. The
-highest-value next experiments are:
+historically proposed extensions were:
 
 - repeat the temporal-relay transformer over fresh data/model seeds
 - remove forced shared state from the integrated-content and temporal-relay assays without losing
@@ -343,16 +356,16 @@ GitHub issue: [#6](https://github.com/macterra/attcon/issues/6)
 - [x] Add separable downstream consumers for Branch F: action, report, uncertainty, reallocation, memory, and language-shaped report paths. `attcon.broadcast` defines all six interfaces in cue-strength sweeps that hold content and evidence fixed. The 4,095-case audit (`audits/branch_f_broadcast_dataset.json`) contains 819 complete threshold crossings and 819 held-out content/strength conjunctions. Local action availability is `1.00` below and above threshold, while the five broad consumers are jointly unavailable below ignition and have perfectly aligned onset above it. This is benchmark infrastructure, not broadcast evidence.
 - [~] Add Branch F broadcast/ignition experiments with coordinated intervention tests. The first exactly matched pilot passes every engineering gate. The three-run robustness audit (`audits/branch_f_broadcast_multiseed.json`) repeats it with fresh data/model seeds and a fixed reduced budget: every gate passes in every run. Minimum shared joint accuracy is `0.962`, onset accuracy/alignment `1.00`, shared-ablation drop `0.841`, coordination advantage `0.659`, and donor-content follow rate `0.984`; maximum private single-route damage is `0.192`, and local action remains invariant. This makes the imposed-bottleneck result seed-robust engineering support. Because all consumers and the shared bottleneck are directly supervised, spontaneous broadcast remains unsupported.
 - [x] Add perturbational-complexity diagnostics over controller and self-model state. (`perturbational_complexity_metrics`; initial bounded result: rich-but-recoverable dynamics propagate farther than a no-recurrence control and recover unlike a frozen-state control. The multi-seed and RNN replication is recorded in the next item.)
-- [x] Multi-seed + cross-checkpoint robustness for the perturbational family (`scripts/perturbational_multiseed.py`, `audits/perturbational_multiseed.json`). Under a standardized perturbation config, `supported` (rich-but-recoverable AND integration>feedforward AND recovery>freeze) holds on **100% of 25 perturbation seeds on all 4 checkpoints** — the primary `tune_prob_035` controller plus the 3 independently-trained v3 content-memory controllers (seeds 107/207/307). Recurrent attention-propagation exceeds the feedforward control on every seed (`tune_prob_035` `~0.59` vs `~0.13`; v3 seeds `~0.15` vs `~0.06` — smaller margin on the content-memory recipe but still robust), and recurrent recovery (`~0.39-0.46`) exceeds the frozen-state control (`0.000`) everywhere. So the non-reportability family is now **perturbation-seed robust and cross-training-seed / cross-recipe replicated**. Boundary: all four are the *same* recurrent controller architecture, so this does **not** yet satisfy the Stage 8 cross-architecture requirement (item d) — that still needs a structurally different controller.
+- [x] Multi-seed + cross-checkpoint robustness for the perturbational family (`scripts/perturbational_multiseed.py`, `audits/perturbational_multiseed.json`). Under a standardized perturbation config, `supported` (rich-but-recoverable AND integration>feedforward AND recovery>freeze) holds on **100% of 25 perturbation seeds on all 4 checkpoints** — the primary `tune_prob_035` controller plus the 3 independently-trained v3 content-memory controllers (seeds 107/207/307). Recurrent attention-propagation exceeds the feedforward control on every seed (`tune_prob_035` `~0.59` vs `~0.13`; v3 seeds `~0.15` vs `~0.06` — smaller margin on the content-memory recipe but still robust), and recurrent recovery (`~0.39-0.46`) exceeds the frozen-state control (`0.000`) everywhere. So the non-reportability family is now **perturbation-seed robust and cross-training-seed / cross-recipe replicated**. Boundary: all four use the same recurrent controller architecture. A later ungated-RNN replication is recorded under Priority 5 and in `audits/perturbational_multiseed_with_rnn.json`; the broader Stage 8 cross-architecture gate remains partial.
 
 ## Priority 5: Replicate Across Systems
 
 GitHub issue: [#7](https://github.com/macterra/attcon/issues/7)
 
 - [~] Replicate supported claims on a structurally different controller architecture. **First cross-architecture pass done: an ungated `nn.RNNCell` controller** (`ModelConfig.controller_kind: "rnn"`, `configs/tune_prob_035_rnn.yaml`, `outputs/tune_prob_035_rnn/`) vs the gated GRU. The RNN is task-viable but weaker (recurrent val `0.31` vs GRU `0.44`). Of 7 comparable supported claims, **6 replicate**: Stage 3 explicit-attention-modeling (`robust_supported` on 3 seeds), Stage 6A report probes (and the RNN Stage 6A advantages `0.41`/`0.45` clear their own permuted-label floor at p95 `~0.007`/`~0.001`), dissociation, closed-loop adaptation, cue-dependence, and perturbational complexity (`audits/perturbational_multiseed_with_rnn.json`, 100% of 25 seeds). **One drops: `cue_switch_adaptation`** (supported on GRU, false on the RNN — the weaker recurrence does not reallocate attention on a mid-episode cue switch). So both evidence families' headline claims replicate on a different recurrent architecture; a genuinely non-recurrent-*family* architecture (e.g. LSTM's dual state, or a state-space controller) and re-running the comparator/negative-control suite on the RNN remain.
-- [~] Replicate supported claims on a second benchmark with different task structure. The generic temporal-relay GRU is a decisive memorization control (`0.020` held-out joint). The relational GRU clears all ten frozen gates in all three fresh runs (`audits/stage8_temporal_relay_multiseed.json`): every minimum task, directional, null-advantage, and stability metric is `1.00`, with `0.934` minimum order-destroyed advantage. A position-aware relational transformer also clears every gate at `1.00` on its first seed (`0.951` order-destroyed advantage; `audits/stage8_temporal_relay_transformer_pilot.json`). This is seed-robust GRU and single-seed cross-architecture engineering transfer. It remains partial because query matching and shared state are explicit. Next: repeat the transformer across seeds and remove forced sharing.
+- [~] Replicate supported claims on a second benchmark with different task structure. The generic temporal-relay GRU is a decisive memorization control (`0.020` held-out joint). The relational GRU clears all ten frozen gates in all three fresh runs (`audits/stage8_temporal_relay_multiseed.json`): every minimum task, directional, null-advantage, and stability metric is `1.00`, with `0.934` minimum order-destroyed advantage. A position-aware relational transformer also clears every gate at `1.00` on its first seed (`0.951` order-destroyed advantage; `audits/stage8_temporal_relay_transformer_pilot.json`). This is seed-robust GRU and single-seed cross-architecture engineering transfer. It remains partial because query matching and shared state are explicit. Optional extension: repeat the transformer across seeds and remove forced sharing.
 - [ ] Re-run comparator and negative-control suites on the replicated systems.
-- [~] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches. Whole-state swaps and stricter disjoint-split directions are multi-seed robust inside the explicitly shared assay (`audits/stage8_integrated_content_multiseed.json`, `audits/stage8_integrated_content_directional_multiseed.json`). Removing forced sharing remains negative. Ordinary joint supervision yields `0.00` transfer. The apparent dropout-induced effect was confounded by inverted scaling: at `0.95` dropout the surviving private state was `20×` larger during training than evaluation. Corrected zero-or-normal occlusion keeps both controls task-perfect but produces at most `0.021` transfer; a viability-first curriculum produces `0.001` (`audits/stage8_task_induced_routing_correction.json`). Learned routing is unsupported. Next: use a naturally coupled task or resource constraint with identical train/evaluation scaling, and require emergence against the neutral dual-lane control.
+- [~] Check whether any Stage 8-relevant contents show cross-validated causal overlap across branches. Whole-state swaps and stricter disjoint-split directions are multi-seed robust inside the explicitly shared assay (`audits/stage8_integrated_content_multiseed.json`, `audits/stage8_integrated_content_directional_multiseed.json`). Removing forced sharing remains negative. Ordinary joint supervision yields `0.00` transfer. The apparent dropout-induced effect was confounded by inverted scaling: at `0.95` dropout the surviving private state was `20×` larger during training than evaluation. Corrected zero-or-normal occlusion keeps both controls task-perfect but produces at most `0.021` transfer; a viability-first curriculum produces `0.001` (`audits/stage8_task_induced_routing_correction.json`). Learned routing is unsupported. Optional extension: use a naturally coupled task or resource constraint with identical train/evaluation scaling, and require emergence against the neutral dual-lane control.
 
 ## Stage 8 Gate
 

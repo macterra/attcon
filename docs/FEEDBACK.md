@@ -1,9 +1,10 @@
 # Archived Roadmap Feedback
 
 > **Historical review log (2026-05-16).** This file preserves the review sequence that shaped the
-> roadmap and Priority 1 audit. Its line-number links and “open” items describe the reviewed commits,
-> not the current repository. Current program status lives in `README.md`; current gates and work
-> items live in `docs/ROADMAP.md` and `docs/NEXT_STEPS.md`.
+> roadmap and Priority 1 audit. Its historical line references and “open” items describe the reviewed commits,
+> not the current repository. Current reporting results live in
+> [PROJECT_RESULTS.md](PROJECT_RESULTS.md); [ROADMAP.md](ROADMAP.md) and
+> [NEXT_STEPS.md](NEXT_STEPS.md) retain historical gates and optional extensions.
 
 Closing review of ROADMAP.md after the convergence-counting and execution-checklist consistency pass, followed by a separate review of the Priority 1 audit implementation.
 
@@ -11,10 +12,10 @@ The roadmap document has stabilized. The audit implementation that began executi
 
 ## Items from prior FEEDBACK.md, all closed
 
-- **Convergence-counting rule generalized** ([ROADMAP.md:826-828](ROADMAP.md#L826-L828)) — now stated once at Stage 8 as a single rule covering all overlap-prone interfaces (6A, 6B, D, E, 7), with Branch E's local rule deferring to it. This was the largest residual gap and is now closed.
-- **Stage 4B's role in the convergence count is explicit** ([ROADMAP.md:783-784](ROADMAP.md#L783-L784)) — Stage 4B is named as a bridge condition that "can strengthen a Stage 8 package, but it should not be one of the two minimum required convergence families." This is sharper than I had asked for.
-- **Branch E placement on the partition is bidirectional** ([ROADMAP.md:778-780](ROADMAP.md#L778-L780)) — both halves are spelled out: access/report when it tests access-status or report-grounding, non-reportability when it tests higher-order content representation without those readouts. The "when it tests" phrasing already carries the per-result reading.
-- **Execution checklist grouped** ([ROADMAP.md:889-934](ROADMAP.md#L889-L934)) — split into "Completed groundwork," "Immediate engineering and audit work," "Branch builds," and "Cross-system replication." Communicates priority and scope without committing to a schedule.
+- **Convergence-counting rule generalized** (`ROADMAP.md` lines 826-828 in the reviewed version) — now stated once at Stage 8 as a single rule covering all overlap-prone interfaces (6A, 6B, D, E, 7), with Branch E's local rule deferring to it. This was the largest residual gap and is now closed.
+- **Stage 4B's role in the convergence count is explicit** (`ROADMAP.md` lines 783-784 in the reviewed version) — Stage 4B is named as a bridge condition that "can strengthen a Stage 8 package, but it should not be one of the two minimum required convergence families." This is sharper than I had asked for.
+- **Branch E placement on the partition is bidirectional** (`ROADMAP.md` lines 778-780 in the reviewed version) — both halves are spelled out: access/report when it tests access-status or report-grounding, non-reportability when it tests higher-order content representation without those readouts. The "when it tests" phrasing already carries the per-result reading.
+- **Execution checklist grouped** (`ROADMAP.md` lines 889-934 in the reviewed version) — split into "Completed groundwork," "Immediate engineering and audit work," "Branch builds," and "Cross-system replication." Communicates priority and scope without committing to a schedule.
 
 ## Open items
 

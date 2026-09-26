@@ -1,12 +1,17 @@
 # Roadmap Toward Consciousness-Relevant Evidence
 
-This document separates the current benchmark result from the larger research goal.
+This document records the broader historical research program. The clarified
+project goal is to test accurate reporting of internal informational state. That
+goal has bounded positive support from trained external readouts; see the
+[final results](PROJECT_RESULTS.md). It does not require conscious access to be
+necessary for task performance or reports to beat simpler alternatives. The
+stronger consciousness-relevant criteria below address separate hypotheses.
 
-The project already supports a meaningful claim about **closed-loop attention control**. The longer-term goal is more ambitious: to build an experimental methodology that could eventually count as evidence for **minimal consciousness-like processing** in artificial systems.
+The project already supports a meaningful claim about **closed-loop attention control**. The historical roadmap proposed a separate, more ambitious extension: to build an experimental methodology that could eventually count as evidence for **minimal consciousness-like processing** in artificial systems.
 
 Because that goal is easy to overstate, this roadmap is intentionally conservative. It is meant to discipline the argument, not accelerate it.
 
-The active execution sequence is the [reporting-first plan](REPORTING_PLAN.md)
+The historical execution sequence is the [reporting-first plan](REPORTING_PLAN.md)
 (2026-09-26): test faithful reporting from task-trained memory, then endogenous
 regulation, independent content convergence, and cross-system replication. Its
 pilot results do not change the support thresholds in this roadmap.
@@ -29,7 +34,7 @@ This roadmap does not aim to establish:
 - open-ended self-awareness outside this benchmark
 - consciousness in the current toy system
 
-The narrower near-term goal is to accumulate bounded evidence for increasingly rich attentional regulation, self-modeling, reportability, unity, counterfactual access, higher-order state representation, broadcast dynamics, and perturbation response signatures. The larger goal requires convergence across those families rather than a single-theory bridge.
+The historical staged program aimed to accumulate bounded evidence for increasingly rich attentional regulation, self-modeling, reportability, unity, counterfactual access, higher-order state representation, broadcast dynamics, and perturbation response signatures. The larger goal requires convergence across those families rather than a single-theory bridge.
 
 ## Claim Status Conventions
 
@@ -55,7 +60,7 @@ Stage 8 evidence: cross-benchmark independence and same-content convergence rema
 `supported` labels should therefore be read as bounded engineering/evaluation milestones rather
 than settled philosophical premises.
 
-Several items in this roadmap do not yet meet bounded support. Stage 6B has only provisional positive evidence, the external API LLM and VLM versions of Stage 7 are implemented or planned but not supported, and complete zero-shaping resilience for Stage 3 is not established.
+Several items in this roadmap do not yet meet bounded support. Stage 6B has only provisional positive evidence, the external API LLM and VLM versions of Stage 7 have been implemented and evaluated with negative results on the powered v3 interfaces, and complete zero-shaping resilience for Stage 3 is not established.
 
 ## Self-Model Vocabulary
 
@@ -195,7 +200,7 @@ Question:
 
 Does the controller state explicitly model attentional dynamics, rather than merely functioning as useful recurrent memory?
 
-This is the most important next step after Stage 2.
+This was the foundational step after Stage 2; its completed results follow.
 
 Current status in this repo:
 
@@ -624,8 +629,8 @@ from the scene predicts the wrong answer by construction. The 4,096-case audit
 (`audits/branch_d_access_dataset.json`) contains 831 held-out query/value pairs, a `1.00` fixed-
 attention rate, a `1.00` counterfactual-tension rate, and no invariant failures. Scene-only accuracy
 is `1.00` for merely visible/unavailable targets and `0.00` for previously attended/counterfactual
-targets. The next step is a trained access route plus matched no-cache, scene-only, current-glimpse,
-and symbolic upper-bound controls; the scaffold itself is not positive Branch D evidence.
+targets. The trained access routes and controls evaluated after this scaffold are
+described below; the scaffold itself is not positive Branch D evidence.
 
 The first trained pilot (`audits/branch_d_access_pilot.json`) uses a GRU to compress access events
 before the switched query is decoded, so the report path does not receive the explicit cache. Its
@@ -1143,7 +1148,9 @@ For this reason, the current status snapshot separates bounded support from robu
 
 ## Execution Checklist
 
-Near-term execution should stay attached to concrete repository changes:
+The historical execution checklist below records completed groundwork and optional
+research extensions. The bounded reporting evaluation is complete; see
+[PROJECT_RESULTS.md](PROJECT_RESULTS.md).
 
 Completed groundwork:
 

@@ -1,5 +1,10 @@
 # Six-cycle reporting campaign
 
+> **Historical campaign report.** Results, test counts, and unresolved questions
+> below describe this campaign at closeout. The proposed follow-up was subsequently
+> executed in the [delay and information-seeking campaign](REGULATION_CAMPAIGN.md).
+> See [final results](PROJECT_RESULTS.md) for current reporting evidence and scope.
+
 Protocol: [REPORTING_SIX_CYCLE_PROTOCOL.md](REPORTING_SIX_CYCLE_PROTOCOL.md).
 
 | Cycle | Work | Status |
@@ -156,8 +161,8 @@ gates still fail. The assay explicitly separates decoder failure, retained corre
 reports, incorrect-value reports, and unavailable responses.
 
 Artifact: `audits/report_content_erasure_diagnostic.json`, covering three frozen
-systems, four strengths, and three perturbation subspaces. The complete final suite
-passes **85 tests**, including selective projection, restoration, per-case norm
+systems, four strengths, and three perturbation subspaces. At campaign closeout, the suite
+passed **85 tests**, including selective projection, restoration, per-case norm
 matching, and separation of correct reports from choice failure.
 
 ## Campaign decision
@@ -173,8 +178,8 @@ lesions causally change content and unavailable reports. The remaining obstacles
 are reliable unavailable reporting, temporal generalization, and task-viable
 cross-architecture replication. Full reporting support and Stage 8 remain unmet.
 
-Next work should establish task viability under variable delays and a parameter-
-aware architecture comparison, while testing whether state reports add anything
-beyond action-score/entropy responses to the same lesions. Keep reporter supervision
-outside agent training. Endogenous information seeking and stronger access claims
-remain later steps, not conclusions of this campaign.
+The subsequent [delay campaign](REGULATION_CAMPAIGN.md) tested task viability
+under variable delays, a nearly parameter-matched architecture comparison, and
+report sensitivity beyond action-score/entropy responses to interventions.
+Reporter supervision remained outside agent training. Endogenous information seeking and stronger access claims
+were tested in later campaigns; they are not conclusions of this campaign.

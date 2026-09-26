@@ -8,6 +8,17 @@
 > reads the single most-attended cell while the policy stays soft) and all results below were
 > regenerated. See `audits/post_rehab_full_eval_tune_prob_035_summary.json`.
 
+> **Reporting-goal clarification (2026-09-26).** The completed study's primary
+> question is whether internal informational states can be reported accurately.
+> Trained external readouts provide bounded positive evidence: all six final GRU
+> systems report verified values and unverified status with 100% accuracy and
+> remembered quality with 96.0–100% accuracy. Simpler comparators matching these
+> reports does not negate their accuracy. Necessity for task performance and
+> Stage 8 convergence are separate questions. Native reporting of these same
+> distinctions remains unestablished. The narrative below records the broader
+> historical program; see [PROJECT_RESULTS.md](PROJECT_RESULTS.md) for the final
+> evaluation and its corrected interpretation.
+
 ## Abstract
 
 Many machine learning systems compute attention, but fewer cleanly demonstrate **attention control**: the ability of a distinct controller to regulate future attention on the basis of task demands and the consequences of previous allocations. We present a minimal PyTorch benchmark for that distinction and report the current repository status of the broader staged research program built around it. The task is a cue-guided selective-search problem on a `5x5` grid in which visible cell types are globally available, but task-relevant target identity becomes useful only through attention. Because a fully-soft glimpse averages the digits of every same-type cell, the readout is discretised (each glimpse reads the single most-attended cell via a straight-through estimator) so the closed-loop search is learnable. On the regenerated discrete-attention checkpoint, a recurrent attention controller outperforms a static cue-conditioned baseline in held-out accuracy (`0.44` vs. `0.17`; chance `0.10`) and in target-inspected rate (`0.39` vs. `0.08`), while all negative controls and comparator systems fail as intended (e.g. shuffling the feedback channel drops accuracy by `0.27`). Additional evaluations make Stage 3 explicit-attention modeling robust across seeds and a checkpoint family, support engineered self-state tracking (Stage 4A) and capacity-audited structured reportability (Stage 6A), and establish seed-robust remembered-content recovery under explicit Stage 7 content-memory regularization. Branch C binding and Branch D counterfactual-access assays have strong bounded support across seeds and model families; perturbational dynamics replicate across checkpoints and an ungated RNN; and a structurally different temporal-relay assay passes across three relational-GRU seeds and one transformer seed. These remain engineering results where relational matching, shared state, or content-memory objectives are imposed. The executable Stage 8 audit therefore remains **not met** (`3` pass, `5` partial, `0` fail), and the work does not establish consciousness or minimal consciousness-like content.
@@ -22,7 +33,7 @@ We use a stricter criterion. A system exhibits attention control only if:
 2. it has a distinct controller with access to a representation of that allocation or its consequences, and
 3. it can modify future allocation on the basis of task demands, performance, or internal state.
 
-The goal of this project is not to solve a large-scale perceptual problem, nor to claim consciousness in the present toy system. The goal is to build the smallest credible setting in which the difference between **attending** and **controlling attention** can be measured directly, then use that setting as a methodology-development platform for explicit attention modeling, engineered and learned self-state modeling, reportability, and eventually broader consciousness-relevant tests.
+The original benchmark was built to measure the difference between **attending** and **controlling attention**, providing a platform for attention modeling, self-state modeling, and reportability. The clarified project goal is accurate reporting of internal informational states. Broader consciousness-relevant tests are separate extensions of that program.
 
 ## 2. Benchmark Setup
 
@@ -350,8 +361,8 @@ multiple implemented theory branches, robust perturbational checks, cross-model 
 integrated same-content assay, and a structurally different temporal-relay benchmark. The limiting
 issue is independence: the positive binding/access, higher-order, broadcast, and relay results rely
 on explicit relational addressing, shared bottlenecks, or access-sensitive supervision. The current
-benchmark work is therefore an active convergence program, not a direct argument for
-consciousness-like content by itself.
+bounded evaluation is complete; further convergence work would be a separate
+research extension. These findings do not establish consciousness-like content.
 
 ### 6.2 Philosophical Scope
 
@@ -379,9 +390,11 @@ This system is still intentionally minimal.
 
 So while the repository now supports much stronger claims than the original benchmark paper draft, it is still best understood as a disciplined toy program rather than a comprehensive model of attentional control or consciousness.
 
-## 8. Immediate Next Work
+## 8. Optional Research Extensions
 
-The next highest-value experiments target the five partial Stage 8 gates:
+Further reporting work could test native reports of content and availability, and
+report accuracy under memory damage and broader generalization. The historical
+convergence proposals below address the separate, stronger Stage 8 question:
 
 1. remove forced state sharing from the integrated-content and temporal-relay assays while keeping task viability,
 2. repeat the temporal-relay transformer across fresh seeds and rerun matched comparator/negative-control suites,
@@ -393,12 +406,12 @@ The next highest-value experiments target the five partial Stage 8 gates:
 
 The implementation lives in this repository:
 
-- benchmark/task generation: [src/attcon/data.py](/home/david/dev/attcon/src/attcon/data.py)
-- models: [src/attcon/models.py](/home/david/dev/attcon/src/attcon/models.py)
-- training: [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py)
-- evaluation: [src/attcon/eval.py](/home/david/dev/attcon/src/attcon/eval.py)
-- Stage 7 NL reporting helpers: [src/attcon/nl_report.py](/home/david/dev/attcon/src/attcon/nl_report.py)
-- default config: [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml)
+- benchmark/task generation: [src/attcon/data.py](../src/attcon/data.py)
+- models: [src/attcon/models.py](../src/attcon/models.py)
+- training: [src/attcon/train.py](../src/attcon/train.py)
+- evaluation: [src/attcon/eval.py](../src/attcon/eval.py)
+- Stage 7 NL reporting helpers: [src/attcon/nl_report.py](../src/attcon/nl_report.py)
+- default config: [configs/minimal.yaml](../configs/minimal.yaml)
 
 Default commands:
 
