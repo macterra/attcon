@@ -8,7 +8,7 @@ Fixed protocol: [ACTIVE_INSPECTION_PROTOCOL.md](ACTIVE_INSPECTION_PROTOCOL.md).
 | 2 | Three-controller pilot, seed 2309 | Complete |
 | 3 | Replication, seeds 2333 and 2351 | Complete |
 | 4 | Recurrent-history and choice-preserving interventions | Complete |
-| 5 | Frozen-controller verified-information reporting | Pending |
+| 5 | Frozen-controller verified-information reporting | Complete |
 | 6 | Untouched stress contexts and consolidation | Pending |
 
 ## Cycle 1
@@ -90,3 +90,26 @@ Source: [interventions](../audits/acquisition_interventions.json). Paired
 condition alignment and answer-null-space tests pass; the 118-test suite passed.
 Synthetic perturbations retain environmental reward accounting, but their
 responses are not verified introspective access reports.
+
+## Cycle 5
+
+Frozen state controllers support 99.97–100% balanced verified-information
+reporting across all decision stages, and 100% on stages actually visited.
+State reporters pass both accuracy gates and the shuffled-label advantage gate
+in all three seeds. Ten shuffled-label fits per seed repeat validation selection;
+their 95th-percentile balanced accuracy is about 50%.
+
+Matched action-logit reporters also reach 99.71–100% balanced accuracy across
+all stages (99.61–100% on visited stages). The state reporter fails the required
+0.02 advantage over action logits in every seed. Both reporter families have
+4,359 parameters; controller fingerprints remain unchanged after fitting.
+
+These labels describe an explicit environmental guarantee: verified current
+value versus unverified information. They are easier to establish than actual
+internal availability after arbitrary memory loss. High accuracy here neither
+resolves the earlier paired-history reporting failures nor demonstrates a native
+reporting mechanism or subjective experience.
+
+Sources: [reporting aggregation](../audits/acquisition_reporting_multiseed.json)
+and its three linked seed artifacts. Focused tests verify label scoring, visited
+stage dimensions, matched capacity, and isolation from controller training.
