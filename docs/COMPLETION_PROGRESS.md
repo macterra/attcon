@@ -9,7 +9,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Run reward-only exploration and native answer/decline evaluation.
 - [x] Fit independent reports and run controlled report/policy interventions.
 - [x] Evaluate reserved stress contexts.
-- [ ] Validate artifact manifest, reproduction entry point, and full test suite.
+- [x] Validate artifact manifest, reproduction entry point, and full test suite.
 - [ ] Publish final evidence map and completed-project status, preserving failures.
 
 Completion concerns the bounded prototype and final evaluation. A positive
@@ -136,3 +136,15 @@ serial-GRU delay cells. These diagnostic exceptions do not satisfy the registere
 all-cost/all-seed/cross-architecture promotion rule and are retained explicitly.
 Analytic stress policies know actual reliability; learned policies see the old
 cue. The full final manifest contains every stress condition and viability gate.
+
+## Reproduction and integrity closure
+
+All149 unit tests passed; the end-to-end smoke pipeline passed for both tasks and
+architectures without writing scientific audit files. The final audit replayed
+all55 primary artifacts from42 checkpoint files, including every controller,
+report, causal contrast, and stress condition. Source/data fingerprints, validation
+selection, capacity matching, gate arithmetic, and the unchanged Stage8 artifact
+were verified. A deterministic checkpoint archive was restored and checked
+against its manifest. No paid model APIs were used for these experiments.
+See [reproduction instructions](FINAL_REPRODUCTION.md) and
+[completion manifest](../audits/project_completion.json).
