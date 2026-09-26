@@ -6,7 +6,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Validate prospective environments, analytic policies, and equal-capacity controls.
 - [ ] Run serial fitted controllers across architectures and seeds.
 - [ ] Run routed fitted controllers across architectures and seeds.
-- [ ] Run reward-only exploration and native answer/decline evaluation.
+- [x] Run reward-only exploration and native answer/decline evaluation.
 - [ ] Fit independent reports and run controlled report/policy interventions.
 - [ ] Evaluate reserved stress contexts.
 - [ ] Validate artifact manifest, reproduction entry point, and full test suite.
@@ -36,3 +36,14 @@ answer coverage ranges46.1–100%, showing that native decline is used in some r
 The complete support gate remains unmet. The learner trains only on experienced
 chosen-action correctness/costs, with no full answer vector or report labels.
 Source: [serial exploration](../audits/exploration_serial_summary.json).
+
+## Reward-only routing replication
+
+From-scratch routing policies pass fresh-answer and forced-observation viability
+in all seeds/costs. State return ranges0.7324–0.7528 at cost0.1,0.6250–0.6528 at
+0.25,and0.5250–0.5471 at0.4. No state policy clears the fair-comparator gain at
+any cost. At cost0.4 none beats the native never-inspect/answer-or-decline policy
+by0.02. Some policies decline; this is a learned payoff decision, not evidence
+of introspective source reporting. Both registered exploration tasks are now
+complete, including all negative comparisons.
+Source: [routing exploration](../audits/exploration_routing_summary.json).
