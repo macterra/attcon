@@ -2,7 +2,16 @@
 
 `attcon` is a minimal PyTorch benchmark for testing whether a model is merely computing attention or actually controlling it over time.
 
-The current roadmap treats Stages 1 through 3 as the sequential foundation, then splits into parallel lines of work around self-state tracking, reportability, binding, counterfactual access, higher-order state, broadcast, and perturbational dynamics. The repo now includes a bounded Stage 7 local-report route plus seed-robust remembered-content recovery under explicit content-memory regularization; powered external LLM and VLM variants remain negative on the current v3 interface. The executable Stage 8 audit is still not met (`3` pass, `5` partial, `0` fail): engineered same-content overlap and temporal-relay transfer are robust inside their assays, but the decisive relational/shared-state mechanisms are imposed.
+**Status: the bounded research prototype and final evaluation are complete.**
+The [final results](docs/PROJECT_RESULTS.md) report 48 trained controllers across
+prospective verification, sensor routing, and reward-only exploration. Learned
+acquisition and causal prospective representations are supported within the toy
+tasks; consistent superiority over fair confidence controls and conscious-access
+claims are not. Stage 8 remains not met. The result includes a documented reporting
+comparator correction, 149 passing tests, a checkpoint archive, and
+[one-command verification/reproduction](docs/FINAL_REPRODUCTION.md).
+
+The research roadmap treats Stages 1 through 3 as the sequential foundation, then splits into parallel lines of work around self-state tracking, reportability, binding, counterfactual access, higher-order state, broadcast, and perturbational dynamics. The repo now includes a bounded Stage 7 local-report route plus seed-robust remembered-content recovery under explicit content-memory regularization; powered external LLM and VLM variants remain negative on the current v3 interface. The executable Stage 8 audit is still not met (`3` pass, `5` partial, `0` fail): engineered same-content overlap and temporal-relay transfer are robust inside their assays, but the decisive relational/shared-state mechanisms are imposed.
 
 The current implementation trains and compares:
 
@@ -10,7 +19,7 @@ The current implementation trains and compares:
 - a recurrent attention controller
 - several ablations, including frozen recurrence and a feedforward summary controller
 
-The [active reporting-first plan](docs/REPORTING_PLAN.md) adds a separate
+The [reporting-first plan](docs/REPORTING_PLAN.md) adds a separate
 paired-history assay trained only on value choice. Across three seeds it reaches
 94.8–95.7% held-out choice accuracy and 74.0–79.6% joint action/report following
 under selective content interventions. Unavailable-content reports remain weak
@@ -36,10 +45,11 @@ variable-delay training gains: choice accuracy at nine extra blanks rises from
 parameter-matched RNN remains below task viability. Choice-preserving
 interventions reveal modest additional state sensitivity, but reward-trained
 inspection policies using action scores or confidence outperform full-state
-policies at every cost in all three seeds. Useful regulation beyond confidence
-and endogenous recurrent information seeking remain open; Stage 8 is unchanged.
+policies at every cost in all three seeds. At that stage, useful regulation beyond
+confidence and endogenous recurrent information seeking remained open; Stage 8
+was unchanged.
 
-The latest [recurrent acquisition campaign](docs/ACTIVE_INSPECTION_CAMPAIGN.md)
+The earlier [recurrent acquisition campaign](docs/ACTIVE_INSPECTION_CAMPAIGN.md)
 learns repeated inspection and verification from environmental rewards and
 replayed transitions. Across three seeds, adaptive controllers beat every fixed
 inspection count at each cost. Full-state controllers do not clear their reward
@@ -70,7 +80,7 @@ the target on a single decisive fixation and carries the digit forward, mean
 - [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): active reporting-first experiment plan, frozen criteria, and results
 - [SPEC.md](/home/david/dev/attcon/docs/SPEC.md): original conceptual spec and motivation
 - [ROADMAP.md](/home/david/dev/attcon/docs/ROADMAP.md): claim definitions, evidence standards, and current status
-- [NEXT_STEPS.md](/home/david/dev/attcon/docs/NEXT_STEPS.md): completed work and active Stage 8 experiments
+- [NEXT_STEPS.md](/home/david/dev/attcon/docs/NEXT_STEPS.md): historical work and optional research extensions
 - [PREPRINT.md](/home/david/dev/attcon/docs/PREPRINT.md): research-program narrative and consolidated results
 - [configs/minimal.yaml](/home/david/dev/attcon/configs/minimal.yaml): default experiment config
 - [src/attcon/train.py](/home/david/dev/attcon/src/attcon/train.py): training entrypoint

@@ -1,7 +1,9 @@
 # Reporting-first research plan
 
-Created 2026-09-26. This is the active execution plan; existing Stage 8 results and
-their claim boundaries remain in force.
+Created 2026-09-26. This historical execution plan led to the completed
+[final bounded evaluation](PROJECT_RESULTS.md). Existing Stage 8 results and
+claim boundaries remain in force; broader unsupported hypotheses are not marked
+achieved by closing the study.
 
 ## Goal and decision rule
 
@@ -216,3 +218,17 @@ The full unittest suite passed (64 tests at that point, including six new tests)
 The final targeted suite passes all seven new tests, including the subsequently
 added causal-scoring and matched-norm regression. Source compilation and whitespace
 checks pass. No paid APIs were used.
+
+
+## Final disposition
+
+The [completion protocol](COMPLETION_PROTOCOL.md) and
+[final results](PROJECT_RESULTS.md) close the finite research prototype and
+cross-system evaluation. Prospective acquisition, reward-only exploration, and
+causal report/control sensitivity have bounded support. A fair-comparator
+advantage does not replicate. An omitted-identity reporting confound was exposed
+and corrected without rewriting the original results. Independent-content
+promotion fails its prerequisite; earlier convergence results and Stage 8 remain
+unchanged. The full archive and reproduction path are delivered. Further
+experiments are optional research extensions, not outstanding work from this
+completed evaluation.

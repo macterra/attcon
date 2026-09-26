@@ -1,6 +1,14 @@
-# Next Steps Checklist
+# Study closure and research extensions
 
-This checklist turns the revised roadmap into a working execution order. The goal is to move from bounded benchmark support toward robust, comparator-resistant evidence without blurring the current claim boundaries.
+The bounded final evaluation is complete; see [PROJECT_RESULTS.md](PROJECT_RESULTS.md)
+and the [completion audit](../audits/project_completion.json). All registered
+experiments, corrections, stress evaluations, replay checks, and deliverables are
+finished. The stronger access-monitoring and Stage 8 hypotheses remain unsupported.
+
+The historical checklist below preserves broader scientific ambitions and prior
+work. Its unchecked hypotheses are not represented as achieved. Additional
+research would require a new protocol; it is not an unfinished deliverable from
+the completed finite study.
 
 > **Post-rehab note.** The Priority 1 audit machinery below was originally exercised on a
 > non-functional checkpoint (under the old fully-soft recipe the recurrent controller collapsed
@@ -14,9 +22,9 @@ This checklist turns the revised roadmap into a working execution order. The goa
 > `docs/PRIORITY1_AUDIT_STATUS.md`. The Priority 1 boxes are therefore genuinely validated,
 > not artifacts. The active work has moved to the partial Stage 8 gates.
 
-## Current Focus: Reporting From Task-Trained Internal State
+## Historical focus: reporting from task-trained internal state
 
-The latest completed work is the [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md).
+The preceding work is the [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md).
 Reward-trained recurrent controllers learn repeated inspection and verification,
 beating all fixed inspection counts across three seeds and costs. Action-score
 and confidence controls explain that benefit; full-state advantage gates fail.
@@ -25,11 +33,11 @@ Initial-state reset reduces reward; the answer-preserving availability direction
 causes no policy switches. Reserved delay/sensor stress reduces reward without
 changing the previous reporting gates or Stage 8 verdict.
 
-Next: vary prospective information quality independently of current answer
-confidence. Give matched comparators the same sensor-quality cues, require fresh
-seeds and a reward advantage, and test causal coupling between access reports
-and control. Autonomous exploration and native reports remain untested. The
-completed [delay and inspection campaign](REGULATION_CAMPAIGN.md) remains the
+That prospective-quality follow-up is now complete in the final study: matched
+cue-informed comparators, fresh seeds, causal report/control assays, and
+reward-only exploration were evaluated. Native answer/decline behavior was
+learned, but introspective reporting and a replicated fair-control advantage
+were not established. The completed [delay and inspection campaign](REGULATION_CAMPAIGN.md) remains the
 preceding step and retains its earlier negative full-state policy comparison.
 
 The completed follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),

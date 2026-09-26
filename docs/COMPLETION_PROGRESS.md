@@ -10,7 +10,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Fit independent reports and run controlled report/policy interventions.
 - [x] Evaluate reserved stress contexts.
 - [x] Validate artifact manifest, reproduction entry point, and full test suite.
-- [ ] Publish final evidence map and completed-project status, preserving failures.
+- [x] Publish final evidence map and completed-project status, preserving failures.
 
 Completion concerns the bounded prototype and final evaluation. A positive
 conscious-access or Stage 8 result is not presumed.
@@ -148,3 +148,12 @@ were verified. A deterministic checkpoint archive was restored and checked
 against its manifest. No paid model APIs were used for these experiments.
 See [reproduction instructions](FINAL_REPRODUCTION.md) and
 [completion manifest](../audits/project_completion.json).
+
+## Final disposition
+
+All registered work and final deliverables are complete. The archived manifest
+records bounded evaluation complete, strong access-monitoring claim unsupported,
+and the independent-content promotion prerequisite unmet. The final report and
+repository landing page explain the positive task/causal findings, the reporting
+correction, and every material limitation. Historical hypotheses remain visibly
+unsupported rather than being checked off as achieved.
