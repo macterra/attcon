@@ -9,7 +9,7 @@ Fixed protocol: [ACTIVE_INSPECTION_PROTOCOL.md](ACTIVE_INSPECTION_PROTOCOL.md).
 | 3 | Replication, seeds 2333 and 2351 | Complete |
 | 4 | Recurrent-history and choice-preserving interventions | Complete |
 | 5 | Frozen-controller verified-information reporting | Complete |
-| 6 | Untouched stress contexts and consolidation | Pending |
+| 6 | Untouched stress contexts and consolidation | Complete |
 
 ## Cycle 1
 
@@ -113,3 +113,73 @@ reporting mechanism or subjective experience.
 Sources: [reporting aggregation](../audits/acquisition_reporting_multiseed.json)
 and its three linked seed artifacts. Focused tests verify label scoring, visited
 stage dimensions, matched capacity, and isolation from controller training.
+
+## Cycle 6
+
+Every seed reserves 64 contexts not used for controller learning, checkpoint
+selection, reporter fitting, or earlier primary evaluations. Frozen controllers
+are evaluated on these contexts under baseline conditions, five delay blanks,
+and an unannounced sensor-reliability reduction from 0.75 to 0.55. All other
+variables are paired; there is no refitting.
+
+At cost 0.1, five blanks reduce state-policy return from 0.8593–0.8667 to
+0.7826–0.8517. At cost 0.25, sensor degradation yields 0.5816–0.6474 versus
+0.6667 for the analytic policy that knows the changed reliability. At cost 0.4,
+degraded-sensor state return is 0.4260–0.4469 versus the analytic policy's 0.4667.
+This comparison deliberately tests distribution shift: the learned controllers
+are not informed of the changed sensor probability. Fresh-answer and forced
+verification accuracy still pass 0.90 at every cost/condition/seed, while no
+complete full-state advantage gate passes on the reserved contexts.
+
+Sources: [stress audit](../audits/acquisition_stress.json),
+[campaign summary](../audits/active_inspection_campaign.json).
+The protocol, previous reporting results, and Stage 8 audit remain unchanged.
+
+## What this establishes and what comes next
+
+Recurrent controllers now learn useful multi-step information acquisition from
+answer rewards and replayed transitions. They condition inspection on information
+and price, preserve history, and exceed fixed inspection policies across seeds.
+This advances beyond the earlier external one-step inspection head. It remains
+full-information fitted learning rather than autonomous exploration.
+
+The stronger comparator-resistant goal remains open. Accurate verified-source
+reporting and adaptive acquisition are both explained by action/confidence
+representations in this task. Initial-state reset demonstrates broad memory
+dependence; the more specific choice-preserving availability intervention is null.
+The earlier paired-history reporting failures and Stage 8 verdict are not changed.
+
+A next experiment should vary expected information quality independently of
+current answer confidence, with remembered sensor-reliability cues and a
+comparator that receives the same cues. That can test prospective information
+value without awarding the state controller a trivial input advantage. Require
+fresh seeds, calibrated comparator policies, a reward benefit, and causal
+report/control coupling before claiming useful access monitoring. Testing
+native reporting and exploration remains additional work, not an achieved goal.
+
+## Reproduction
+
+Checkpoints are local, unversioned files under `outputs/acquisition/`; source,
+settings, seeds, selections, dataset fingerprints, and JSON results are versioned.
+Rebuild controllers before dependent assays. Run from the repository root:
+
+```bash
+.venv/bin/python scripts/audit_acquisition_environment.py
+for seed in 2309 2333 2351; do
+  .venv/bin/python scripts/train_acquisition.py --seed "$seed" --out "audits/acquisition_seed${seed}.json"
+  .venv/bin/python scripts/audit_acquisition_reporting.py "audits/acquisition_seed${seed}.json" --out "audits/acquisition_reporting_seed${seed}.json"
+done
+.venv/bin/python scripts/summarize_acquisition.py audits/acquisition_seed*.json --out audits/acquisition_multiseed.json
+.venv/bin/python scripts/audit_acquisition_interventions.py audits/acquisition_seed*.json --out audits/acquisition_interventions.json
+.venv/bin/python scripts/summarize_acquisition_reporting.py audits/acquisition_reporting_seed*.json --out audits/acquisition_reporting_multiseed.json
+.venv/bin/python scripts/audit_acquisition_stress.py audits/acquisition_seed*.json --out audits/acquisition_stress.json
+.venv/bin/python scripts/summarize_acquisition_campaign.py
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python -m unittest discover -s tests -v
+```
+
+Context-bootstrap intervals are pointwise and conditional on a trained system.
+All registered seeds/costs and all negative comparisons are retained.
+
+Final validation: all 124 unit tests passed. Source compilation, whitespace,
+finite JSON, source fingerprints, paired controls, and unchanged protocol/prior
+Stage 8 artifacts were verified. No paid model APIs were used.

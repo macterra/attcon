@@ -16,16 +16,21 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Current Focus: Reporting From Task-Trained Internal State
 
-The latest completed work is the [delay and inspection campaign](REGULATION_CAMPAIGN.md).
-Variable-delay GRUs recover delay robustness across three seeds, but unavailable
-and paired reporting still fail. A nearly parameter-matched RNN fails task
-viability. State reports and reward-trained inspection policies respond to
-choice-preserving perturbations, yet action/confidence policies outperform
-full-state inspection at every tested cost and seed. The next experiment should
-learn recurrent information acquisition from environmental rewards, with fresh,
-stale, and missing information and preregistered confidence/action comparators.
-Require a reward benefit, faithful reports, and independent replication before
-promoting regulation claims. Stage 8 remains unchanged.
+The latest completed work is the [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md).
+Reward-trained recurrent controllers learn repeated inspection and verification,
+beating all fixed inspection counts across three seeds and costs. Action-score
+and confidence controls explain that benefit; full-state advantage gates fail.
+Verified-information reporters are highly accurate but matched by action logits.
+Initial-state reset reduces reward; the answer-preserving availability direction
+causes no policy switches. Reserved delay/sensor stress reduces reward without
+changing the previous reporting gates or Stage 8 verdict.
+
+Next: vary prospective information quality independently of current answer
+confidence. Give matched comparators the same sensor-quality cues, require fresh
+seeds and a reward advantage, and test causal coupling between access reports
+and control. Autonomous exploration and native reports remain untested. The
+completed [delay and inspection campaign](REGULATION_CAMPAIGN.md) remains the
+preceding step and retains its earlier negative full-state policy comparison.
 
 The completed follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
 covering matched nonlinear reporters, replication, reporting-data coverage,
@@ -54,8 +59,8 @@ campaign reaches 91.4–94.8% seen reporting with more fitting data but still on
 76.6–78.1% unavailable reporting. RNN task viability and delay generalization fail;
 targeted content lesions produce unavailable reports with residual incorrect-value
 reports. Those follow-ups are now completed in the delay and inspection campaign
-above; its remaining bottleneck is useful, recurrent information acquisition
-beyond confidence and faithful access reporting.
+above. Recurrent acquisition is now demonstrated in a separate explicit-cue task;
+its advantage beyond confidence and faithful internal-access reporting remain open.
 
 ## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
 

@@ -185,10 +185,18 @@ seeds, while full reporting gates remain unmet. A nearly parameter-matched RNN
 fails viability. Choice-null-space transplants isolate modest additional report
 and policy sensitivity, but reward-trained action/confidence inspection policies
 outperform full-state policies at every cost and seed. Keep all reporting gates
-and the separation of reporter supervision from agent/control training. Next:
-learn recurrent information acquisition in the environment with fresh, stale,
-and missing information; require a replicated reward advantage beyond confidence
-before claiming useful regulation. Reliable access reporting remains open.
+and the separation of reporter supervision from agent/control training.
+
+The [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md) subsequently
+learns repeated inspection with fresh, stale, and missing information. Adaptive
+controllers beat fixed inspection counts across three seeds, but full-state
+policies miss every required 0.02 gain over learned action/confidence controls.
+External verified-information reports are nearly perfect and also matched by
+action logits. The choice-preserving availability intervention causes no policy
+switches, and longer delays/degraded sensors reduce reward. Next: vary prospective
+sensor quality independently of current confidence, with cue-matched comparators
+and fresh confirmation. Native reporting, autonomous exploration, and a causal
+reward advantage for access monitoring remain open.
 
 ## Reproduction and validation
 

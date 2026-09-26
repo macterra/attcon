@@ -67,6 +67,20 @@ class AcquisitionEnvironmentTests(unittest.TestCase):
             self.assertTrue(torch.allclose(run['return'], run['correct'] - count * data.cost))
             self.assertEqual(run['visited'].sum().item(), len(data) * (count + 1))
 
+    def test_sensor_shift_preserves_every_other_environment_variable(self):
+        degraded = make_splits(2309, reliability=.55)['stress']
+        baseline = self.splits['stress']
+        for field in baseline.__dataclass_fields__:
+            if field != 'sample':
+                self.assertTrue(torch.equal(getattr(baseline, field), getattr(degraded, field)))
+        self.assertTrue(((degraded.sample != degraded.value) | (baseline.sample == baseline.value)).all())
+
+    def test_bayes_policy_adapts_when_sensor_reliability_changes(self):
+        degraded = make_splits(2309, reliability=.55)['stress']
+        result = analytic_policy(degraded, reliability=.55)
+        self.assertTrue((result['inspections'][degraded.condition != 0] == 2).all())
+        self.assertTrue((result['inspections'][degraded.condition == 0] == 0).all())
+
     def test_reporting_labels_track_verification_not_choice_success(self):
         self.assertTrue((verified_labels(self.data, 0)[self.data.condition != 0] == 6).all())
         self.assertTrue(torch.equal(verified_labels(self.data, 2), self.data.value))
