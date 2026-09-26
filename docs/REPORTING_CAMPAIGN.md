@@ -5,8 +5,8 @@ Protocol: [REPORTING_SIX_CYCLE_PROTOCOL.md](REPORTING_SIX_CYCLE_PROTOCOL.md).
 | Cycle | Work | Status |
 | --- | --- | --- |
 | 1 | Nonlinear reporter and full-history pilot, seed 1901 | Complete; reporting gates unmet |
-| 2 | Fresh-seed replication, seeds 1907 and 1913 | In progress |
-| 3 | Fixed-agent reporter-data comparison, 128 vs 512 groups | Pending |
+| 2 | Fresh-seed replication, seeds 1907 and 1913 | Complete; failures replicate |
+| 3 | Fixed-agent reporter-data comparison, 128 vs 512 groups | In progress |
 | 4 | Ungated RNN replication, three fresh seeds | Pending |
 | 5 | Frozen-pipeline delay stress | Pending |
 | 6 | Selective content erasure and restoration diagnostic | Pending |
@@ -33,3 +33,27 @@ Artifact: `audits/report_sufficiency_gru_fit128_seed1901.json`. All 76 tests pas
 including new split-invariance, oracle, capacity, frozen-gradient, and variable-
 delay architecture checks. The protocol and artifact record provenance and claim
 boundaries; Stage 8 is unchanged.
+
+## Cycle 2: replicated nonlinear reporting
+
+The three seeds reach 85.5–90.0% seen-content reporting, but only 60.2–70.3%
+unavailable and 52.1–62.1% paired reporting. Joint action/report donor following
+replicates at 81.6–84.1%. No seed passes the complete assay. Ten of fifteen gates
+pass on every seed; nonlinearity does not resolve availability reporting with
+128 fitting contexts.
+
+The learned history observer remains weak (44.6–47.3% balanced accuracy), despite
+perfect oracle access. Untrained-state reporters reach 61.7–69.1%; action scores
+reach 78.6–82.6%, versus 72.9–79.6% for state. These controls prevent interpreting
+the fitted state reporter as privileged introspection.
+
+`scripts/summarize_sufficiency.py` reconstructs predictions from saved checkpoints
+and adds 2,000-resample context-cluster intervals. Entire content/status groups
+are resampled, preserving paired histories and avoiding pseudoreplication of the
+six identical unseen inputs per context. Intervals are descriptive, conditional
+on each fitted system; they do not change gates or measure between-seed uncertainty.
+Four dedicated tests cover ordering, pairing integrity, determinism, and intervals.
+
+Artifact: `audits/report_sufficiency_gru_fit128_multiseed.json`, with all three
+source artifacts linked. The prespecified larger-fitting-set comparison uses the
+same frozen agents, validation histories, and test histories.
