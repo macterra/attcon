@@ -4,7 +4,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 
 - [x] Freeze completion criteria, experiment matrix, and scientific stopping rule.
 - [x] Validate prospective environments, analytic policies, and equal-capacity controls.
-- [ ] Run serial fitted controllers across architectures and seeds.
+- [x] Run serial fitted controllers across architectures and seeds.
 - [ ] Run routed fitted controllers across architectures and seeds.
 - [x] Run reward-only exploration and native answer/decline evaluation.
 - [ ] Fit independent reports and run controlled report/policy interventions.
@@ -47,3 +47,13 @@ by0.02. Some policies decline; this is a learned payoff decision, not evidence
 of introspective source reporting. Both registered exploration tasks are now
 complete, including all negative comparisons.
 Source: [routing exploration](../audits/exploration_routing_summary.json).
+
+## Serial RNN replication
+
+The nearly parameter-matched RNN passes fresh-answer and forced-verification
+viability in all seeds/costs, but policy returns are lower and seed-sensitive.
+State returns range0.5629–0.7592,0.4643–0.6161,and0.4443–0.4877 at ascending costs.
+Only one seed at cost0.4 passes the fair gain; no complete support gate replicates.
+This is a viable second architecture with weaker acquisition under this fixed
+recipe, not evidence that gating is necessary. Serial cross-architecture work
+is complete. Source: [serial RNN summary](../audits/prospective_serial_rnn_summary.json).
