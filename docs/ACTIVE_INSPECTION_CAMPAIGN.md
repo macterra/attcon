@@ -7,7 +7,7 @@ Fixed protocol: [ACTIVE_INSPECTION_PROTOCOL.md](ACTIVE_INSPECTION_PROTOCOL.md).
 | 1 | Environment, partitions, and analytic policy | Complete |
 | 2 | Three-controller pilot, seed 2309 | Complete |
 | 3 | Replication, seeds 2333 and 2351 | Complete |
-| 4 | Recurrent-history and choice-preserving interventions | Pending |
+| 4 | Recurrent-history and choice-preserving interventions | Complete |
 | 5 | Frozen-controller verified-information reporting | Pending |
 | 6 | Untouched stress contexts and consolidation | Pending |
 
@@ -71,3 +71,22 @@ Source: [replication](../audits/acquisition_multiseed.json). Four summary tests
 reject duplicate seeds, unequal initialization, and forged gates, and preserve
 the negative conclusion. The underlying artifacts retain every checkpoint
 selection, loss trace, conditional policy metric, and paired context interval.
+
+## Cycle 4
+
+Resetting initial recurrent state reduces mean return by 0.2002–0.2686 across
+seeds. Restoring the state restores every answer, inspection count, visited-stage
+mask, and reward. The learned controllers therefore depend causally on history
+in this task; reset is a broad lesion and does not isolate an access mechanism.
+
+The fitted fresh-versus-stale direction, projected out of the answer head's row
+space, causes **zero initial inspection switches and zero return changes** in
+all three seeds. Matched random controls cause 0–1.0% switches and small reward
+losses. Maximum initial answer-logit residual is below 3.9e-6; all restoration
+checks pass. This provides no evidence that this fitted availability direction
+regulates inspection beyond the answer logits. We retain the null result.
+
+Source: [interventions](../audits/acquisition_interventions.json). Paired
+condition alignment and answer-null-space tests pass; the 118-test suite passed.
+Synthetic perturbations retain environmental reward accounting, but their
+responses are not verified introspective access reports.
