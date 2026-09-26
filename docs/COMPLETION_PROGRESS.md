@@ -84,3 +84,13 @@ policy effect is not selective evidence of beneficial access monitoring.
 The cross-architecture result is a decodable prospective cue, not a replicated
 fair-report or fair-control advantage.
 Source: [serial RNN reporting](../audits/prospective_reporting_serial_rnn_summary.json).
+
+## Routing GRU fitted replication
+
+All three GRUs learn effective sensor selection. State returns range0.8509–0.8643,
+0.7509–0.7643,and0.6509–0.6643 at ascending costs. Task viability and advantages
+over never inspecting and either fixed sensor pass in all seeds/costs. No state
+controller reaches the0.02 fair-cue advantage at any cost. This confirms the
+need to represent prospective information quality, but not a benefit beyond a
+comparator given that same quality information.
+Source: [routing GRU summary](../audits/prospective_routing_gru_summary.json).
