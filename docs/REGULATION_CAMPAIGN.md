@@ -9,7 +9,7 @@ Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 | 3 | Near-parameter-matched RNN comparison | Complete |
 | 4 | Confidence and choice-preserving intervention controls | Complete |
 | 5 | Reward-trained inspection pilot | Complete |
-| 6 | Inspection replication and causal sensitivity | Pending |
+| 6 | Inspection replication and causal sensitivity | Complete |
 
 All results, including failures, will be retained. Report fitting and policy
 learning remain separate from agent training. The earlier reporting campaigns and
@@ -108,3 +108,70 @@ external one-step reward learning, not endogenous recurrent regulation.
 Source: [inspection pilot, delay-9 stress, null fits, and paired intervals](../audits/inspection_seed2101.json).
 Validation: four focused tests cover reward accounting, context resampling,
 fit-only normalization/frozen agents, and action/confidence invariance; all pass.
+
+## Cycle 6: inspection replication and causal sensitivity
+
+The state policy loses to both learned comparators at every cost in all three
+seeds. State-minus-action return ranges are -0.0564 to -0.0323 (cost 0.2),
+-0.0581 to -0.0441 (0.4), and -0.0385 to -0.0214 (0.6). All three agents satisfy
+task viability, but none clears any complete inspection-advantage cost gate.
+The gate remains unchanged; no costs or seeds were dropped.
+
+Choice-preserving availability transplants switch state-policy decisions in
+4.4–12.5% of seen cases across seeds/costs, versus 0.8–4.4% for matched random
+controls. Both answer-to-inspect and inspect-to-answer changes are retained.
+Action/confidence policies make no decision switches, logit residuals pass, and
+restoration returns all decisions to baseline. This demonstrates additional state
+sensitivity without showing that synthetic-lesion responses improve reward.
+
+Sources: [inspection replication](../audits/inspection_multiseed.json),
+[policy interventions](../audits/inspection_interventions.json),
+[machine-readable campaign summary](../audits/regulation_campaign.json).
+All earlier artifacts and the Stage 8 audit are retained unchanged.
+
+## What remains
+
+Delay robustness is substantially better. Full reporting support remains unmet,
+and useful regulation beyond action confidence remains unsupported. The next
+substantive experiment should couple information acquisition to a recurrent
+policy in the environment, distinguish fresh, stale, and missing information,
+and predeclare matched confidence/action controls. Fit any access-report head
+only after task/control learning. Use fresh contexts and seeds for confirmation,
+and require a reward benefit as well as report sensitivity before advancing the
+regulation claim. These are proposed next steps, not completed results.
+
+## Reproduction
+
+From the repository root, rebuild agents/reporters before dependent assays.
+Checkpoints live locally under `outputs/regulation/` and are not versioned; the
+JSON results, seeds, source hashes, settings, and dataset hashes are versioned.
+The fixed protocol is immutable: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
+
+```bash
+for seed in 2101 2111 2129; do
+  for recipe in fixed variable; do
+    .venv/bin/python scripts/train_regulation.py --seed "$seed" --recipe "$recipe" --out "audits/regulation_gru_${recipe}_seed${seed}.json"
+  done
+  .venv/bin/python scripts/train_regulation.py --seed "$seed" --recipe variable --architecture rnn_matched --out "audits/regulation_rnn_variable_seed${seed}.json"
+  .venv/bin/python scripts/train_inspection.py "audits/regulation_gru_variable_seed${seed}.json" --out "audits/inspection_seed${seed}.json"
+done
+for recipe in fixed variable; do
+  .venv/bin/python scripts/summarize_history_reporting.py audits/regulation_gru_${recipe}_seed*.json --out "audits/regulation_gru_${recipe}_multiseed.json" --audit-name "regulation_gru_${recipe}_multiseed"
+done
+.venv/bin/python scripts/summarize_history_reporting.py audits/regulation_rnn_variable_seed*.json --out audits/regulation_rnn_variable_multiseed.json --audit-name regulation_rnn_variable_multiseed
+.venv/bin/python scripts/compare_delay_training.py --fixed audits/regulation_gru_fixed_seed*.json --variable audits/regulation_gru_variable_seed*.json --out audits/regulation_delay_replication.json
+.venv/bin/python scripts/compare_regulation_architectures.py --gru audits/regulation_gru_variable_seed*.json --rnn audits/regulation_rnn_variable_seed*.json --out audits/regulation_architecture_comparison.json
+.venv/bin/python scripts/audit_regulation_interventions.py audits/regulation_gru_variable_seed*.json --out audits/regulation_report_interventions.json
+.venv/bin/python scripts/summarize_inspection.py audits/inspection_seed*.json --out audits/inspection_multiseed.json
+.venv/bin/python scripts/audit_inspection_interventions.py audits/inspection_seed*.json --out audits/inspection_interventions.json
+.venv/bin/python scripts/summarize_regulation_campaign.py
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python -m unittest discover -s tests -v
+```
+
+Validation also rejects duplicate seeds, changed source fingerprints, and
+unearned inspection gate passes. Context-bootstrap intervals are pointwise and
+conditional on a trained system; they are not population-level uncertainty.
+
+Final validation: all 104 unit tests passed. Compilation, whitespace checks,
+source fingerprints, comparison controls, and unchanged Stage 8/protocol checks
+passed. No paid model APIs were used.

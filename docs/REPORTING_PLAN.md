@@ -179,10 +179,16 @@ RNN recipe fails task viability; extra delays weaken both choices and reports.
 Lesion-induced unavailable reports provide bounded sensitivity, with residual
 incorrect-value reports and no proof of inaccessible content.
 
-Next: establish variable-delay task viability and a parameter-aware architecture
-comparison; compare state and action/entropy responses to the same lesions. Keep
-all reporting gates and the separation of reporter supervision from agent training.
-Reliable usable-access reporting and endogenous inspection remain open.
+The [delay and inspection campaign](REGULATION_CAMPAIGN.md) completes those
+follow-ups. Variable-delay training restores choice robustness across three
+seeds, while full reporting gates remain unmet. A nearly parameter-matched RNN
+fails viability. Choice-null-space transplants isolate modest additional report
+and policy sensitivity, but reward-trained action/confidence inspection policies
+outperform full-state policies at every cost and seed. Keep all reporting gates
+and the separation of reporter supervision from agent/control training. Next:
+learn recurrent information acquisition in the environment with fresh, stale,
+and missing information; require a replicated reward advantage beyond confidence
+before claiming useful regulation. Reliable access reporting remains open.
 
 ## Reproduction and validation
 

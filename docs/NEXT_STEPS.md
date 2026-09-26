@@ -16,6 +16,17 @@ This checklist turns the revised roadmap into a working execution order. The goa
 
 ## Current Focus: Reporting From Task-Trained Internal State
 
+The latest completed work is the [delay and inspection campaign](REGULATION_CAMPAIGN.md).
+Variable-delay GRUs recover delay robustness across three seeds, but unavailable
+and paired reporting still fail. A nearly parameter-matched RNN fails task
+viability. State reports and reward-trained inspection policies respond to
+choice-preserving perturbations, yet action/confidence policies outperform
+full-state inspection at every tested cost and seed. The next experiment should
+learn recurrent information acquisition from environmental rewards, with fresh,
+stale, and missing information and preregistered confidence/action comparators.
+Require a reward benefit, faithful reports, and independent replication before
+promoting regulation claims. Stage 8 remains unchanged.
+
 The completed follow-up is the [six-cycle reporting campaign](REPORTING_CAMPAIGN.md),
 covering matched nonlinear reporters, replication, reporting-data coverage,
 another recurrent architecture, delay stress, and selective-erasure diagnostics.
@@ -42,8 +53,9 @@ reducing seen-content accuracy. Its gates also remain unmet. The subsequent nonl
 campaign reaches 91.4–94.8% seen reporting with more fitting data but still only
 76.6–78.1% unavailable reporting. RNN task viability and delay generalization fail;
 targeted content lesions produce unavailable reports with residual incorrect-value
-reports. Next: variable-delay task viability, a parameter-aware architecture
-comparison, and state-versus-action/entropy lesion controls before stronger claims.
+reports. Those follow-ups are now completed in the delay and inspection campaign
+above; its remaining bottleneck is useful, recurrent information acquisition
+beyond confidence and faithful access reporting.
 
 ## Later Convergence Work: Remove Imposed Stage 8 Mechanisms
 

@@ -30,6 +30,15 @@ RNN fails task viability, and extra delays degrade performance. Selective conten
 lesions elicit unavailable reports but leave incorrect-value reports in some cases.
 These are bounded diagnostic results; full reporting support and Stage 8 remain unmet.
 
+The latest [delay and inspection campaign](docs/REGULATION_CAMPAIGN.md) replicates
+variable-delay training gains: choice accuracy at nine extra blanks rises from
+53.3–59.5% to 91.4–94.8%. Full reporting gates still fail, and a nearly
+parameter-matched RNN remains below task viability. Choice-preserving
+interventions reveal modest additional state sensitivity, but reward-trained
+inspection policies using action scores or confidence outperform full-state
+policies at every cost in all three seeds. Useful regulation beyond confidence
+and endogenous recurrent information seeking remain open; Stage 8 is unchanged.
+
 The benchmark is a small cue-guided selective-search task on a `5x5` grid. Each scene contains visible cell types plus hidden target/digit information that only becomes useful through attention.
 
 ## Benchmark Mechanism (discrete glimpse)
