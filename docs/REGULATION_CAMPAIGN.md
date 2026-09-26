@@ -7,7 +7,7 @@ Fixed protocol: [REGULATION_PROTOCOL.md](REGULATION_PROTOCOL.md).
 | 1 | Paired fixed/variable-delay GRU pilot, seed 2101 | Complete |
 | 2 | Paired replication, seeds 2111 and 2129 | Complete |
 | 3 | Near-parameter-matched RNN comparison | Complete |
-| 4 | Confidence and choice-preserving intervention controls | Pending |
+| 4 | Confidence and choice-preserving intervention controls | Complete |
 | 5 | Reward-trained inspection pilot | Pending |
 | 6 | Inspection replication and causal sensitivity | Pending |
 
@@ -65,3 +65,24 @@ Sources: [architecture comparison](../audits/regulation_architecture_comparison.
 [RNN replication](../audits/regulation_rnn_variable_multiseed.json).
 Validation: comparison checks pass; full suite passes 100 tests, including the
 forthcoming intervention and reward-policy implementation checks.
+
+## Cycle 4: matched lesions and choice-preserving controls
+
+All three GRUs pass the choice-invariance check: maximum logit residual is below
+3.4e-6 (registered tolerance 1e-5), action/entropy reports remain identical, and
+subtracting the perturbation restores every report. The fitted availability
+projection changes state reports on 4.0–6.3% of seen cases, versus 0.1–1.7% for
+the norm-matched random null-space control. This isolates modest additional
+state-readout sensitivity beyond choice logits; synthetic perturbations have no
+validated access ground truth.
+
+Full content erasure produces unavailable state reports on 59.1–69.3% of seen
+cases, but also incorrect-value reports on 23.8–31.9%. Action-score and entropy
+reporters become unavailable more often (93.2–96.0% and 96.5–99.6%). The shared
+initially-correct cohorts contain 590–616 cases per seed, and retain substantial
+incorrect-value reporting after erasure. Thus erasure sensitivity alone does not
+distinguish a reliable access report from confidence-related behavior.
+
+Source: [all strengths, controls, cohorts, and restoration checks](../audits/regulation_report_interventions.json).
+Validation: five focused tests cover pairing, rank deficiency, choice invariance,
+matched norms, and invalid directions; all pass within the 100-test suite.
