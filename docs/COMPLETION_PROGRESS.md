@@ -7,7 +7,7 @@ Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 - [x] Run serial fitted controllers across architectures and seeds.
 - [x] Run routed fitted controllers across architectures and seeds.
 - [x] Run reward-only exploration and native answer/decline evaluation.
-- [ ] Fit independent reports and run controlled report/policy interventions.
+- [x] Fit independent reports and run controlled report/policy interventions.
 - [ ] Evaluate reserved stress contexts.
 - [ ] Validate artifact manifest, reproduction entry point, and full test suite.
 - [ ] Publish final evidence map and completed-project status, preserving failures.
@@ -104,3 +104,21 @@ the fair comparator. No task/architecture group clears all registered costs and
 seeds. The protocol's prerequisite for promoting independent-content convergence
 is therefore not met; the earlier unforced-convergence evidence stays unchanged.
 Source: [routing RNN summary](../audits/prospective_routing_rnn_summary.json).
+
+## Routing reports, causal coupling, and completed correction
+
+Routing GRU quality transplants change86.7–100% of quality reports and89.1–100%
+of sensor choices, versus0.3–4.4% choice changes under matched random directions.
+Initial answer logits remain invariant, and restoration succeeds. Returns fall
+because the actual sensor quality is unchanged: the transplanted remembered cue
+misdirects acquisition. This is strong bounded evidence that prospective quality
+is shared by an external report and a control decision in these GRUs.
+
+RNN policy changes are smaller (6.5–25.5%) and one seed misses the quality-report
+accuracy gate. All12 state systems have valid answer-preservation/restoration
+checks, but none outperforms the corrected full-logit-plus-cue reporter. Thus the
+registered report superiority was an omitted-identity confound, not evidence
+for a uniquely introspective readout. The corrected comparisons are expressly
+post-registration diagnostics on reused tests.
+Sources: [routing GRU reports](../audits/prospective_reporting_routing_gru_summary.json),
+[routing RNN reports](../audits/prospective_reporting_routing_rnn_summary.json).
