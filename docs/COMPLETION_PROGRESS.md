@@ -1,4 +1,8 @@
-# Final evaluation progress
+# Earlier informational-state evaluation progress
+
+This records the earlier task-information study. The current theory-facing
+[attention-model evaluation](ATTENTION_MODEL_RESULTS.md) has its own
+[progress record](ATTENTION_MODEL_PROGRESS.md).
 
 Protocol: [COMPLETION_PROTOCOL.md](COMPLETION_PROTOCOL.md).
 

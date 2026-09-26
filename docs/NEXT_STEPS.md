@@ -1,31 +1,27 @@
-# Study closure and research extensions
+# Current outcome and further research
 
-> **Theory and goal correction (2026-09-26).** The theory under test is that the
-> attention-control model is the source of qualia. The intended evidence combines
-> faithful reports of that model's state with independently specified features of
-> consciousness reports. The prior study established neither that its task reports
-> tracked this model nor that correspondence. Its matrix is complete; the actual
-> theory-testing objective remains unresolved. See the
-> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
+The [attention-model evaluation](ATTENTION_MODEL_RESULTS.md) is complete: all
+registered reporters, interventions, controls, and replay checks have run. The
+learned inspection model contributes to attention and is partially reportable,
+but robust complete-report fidelity and independent phenomenological
+correspondence remain unsupported. The source-of-qualia hypothesis is unresolved.
 
-The bounded final evaluation is complete; see [PROJECT_RESULTS.md](PROJECT_RESULTS.md)
-and the [completion audit](../audits/project_completion.json). All registered
-experiments, corrections, stress evaluations, replay checks, and deliverables are
-finished. Accurate reporting through trained internal-state readouts has bounded
-positive support. The reporting goal does not require conscious access to be
-necessary for performance or a full-state advantage over simpler reports. Stronger
-access-monitoring and Stage 8 hypotheses remain separate and unsupported.
+Further work needs two explicit decisions, not more generic reporting cycles:
 
-If reporting work is extended, the relevant priorities are native reports of
-content and availability, more reliable unavailable-content reports in the earlier
-paired-history assay, and direct reporting evaluations under memory damage and
-new contexts. These would extend the scope and reliability of reporting; a control
-advantage or Stage 8 promotion is not a prerequisite.
+1. Improve fidelity to this model on held-out interventions while preserving the
+   current failed results. Direct telemetry already works; learned generalization
+   is the measured limitation.
+2. Specify a consciousness-report distinction that a supervised inspection
+   estimator plus a decoder does not already explain. The present module lacks
+   identified presence, qualitative character, and self-attribution mechanisms.
+   Adding those words to reports would not establish the proposed correspondence.
 
-The historical checklist below preserves broader scientific ambitions and prior
-work. Its unchecked hypotheses are not represented as achieved. Additional
-research would require a new protocol; it is not an unfinished deliverable from
-the completed finite study.
+Any extension requires a new protocol and fresh confirmation data. The completed
+[plan](ATTENTION_MODEL_REPORTING_PLAN.md) and [progress](ATTENTION_MODEL_PROGRESS.md)
+record the bounded study; completion is not a positive theoretical verdict.
+
+The historical checklist below preserves the broader program and old findings.
+Its unchecked items are not prerequisites that replace the actual theory question.
 
 > **Post-rehab note.** The Priority 1 audit machinery below was originally exercised on a
 > non-functional checkpoint (under the old fully-soft recipe the recurrent controller collapsed

@@ -1,32 +1,30 @@
 # attcon
 
-> **Theory and goal correction (2026-09-26).** The theory under test is that the
-> attention-control model is the source of qualia. The intended evidence combines
-> faithful reports of that model's state with independently specified features of
-> consciousness reports. The prior study established neither that its task reports
-> tracked this model nor that correspondence. Its matrix is complete; the actual
-> theory-testing objective remains unresolved. See the
-> [new attention-model reporting plan](docs/ATTENTION_MODEL_REPORTING_PLAN.md).
+Attcon tests the theory that **the attention-control model is the source of qualia**.
+The proposed evidence combines accurate reports of that model's state with
+independently specified features of consciousness reports.
 
-`attcon` studies whether a system can accurately report its internal informational
-state, using small recurrent attention and memory tasks.
+**The registered attention-model evaluation is complete; the theory remains
+unresolved.** We identified the controller's learned inspection-history model,
+verified its causal effect on attention, and tested reports on three independent
+controller seeds. Entire learned reports are correct on 82.36–88.80% of ordinary
+held-out snapshots. Reports often follow the model when it disagrees with actual
+history, but complete-report criteria and intervention robustness fail. Direct
+telemetry is exact; consciousness-like structure beyond authored report semantics
+and language is not established.
 
-**Status: accurate reporting through trained internal-state readouts is demonstrated
-in bounded settings; the final evaluation is complete.** Across six final GRU
-systems, readouts report verified values and unverified status with 100% accuracy,
-and remembered sensor quality with 96.0–100% accuracy on held-out contexts.
-The [final results](docs/PROJECT_RESULTS.md) cover 48 trained controllers across
-prospective verification, sensor routing, and reward-only exploration.
+- [Current results](docs/ATTENTION_MODEL_RESULTS.md) and [preprint](docs/PREPRINT.md).
+- [State specification](docs/ATTENTION_MODEL_STATE_SPEC.md) and [registered protocol](docs/ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
+- [Reproduce or verify](docs/ATTENTION_MODEL_REPRODUCTION.md): archived controllers,
+  all 15 reporters, complete case records, exact replay, and 160 passing tests.
+- [Documentation site](https://macterra.org/attcon/) and [index](docs/index.md).
 
-The reporting goal does not require conscious access to be necessary for task
-performance, or full-state reports to outperform simpler reports. The corrected
-comparator matches or exceeds the state readouts; that limits claims of superiority
-without negating reporting accuracy. These are primarily supervised external
-readouts of frozen internal states. Native reporting was limited to answering or
-declining, and generalization is not uniformly reliable. Stage 8 is a separate,
-stronger research question and remains not met. The evaluation includes 149 passing
-tests, a checkpoint archive, and
-[one-command verification/reproduction](docs/FINAL_REPRODUCTION.md).
+The earlier [informational-state study](docs/INFORMATIONAL_STATE_RESULTS.md)
+reported task content and sensor quality. It remains related work, not evidence
+that those reports described an attention-control model. The broader Stage 8
+program remains a separate, unsupported convergence hypothesis.
+
+## Historical benchmark and research program
 
 The research roadmap treats Stages 1 through 3 as the sequential foundation, then splits into parallel lines of work around self-state tracking, reportability, binding, counterfactual access, higher-order state, broadcast, and perturbational dynamics. The repo now includes a bounded Stage 7 local-report route plus seed-robust remembered-content recovery under explicit content-memory regularization; powered external LLM and VLM variants remain negative on the current v3 interface. The executable Stage 8 audit is still not met (`3` pass, `5` partial, `0` fail): engineered same-content overlap and temporal-relay transfer are robust inside their assays, but the decisive relational/shared-state mechanisms are imposed.
 
@@ -97,7 +95,8 @@ Browse the [documentation site](https://macterra.org/attcon/) or the
 [documentation index](docs/index.md).
 
 - [PROJECT_RESULTS.md](docs/PROJECT_RESULTS.md): final reporting accuracy, evidence, and limitations
-- [FINAL_REPRODUCTION.md](docs/FINAL_REPRODUCTION.md): verify archived metrics or reproduce the final study
+- [ATTENTION_MODEL_REPRODUCTION.md](docs/ATTENTION_MODEL_REPRODUCTION.md): reproduce the current attention-model study
+- [FINAL_REPRODUCTION.md](docs/FINAL_REPRODUCTION.md): reproduce the earlier informational-state study
 - [REPORTING_CAMPAIGN.md](docs/REPORTING_CAMPAIGN.md): historical six-cycle reporting experiments and controls
 - [REPORTING_PLAN.md](docs/REPORTING_PLAN.md): historical reporting-first experiment plan, frozen criteria, and results
 - [SPEC.md](docs/SPEC.md): original conceptual spec and motivation
@@ -157,7 +156,7 @@ Honest current status by stage (discrete-attention checkpoint):
 
 - **Stage 2 / 3** (closed-loop control, explicit attention modeling): supported, and Stage 3 is **robust** — the predictive-probe and intervention checks pass on every seed (`stage3_multi_seed` 1.0/1.0) and the `stage3_checkpoint_family` verdict is `robust` across the default and `0.25` reduced-shaping checkpoints.
 - **Stage 4A** (engineered self-state tracking): supported; the native self-state head reports the explicit inspected-cell map at `~0.99` cell accuracy.
-- **Stage 4B** (learned self-model feedback): **not** part of the base config — the destabilising policy-feedback path is disabled, and learned-self-model *emergence* is studied as its own experiment.
+- **Stage 4B** (learned self-model feedback): the auxiliary feedback loss is disabled in the base config, but the forward path remains active. The [new state audit](docs/ATTENTION_MODEL_STATE_SPEC.md) corrects the earlier claim that the path itself was disabled. Learned-self-model *emergence* remains a separate experiment.
   The task-only emergence audit finds weak decodable inspection-history structure, but its causal
   direction has policy-inconsistent semantics: increasing "already inspected" increases attention
   to that cell across four intervention scales, so Stage 4B remains unsupported.

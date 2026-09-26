@@ -1,69 +1,57 @@
 ---
 layout: default
-title: Attcon — Internal-state reporting
+title: Attcon — Attention models and the qualia hypothesis
 ---
 
-# Attcon: reporting attention-control model state
+# Attcon: attention models and the qualia hypothesis
 
-> **Theory and goal correction (2026-09-26).** The theory under test is that the
-> attention-control model is the source of qualia. The intended evidence combines
-> faithful reports of that model's state with independently specified features of
-> consciousness reports. The prior study established neither that its task reports
-> tracked this model nor that correspondence. Its matrix is complete; the actual
-> theory-testing objective remains unresolved. See the
-> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
+The theory under test is that **the attention-control model is the source of
+qualia**. The proposed evidence is accurate reporting of that model's state with
+independently specified features of consciousness reports.
 
-Attcon tests whether a system can accurately report its internal informational
-state, using small recurrent attention and memory tasks.
+**The registered evaluation is complete; theoretical support remains unresolved.**
+We identified a learned inspection-history model used in attention selection and
+measured both its causal role and reporting fidelity. Complete learned reports
+reach 82.36–88.80% ordinary accuracy but fail the registered criterion and degrade
+under interventions. Authored report structure does not independently establish
+consciousness-like reporting.
 
-**The bounded evaluation is complete, with positive evidence for accurate reporting
-through trained internal-state readouts.** Across six final GRU systems, readouts
-report verified values and unverified status with 100% accuracy, and remembered
-sensor quality with 96.0–100% accuracy on held-out contexts.
+## Current study
 
-These results concern supervised readouts trained on frozen internal states.
-The agent's native reporting was limited to answering or declining. Accurate
-reporting does not require superiority over simpler reports or conscious access
-to be necessary for task performance. Broader consciousness and Stage 8 convergence
-claims remain separate, unsupported hypotheses.
+- [Results and the explanatory crux](ATTENTION_MODEL_RESULTS.md).
+- [Project results overview](PROJECT_RESULTS.md).
+- [Updated preprint](PREPRINT.md).
+- [Reproduction and verification](ATTENTION_MODEL_REPRODUCTION.md).
+- [Research plan](ATTENTION_MODEL_REPORTING_PLAN.md) and [completed progress](ATTENTION_MODEL_PROGRESS.md).
+- [Identified model and state specification](ATTENTION_MODEL_STATE_SPEC.md).
+- [Registered fidelity and correspondence protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
+- [Numerical correction record](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
+- [Remaining research questions](NEXT_STEPS.md).
+- [Source code, cases, and checkpoints](https://github.com/macterra/attcon).
 
-## Start here
+## Earlier informational-state evaluation
 
-- [Active attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md): the corrected goal, state specification, and fidelity tests.
-- [Final results](PROJECT_RESULTS.md): reporting accuracy, evidence, comparator correction, and limitations.
-- [Verify or reproduce the study](FINAL_REPRODUCTION.md): archived checkpoints, metric replay, and full experiment commands.
-- [Evaluation progress](COMPLETION_PROGRESS.md): completed experiments and links to their evidence.
-- [Study closure and optional extensions](NEXT_STEPS.md): remaining research questions, distinguished from completed work.
-- [Source code and artifacts](https://github.com/macterra/attcon): installation, implementation, versioned audits, and checkpoint archive.
+These experiments reported task information and sensor quality. They did not
+establish that their reports described the attention-control model's state.
 
-## Final evaluation design
-
-- [Registered completion protocol](COMPLETION_PROTOCOL.md): the original experiment matrix and stopping rules.
-- [Reporting comparator correction](COMPLETION_CORRECTIONS.md): the omitted-answer-identity confound and corrected comparison.
-
-The registered gates and experimental records retain their original outcomes.
-The final results distinguish reporting accuracy from the stronger comparative
-and convergence hypotheses tested alongside it.
+- [Earlier results](INFORMATIONAL_STATE_RESULTS.md).
+- [Reproduction](FINAL_REPRODUCTION.md) and [progress](COMPLETION_PROGRESS.md).
+- [Registered protocol](COMPLETION_PROTOCOL.md) and [comparator correction](COMPLETION_CORRECTIONS.md).
 
 ## Historical reporting campaigns
 
-These reports preserve results and limitations at each campaign's closeout.
-Their proposed follow-ups were subsequently evaluated; use the final results
-above for the current assessment.
-
-1. [Reporting-first plan and paired-history results](REPORTING_PLAN.md).
-2. [Availability calibration results](REPORTING_CALIBRATION_RESULTS.md) and [protocol](REPORTING_CALIBRATION.md).
+1. [Paired-history plan and results](REPORTING_PLAN.md).
+2. [Calibration results](REPORTING_CALIBRATION_RESULTS.md) and [protocol](REPORTING_CALIBRATION.md).
 3. [Six-cycle reporting campaign](REPORTING_CAMPAIGN.md) and [protocol](REPORTING_SIX_CYCLE_PROTOCOL.md).
-4. [Delay and information-seeking campaign](REGULATION_CAMPAIGN.md) and [protocol](REGULATION_PROTOCOL.md).
+4. [Delay and inspection campaign](REGULATION_CAMPAIGN.md) and [protocol](REGULATION_PROTOCOL.md).
 5. [Recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md) and [protocol](ACTIVE_INSPECTION_PROTOCOL.md).
 
-## Original benchmark and broader research program
+## Original benchmark and broader program
 
-- [Original design specification](SPEC.md).
-- [Historical roadmap and evidence standards](ROADMAP.md).
-- [Research preprint](PREPRINT.md).
-- [Base benchmark audit status](PRIORITY1_AUDIT_STATUS.md).
-- [Archived roadmap feedback](FEEDBACK.md).
+- [Original specification](SPEC.md).
+- [Historical roadmap](ROADMAP.md).
+- [Base benchmark audit](PRIORITY1_AUDIT_STATUS.md).
+- [Archived review feedback](FEEDBACK.md).
 
-The broader roadmap supplies context and optional research directions. Its Stage 8
-criteria are not prerequisites for success on the reporting-accuracy goal.
+Historical gates retain their outcomes. Stage 8 and necessity for task performance
+are not substitutes for the current reporting and theory-facing questions.

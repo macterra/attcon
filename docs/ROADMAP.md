@@ -1,11 +1,10 @@
-# Roadmap Toward Consciousness-Relevant Evidence
+# Historical roadmap toward consciousness-relevant evidence
 
-This document records the broader historical research program. The clarified
-project goal is to test accurate reporting of internal informational state. That
-goal has bounded positive support from trained external readouts; see the
-[final results](PROJECT_RESULTS.md). It does not require conscious access to be
-necessary for task performance or reports to beat simpler alternatives. The
-stronger consciousness-relevant criteria below address separate hypotheses.
+The current theory under test is that the attention-control model is the source
+of qualia. The [completed evaluation](ATTENTION_MODEL_RESULTS.md) tested fidelity
+to an identified learned inspection model and limited report correspondences.
+The theory remains unresolved. The broader staged program below is historical;
+its Stage 8 criteria are separate from the current experiment.
 
 The project already supports a meaningful claim about **closed-loop attention control**. The historical roadmap proposed a separate, more ambitious extension: to build an experimental methodology that could eventually count as evidence for **minimal consciousness-like processing** in artificial systems.
 
@@ -337,13 +336,15 @@ Current status in this repo:
 
 Current assessment:
 
-- implemented: yes, for the hidden-self-model feedback path (available but disabled in the base config)
-- positive evidence: not on the current base checkpoint
-- supported: no. The base config disables the Stage 4B causal policy-feedback path because, with the
-  discrete glimpse readout, that path destabilises base-task learning. `learned_self_modeling` is
-  therefore not supported on the base checkpoint. The architecture can still learn a hidden self-model
-  under the dedicated objective, but that is now studied as its own experiment rather than baked into
-  the base benchmark.
+- implemented: yes. The auxiliary feedback loss is disabled in the base config;
+  the forward path remains active and saved weights are nonzero. The earlier
+  interpretation of that setting as disabled feedback was incorrect.
+- positive evidence: the [new attention-model study](ATTENTION_MODEL_RESULTS.md)
+  confirms a causal contribution from the learned inspection estimate in three
+  content-memory-v3 controllers, with partial reporting fidelity.
+- supported: the original Stage 4B gate outcomes have not been recomputed or
+  upgraded. A causal contribution under inspection supervision does not establish
+  the historical spontaneous-emergence claim.
 - consciousness-evidence status: not supported until comparable self-modeling appears without a direct self-model objective and survives comparator tests
 
 Interpretation:

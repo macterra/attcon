@@ -1,368 +1,300 @@
-# Accurate Reporting from Internal States in Small Recurrent Systems
+# Reporting a Learned Attention-Control Model: Fidelity, Dissociation, and the Qualia Hypothesis
 
-> **Theory and goal correction (2026-09-26).** The theory under test is that the
-> attention-control model is the source of qualia. The intended evidence combines
-> faithful reports of that model's state with independently specified features of
-> consciousness reports. The prior study established neither that its task reports
-> tracked this model nor that correspondence. Its matrix is complete; the actual
-> theory-testing objective remains unresolved. See the
-> [new attention-model reporting plan](ATTENTION_MODEL_REPORTING_PLAN.md).
-
-Updated 2026-09-26. This manuscript describes the completed Attcon reporting
-study. It replaces the earlier attention-control-centered draft; that benchmark
-and the broader theory program remain documented in the [original specification](SPEC.md)
-and [historical roadmap](ROADMAP.md).
+Completed evaluation, 2026-09-26. This manuscript supersedes the earlier
+informational-state reporting paper. The [earlier study](INFORMATIONAL_STATE_RESULTS.md)
+is preserved as related work; its data and experimental records are unchanged.
 
 ## Abstract
 
-Can a system accurately report its internal informational state? We study this
-question using separately trained readouts of frozen recurrent agents in two
-synthetic information-acquisition tasks: sequential verification and sensor
-selection. The final evaluation comprises 36 fitted controllers across two
-architectures, three policy families, and three seeds, plus 12 controllers trained
-from experienced rewards. Reporters are fitted on 12 frozen full-state systems
-using contexts disjoint from agent training and held-out evaluation. Across all
-six GRU systems, verified-value and unverified-status reporting are 100% accurate,
-while remembered sensor-quality reporting is 96.04–100% accurate. Serial RNN
-quality reports reach 91.72–94.86%; routing RNN results are more variable at
-78.76–99.96%. A corrected comparator supplied with answer logits and the observed
-quality cue matches or exceeds the full-state report score in all 12 systems.
-This limits claims of comparative advantage without negating reporting accuracy.
-Answer-preserving quality interventions change 89.1–100% of routing GRU sensor
-choices, compared with 0.3–4.4% under matched random interventions, linking reported
-information to behavior. The findings support accurate reporting through trained
-internal-state readouts in these tasks. They do not establish independently
-learned native reports of the same distinctions, general introspection, or
-subjective experience. Necessity for task performance is a separate question
-from the reporting-accuracy goal.
+We examine the hypothesis that an attention-control model is the source of qualia
+through a proposed observable consequence: accurate reports of that model's state
+should exhibit relevant structure of consciousness reports. We distinguish state
+fidelity from phenomenological correspondence. In three previously trained
+recurrent controllers, we identify a learned inspection-history model whose output
+contributes directly to attention selection. Fifteen matched reporters are fitted
+on separate contexts and evaluated on ordinary states and controlled interventions.
+State-based reporters achieve 95.78–96.79% balanced inspection-belief accuracy and
+93.68–96.35% model-preference accuracy, but only 82.36–88.80% exact complete-report
+accuracy, below the registered 90% criterion. On cells where the model disagrees
+with physical inspection history, reports follow the model with 95.73–97.16%
+accuracy. Donor-state swaps change the next attended cell in 16.41–21.88% of cases,
+confirming the model's causal role. However, reporting generalization under
+isolated belief flips is poor. Direct state rendering is exact by construction;
+the trained reports and authored expressive interface do not independently
+establish consciousness-like structure. The study identifies and partially reports
+an actual attention-model state, improving the specificity of the proposed test,
+but leaves the source-of-qualia hypothesis underdetermined.
 
-## 1. Research question and scope
+## 1. Question and explanatory target
 
-The primary project goal is accurate reporting of internal informational states.
-We operationalize this through reports of remembered source quality and whether
-initial information contains a verified current value. These are measurable
-informational distinctions, rather than direct labels of conscious experience.
+The theory being tested is that the attention-control model is the source of
+qualia. The proposed evidence has two components: reports must faithfully track
+that specific model, and their contents and changes must exhibit independently
+specified features of consciousness reports. Generic task-memory decoding does
+not answer this question. Nor does merely producing experiential language.
 
-Three questions need separate answers:
+Webb and Graziano's attention schema account proposes that a simplified model of
+attention can ground subjective-awareness reports and explain dissociations
+between attention and its modeled state. Their proposal includes relationships
+among self, attention, and represented objects. [Webb and Graziano, 2015](https://grazianolab.princeton.edu/sites/g/files/toruqf3411/files/graziano/files/webb_graziano_2015_reprint.pdf).
+Lamme argues for separating attention from awareness, reinforcing the need to
+avoid treating an attention measurement as awareness by definition.
+[Lamme, 2003](https://dare.uva.nl/id/af484fea-9993-4995-bd30-05844513be12).
 
-1. **Accuracy:** can a trained reporter recover the specified information from
-   the agent's internal state on held-out contexts?
-2. **Causal involvement:** does manipulating the reported representation also
-   affect behavior while preserving other measured outputs?
-3. **Comparative advantage:** does access to the full state improve reporting or
-   control over simpler information sources?
+We use these sources to motivate a limited engineering test, not as a human
+phenomenology dataset. The operational correspondences are our interpretations,
+registered before the new report fits. A positive fidelity result alone cannot
+settle the theoretical claim. Conversely, fidelity does not require superiority
+over a simpler decoder with the same state, spontaneous emergence, or conscious
+access to be necessary for task performance.
 
-Accurate reporting does not require positive answers to the latter two questions.
-A simpler readout reporting equally accurately can identify information sufficient
-for the report. Likewise, useful task behavior does not require demonstrating
-that conscious access was necessary to produce it.
+## 2. Identifying the model
 
-The final experiment matrix was registered with additional comparative and causal
-criteria. After evaluation, the project's reporting-first interpretation was
-clarified. We retain the [original protocol](COMPLETION_PROTOCOL.md), its thresholds,
-and all gate outcomes. This manuscript distinguishes absolute reporting accuracy
-from those stronger criteria; it does not retrospectively relabel failed gates
-as passes.
+The original Attcon benchmark is a cue-guided selective-search task on a `5x5`
+grid. A recurrent controller allocates attention, reads a single cell through a
+straight-through glimpse, receives task information, and updates its state.
+Earlier work tested attention control and reporting of general task information.
+The latter produced accurate sensor-quality and verified-content readouts, but
+did not identify those variables as an attention-control model's state.
 
-## 2. Background and earlier experiments
+The current study returns to the original controller and identifies an existing
+learned inspection model:
 
-Attcon began with a cue-guided selective-search benchmark on a `5x5` grid. The
-implemented controller uses a soft attention policy and a straight-through
-single-cell glimpse. An earlier fully soft glimpse failed to learn the task;
-its results were superseded after that implementation was repaired. On the
-regenerated benchmark, recurrent and static baseline accuracy were 0.44 and 0.17,
-respectively, with chance at 0.10. Those results concern the original attention
-benchmark and are not the final reporting-study scores.
+```text
+hidden recurrent state h
+    -> hidden_self_model_head -> sigmoid -> inspection model m
+    -> policy_self_model_head(m) -> allocation contribution b
 
-Subsequent experiments tested reporting from task-trained memory. The
-[paired-history assay](REPORTING_PLAN.md) held final observations fixed while
-varying prior access. Three viable agents reached 94.8–95.7% held-out choice
-accuracy, but unavailable-content reports were only 57.8–68.0% accurate. A
-[calibration diagnostic](REPORTING_CALIBRATION_RESULTS.md) and
-[nonlinear reporting campaign](REPORTING_CAMPAIGN.md) improved some metrics
-without satisfying all original reporting criteria. These failures remain part
-of the evidence.
+attention logits = policy_head(h) + b
+```
 
-The [delay campaign](REGULATION_CAMPAIGN.md) improved temporal robustness, and
-the [recurrent acquisition campaign](ACTIVE_INSPECTION_CAMPAIGN.md) learned
-repeated inspection. Their results motivated the final study's separation of
-current answer confidence from remembered prospective sensor quality. The final
-positive reports use explicit environmental quality and validity cues; they do
-not establish that the earlier paired-history reporting problem was solved.
+The 25 values in m estimate which cells have been inspected. They were trained
+with inspection supervision. The output b is consumed in actual attention
+selection. This is a narrow learned model of attention history used for control;
+it is not the entire recurrent state or a complete model of experience.
+
+An inventory correction matters: a zero auxiliary policy-feedback loss weight
+does not disable this forward path. Saved weights are nonzero, and the causal
+audit confirms an effect on attention. The previous interpretation of that
+configuration as disabled feedback was incorrect.
+
+The tested outputs are m's thresholded inspection beliefs and the cell maximizing
+b. We call the latter the **model-preferred cell**, not the actual focus: the
+other policy contribution can determine a different final allocation. The
+[state specification](ATTENTION_MODEL_STATE_SPEC.md) fixes this distinction.
 
 ## 3. Methods
 
-### 3.1 Environments and data partitions
+### 3.1 Controllers and partitions
 
-Both final tasks use six possible answer values and fresh, stale, or missing
-initial information. Fresh information contains a valid current value; stale
-information contains an independent old value and an invalidation cue; missing
-information contains no initial value. A quality cue precedes the query. Four
-distractor events, initial evidence, a validity cue, a delay, and a query form
-the recurrent event stream. The observation representation has 14 channels.
+We use existing content-memory-v3 GRU controllers trained with seeds 107, 207,
+and 307. Each has 32 recurrent units and the original grid task. The controllers
+are frozen; the experiment trains new reporters, not new agents. Their previous
+task results are known. Original checkpoint hashes and exact configurations are
+recorded in the archived results.
 
-In **serial verification**, an agent can inspect twice. The first sample has cued
-reliability of either 0.55 or 0.90, and the second verifies the value exactly.
-In **sensor routing**, the agent can choose sensor A or B before answering.
-Sensor A's reliability is the cue value; sensor B's is 1.45 minus that value.
-Both sensors have the same inspection cost.
+Each controller receives 512 new reporter-fitting scenes, 128 validation scenes,
+and 256 test scenes, each producing six pre-action snapshots. Half the scenes
+switch cue at step 3. Fitting and validation use directed cue switches 0→1 and
+2→3; testing uses 1→2 and 3→0. Unswitched cues are balanced. All snapshots and
+interventions for a scene stay in the same partition. Full scene/schedule
+fingerprints verify disjoint new partitions. The original online controller
+training did not retain every scene, so accidental overlap with those historical
+training scenes cannot be categorically excluded.
 
-Seeds 2503, 2521, and 2539 each use 128 agent-training contexts, 32 validation
-contexts, 64 reporter-fitting contexts, 64 primary test contexts, and 64 reserved
-stress contexts. Within each context, all six values, three initial conditions,
-three costs (0.1, 0.25, 0.4), and two qualities are crossed. All 108 variants of
-a context stay in one partition. Noise draws are shared across quality variants.
-Training delays are zero or two steps; primary evaluation uses one step.
+Inference uses `target=None`: no privileged correctness label enters the
+controller's feedback in the new evaluation. Snapshots are taken after the
+inspection estimate is computed and before the current glimpse. Physical
+inspection history contains only preceding fixations. A read-only hook records
+h for a diagnostic comparator without altering the original computation.
 
-The quality and validity cues are environmental observations. They do not label
-whether the agent has usable internal access after forgetting or perturbation.
-Held-out contexts test generalization within this generator, not new domains.
+### 3.2 Report fields and fitting
 
-### 3.2 Controllers
+The authoritative inspected belief for cell i is `m[i] >= 0.5`. The preferred
+cell is `argmax(policy_self_model_head(m))`, with the normal lowest-index tie
+rule. Their combination is the complete structured report: all 25 belief labels
+plus one preferred location. Truth is the model's represented state, even if it
+is inaccurate about physical inspection history.
 
-The fitted matrix crosses two tasks, GRU48 and RNN87 architectures, three policy
-families, and three seeds, yielding 36 controllers. The architectures have 13,704
-and 13,683 parameters, respectively. The inspection head receives either the
-full recurrent state, confidence statistics, or confidence statistics plus the
-observed quality cue. All families receive cost and budget; all encoders receive
-the full event stream. The cue comparator has exact cue retention as a memory
-aid. Its answer decisions retain the answer logits.
+Five equal-capacity reporter families receive m, previous task-answer logits,
+visible scene/current cue, physical inspection history/preceding fixation, or h.
+Each input is padded to 128 dimensions. Two 128→64→25 tanh MLP heads predict
+beliefs and preferred location using unweighted binary cross-entropy and
+cross-entropy. Normalization uses fitting data only. Adam at 0.003 runs for
+1,000 full-batch steps. Validation selects among steps 250, 500, 750, and 1,000,
+first maximizing the minimum of balanced belief and preference accuracy, then
+exact-report accuracy, with earliest ties. Controller parameters remain frozen.
 
-Fitted training combines answer cross-entropy with inspection values learned
-from fitted Bellman targets over replayed branches. Training uses Adam at 0.003,
-batches of 512, and 80 epochs, with target-network updates each epoch. Epochs
-40, 60, and 80 are candidates for validation-based selection. Initialization,
-minibatch schedules, and inspection-head capacity are matched within comparisons.
-No report labels enter controller training.
+The registered primary criteria are at least 95% balanced inspected-belief
+accuracy, 95% preferred-cell accuracy, and 90% exact complete-report accuracy in
+every seed. Exact-map accuracy and separate positive/negative recalls expose
+class imbalance. These are engineering fidelity thresholds, not consciousness
+criteria. Direct rendering of m and b provides an exact instrumentation baseline.
 
-A separate matrix trains 12 GRU controllers from scratch using only experienced
-chosen-action rewards: two tasks, state or cue-confidence policies, and three
-seeds. Epsilon-greedy exploration decreases from 0.40 to 0.10 over 600 minibatches
-of 512 episodes. The agent may answer, inspect, or decline for a payoff of 0.30.
-Chosen-answer correctness is learned from binary reward; inspection values use
-cost and target-network continuation. Validation selects among updates 200, 400,
-and 600. This is a different objective and training budget from fitted control,
-so cross-matrix differences are not controlled estimates of algorithm superiority.
+### 3.3 Interventions and controls
 
-### 3.3 Reporters and accuracy measures
+At step 3, all 256 held-out scenes receive three interventions through the existing
+model override hook: a donor state from a fixed cyclic pairing of test contexts,
+a flip of one predetermined belief value from m[i] to 1−m[i], and neutralization
+to m=0.5. The recipient scene, cue, hidden state at that point, and physical past
+remain fixed. The model's changed contribution then enters attention normally.
 
-Each of the 12 fitted full-state controllers is frozen before reporter training.
-Reporters read the root state before acquisition. The target has 14 classes:
-two quality levels crossed with six verified values or an unverified label.
-Fresh initial information is labeled verified; stale and missing information
-are labeled unverified.
+We score both baseline and changed reports without selecting initially correct
+cases. The paired exact-report criterion is 90%; preservation of unrelated
+belief fields under a flip must reach 95%. Restoring the original computation
+must restore reports and attention exactly. Donor states are observed elsewhere,
+but may conflict with the recipient h. Flips and neutralization are synthetic.
+The threshold convention classifies neutral 0.5 as inspected, which makes this
+an especially artificial boundary case, not a state of “no awareness.”
 
-The registered reporter inputs are recurrent state, answer logits, or maximum
-answer probability and normalized entropy plus the quality cue. Inputs are
-padded to 128 dimensions, with a 32-unit tanh hidden layer and 14 outputs,
-yielding equal-capacity readouts. Normalization is fitted only on reporter-fitting
-data. Reporters train for 200 Adam steps at 0.01, with L2 candidates of zero and
-0.001 selected using validation accuracy. Five shuffled-label fits provide a
-coarse descriptive null rather than a formal significance test.
+Additional tests shuffle, zero, or hold model inputs constant; rotate external
+reporter inputs while m stays fixed; and compare scene, answer, physical-history,
+and hidden-state reporters. Because h generates m, that comparison does not
+represent an independent system without an attention model. We record attention
+probability changes and hard fixation changes, without requiring reward benefit.
 
-Quality accuracy measures recovery of the remembered low/high cue. Verified-value
-accuracy measures the correct value within verified cases; unverified accuracy
-measures the unverified label within stale/missing cases. Balanced source accuracy
-averages the latter two metrics. The primary comparison score averages quality
-and balanced source accuracy. Joint accuracy requires both quality and the
-value/source label to be correct.
+### 3.4 Correspondence and expressive reports
 
-The registered individual accuracy thresholds are 90%. A separate registered
-comparative threshold requires a 0.02 advantage over the cue reporter. We report
-these separately because absolute accuracy and comparative advantage answer
-different questions.
+The [registered correspondence protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md)
+selects limited structural tests: model-preference shifts, persistence of
+inspection beliefs, and reporting model/physical-history disagreements. The
+model lacks independently identified fields for presence distinct from attention,
+qualitative character, self-attribution, or phenomenal continuity. Those are
+explicitly unsupported, rather than supplied through new report labels.
 
-### 3.4 Comparator correction
+A fixed neutral renderer expresses the predicted fields and transitions. Its
+round-trip parser tests formatting fidelity. Neither fluent syntax nor first-
+person paraphrase counts as independent evidence. Preference ranking is not
+automatically phenomenal foreground; inspection-history persistence is not
+experienced continuity. No human ratings or human report-distribution match is
+claimed. The structural scores must therefore be interpreted alongside the
+possibility that supervised fields and authored language explain the whole effect.
 
-The original confidence-plus-cue reporter omitted answer identity even though
-its target required naming a verified value. Its disadvantage therefore could
-not establish fair full-state reporting superiority. After inspecting the three
-serial-GRU reporting artifacts, we documented this flaw and added a diagnostic
-comparator to all 12 systems: all six answer logits plus the same quality cue,
-with matched reporter capacity, partitions, optimization, and selection.
+### 3.5 Uncertainty, records, and correction
 
-The [correction record](COMPLETION_CORRECTIONS.md) preserves that chronology.
-The diagnostic reused the existing test contexts and is not independent
-confirmation on new data. Original artifacts and gate outcomes remain intact.
-The control-policy comparison did not have this omitted-answer-identity flaw.
+Scene-level bootstrap intervals use 1,000 draws and are conditional on each
+trained system. Every seed and condition is retained, with timestep and cue-regime
+breakdowns and compressed per-case records. A post-evaluation error audit is
+labeled descriptive and changes no training decisions or gates.
 
-### 3.5 Causal interventions and stress evaluation
-
-We fit a high-minus-low quality direction using paired reporter-fitting states,
-remove its component in the answer-weight row space, and normalize it. A low-
-quality donor's projection is transplanted into a high-quality recipient matched
-on context, value, condition, and cost. Interventions are evaluated on initially
-unverified held-out histories. Random directions in the same answer null space
-are matched to each case's perturbation norm.
-
-We check initial answer-logit invariance within `1e-5`, changes in reports and
-inspection behavior, environmental returns, and restoration to the baseline
-state. Actual sensor reliability remains unchanged under the transplant.
-Consequently, reward changes measure consequences of manipulating the internal
-representation, not the truth of an introspective report about a changed world.
-
-Reserved-context control evaluation uses the primary delay, a five-step delay,
-and a reliability reduction of 0.15 while the original quality cue remains
-visible. Serial verification's exact second sample remains exact. These stress
-evaluations measure control performance; they do not establish reporter accuracy
-under every stress condition. Analytic comparison policies know actual degraded
-reliability, whereas learned policies see the old cue.
+Seed 207's exact shift agreement, 1216/1280=0.95, was initially represented as
+float32 0.949999988 and incorrectly failed the inclusive threshold. We corrected
+correspondence fractions to float64 and reevaluated saved models without fitting.
+Only that secondary gate changes; the original JSON evaluations are retained in
+the [numerical correction record](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
 
 ## 4. Results
 
-### 4.1 Accurate reports from frozen internal states
+### 4.1 Ordinary fidelity and model/world disagreement
 
-| Task and architecture | Verified value | Unverified status | Quality | Joint quality and source/value |
-| --- | --- | --- | --- | --- |
-| Serial GRU | 100% | 100% | 96.99–100% | 96.99–100% |
-| Routing GRU | 100% | 100% | 96.04–99.99% | 96.04–99.99% |
-| Serial RNN | 100% | 100% | 91.72–94.86% | 91.72–94.86% |
-| Routing RNN | 100% | 100% | 78.76–99.96% | 78.76–99.96% |
+| Metric | Seed 107 | Seed 207 | Seed 307 |
+| --- | --- | --- | --- |
+| Preferred-cell accuracy | 96.35% | 96.03% | 93.68% |
+| Balanced belief accuracy | 96.22% | 96.79% | 95.78% |
+| Exact belief-map accuracy | 90.89% | 92.38% | 88.15% |
+| Exact complete report | 87.30% | 88.80% | 82.36% |
+| Accuracy on model/physical-history disagreement cells | 96.09% | 97.16% | 95.73% |
 
-Ranges are minima and maxima across three trained seeds, not confidence
-intervals. All six GRU systems and all three serial RNN systems clear all three
-individual accuracy thresholds. Two of three routing RNN systems clear the
-quality threshold. Every final system reports verified values and unverified
-status correctly on its primary held-out evaluation.
+No seed passes all primary criteria. Direct telemetry is exact by construction.
+The trained readout is often faithful, including where physical history would
+suggest a different answer. In seed 107, scene 0, step 1, for example, both model
+and learned report say no cell has been inspected although the physical trace
+contains cell 17. At step 4 of the same scene, the model classifies cell 17 as
+inspected but the reporter omits it. The former is faithful reporting of an
+incorrect model belief; the latter is a reporting failure.
 
-These are positive results for the reporting-accuracy question. Their scope is
-specific: a supervised readout can recover these distinctions from task-trained
-internal states. The cue-rich final environments and report targets differ from
-the earlier paired-history assay, whose unavailable-report failures remain.
+Positive beliefs occupy only 3.2–5.6% of cells. Among ordinary belief-report
+errors, 80.5–85.2% occur within 0.1 of the classification threshold. This provides
+a possible readout-error explanation, not grounds to relax the criterion.
 
-The source summaries are linked from the [final evidence map](PROJECT_RESULTS.md)
-and recorded in the [completion audit](https://github.com/macterra/attcon/blob/main/audits/project_completion.json).
+### 4.2 Causal identity and intervention fidelity
 
-### 4.2 Simpler information suffices for equally accurate reports
+| Intervention | Paired exact-report accuracy, seed range | Next attended cell changes, seed range |
+| --- | --- | --- |
+| Donor model | 64.84–79.69% | 16.41–21.88% |
+| One belief flipped | 16.41–25.00% | 8.98–13.67% |
+| Neutral model | 0% | 65.23–85.55% |
 
-The corrected answer-logit-plus-quality comparator matches or exceeds the
-full-state reporter's primary score in all 12 systems. No corrected comparison
-clears the 0.02 full-state advantage threshold. The initial apparent advantage
-was confounded by omitted answer identity.
+No intervention condition passes the paired-report gate in any seed. Unchanged
+belief-report fields are preserved only 86.83–90.74% under a single flip, also
+below criterion. Thus ordinary accuracy overstates robustness to model changes.
 
-This result does not invalidate the state reporters' accuracy. It demonstrates
-that the corrected comparator's information is also sufficient for those reports.
-Because that comparator receives the quality cue directly, it is not itself a
-demonstration of learned quality memory.
+Isolation and exact restoration checks pass in all seeds. Donor overrides change
+attention probabilities and some physical fixations while the prior trace and
+current hidden state remain fixed. The identified model therefore participates
+causally in control. That conclusion is separate from robust reporting fidelity.
 
-### 4.3 Reported quality is causally connected to control
+### 4.3 Alternative inputs and structural scores
 
-In routing GRUs, the quality transplant changes 86.7–100% of quality reports and
-89.1–100% of sensor choices. Matched random perturbations change 0.3–4.4% of sensor
-choices. Initial answer logits remain invariant within tolerance, and restoration
-recovers baseline reports and decisions. Returns decrease by 0.310–0.362 when the
-internal cue is changed while the actual sensor remains unchanged.
+Complete-report accuracy ranges are 77.73–80.86% from h, 45.38–48.24% from physical
+history, 39.65–45.57% from prior answer logits, and 5.73–12.17% from the visible
+scene/current cue. These comparisons support information specific to the internal
+model over reconstruction from those external summaries. They do not establish
+that the model is uniquely capable of grounding qualia.
 
-In serial GRUs, initial inspection decisions remain unchanged, but 36.1–58.6%
-of later verification trajectories change, compared with 3.5–27.3% for matched
-random perturbations. RNN effects are weaker or less selective; random changes
-sometimes improve their weaker baseline policies. All 12 systems pass the
-intervention invariance and restoration checks.
+Shuffled model inputs reduce complete accuracy against original states to
+20.64–25.78%, constant neutral inputs to zero, and zero inputs to 9.18–45.05%.
+The renderer remains grammatically fluent throughout, demonstrating why wording
+alone is not evidence of a state-grounded consciousness report.
 
-The GRU findings link reported prospective information to behavior. They do not
-establish that such information is a higher-order representation, that all
-perturbation responses are beneficial, or that conscious access is necessary.
+Preference-shift agreement is 92.11–95.23%, passing the 95% threshold in two seeds.
+Inspection-belief persistence agreement is 99.32–99.67%, passing in all three.
+However, an always-no-persistence output already reaches 95.36–97.42% because
+persistence is sparse. The descriptive error audit gives only 78.87–86.74%
+positive shift recall and 92.25–94.67% positive persistence recall. Model/physical
+disagreement fidelity passes in all three,
+with 2,465–3,255 disagreement cells per seed. No seed-independent complete package
+of primary fidelity and the structural criteria is established.
 
-### 4.4 Acquisition and native answer/decline
+## 5. Interpretation and the critic's crux
 
-Fitted GRU state policies beat every fixed inspection policy by at least the
-registered 0.02 margin at every tested cost and seed in both tasks. No task and
-architecture combination consistently clears the fair cue-confidence advantage
-across all required costs and seeds. RNN performance is more variable.
+The study identifies a learned attention-history model, verifies its causal role,
+and shows partial reporting of its state even when the represented history is
+wrong. This is more directly relevant to the proposed mechanism than the previous
+reports of sensor quality or task content. It is a concrete, inspectable result.
 
-Reward-only controllers learn acquisition and answer decisions, and some use the
-native decline action. They do not achieve a replicated advantage over the fair
-comparator across all costs and seeds. Answering or declining is a native output
-learned through reward, but decline can reflect a payoff-sensitive confidence
-threshold. These experiments did not train native reports naming remembered
-quality, verified content, or source status.
+The theory-facing bridge remains unresolved. The tested model is a supervised
+inspection estimator; the reporter is a supervised decoder; the expressive
+relations are authored. A critic can accept every result and explain it without
+a claim about qualia. The current data do not discriminate that explanation from
+the broader source-of-qualia theory. This does not refute that theory; the model
+and report mechanism cover only a narrow part of its proposed explanatory scope.
 
-### 4.5 Generalization and broader criteria
+A further test would need a specified consciousness-report distinction or
+intervention pattern that the inspection-estimator-plus-decoder account does not
+already explain. Improving complete-report fidelity is useful but cannot by
+itself supply that missing theoretical prediction. Likewise, adding experiential
+words or renaming inspection history as presence would not resolve the crux.
 
-Longer delays and misspecified sensors often reduce control reward. Five of 108
-individual stress seed/cost cells pass the complete registered control gates;
-no task satisfies the full promotion requirement across costs, seeds, and
-architectures. These exceptions are retained without changing the criteria.
-Context-bootstrap intervals use 2,000 resamples and are conditional on trained
-systems, not population-level uncertainty over arbitrary models.
+## 6. Limitations and reproducibility
 
-The prerequisite for promoting independent-content convergence was not met.
-The separate Stage 8 audit remains three passing and five partial gates, with
-no overall support. This outcome concerns the broader historical convergence
-program, not whether the measured reports were accurate.
+These are three old controllers from one small architecture and one synthetic
+task. Reports are external, supervised, and restricted to identified fields.
+The binary threshold discards graded belief strength. Synthetic interventions
+can move off the fitting distribution; natural model error and reporting error
+must be distinguished. Bootstrap intervals do not establish population-level
+robustness. No independent human phenomenology evaluation was performed.
 
-## 5. Interpretation and limitations
-
-The central result is accurate reporting through trained internal-state readouts
-on held-out contexts in small synthetic tasks. A controller plus a fitted
-reporter can produce correct reports of specified informational distinctions.
-The reporter remains a supervised measurement component: we have not shown that
-the controller independently learns to express those same distinctions.
-
-Several boundaries matter when interpreting the result:
-
-- **Report target:** remembered environmental quality and source verification are
-  narrower than knowledge of one's own usable memory. Verification labels may
-  cease to describe internal access after memory damage.
-- **Supervision:** agent and reporter training are separated, but the reporters
-  receive explicit report labels. Successful decoding is not spontaneous self-report.
-- **Generalization:** both tasks share a six-value generator, and only two small
-  recurrent architectures were tested. Primary report accuracy does not establish
-  robustness to arbitrary delays, lesions, or distribution shifts.
-- **Comparisons:** the omitted-identity correction reused test data. It repairs
-  interpretation of superiority but is not a fresh confirmatory experiment.
-- **Uncertainty:** three seeds and a five-fit shuffled-label null provide limited
-  evidence about variability beyond the measured systems.
-- **Consciousness:** neither accurate reports nor causal report/control coupling
-  establishes subjective experience. Conversely, lack of a necessity or superiority
-  result is not failure on the narrower reporting-accuracy goal.
-
-The next reporting questions are whether agents can learn native reports of these
-informational distinctions, whether unavailable-content reports can be made
-reliable in the earlier paired-history setting, and whether report accuracy
-survives controlled memory damage and broader generalization. These are optional
-extensions of the completed evaluation.
-
-## 6. Reproducibility
-
-The [reproduction guide](FINAL_REPRODUCTION.md) provides installation and the full
-command matrix. The tested environment uses Python 3.12.3, PyTorch 2.5.1+cpu, and
-NumPy 2.4.3. No paid model APIs are required for the final study.
-
-From the repository root, after installing the documented environment:
+The [reproduction guide](ATTENTION_MODEL_REPRODUCTION.md) provides archive
+restoration, complete replay, and reporter refitting from frozen controllers:
 
 ```bash
-# Restore the archived checkpoints and replay the final metrics.
-.venv/bin/python scripts/reproduce_final.py --verify
-
-# Inspect the registered reproduction commands.
-.venv/bin/python scripts/reproduce_final.py --plan
-
-# Retrain the full matrix; use a separate checkout to compare with the reference.
-.venv/bin/python scripts/reproduce_final.py --run --jobs 3
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 .venv/bin/python scripts/summarize_attention_model.py --verify --replay
 ```
 
-The committed archive contains 42 checkpoint files. The completion manifest
-records 55 primary artifacts, checksums, gate outcomes, and limitations. All
-saved final controller, reporter, intervention, and stress metrics were replayed
-from checkpoints at study closeout, and the full suite passed 149 tests. Those
-are recorded experiment-validation results; this manuscript revision changes
-only documentation and does not rerun or alter the experiments.
-
-The [progress record](COMPLETION_PROGRESS.md) and [final results](PROJECT_RESULTS.md)
-provide the evidence trail. Earlier protocols, unsuccessful experiments, the
-comparator correction, and the original Stage 8 verdict remain preserved.
+All three controllers and 15 reporters are archived with source, configuration,
+data, and artifact hashes. Every final metric and case record replays exactly.
+The full repository suite passed 160 tests. No paid model API is required.
+The [results](ATTENTION_MODEL_RESULTS.md) link the machine-readable summary,
+complete cases, and descriptive error audit. Historical studies and Stage 8
+artifacts remain unchanged.
 
 ## 7. Conclusion
 
-Small task-trained recurrent systems support accurate reports of verified content,
-unverified status, and remembered sensor quality through separately trained
-readouts. GRU reporting is consistently accurate across the tested tasks and
-seeds; routing RNN quality reporting is less consistent. A simpler comparator
-matches or exceeds the full-state reports, and selective interventions show
-that remembered quality can influence both reports and behavior.
-
-The reporting goal therefore has bounded positive support. The remaining boundary
-is between accurate external readouts and an agent that independently learns to
-report its own informational state reliably across conditions. Necessity for task
-performance and broader consciousness claims are separate questions.
+An actual learned model used in attention control is partially reportable and
+causally affects allocation. Reports can follow its mistaken beliefs rather than
+physical history. Yet complete learned-report fidelity fails the registered bar,
+intervention generalization is weak, and consciousness-like structure independent
+of supplied semantics and language is not established. The finite evaluation is
+complete; the hypothesis that this mechanism is the source of qualia remains
+underdetermined.

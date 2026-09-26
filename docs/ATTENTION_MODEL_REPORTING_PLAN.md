@@ -1,7 +1,8 @@
 # Plan: testing the attention-control model as a source of qualia
 
 Created 2026-09-26 following clarification of the project's actual goal.
-Status: in progress. See [state specification](ATTENTION_MODEL_STATE_SPEC.md),
+Status: finite evaluation complete; full fidelity and independent phenomenological
+correspondence were not established. See [results](ATTENTION_MODEL_RESULTS.md), [state specification](ATTENTION_MODEL_STATE_SPEC.md),
 [frozen protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md), and
 [progress](ATTENTION_MODEL_PROGRESS.md).
 

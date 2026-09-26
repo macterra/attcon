@@ -1,6 +1,8 @@
-# Final-study reproduction
+# Earlier informational-state study reproduction
 
-The final study is a local CPU evaluation. The tested environment is Python 3.12.3,
+For the current attention-model study, use [ATTENTION_MODEL_REPRODUCTION.md](ATTENTION_MODEL_REPRODUCTION.md).
+
+This earlier informational-state study is a local CPU evaluation. The tested environment is Python 3.12.3,
 PyTorch 2.5.1+cpu, and NumPy 2.4.3. Primary dependency versions are pinned in
 [requirements-final.txt](../requirements-final.txt). The repository's existing
 virtual environment can be used directly, or create an environment with Python 3.12:
