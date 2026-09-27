@@ -1,5 +1,13 @@
 # Current project results
 
+The active [object-linked study](BOUND_CONTENT_PROGRESS.md) tests reports of
+represented objects and their attention relations. Perception/control confirmations
+pass; the first free-prose confirmation failed. [Fresh confirmation v2](BOUND_PROSE_CONFIRMATION_V2.md)
+is underway. [Inspect retained reports](bound-reports.html).
+
+## Earlier numerical study
+
+
 The goal is accurate reports of the attention-control model that exhibit
 independently specified features of consciousness reports, providing evidence
 relevant to the source-of-qualia theory.

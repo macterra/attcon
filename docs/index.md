@@ -9,17 +9,19 @@ The theory under test is that **the attention-control model is the source of
 qualia**. The proposed evidence is accurate reporting of that model's state with
 independently specified features of consciousness reports.
 
-**State-fidelity criteria now pass; the overall goal remains active.**
-A predictive model guides attention and can be reported faithfully under selective
-interventions. Independent assessment of the prose remains pending. First-person
-wording and accurate JSON commitments are not counted as that assessment.
+**The active study tests reports of bound object contents and attention relations.**
+Perception and content-directed control pass their fresh confirmations. The first
+free-prose confirmation failed; [confirmation v2](BOUND_PROSE_CONFIRMATION_V2.md)
+is underway with fresh scenes and a validated sentence-based audit. The overall
+goal remains active. First-person wording alone does not count as success.
 
 ## Active object-linked reporting study
 
 - [Plan](BOUND_CONTENT_PLAN.md) and [progress](BOUND_CONTENT_PROGRESS.md).
 - [Perception/binding protocol](BOUND_CONTENT_PROTOCOL.md) and [revision v2](BOUND_CONTENT_REVISION_V2.md).
 - [Prose audit](BOUND_PROSE_AUDIT.md), [report revision v3](BOUND_REPORT_REVISION_V3.md), and [extractor revision](BOUND_EXTRACTOR_REVISION_V3.md).
-- [Fresh prose confirmation](BOUND_PROSE_CONFIRMATION.md).
+- [Retained first prose confirmation](BOUND_PROSE_CONFIRMATION.md) and [fresh v2](BOUND_PROSE_CONFIRMATION_V2.md).
+- [Inspect actual reports and represented objects](bound-reports.html).
 
 ## Earlier numerical predictive-model study
 

@@ -4,20 +4,17 @@ Attcon tests the theory that **the attention-control model is the source of qual
 The proposed evidence combines accurate reports of that model's state with
 independently specified features of consciousness reports.
 
-**State-fidelity criteria now pass; the overall theory-facing goal remains active.**
-A predictive attention model guides control and forecasts allocation, access, and
-command effects. Three fresh model confirmations pass. After retained failed
-pilots, a frozen language reporter produces correct structured commitments on
-240/240 reports, including selective interventions and restoration. Independent
-assessment of prose fidelity and consciousness-report structure is still pending.
-First-person wording alone is not counted as success.
+**The active study tests reports of bound object contents and attention relations.**
+The system recognizes colored shapes, binds them to its attention model, and uses
+those bindings for content-directed control. All three fresh perception/control
+confirmations pass. Free-prose confirmation v1 failed; a revised audit and fresh
+confirmation v2 are underway. The overall goal is not marked achieved.
 
-- [Current results](docs/PREDICTIVE_ATTENTION_RESULTS.md) and [preprint](docs/PREPRINT.md).
-- [Reproduce offline](docs/PREDICTIVE_ATTENTION_REPRODUCTION.md): complete checkpoints,
-  API records, retained failures, exact replay, and 168 passing tests.
-- [Blinded review form](https://macterra.org/attcon/report-review.html) and [rubric](docs/PREDICTIVE_REPORT_RUBRIC.md).
-- [Progress](docs/PREDICTIVE_ATTENTION_PROGRESS.md) and [research plan](docs/QUALIA_REPORTING_NEXT_PLAN.md).
-- [Earlier inspection-model results](docs/ATTENTION_MODEL_RESULTS.md): its failed gates remain unchanged.
+- [Active study and progress](docs/BOUND_CONTENT_PROGRESS.md), [plan](docs/BOUND_CONTENT_PLAN.md), and [registered confirmation v2](docs/BOUND_PROSE_CONFIRMATION_V2.md).
+- [Inspect actual reports and model contents](https://macterra.org/attcon/bound-reports.html) (currently the retained first confirmation).
+- [Earlier numerical results](docs/PREDICTIVE_ATTENTION_RESULTS.md) and [preprint](docs/PREPRINT.md).
+- [Earlier offline reproduction](docs/PREDICTIVE_ATTENTION_REPRODUCTION.md).
+- [Earlier blinded review form](https://macterra.org/attcon/report-review.html) and [rubric](docs/PREDICTIVE_REPORT_RUBRIC.md).
 - [Documentation site](https://macterra.org/attcon/) and [index](docs/index.md).
 
 The earlier [informational-state study](docs/INFORMATIONAL_STATE_RESULTS.md)

@@ -4,11 +4,6 @@ Working preprint, updated 2026-09-27. The preceding inspection-model manuscript 
 [archived unchanged](INSPECTION_MODEL_PREPRINT.md). All prior failed results remain
 part of the project record.
 
-> Update in progress: the active [object-linked study](BOUND_CONTENT_PROGRESS.md)
-> adds represented colored shapes and a separate free-prose audit. Its first
-> confirmation failed; fresh confirmation v2 is running. The manuscript below
-> describes the earlier numerical study, [archived here](PREDICTIVE_NUMERICAL_PREPRINT.md).
-
 ## Abstract
 
 We test an observable consequence proposed for the hypothesis that an attention-
