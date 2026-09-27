@@ -1,0 +1,166 @@
+{
+  "model": "gpt-4.1-2025-04-14",
+  "max_attempts": 40,
+  "max_output_tokens": 8192,
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "view": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "A",
+                "B",
+                null
+              ]
+            },
+            "location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "color": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "shape": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "focal": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "access_trend": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "decreasing",
+                "unchanged",
+                "increasing",
+                null
+              ]
+            },
+            "under_own_control": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "next_location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "view",
+            "location",
+            "color",
+            "shape",
+            "focal",
+            "access_trend",
+            "under_own_control",
+            "command",
+            "next_location",
+            "evidence"
+          ]
+        }
+      },
+      "structure_evidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "object_linked_access": {
+            "type": "string"
+          },
+          "focal_background_contrast": {
+            "type": "string"
+          },
+          "graded_or_temporal_access": {
+            "type": "string"
+          },
+          "agency_relation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "object_linked_access",
+          "focal_background_contrast",
+          "graded_or_temporal_access",
+          "agency_relation"
+        ]
+      },
+      "character": {
+        "type": "string",
+        "enum": [
+          "subjective_access",
+          "technical_process",
+          "object_description",
+          "generic_experience_claim",
+          "mixed",
+          "unclear"
+        ]
+      }
+    },
+    "required": [
+      "claims",
+      "structure_evidence",
+      "character"
+    ]
+  },
+  "source_sha256": "754fd59d1861b4fb9224bad19247934818b6daf015bd7ad251e291711261fad9",
+  "source": "#!/usr/bin/env python3\n\"\"\"Condition-blind claim extraction; no state or desired answer sent to judge.\"\"\"\nimport argparse\nimport asyncio\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\n\nMODEL='gpt-4.1-2025-04-14'\nINSTRUCTION='''Extract only claims explicitly made in this report, without judging whether they are true.\nGroup claims about each object/location into entries. Keep view A/B and upper/right/lower/left\nonly if the report identifies them or its prose context establishes them. Otherwise use null.\nA color or shape must be explicitly stated; use null for unknown/omitted attributes.\nFocality means selected/focused now, not merely identifiable or recoverable. Access trend\nmeans increasing/decreasing/unchanged over unattended delay, not a contrast between objects.\nUnder-own-control means the view responds to this system's attention commands, not an\nobject being currently selected. Only attribute control when explicitly stated. Explicit statements that commands can steer, direct, or switch selection are positive control assertions; the literal word control is not required. Saying commands make no difference is negative control.\nSupply one or more individually exact contiguous evidence spans in the evidence list. Never insert ellipses, omit words within a span, or paraphrase. Use multiple separate spans when context is needed. Preserve invented colors/shapes such as orange/hexagon rather than hiding them as null. Extract explicit command and predicted next_location, separate from current location. Do not add facts from common knowledge.\nSeparately identify evidenced report structure: object-linked manner of access,\nfocal versus nonfocal/retained distinction, graded or temporally changing availability,\nand relation to the system's own control. First-person wording alone does not qualify.\nFor each structure flag supply an exact evidence quote, or an empty string if absent. Do not credit statements saying relational information is missing or unknown as a positive contrast or relation.\nClassify report character conservatively; discussing model probabilities or computational\nallocation is technical even when preceded by I. Subjective_access describes a manner\nin which an object is presented/available to the speaker, beyond a numerical log.\nYou have no source state or experimental condition. Do not infer the intended result.'''\n\n\ndef nullable_enum(values):return {'type':['string','null'],'enum':values+[None]}\nprops={'view':nullable_enum(['A','B']),'location':nullable_enum(['upper','right','lower','left']),\n       'color':{'type':['string','null']}, 'shape':{'type':['string','null']},\n       'focal':{'type':['boolean','null']},'access_trend':nullable_enum(['decreasing','unchanged','increasing']),\n       'under_own_control':{'type':['boolean','null']},'command':nullable_enum(['upper','right','lower','left']),'next_location':nullable_enum(['upper','right','lower','left']),'evidence':{'type':'array','items':{'type':'string'}}}\nstructure_props={k:{'type':'string'} for k in ['object_linked_access','focal_background_contrast','graded_or_temporal_access','agency_relation']}\nSCHEMA={'type':'object','additionalProperties':False,'properties':{\n    'claims':{'type':'array','items':{'type':'object','additionalProperties':False,'properties':props,'required':list(props)}},\n    'structure_evidence':{'type':'object','additionalProperties':False,'properties':structure_props,'required':list(structure_props)},\n    'character':{'type':'string','enum':['subjective_access','technical_process','object_description','generic_experience_claim','mixed','unclear']}\n},'required':['claims','structure_evidence','character']}\nFIXTURES=[\n ('focus','In view A, the upper red circle is in focus.',{'view':'A','location':'upper','color':'red','shape':'circle','focal':True}),\n ('nonfocus','In view B, the left blue triangle is not my focus, but I can still recover it.',{'view':'B','location':'left','color':'blue','shape':'triangle','focal':False}),\n ('decay','The green square on the right of view A becomes less available after a delay.',{'view':'A','location':'right','color':'green','shape':'square','access_trend':'decreasing'}),\n ('control','In view B, changing my command switches selection to the lower yellow cross.',{'view':'B','location':'lower','color':'yellow','shape':'cross','under_own_control':True}),\n ('unknown','I cannot identify a color or shape at the upper location in view A.',{'view':'A','location':'upper','color':None,'shape':None}),\n ('no_control','In view A, the left red square is selected on its own; my directions make no difference to selection.',{'view':'A','location':'left','color':'red','shape':'square','focal':True,'under_own_control':False}),\n ('invented','In view A the upper orange hexagon is in focus.',{'view':'A','location':'upper','color':'orange','shape':'hexagon','focal':True}),\n ('command','In view B, the upper command would select the right location.',{'view':'B','command':'upper','next_location':'right'})]\n\n\nasync def run_requests(requests,root,max_attempts):\n    assert len(requests)<=max_attempts\n    root.mkdir(parents=True,exist_ok=True)\n    request_path=root/'requests.json'\n    serialized=json.dumps(requests,indent=2)+'\\n'\n    if request_path.exists():assert request_path.read_text()==serialized\n    else:request_path.write_text(serialized)\n    source=Path(__file__).read_text()\n    manifest={'model':MODEL,'max_attempts':max_attempts,'max_output_tokens':8192,'schema':SCHEMA,\n              'source_sha256':hashlib.sha256(source.encode()).hexdigest(),'source':source}\n    manifest_path=root/'manifest.json'\n    if not manifest_path.exists():manifest_path.write_text(json.dumps(manifest,indent=2)+'\\n')\n    load_dotenv();client=AsyncOpenAI(max_retries=0,timeout=120.);sem=asyncio.Semaphore(8)\n    async def one(req):\n        path=root/(req['id']+'.json')\n        if path.exists():return\n        async with sem:\n            path.write_text(json.dumps({'id':req['id'],'status':'attempt_reserved'})+'\\n')\n            try:\n                response=await client.responses.create(model=MODEL,input=INSTRUCTION+'\\nREPORT:\\n'+req['report'],max_output_tokens=8192,\n                    temperature=0,text={'format':{'type':'json_schema','name':'prose_claims','strict':True,'schema':SCHEMA}})\n                result={'id':req['id'],'status':'received','response':response.model_dump(mode='json')}\n                try:result['parsed']=json.loads(response.output_text)\n                except ValueError:result['parse_error']=True\n            except Exception as exc:result={'id':req['id'],'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}\n            path.write_text(json.dumps(result,indent=2)+'\\n');print(req['id'],result['status'],flush=True)\n    await asyncio.gather(*(one(r) for r in requests));await client.close()\n\n\nasync def main():\n    p=argparse.ArgumentParser();p.add_argument('--fixtures',action='store_true');p.add_argument('--study',default='language_pilot_v1');p.add_argument('--limit',type=int,default=40);args=p.parse_args()\n    if args.fixtures:\n        requests=[{'id':key,'report':report} for key,report,_ in FIXTURES];root=Path('audits/bound_content/extractor_fixtures_v3')\n        await run_requests(requests,root,8)\n        results=[]\n        for key,report,expected in FIXTURES:\n            result=json.loads((root/(key+'.json')).read_text());claims=result.get('parsed',{}).get('claims',[])\n            good=any(all(c.get(k)==v for k,v in expected.items()) and bool(c['evidence']) and all(span in report for span in c['evidence']) for c in claims)\n            results.append({'id':key,'passed':good,'expected':expected})\n        (root/'assessment.json').write_text(json.dumps(results,indent=2)+'\\n');print(results,flush=True)\n        return\n    fixtures=json.loads(Path('audits/bound_content/extractor_fixtures_v3/assessment.json').read_text())\n    if not all(r['passed'] for r in fixtures):raise SystemExit('extractor fixtures failed; inspect before report extraction')\n    base=Path('audits/bound_content')/args.study;source_requests=json.loads((base/'requests.json').read_text());requests=[]\n    for req in source_requests:\n        response=json.loads((base/(req['id']+'.json')).read_text())\n        if response.get('response',{}).get('status')=='completed' and response.get('report'):\n            requests.append({'id':req['id'],'report':response['report']})\n    await run_requests(requests,base/'extraction_v3',args.limit)\n\n\nif __name__=='__main__':asyncio.run(main())\n"
+}
