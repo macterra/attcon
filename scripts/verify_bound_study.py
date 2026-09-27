@@ -4,6 +4,9 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import platform
+import numpy
+import openai
 from pathlib import Path
 import subprocess
 import sys
@@ -85,7 +88,7 @@ for root in sorted(ROOT.glob('language_*')):
 manifest_path=ROOT/'verification.json'
 if args.write_manifest:
     paths=sorted(p for p in ROOT.rglob('*') if p.is_file() and p!=manifest_path)
-    manifest_path.write_text(json.dumps({'counts':counts,'files_sha256':{str(p):digest(p) for p in paths}},indent=2)+'\n')
+    manifest_path.write_text(json.dumps({'environment':{'python':platform.python_version(),'torch':torch.__version__,'numpy':numpy.__version__,'openai':openai.__version__},'counts':counts,'files_sha256':{str(p):digest(p) for p in paths}},indent=2)+'\n')
 else:
     manifest=json.loads(manifest_path.read_text());assert counts==manifest['counts']
     for path,expected in manifest['files_sha256'].items():assert digest(Path(path))==expected,path
