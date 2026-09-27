@@ -2,7 +2,7 @@
 
 Active study following the user's request to report the attention model's contents.
 The overall goal is not marked achieved while confirmation remains in progress.
-Current run: [confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md).
+Current run: [confirmation v5](BOUND_PROSE_CONFIRMATION_V5.md).
 
 - Implemented learned visual recognition of rendered colors/shapes.
 - Added explicit object–attention bindings consumed by content-directed control.
@@ -60,3 +60,19 @@ Confirmation v4 retains the exact reporter and criteria, uses fresh scenes, and
 changes the blind auditor to a fixed reasoning-model snapshot. All 30 semantic
 fixtures pass before the new report run. The stronger auditor's character
 judgments are not presumed to agree with earlier judgments.
+
+## Fourth audit: incomplete, not a reporting verdict
+
+All 240 reports were generated, but two reasoning-audit calls exhausted the
+8192-token output limit. Audit work stopped with 49 completed, two incomplete,
+eight interrupted reservations, and 181 unattempted requests. The completion
+gate could no longer pass, and no retry was hidden. This does not establish
+that the underlying reports are inaccurate.
+
+Confirmation v5 keeps the reporter and all criteria, uses fresh scenes, and
+allocates 16384 output tokens with low reasoning to the same audit model. Its
+31-fixture validation passes. The retained 28/30 intermediate result exposed a
+negative-fixture harness error: omitting a claim when identity is unknown is valid.
+The corrected harness also checks that a known shape is retained when color is
+unknown. No production extraction rule or scientific threshold changes with that
+harness correction.

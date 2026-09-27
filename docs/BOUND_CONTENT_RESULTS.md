@@ -111,7 +111,8 @@ position in the registered case sequence. The physical scene is identical.
 | language_confirmation_v1 | fail |
 | language_confirmation_v2 | fail |
 | language_confirmation_v3 | fail |
-| language_confirmation_v4 | in progress |
+| language_confirmation_v4 | incomplete audit (stopped) |
+| language_confirmation_v5 | in progress |
 
 The earlier visual seed 1221 also remains a failed perception confirmation.
 Revisions used fresh scenes, documented interface/audit changes, and unchanged

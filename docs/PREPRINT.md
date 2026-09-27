@@ -21,8 +21,9 @@ completed confirmation passes primary per-seed thresholds, 470/480 paired object
 relations, and 95/96 restorations; a separate automated audit classifies all 48
 ordinary/binding reports as subjective-access or mixed. However, its strict
 missing-component control gate fails because the audit introduces unsupported
-predicates and wrong-view attributions. A fourth fresh confirmation with a
-separate reasoning-model audit is in progress. No overall success is asserted.
+predicates and wrong-view attributions. A fourth fresh confirmation generated all reports but its reasoning-model audit
+was stopped after token-limit failures. A fifth fresh confirmation is in progress
+with a larger audit output allowance. No overall success is asserted.
 
 ## 1. Question
 
@@ -103,8 +104,9 @@ citations count against conservative precision.
 Earlier extractors used quoted evidence and introduced copying errors. Later
 versions cite original sentence IDs, distinguish possible from dominant identities,
 and expand explicit quantified statements. Each revision has retained semantic
-fixtures. Version 8 uses `gpt-5.4-2026-03-05`, medium reasoning, validated on all
-30 fixtures. It retains the same claim and character rubric. The two language
+fixtures. Versions 8–10 use `gpt-5.4-2026-03-05`. After medium-reasoning calls exhausted
+their token allowance, version 10 uses low reasoning and a larger output allowance,
+validated on 31 fixtures. It retains the same claim and character rubric. The two language
 models share a vendor; this is not independent human validation.
 
 For each model, primary conditions require at least 98% checked color/shape
@@ -140,7 +142,9 @@ passes primary thresholds, 470/480 pairs, and 95/96 restorations. Its strict
 control failure contains audit errors: unsupported negative predicates, empty
 citations, and wrong-view command assignments. These remain failed confirmations.
 Version 4 retains the reporter and all thresholds, changes the blind auditor,
-and uses another fresh set of episodes. Its verdict is pending.
+and uses another fresh set of episodes. Its audit stopped after two token-limit
+failures, so it cannot establish combined success. Version 5 uses another fresh
+set, low audit reasoning, and 16384 output tokens; its verdict is pending.
 
 ## 6. Interpretation and limitations
 

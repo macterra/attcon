@@ -11,8 +11,8 @@ independently specified features of consciousness reports.
 
 **The active study tests reports of bound object contents and attention relations.**
 Perception and content-directed control pass their fresh confirmations. The first three
-free-prose confirmations failed; [confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md)
-is underway with fresh scenes and a validated sentence-based audit. The overall
+free-prose confirmations failed and v4’s audit was incomplete;
+[confirmation v5](BOUND_PROSE_CONFIRMATION_V5.md) is underway with fresh scenes and a validated sentence-based audit. The overall
 goal remains active. First-person wording alone does not count as success.
 
 ## Active object-linked reporting study
@@ -21,7 +21,7 @@ goal remains active. First-person wording alone does not count as success.
 - [Perception/binding protocol](BOUND_CONTENT_PROTOCOL.md) and [revision v2](BOUND_CONTENT_REVISION_V2.md).
 - [Prose audit](BOUND_PROSE_AUDIT.md), [report revision v3](BOUND_REPORT_REVISION_V3.md), and [extractor revision](BOUND_EXTRACTOR_REVISION_V3.md).
 - [Retained first prose confirmation](BOUND_PROSE_CONFIRMATION.md) and [fresh v2](BOUND_PROSE_CONFIRMATION_V2.md).
-- [Current confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md) and [offline reproduction](BOUND_CONTENT_REPRODUCTION.md).
+- [Current confirmation v5](BOUND_PROSE_CONFIRMATION_V5.md) and [offline reproduction](BOUND_CONTENT_REPRODUCTION.md).
 - [Inspect actual reports and represented objects](bound-reports.html).
 
 ## Earlier numerical predictive-model study

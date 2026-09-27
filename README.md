@@ -7,11 +7,11 @@ independently specified features of consciousness reports.
 **The active study tests reports of bound object contents and attention relations.**
 The system recognizes colored shapes, binds them to its attention model, and uses
 those bindings for content-directed control. All three fresh perception/control
-confirmations pass. Free-prose confirmations v1–v3 failed; fresh
-confirmation v4 is underway with the same acceptance thresholds. The overall goal is not marked achieved.
+confirmations pass. Free-prose confirmations v1–v3 failed and v4’s audit was incomplete. Fresh
+confirmation v5 is underway with the same acceptance thresholds. The overall goal is not marked achieved.
 
-- [Active study and progress](docs/BOUND_CONTENT_PROGRESS.md), [plan](docs/BOUND_CONTENT_PLAN.md), and [registered confirmation v4](docs/BOUND_PROSE_CONFIRMATION_V4.md).
-- [Inspect actual reports and model contents](https://macterra.org/attcon/bound-reports.html) (currently the retained third confirmation).
+- [Active study and progress](docs/BOUND_CONTENT_PROGRESS.md), [plan](docs/BOUND_CONTENT_PLAN.md), and [registered confirmation v5](docs/BOUND_PROSE_CONFIRMATION_V5.md).
+- [Inspect actual reports and model contents](https://macterra.org/attcon/bound-reports.html) (currently the fourth report set, whose audit was incomplete).
 - [Earlier numerical results](docs/PREDICTIVE_ATTENTION_RESULTS.md) and [preprint](docs/PREPRINT.md).
 - [Earlier offline reproduction](docs/PREDICTIVE_ATTENTION_REPRODUCTION.md).
 - [Earlier blinded review form](https://macterra.org/attcon/report-review.html) and [rubric](docs/PREDICTIVE_REPORT_RUBRIC.md).
