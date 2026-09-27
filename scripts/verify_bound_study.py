@@ -55,14 +55,17 @@ def verify_study(root):
         if not folder.is_dir():continue
         judge=json.loads((folder/'manifest.json').read_text());assert hashlib.sha256(judge['source'].encode()).hexdigest()==judge['source_sha256']
         judge_requests=json.loads((folder/'requests.json').read_text());assert len(judge_requests)<=judge['max_attempts']
+        judge_counts={'attempts':len(judge_requests),'complete':0,'errors':0,'incomplete':0,'input_tokens':0,'output_tokens':0}
         for req in judge_requests:
             original=json.loads((root/(req['id']+'.json')).read_text());assert req['report']==original['report']
             result=json.loads((folder/(req['id']+'.json')).read_text())
-            if result['status']=='error':continue
+            if result['status']=='error':judge_counts['errors']+=1;continue
             assert result['status']=='received', ('unfinished extraction',req['id'])
             assert result['response']['model']==judge['model']
             if 'parsed' in result:assert json.loads(response_text(result['response']))==result['parsed']
-        counts[folder.name]={'attempts':len(judge_requests)}
+            judge_counts['complete' if result['response']['status']=='completed' and 'parsed' in result else 'incomplete']+=1
+            for key in ('input_tokens','output_tokens'):judge_counts[key]+=result['response']['usage'][key]
+        counts[folder.name]=judge_counts
     return counts
 
 
