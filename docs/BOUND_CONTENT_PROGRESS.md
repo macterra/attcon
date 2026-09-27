@@ -15,7 +15,11 @@ The overall goal is not marked achieved while confirmation remains in progress.
   earlier extractor failures and invalid evidence spans remain recorded.
 - Frozen [prose confirmation](BOUND_PROSE_CONFIRMATION.md):24 underlying episodes,
   three models, ten conditions,240 reports, followed by a separate semantic audit.
-- Confirmation generation is running. No result is presumed positive.
+- Confirmation v1 completed but failed coverage, paired relations, agency, and
+  some fidelity checks. All 240 reports and audits are retained.
+- [Fresh confirmation v2](BOUND_PROSE_CONFIRMATION_V2.md) keeps the same gates,
+  uses new scenes, and supplies per-object temporal directions. Its sentence-ID
+  audit passed all 17 semantic fixtures after a retained 16/17 v5 failure.
 
 The reporter never receives a sample consciousness report, a theory name, or
 phenomenological training labels. The explicit binding, semantic glossary,

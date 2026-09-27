@@ -1,7 +1,7 @@
 # Bound-prose confirmation v2: sentence-grounded audit and temporal indexes
 
 Frozen before v2 reports, 2026-09-27. Confirmation v1 remains failed. Checked color,
-shape, focality, and most-recoverable assertions are generally accurate, and45/48
+shape, focality, and most-recoverable assertions are generally accurate, and 45/48
 ordinary/binding reports are classified subjective_access or mixed. Nevertheless,
 coverage, paired relations, agency evidence, one temporal-direction gate, and
 missing-component checks fail. Do not replace its recorded verdict.
@@ -43,3 +43,10 @@ contrast, graded/temporal availability, and agent-object relation, separately
 from character classification. Use the same .75 thresholds and all fidelity,
 coverage, paired-intervention, restoration, and missing-component gates from v1.
 Automated judgments are not human validation or proof of subjective experience.
+
+## Pre-run extractor validation amendment
+
+Version 5 passed 16/17 fixtures but still interpreted "remains faint" as exactly
+unchanged access. No confirmation-v2 calls had been made. Version 6 explicitly
+clarifies this qualitative-band distinction; all 17 fixtures are rerun and the
+failed v5 fixture result is retained. No acceptance threshold changes.
