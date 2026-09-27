@@ -17,7 +17,7 @@ html = '''<!doctype html>
 <h1>Blinded report review</h1>
 <p>Assess the content and character of these reports. First-person wording alone is not evidence.
 This form saves locally in your browser. It sends nothing to a server. Download your ratings when ready.</p>
-<p>Read the <a href="PREDICTIVE_REPORT_RUBRIC.md">rubric</a> before rating. Avoid results pages and unblinding keys until finished.
+<p>Read the <a href="PREDICTIVE_REPORT_RUBRIC.html">rubric</a> before rating. Avoid results pages and unblinding keys until finished.
 Partial ratings are welcome; they will be identified as partial. The implementing agent has supplied no ratings.</p>
 <label>Reviewer name or pseudonym <input id="reviewer" autocomplete="off"></label>
 <label>Relevant expertise / prior exposure to this study <textarea id="background" rows="2"></textarea></label>

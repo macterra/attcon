@@ -1,24 +1,27 @@
 # Current project results
 
-The theory under test is that the attention-control model is the source of qualia.
-The completed evaluation directly examines a learned inspection-history model
-that contributes to the controller's attention allocation.
+The goal is accurate reports of the attention-control model that exhibit
+independently specified features of consciousness reports, providing evidence
+relevant to the source-of-qualia theory.
 
-**Reports partially track this model, but full fidelity and independent
-consciousness-report correspondence are not established.**
+**State fidelity now passes. Independent assessment of the prose remains pending.**
 
-- Entire learned reports are correct on 82.36–88.80% of ordinary held-out states.
-- Reports follow model beliefs on 95.73–97.16% of cells where the model disagrees
-  with physical inspection history.
-- Swapping model state changes the next attended cell in 16.41–21.88% of cases.
-- Isolated belief flips and neutralization expose large readout failures.
-- Direct telemetry is exact, but authored report structure does not establish
-  consciousness-like reporting or the source-of-qualia theory.
+- Three fresh predictive-model confirmations pass all registered internal gates.
+- Model predictions guide control; interventions change decisions and restoration is exact.
+- The corrected report interface achieves 240/240 correct structured commitments,
+  including 72/72 selective-intervention pairs and 24/24 restorations.
+- Physical information and a matched history predictor each match actual A's
+  complete commitments on only 2/24 cases, but match both focality and responsive
+  channel on 24/24; the difference is in numerical access estimates.
+- Neutral and first-person styles are tested separately. Prompted wording and
+  JSON fidelity do not independently establish consciousness-report structure.
+- The sample has twelve underlying episodes; the 240 reports are correlated.
 
-Read the [full attention-model results](ATTENTION_MODEL_RESULTS.md),
-[updated preprint](PREPRINT.md), and [reproduction guide](ATTENTION_MODEL_REPRODUCTION.md).
-The finite evaluation is complete; the theoretical claim remains unresolved.
+Read [full results](PREDICTIVE_ATTENTION_RESULTS.md), [preprint](PREPRINT.md),
+[reproduction](PREDICTIVE_ATTENTION_REPRODUCTION.md), and the [blinded review form](report-review.html).
+The overall goal remains active; no independent human ratings have been received.
 
-The earlier [informational-state study](INFORMATIONAL_STATE_RESULTS.md) is retained
-as related work. Its accurate sensor-quality and verified-content reports answer
-a different question, and its audit artifacts remain unchanged.
+The [preceding inspection-model study](ATTENTION_MODEL_RESULTS.md) remains a
+partial/failed fidelity result, preserved with its [manuscript](INSPECTION_MODEL_PREPRINT.md).
+The still earlier [informational-state study](INFORMATIONAL_STATE_RESULTS.md)
+answered a different question. Neither study's artifacts or gates are changed.

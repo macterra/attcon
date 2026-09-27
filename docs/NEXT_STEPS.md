@@ -1,28 +1,24 @@
 # Current outcome and further research
 
-The [proposed next study](QUALIA_REPORTING_NEXT_PLAN.md) specifies the predictive
-attention model, neutral report interface, and theory-facing tests needed to
-address the remaining gap. It is a plan, not a registered or completed experiment.
+The [predictive attention study](PREDICTIVE_ATTENTION_RESULTS.md) now passes
+internal-model and structured-report fidelity criteria. Failed pilots and the
+first report confirmation remain archived. The overall source-of-qualia reporting
+goal is active because independent assessment of the prose is still pending.
 
-The [attention-model evaluation](ATTENTION_MODEL_RESULTS.md) is complete: all
-registered reporters, interventions, controls, and replay checks have run. The
-learned inspection model contributes to attention and is partially reportable,
-but robust complete-report fidelity and independent phenomenological
-correspondence remain unsupported. The source-of-qualia hypothesis is unresolved.
+The next step is to use the [blinded review form](report-review.html) and
+[previously specified rubric](PREDICTIVE_REPORT_RUBRIC.md) to assess manner of
+access, graded presentation, agent–object relation, and prose fidelity. Compare
+controls and neutral versus prompted first-person style. Do not count style,
+correct JSON fields, or control utility as this independent evidence.
 
-Further work needs two explicit decisions, not more generic reporting cycles:
+Ratings may support the proposed correspondence or expose a remaining gap. Any
+new threshold or revised interface chosen from those ratings requires fresh
+confirmation. Do not repeat decoder-accuracy cycles as a substitute. The current
+sample has twelve underlying report contexts; broader generalization remains a
+limitation to address after the substantive report-character criterion is settled.
 
-1. Improve fidelity to this model on held-out interventions while preserving the
-   current failed results. Direct telemetry already works; learned generalization
-   is the measured limitation.
-2. Specify a consciousness-report distinction that a supervised inspection
-   estimator plus a decoder does not already explain. The present module lacks
-   identified presence, qualitative character, and self-attribution mechanisms.
-   Adding those words to reports would not establish the proposed correspondence.
-
-Any extension requires a new protocol and fresh confirmation data. The completed
-[plan](ATTENTION_MODEL_REPORTING_PLAN.md) and [progress](ATTENTION_MODEL_PROGRESS.md)
-record the bounded study; completion is not a positive theoretical verdict.
+The [earlier inspection-model evaluation](ATTENTION_MODEL_RESULTS.md) remains
+complete with failed gates. Its results are unchanged by the new architecture.
 
 The historical checklist below preserves the broader program and old findings.
 Its unchecked items are not prerequisites that replace the actual theory question.

@@ -4,19 +4,20 @@ Attcon tests the theory that **the attention-control model is the source of qual
 The proposed evidence combines accurate reports of that model's state with
 independently specified features of consciousness reports.
 
-**The registered attention-model evaluation is complete; the theory remains
-unresolved.** We identified the controller's learned inspection-history model,
-verified its causal effect on attention, and tested reports on three independent
-controller seeds. Entire learned reports are correct on 82.36–88.80% of ordinary
-held-out snapshots. Reports often follow the model when it disagrees with actual
-history, but complete-report criteria and intervention robustness fail. Direct
-telemetry is exact; consciousness-like structure beyond authored report semantics
-and language is not established.
+**State-fidelity criteria now pass; the overall theory-facing goal remains active.**
+A predictive attention model guides control and forecasts allocation, access, and
+command effects. Three fresh model confirmations pass. After retained failed
+pilots, a frozen language reporter produces correct structured commitments on
+240/240 reports, including selective interventions and restoration. Independent
+assessment of prose fidelity and consciousness-report structure is still pending.
+First-person wording alone is not counted as success.
 
-- [Current results](docs/ATTENTION_MODEL_RESULTS.md) and [preprint](docs/PREPRINT.md).
-- [State specification](docs/ATTENTION_MODEL_STATE_SPEC.md) and [registered protocol](docs/ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
-- [Reproduce or verify](docs/ATTENTION_MODEL_REPRODUCTION.md): archived controllers,
-  all 15 reporters, complete case records, exact replay, and 160 passing tests.
+- [Current results](docs/PREDICTIVE_ATTENTION_RESULTS.md) and [preprint](docs/PREPRINT.md).
+- [Reproduce offline](docs/PREDICTIVE_ATTENTION_REPRODUCTION.md): complete checkpoints,
+  API records, retained failures, exact replay, and 168 passing tests.
+- [Blinded review form](https://macterra.org/attcon/report-review.html) and [rubric](docs/PREDICTIVE_REPORT_RUBRIC.md).
+- [Progress](docs/PREDICTIVE_ATTENTION_PROGRESS.md) and [research plan](docs/QUALIA_REPORTING_NEXT_PLAN.md).
+- [Earlier inspection-model results](docs/ATTENTION_MODEL_RESULTS.md): its failed gates remain unchanged.
 - [Documentation site](https://macterra.org/attcon/) and [index](docs/index.md).
 
 The earlier [informational-state study](docs/INFORMATIONAL_STATE_RESULTS.md)

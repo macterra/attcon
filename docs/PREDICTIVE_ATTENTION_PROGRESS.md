@@ -6,9 +6,9 @@ consciousness-report structure. Status: active, not achieved.
 - [x] Publish next-study plan and distinguish positive goal from matrix completion.
 - [x] Specify predictive process model, correspondence candidates, and review separation.
 - [x] Implement simulator, model, and intervention interface.
-- [ ] Validate prediction accuracy and causal use; retain pilots and failures.
-- [ ] Freeze a confirmation protocol with fresh contexts.
-- [ ] Run faithful neutral language reports and controls.
+- [x] Validate prediction accuracy and causal use; retain pilots and failures.
+- [x] Freeze confirmation protocols with fresh contexts.
+- [x] Pass the fresh mechanical report confirmation, including neutral/styled prose and controls.
 - [ ] Obtain independent semantic/phenomenological review.
 - [ ] Replicate the positive criteria or continue with explicitly revised experiments.
 
@@ -27,3 +27,17 @@ and restoration is exact. These are development results, not confirmation.
 
 Language pilot protocol: [request limits and controls](PREDICTIVE_LANGUAGE_PILOT.md).
 Assessment: [blinded rubric](PREDICTIVE_REPORT_RUBRIC.md).
+
+## Current outcome
+
+Three internal confirmations pass and replay exactly. Both original language
+pilots and report confirmation v1 remain failed. Corrected confirmation v2 passes
+all mechanical gates: 240/240 structured commitments, 72/72 intervention pairs,
+24/24 restorations. These are 12 underlying episodes across three models.
+All 168 tests pass. [Full results](PREDICTIVE_ATTENTION_RESULTS.md) and
+[reproduction](PREDICTIVE_ATTENTION_REPRODUCTION.md) are available.
+
+The [blinded review form](report-review.html) is published. Independent prose
+fidelity/character ratings are pending; no ratings have been invented. This is
+the remaining evidential dependency, not another decoder-accuracy task. The
+overall goal is not marked complete.

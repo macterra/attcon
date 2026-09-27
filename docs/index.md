@@ -9,28 +9,29 @@ The theory under test is that **the attention-control model is the source of
 qualia**. The proposed evidence is accurate reporting of that model's state with
 independently specified features of consciousness reports.
 
-**The registered evaluation is complete; theoretical support remains unresolved.**
-We identified a learned inspection-history model used in attention selection and
-measured both its causal role and reporting fidelity. Complete learned reports
-reach 82.36–88.80% ordinary accuracy but fail the registered criterion and degrade
-under interventions. Authored report structure does not independently establish
-consciousness-like reporting.
+**State-fidelity criteria now pass; the overall goal remains active.**
+A predictive model guides attention and can be reported faithfully under selective
+interventions. Independent assessment of the prose remains pending. First-person
+wording and accurate JSON commitments are not counted as that assessment.
 
-## Current study
+## Current predictive-model study
 
-- [Results and the explanatory crux](ATTENTION_MODEL_RESULTS.md).
-- [Project results overview](PROJECT_RESULTS.md).
-- [Updated preprint](PREPRINT.md).
-- [Reproduction and verification](ATTENTION_MODEL_REPRODUCTION.md).
-- [Research plan](ATTENTION_MODEL_REPORTING_PLAN.md) and [completed progress](ATTENTION_MODEL_PROGRESS.md).
-- [Identified model and state specification](ATTENTION_MODEL_STATE_SPEC.md).
-- [Registered fidelity and correspondence protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
-- [Numerical correction record](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
-- [Active next study](QUALIA_REPORTING_NEXT_PLAN.md): moving from inspection reports to a test of consciousness-report structure.
-- [Predictive model design](PREDICTIVE_ATTENTION_DESIGN.md) and [progress](PREDICTIVE_ATTENTION_PROGRESS.md).
-- [Language pilot](PREDICTIVE_LANGUAGE_PILOT.md) and [blinded report rubric](PREDICTIVE_REPORT_RUBRIC.md).
-- [Remaining research questions](NEXT_STEPS.md).
-- [Source code, cases, and checkpoints](https://github.com/macterra/attcon).
+- [Results and limitations](PREDICTIVE_ATTENTION_RESULTS.md), [overview](PROJECT_RESULTS.md), and [preprint](PREPRINT.md).
+- [Offline reproduction](PREDICTIVE_ATTENTION_REPRODUCTION.md).
+- [Blinded review form](report-review.html) and [rubric](PREDICTIVE_REPORT_RUBRIC.md).
+- [Design](PREDICTIVE_ATTENTION_DESIGN.md), [progress](PREDICTIVE_ATTENTION_PROGRESS.md), and [research plan](QUALIA_REPORTING_NEXT_PLAN.md).
+- [Internal-model confirmation](PREDICTIVE_CONFIRMATION_PROTOCOL.md) and [closed-loop confirmation](PREDICTIVE_CLOSED_LOOP_CONFIRMATION.md).
+- [Language pilot v1](PREDICTIVE_LANGUAGE_PILOT.md) and [style pilot v2](PREDICTIVE_LANGUAGE_PILOT_V2.md).
+- [Report confirmation v1](PREDICTIVE_REPORT_CONFIRMATION.md) and [v2 correction](PREDICTIVE_REPORT_CONFIRMATION_V2.md).
+- [Remaining research](NEXT_STEPS.md).
+
+## Earlier inspection-model study
+
+- [Results](ATTENTION_MODEL_RESULTS.md) and [archived manuscript](INSPECTION_MODEL_PREPRINT.md).
+- [Reproduction](ATTENTION_MODEL_REPRODUCTION.md).
+- [Plan](ATTENTION_MODEL_REPORTING_PLAN.md) and [completed progress](ATTENTION_MODEL_PROGRESS.md).
+- [Identified state](ATTENTION_MODEL_STATE_SPEC.md) and [registered protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
+- [Numerical correction](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
 
 ## Earlier informational-state evaluation
 
