@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 from attcon.bound_content import COLORS,SHAPES,LOCATIONS
 
-p=argparse.ArgumentParser();p.add_argument('--study',default='language_confirmation_v1');args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--study',default='language_confirmation_v2');args=p.parse_args()
 root=Path('audits/bound_content')/args.study
 requests=json.loads((root/'requests.json').read_text());states=torch.load(root/'source_states.pt',weights_only=True)
 data={}
@@ -18,13 +18,15 @@ for req in requests:
         data[key]={'physical':physical,'conditions':{}}
     response=json.loads((root/(req['id']+'.json')).read_text())
     data[key]['conditions'][req['condition']]={'source':req['source'],'report':response.get('report','No completed report.'),'id':req['id']}
+protocol='BOUND_PROSE_CONFIRMATION_V2.html' if args.study=='language_confirmation_v2' else 'BOUND_PROSE_CONFIRMATION.html'
 encoded=json.dumps(data).replace('<','\\u003c')
 html='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Attcon: inspect object-linked reports</title>
 <style>body{max-width:1050px;margin:2rem auto;padding:0 1rem;color:#192d3e;background:#f8fafc;font:17px/1.5 system-ui}select,button{font:inherit;padding:.4rem;margin:.2rem}label{display:inline-block;margin:.5rem 1rem .5rem 0}.views{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.view{background:white;border:1px solid #ccd5df;border-radius:8px;padding:1rem}.board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,105px);gap:.2rem}.cell{text-align:center;border:2px solid transparent;border-radius:8px;font-size:13px}.cell.focus{border-color:#172e58;background:#eef3ff}.cell svg{display:block;margin:0 auto;width:48px;height:48px}.bar{height:5px;background:#cad4e0;max-width:80px;margin:auto}.fill{height:5px;background:#476d9c}#report{white-space:pre-wrap;background:white;border-left:4px solid #375d83;padding:1.2rem;font:18px/1.6 system-ui}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}summary{cursor:pointer}h2{font-size:1.25rem}small{color:#45566a}@media(max-width:650px){.views{grid-template-columns:1fr}.board{grid-template-rows:repeat(3,100px)}}</style>
 <h1>Reports of object-linked attention-model contents</h1>
+<p><strong>Archive: STUDY_NAME.</strong> Automated report judgments are not evidence of subjective experience.</p>
 <p>Select a recorded episode and change the internal-state condition. The physical scene stays fixed during the listed interventions. Reports below are the actual generated prose.</p>
-<p><a href="BOUND_CONTENT_PROGRESS.html">Study progress and evidence limits</a> · <a href="BOUND_PROSE_CONFIRMATION.html">Registered confirmation</a></p>
+<p><a href="BOUND_CONTENT_PROGRESS.html">Study progress and evidence limits</a> · <a href="PROTOCOL_LINK">Registered confirmation</a></p>
 <label>Episode <select id="episode"></select></label><label>Condition <select id="condition"></select></label>
 <p id="caseid"></p>
 <h2>Represented contents</h2><p><small>Symbols show the model's identified color and shape (probability at least 0.6). A border marks its strongest current attention allocation. Bars show predicted current recoverability; ? means identity is uncertain. These visual encodings illustrate stored values.</small></p>
@@ -49,6 +51,6 @@ function show(){const episode=data[el('episode').value],row=episode.conditions[e
 for(const key of Object.keys(data)){const o=document.createElement('option');o.value=key;o.textContent=key.replace('_',' · episode ');el('episode').append(o);}
 for(const [key,label]of Object.entries(labels)){const o=document.createElement('option');o.value=key;o.textContent=label;el('condition').append(o);}
 el('episode').onchange=show;el('condition').onchange=show;show();
-</script></html>'''.replace('DATA',encoded)
+</script></html>'''.replace('DATA',encoded).replace('STUDY_NAME',args.study).replace('PROTOCOL_LINK',protocol)
 Path('docs/bound-reports.html').write_text(html)
 print(f'Built {len(data)} episodes and {len(requests)} reports')
