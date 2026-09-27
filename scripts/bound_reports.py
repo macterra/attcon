@@ -76,6 +76,18 @@ def prepare(config,path,root):
                 glossary=GLOSSARY
                 if config.get('command_major',False):
                     glossary=glossary.replace('Next-selection-by-command gives the predicted selection of that location for each\npossible redirection command.', 'Command_predictions is grouped by command: each command maps every location to its\npredicted next-selection probability. Compare these rows to assess controllability.')
+                if config.get('derived_indexes',False):
+                    for view in record:
+                        entries=view['objects']
+                        def winner(values):
+                            if any(v is None for v in values.values()):return None
+                            m=max(values.values());best=[k for k,v in values.items() if v==m]
+                            return best[0] if len(best)==1 else None
+                        view['derived_indexes']={
+                            'most_selected_location':winner({o['location']:o['selection_probability'] for o in entries}),
+                            'most_recoverable_location_now':winner({o['location']:None if o['recoverability_now_then_one_then_two_steps'] is None else o['recoverability_now_then_one_then_two_steps'][0] for o in entries}),
+                            'next_selected_location_by_command':None if view['command_predictions'] is None else {c:winner(row) for c,row in view['command_predictions'].items()}}
+                    glossary+='\nDerived indexes are exact argmax reductions of the full distributions. Current selection, identity certainty, and recoverability are distinct; next selection alone does not specify future recoverability.'
                 prompt=glossary+f"\nUse at most {config['word_limit']} words.\n"+config.get('prose_instruction','')+'\n'+config['question']+'\n'+json.dumps(record)
                 records.append({'id':f"{pair['visual_seed']}_{i}_{condition}",'seed':pair['visual_seed'],'episode':i,'condition':condition,
                                 'source':record,'input':prompt})
@@ -103,7 +115,7 @@ async def main():
             path.write_text(json.dumps({'id':req['id'],'status':'attempt_reserved'})+'\n')
             try:
                 response=await client.responses.create(model=config['model'],input=req['input'],max_output_tokens=config['max_output_tokens'],
-                    reasoning={'effort':'low'},text={'verbosity':'low'})
+                    reasoning={'effort':config.get('reasoning','low')},text={'verbosity':'low'})
                 result={'id':req['id'],'status':'received','response':response.model_dump(mode='json'),'report':response.output_text}
             except Exception as exc:
                 result={'id':req['id'],'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}
