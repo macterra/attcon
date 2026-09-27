@@ -1,4 +1,8 @@
-# Next study: attention-model reports as evidence about qualia
+# Earlier predictive study: design plan
+
+Historical plan for the preceding numerical study. The later [object-linked plan](BOUND_CONTENT_PLAN.md)
+now has a [passing registered demonstration](BOUND_CONTENT_RESULTS.md). The status
+notes below describe the earlier stage and are retained for context.
 
 Started 2026-09-27. See the [implementation design](PREDICTIVE_ATTENTION_DESIGN.md)
 and [progress](PREDICTIVE_ATTENTION_PROGRESS.md). Internal-model and corrected

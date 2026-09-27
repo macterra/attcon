@@ -4,17 +4,19 @@ Attcon tests the theory that **the attention-control model is the source of qual
 The proposed evidence combines accurate reports of that model's state with
 independently specified features of consciousness reports.
 
-**The active study tests reports of bound object contents and attention relations.**
-The system recognizes colored shapes, binds them to its attention model, and uses
-those bindings for content-directed control. All three fresh perception/control
-confirmations pass. Free-prose confirmations v1–v3 failed and v4’s audit was incomplete. Fresh
-confirmation v5 is underway with the same acceptance thresholds. The overall goal is not marked achieved.
+**The registered object-content reporting demonstration now passes.**
+The system reports objects bound to its attention model and follows selective
+changes to that model while the physical scene stays fixed. A fresh confirmation
+across three model pairs and 24 episodes meets every registered fidelity,
+intervention, control, and automated report-structure criterion. The character
+judgments are mostly mixed technical/access descriptions; they do not establish
+subjective experience or prove the source-of-qualia theory.
 
-- [Active study and progress](docs/BOUND_CONTENT_PROGRESS.md), [plan](docs/BOUND_CONTENT_PLAN.md), and [registered confirmation v5](docs/BOUND_PROSE_CONFIRMATION_V5.md).
-- [Inspect actual reports and model contents](https://macterra.org/attcon/bound-reports.html) (currently the fourth report set, whose audit was incomplete).
-- [Earlier numerical results](docs/PREDICTIVE_ATTENTION_RESULTS.md) and [preprint](docs/PREPRINT.md).
-- [Earlier offline reproduction](docs/PREDICTIVE_ATTENTION_REPRODUCTION.md).
-- [Earlier blinded review form](https://macterra.org/attcon/report-review.html) and [rubric](docs/PREDICTIVE_REPORT_RUBRIC.md).
+- [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
+- [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).
+- [Design](docs/BOUND_CONTENT_DESIGN.md), [completed plan](docs/BOUND_CONTENT_PLAN.md), and [successful confirmation protocol](docs/BOUND_PROSE_CONFIRMATION_V5.md).
+- [Reproduce offline](docs/BOUND_CONTENT_REPRODUCTION.md): exact state replay, complete API records, retained failures, and 185 passing tests.
+- [Research history](docs/BOUND_CONTENT_PROGRESS.md) and [earlier numerical results](docs/PREDICTIVE_ATTENTION_RESULTS.md).
 - [Documentation site](https://macterra.org/attcon/) and [index](docs/index.md).
 
 The earlier [informational-state study](docs/INFORMATIONAL_STATE_RESULTS.md)

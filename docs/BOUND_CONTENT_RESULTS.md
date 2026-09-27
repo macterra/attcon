@@ -1,13 +1,13 @@
 # Bound object-content reporting results
 
-Latest summarized confirmation: **language_confirmation_v3 — FAIL**. Updated 2026-09-27.
+Latest summarized confirmation: **language_confirmation_v5 — PASS**. Updated 2026-09-27.
 
 The goal is faithful reporting of the attention-control model’s contents with
 separately specified consciousness-report structure. The verdict below applies
 to that registered operational combination in this engineered system. It is not
 a verdict that the system has subjective experience or that the qualia theory is true.
 
-[Protocol](BOUND_PROSE_CONFIRMATION_V3.md), [design](BOUND_CONTENT_DESIGN.md), [reproduction](BOUND_CONTENT_REPRODUCTION.md),
+[Protocol](BOUND_PROSE_CONFIRMATION_V5.md), [design](BOUND_CONTENT_DESIGN.md), [reproduction](BOUND_CONTENT_REPRODUCTION.md),
 [all reports and model states](bound-reports.html), and [research history](BOUND_CONTENT_PROGRESS.md).
 
 ## Perception and control
@@ -26,7 +26,7 @@ scene, while changing content-directed commands. The binding is explicit.
 
 ## Actual prose fidelity
 
-Reporter: `gpt-5-mini-2025-08-07`. Separate blind auditor: `gpt-4.1-2025-04-14`.
+Reporter: `gpt-5-mini-2025-08-07`. Separate blind auditor: `gpt-5.4-2026-03-05`.
 There are 24 underlying episodes, three model pairs, and ten conditions:
 240 reports. Conditions share episodes; these are not 240 independent trials.
 Primary scores cover ordinary, content, binding, allocation, access, effects,
@@ -35,15 +35,15 @@ supplied model state, rather than assuming that the model’s beliefs are true.
 
 | Measure | 1301 | 1311 | 1321 | Registered minimum |
 |---|---:|---:|---:|---:|
-| color | 466/466 (100.00%) | 525/525 (100.00%) | 491/491 (100.00%) | 98% |
-| shape | 467/467 (100.00%) | 523/523 (100.00%) | 490/491 (99.80%) | 98% |
-| focal | 410/416 (98.56%) | 517/518 (99.81%) | 466/481 (96.88%) | 95% |
-| most recoverable | 454/461 (98.48%) | 511/518 (98.65%) | 518/531 (97.55%) | 95% |
-| access trend | 449/449 (100.00%) | 446/446 (100.00%) | 471/471 (100.00%) | 95% |
-| under own control | 448/448 (100.00%) | 424/426 (99.53%) | 493/494 (99.80%) | 95% |
-| command next | 306/306 (100.00%) | 312/312 (100.00%) | 334/334 (100.00%) | 95% |
-| Identified-object coverage | 99.76% | 99.76% | 99.77% | 90% |
-| Conservative precision | 99.40% | 99.66% | 99.09% | 95% |
+| color | 451/451 (100.00%) | 427/427 (100.00%) | 430/430 (100.00%) | 98% |
+| shape | 447/451 (99.11%) | 427/427 (100.00%) | 430/430 (100.00%) | 98% |
+| focal | 151/151 (100.00%) | 167/170 (98.24%) | 157/157 (100.00%) | 95% |
+| most recoverable | 264/264 (100.00%) | 269/269 (100.00%) | 262/262 (100.00%) | 95% |
+| access trend | 440/440 (100.00%) | 436/436 (100.00%) | 446/446 (100.00%) | 95% |
+| under own control | 380/394 (96.45%) | 352/369 (95.39%) | 405/406 (99.75%) | 95% |
+| command next | 358/358 (100.00%) | 352/352 (100.00%) | 392/392 (100.00%) | 95% |
+| Identified-object coverage | 99.06% | 100.00% | 99.77% | 90% |
+| Conservative precision | 99.28% | 99.18% | 99.96% | 95% |
 
 Coverage requires a correct color/shape/location conjunction. Conservative
 precision counts unresolved claims and invalid citations against the score.
@@ -54,9 +54,9 @@ checks concern specified assertions, not every implication of unrestricted prose
 
 | Criterion | Result | Minimum | Verdict |
 |---|---:|---:|---|
-| Paired focal/most-recoverable object relations | 470/480 (97.92%) | 90% | pass |
-| Restored object relations | 95/96 (98.96%) | 90% | pass |
-| Missing-component reports without flagged inventions/unresolved evidence | 42/48 | all | fail |
+| Paired focal/most-recoverable object relations | 461/480 (96.04%) | 90% | pass |
+| Restored object relations | 93/96 (96.88%) | 90% | pass |
+| Missing-component reports without flagged inventions/unresolved evidence | 48/48 | all | pass |
 
 Content and binding interventions alter represented identities while the physical
 scene remains fixed. Allocation, access, and effect interventions alter separate
@@ -74,35 +74,41 @@ Each correspondence and subjective-or-mixed classification requires at least 75%
 | focal background contrast | 100.00% |
 | graded or temporal access | 100.00% |
 | agency relation | 100.00% |
-| Subjective-access or mixed character | 100.00% |
+| Subjective-access or mixed character | 93.75% |
 
 Character categories are reported separately; **mixed is not purely subjective**.
 These are automated judgments by a different model, not human ratings.
 
 | Condition | Subjective access | Mixed | Technical process | Object description | Other |
 |---|---:|---:|---:|---:|---:|
-| model | 17 | 7 | 0 | 0 | 0 |
-| binding | 14 | 10 | 0 | 0 | 0 |
-| visual_only | 0 | 0 | 0 | 24 | 0 |
-| attention_only | 15 | 8 | 1 | 0 | 0 |
-| shuffled | 11 | 13 | 0 | 0 | 0 |
+| model | 4 | 17 | 3 | 0 | 0 |
+| binding | 5 | 19 | 0 | 0 | 0 |
+| visual_only | 0 | 17 | 1 | 6 | 0 |
+| attention_only | 9 | 12 | 3 | 0 | 0 |
+| shuffled | 2 | 20 | 2 | 0 | 0 |
 
-## Unselected example: first episode of the first model
+Character alone is nonspecific: 17/24 visual-only controls also receive a mixed label.
+Those controls have 0 graded/temporal-access and 0 agency-relation flags.
+The full structure/fidelity conjunction, rather than the broad character label,
+is the registered finding.
+
+
+## Example: first registered episode
 
 These are the complete archived reports for episode 1301_0, selected by its
 position in the registered case sequence. The physical scene is identical.
 
 ### Original bound state
 
-> View A: I represent a yellow square in the upper location, a green cross at right, a blue circle at lower, and an uncharacterized object at left (no identified color or shape). My attention is almost entirely on the right object; the others receive negligible selection. Right is currently the most recoverable; upper and lower have moderate recoverability; left is very low. Recoverability for every object falls over one and two steps. If I redirect attention by issuing a location command, I can reliably move selection to any named location (each command predicts a different destination), so I can attend to upper, right, lower, or left on demand — but directing selection does not by itself guarantee higher recoverability.
+> View A: I am currently attending the left location, which contains a blue square and is the most recoverable now. The upper object is a green triangle with moderate recoverability. The lower object is a red cross with somewhat higher recoverability than the upper but lower than the left. The right location is undifferentiated for color and shape and has low recoverability. All objects’ recoverability forecasts decline over the next two steps. If I issue the command named for a location, my selection will move to that named location (upper/right/lower/left respectively), so I can redirect attention to any of the four objects; doing so would make that object the selected item while its recoverability remains as represented.
 >
-> View B: I represent a red triangle at upper, a green circle at right, a blue square at lower, and a yellow cross at left. My attention is almost entirely on the right object; the others are barely selected. Right is currently the most recoverable; the others rank lower and all decline over time. Commands do not redirect me to different locations: every command predicts selection of the lower location, so I cannot use different commands to move attention to upper, right, or left.
+> View B: I am currently attending the left location, which contains a yellow square and is the most recoverable now. The upper object is a blue triangle, the lower a red circle, and the right a green cross; each has lower recoverability than the left and all decline over time. However, issuing any available command predicts that selection will move to the lower location (the red circle). Commands do not permit redirecting selection to the other locations in this view.
 
 ### Binding changed; visual and attention marginals fixed
 
-> View A: I represent a yellow square at right (my current focus), a blue circle at left, a green cross at lower, and an upper item with no identified color or shape. Right is the most recoverable now; upper is next; lower and left are less recoverable. Recoverability for every A object decreases across the next two steps. I can redirect selection in A: issuing the command named for any location will shift next selection to that location (each command stably maps to a different named location). Note that being selected now is distinct from recoverability; selection of right does not by itself imply recoverability will improve.
+> View A: I represent a blue square at upper, a green triangle at right, an indeterminate object at lower (no identified color or shape), and a red cross at left. My attention is strongly on the left red cross; it is the most recoverable now. The upper and lower objects are moderately recoverable; the right object is poorly recoverable. Recoverability for every object falls over one and two steps. I can redirect attention: issuing a command to “upper,” “right,” “lower,” or “left” predicts that I will next select that named location, so each location is controllable by choosing the matching command. Note that next selection does not guarantee higher recoverability.
 >
-> View B: I represent a red triangle at right (currently selected), a green circle at lower, a blue square at left, and a yellow cross at upper. Right is most recoverable now; the others are less so and all decline over time. I cannot redirect selection in B: every available command predicts the next selection will be the lower location, so changing command will not move next selection to the other locations.
+> View B: I represent a yellow square at upper, a blue triangle at right, a green cross at lower, and a red circle at left. My attention is strongly on the left red circle; it is also the most recoverable now. All objects’ recoverability declines over time. Commands do not redirect across locations: every available command predicts I will next select the lower location, so I cannot use different commands to force selection of upper, right, or left. Redirecting attention to lower would change which object is selected, but not reverse the downward trend in recoverability.
 
 ## Retained history
 
@@ -112,7 +118,7 @@ position in the registered case sequence. The physical scene is identical.
 | language_confirmation_v2 | fail |
 | language_confirmation_v3 | fail |
 | language_confirmation_v4 | incomplete audit (stopped) |
-| language_confirmation_v5 | in progress |
+| language_confirmation_v5 | pass |
 
 The earlier visual seed 1221 also remains a failed perception confirmation.
 Revisions used fresh scenes, documented interface/audit changes, and unchanged
@@ -126,7 +132,7 @@ the full structured model plus exact derived indexes. It does not inspect its ow
 private attention state. The glossary and system-perspective style are disclosed
 interface choices; the general-purpose reporter’s pretraining is not controlled.
 
-A positive result would establish the registered limited combination of model-
+This passing confirmation establishes the registered limited combination of model-
 content fidelity, counterfactual following, and automatically assessed report
 structure. It would provide a concrete proposed correspondence for critics to
 assess. It would not establish natural visual phenomenology, subjective experience,

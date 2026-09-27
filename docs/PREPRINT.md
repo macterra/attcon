@@ -11,19 +11,21 @@ specified structure of consciousness reports. We build a bound model combining
 learned representations of colored shapes, learned predictions of attention and
 information recovery, and an explicit spatial binding consumed by content-directed
 control. Three fresh visual-model confirmations achieve 99.951–100% joint
-color/shape accuracy. All 1,365 eligible observed-object control queries and their
-binding-rotation checks succeed; restoration is exact. A frozen language reporter
-reads the full bound model and generates free prose. Selective interventions
-change represented objects or attention relations while keeping the physical
-scene fixed. Three prose confirmations pass progressively more primary fidelity
-and correspondence criteria but retain failed overall verdicts. The latest
-completed confirmation passes primary per-seed thresholds, 470/480 paired object
-relations, and 95/96 restorations; a separate automated audit classifies all 48
-ordinary/binding reports as subjective-access or mixed. However, its strict
-missing-component control gate fails because the audit introduces unsupported
-predicates and wrong-view attributions. A fourth fresh confirmation generated all reports but its reasoning-model audit
-was stopped after token-limit failures. A fifth fresh confirmation is in progress
-with a larger audit output allowance. No overall success is asserted.
+color/shape accuracy; all 1,365 eligible observed-object control queries and their
+binding-rotation checks succeed, with exact restoration. A frozen language reporter
+reads the full bound model and generates free prose. After retained failed and
+incomplete runs, fresh confirmation v5 meets every registered criterion across
+three model pairs, 24 underlying episodes, and 240 reports. Checked color/shape
+accuracy is 99.11–100%, identified-object coverage 99.06–100%, paired object
+relations 461/480, and restoration 93/96. All 48 missing-component controls pass
+the strict check. A separate, source-blind reasoning model finds all four specified
+report-structure features in 48/48 ordinary/binding reports and classifies nine
+as subjective-access, 36 as mixed, and three as technical-process. Mixed labels
+also occur in 17/24 visual-only controls, so the character label alone is
+nonspecific. The result establishes the registered limited combination of
+model-content fidelity, counterfactual following, and automated report structure
+within this engineered system. It does not establish subjective experience or
+prove the source-of-qualia theory.
 
 ## 1. Question
 
@@ -105,7 +107,7 @@ Earlier extractors used quoted evidence and introduced copying errors. Later
 versions cite original sentence IDs, distinguish possible from dominant identities,
 and expand explicit quantified statements. Each revision has retained semantic
 fixtures. Versions 8–10 use `gpt-5.4-2026-03-05`. After medium-reasoning calls exhausted
-their token allowance, version 10 uses low reasoning and a larger output allowance,
+their token allowance, version 10 uses low reasoning and 16384 output tokens,
 validated on 31 fixtures. It retains the same claim and character rubric. The two language
 models share a vendor; this is not independent human validation.
 
@@ -144,7 +146,30 @@ citations, and wrong-view command assignments. These remain failed confirmations
 Version 4 retains the reporter and all thresholds, changes the blind auditor,
 and uses another fresh set of episodes. Its audit stopped after two token-limit
 failures, so it cannot establish combined success. Version 5 uses another fresh
-set, low audit reasoning, and 16384 output tokens; its verdict is pending.
+set, low audit reasoning, and 16384 output tokens. All 240 reports and 240 audits
+complete, and every registered gate passes.
+
+In that final confirmation, checked focality is 98.24–100%, most-recoverable and
+temporal-direction attribution are 100%, control attribution is 95.39–99.75%,
+and explicit command destinations are 100%. Conservative precision, including
+unresolved or invalid evidence, is 99.18–99.96%. Paired object relations reach
+461/480 (96.04%); restoration reaches 93/96 (96.88%); all 48 missing-component
+cases pass. These rates are across extracted assertions in the predefined
+conditions, not independent episodes or guarantees about every sentence.
+
+All four specified correspondence features are evidenced in each of 48 ordinary/
+binding reports. Nine are classified subjective-access, 36 mixed, and three
+technical-process. The broad category is not specific: 17/24 visual-only reports
+also receive a mixed label. However, those controls show no graded/temporal-access
+or agency-relation evidence, one focal/background contrast, and two object-linked
+access instances. The registered conjunction of fidelity and structure therefore
+provides the more specific result; a character label alone is insufficient.
+
+The first registered episode illustrates state following. Before intervention,
+the report identifies the attended left object in view A as a blue square. With
+only the binding changed, it identifies the attended left object as a red cross.
+The attention allocation and physical scene remain fixed. The full paired reports
+and every other case are available in the results and viewer.
 
 ## 6. Interpretation and limitations
 
@@ -163,8 +188,18 @@ rubric-dependent and may disagree across models or with human readers. The
 qualitative category breakdown and missing-component controls must accompany any
 positive correspondence claim.
 
-A passing confirmation would establish the limited registered combination of
+The passing confirmation establishes the limited registered combination of
 model-content fidelity and automatically assessed report structure. Independent
 human review, broader tasks and architectures, alternative interpretations, and
 the source-of-qualia theory remain further research. [Offline reproduction](BOUND_CONTENT_REPRODUCTION.md)
 provides exact source/state replay and access to all retained records.
+
+## 7. Reproducibility
+
+All 185 tests pass. Offline replay verifies all seven visual-model runs, all
+archived report source states and prompts, complete API responses, and the
+explicitly stopped audit. Checksums and software versions are recorded in
+`audits/bound_content/verification.json`; token accounting and the full test log
+are adjacent. The previous numerical and inspection-model verifiers also pass.
+The [reproduction instructions](BOUND_CONTENT_REPRODUCTION.md) rebuild the public
+results and report viewer without API calls.

@@ -1,24 +1,22 @@
 # Current outcome and further research
 
-The [predictive attention study](PREDICTIVE_ATTENTION_RESULTS.md) now passes
-internal-model and structured-report fidelity criteria. Failed pilots and the
-first report confirmation remain archived. The overall source-of-qualia reporting
-goal is active because independent assessment of the prose is still pending.
+The [bound-content study](BOUND_CONTENT_RESULTS.md) achieves its registered
+operational goal: faithful reporting of the attention model’s object contents and
+relations, selective-intervention following, and the specified automated report
+structure. All criteria pass in fresh confirmation v5. Earlier failed and
+incomplete runs remain archived.
 
-The next step is to use the [blinded review form](report-review.html) and
-[previously specified rubric](PREDICTIVE_REPORT_RUBRIC.md) to assess manner of
-access, graded presentation, agent–object relation, and prose fidelity. Compare
-controls and neutral versus prompted first-person style. Do not count style,
-correct JSON fields, or control utility as this independent evidence.
+The next research questions concern generalization and interpretation: independent
+human assessment of these actual bound-content reports, additional tasks and
+architectures, and whether the proposed correspondence supports the source-of-qualia
+theory. Mixed character labels are common even in visual-only controls; the
+structure/fidelity conjunction carries the more specific finding. Do not treat
+this demonstration as proof of subjective experience.
 
-Ratings may support the proposed correspondence or expose a remaining gap. Any
-new threshold or revised interface chosen from those ratings requires fresh
-confirmation. Do not repeat decoder-accuracy cycles as a substitute. The current
-sample has twelve underlying report contexts; broader generalization remains a
-limitation to address after the substantive report-character criterion is settled.
-
-The [earlier inspection-model evaluation](ATTENTION_MODEL_RESULTS.md) remains
-complete with failed gates. Its results are unchanged by the new architecture.
+Use the [report/model viewer](bound-reports.html), [full results](BOUND_CONTENT_RESULTS.md),
+[preprint](PREPRINT.md), and [reproduction](BOUND_CONTENT_REPRODUCTION.md). The
+older [blinded review form](report-review.html) concerns the numerical study and
+is not a completed human assessment of this new report set.
 
 The historical checklist below preserves the broader program and old findings.
 Its unchecked items are not prerequisites that replace the actual theory question.

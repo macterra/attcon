@@ -73,7 +73,12 @@ lines += ['', 'Character categories are reported separately; **mixed is not pure
           '| Condition | Subjective access | Mixed | Technical process | Object description | Other |','|---|---:|---:|---:|---:|---:|']
 for condition in ('model','binding','visual_only','attention_only','shuffled'):
  c=assessment['summary'][condition]['character_counts'];lines.append(f"| {condition} | {c['subjective_access']} | {c['mixed']} | {c['technical_process']} | {c['object_description']} | {c['generic_experience_claim']+c['unclear']} |")
-lines += ['', '## Unselected example: first episode of the first model','',
+visual=assessment['summary']['visual_only']
+lines += ['',f"Character alone is nonspecific: {visual['character_counts']['mixed']}/{visual['reports']} visual-only controls also receive a mixed label.",
+          f"Those controls have {visual['structure_counts']['graded_or_temporal_access']} graded/temporal-access and {visual['structure_counts']['agency_relation']} agency-relation flags.",
+          'The full structure/fidelity conjunction, rather than the broad character label,',
+          'is the registered finding.','']
+lines += ['', '## Example: first registered episode','',
           'These are the complete archived reports for episode 1301_0, selected by its',
           'position in the registered case sequence. The physical scene is identical.','']
 for condition,label in [('model','Original bound state'),('binding','Binding changed; visual and attention marginals fixed')]:
@@ -92,7 +97,7 @@ lines += ['', 'The earlier visual seed 1221 also remains a failed perception con
           'the full structured model plus exact derived indexes. It does not inspect its own',
           'private attention state. The glossary and system-perspective style are disclosed',
           'interface choices; the general-purpose reporter’s pretraining is not controlled.','',
-          'A positive result would establish the registered limited combination of model-',
+          ('This passing confirmation establishes the registered limited combination of model-' if gates['all_gates_pass'] else 'A positive result would establish the registered limited combination of model-'),
           'content fidelity, counterfactual following, and automatically assessed report',
           'structure. It would provide a concrete proposed correspondence for critics to',
           'assess. It would not establish natural visual phenomenology, subjective experience,',

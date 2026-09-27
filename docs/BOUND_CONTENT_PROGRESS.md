@@ -1,8 +1,11 @@
 # Object-linked reporting progress
 
 Active study following the user's request to report the attention model's contents.
-The overall goal is not marked achieved while confirmation remains in progress.
-Current run: [confirmation v5](BOUND_PROSE_CONFIRMATION_V5.md).
+The registered operational goal is achieved in [confirmation v5](BOUND_PROSE_CONFIRMATION_V5.md).
+See [final results](BOUND_CONTENT_RESULTS.md). The source-of-qualia interpretation
+and independent human assessment remain further research.
+
+## Historical progress notes
 
 - Implemented learned visual recognition of rendered colors/shapes.
 - Added explicit object–attention bindings consumed by content-directed control.
@@ -76,3 +79,26 @@ negative-fixture harness error: omitting a claim when identity is unknown is val
 The corrected harness also checks that a known shape is retained when color is
 unknown. No production extraction rule or scientific threshold changes with that
 harness correction.
+
+## Fifth confirmation: all registered criteria pass
+
+All 240 reports and 240 blind audits complete. Every registered gate passes across
+three model pairs and 24 underlying episodes. Object-identity checks are
+99.11–100%, identified-object coverage 99.06–100%, paired relations 461/480, and
+restoration 93/96. All 48 missing-component controls pass the strict check.
+All four structure features appear in 48/48 ordinary/binding cases; character
+labels are nine subjective-access, 36 mixed, and three technical-process.
+
+Mixed labels also occur in 17/24 visual-only controls. Character labels alone are
+therefore weak evidence; the structure/fidelity conjunction is the registered
+result. No human ratings or subjective-experience finding are claimed.
+
+All 185 tests pass. Exact offline replay verifies all model/source states and
+archived API records, including the stopped audit and its unreturned reservations.
+The archive contains 2,635 returned API responses across development and
+confirmation. Known token usage is estimated at $27.05 using registered prices;
+eight interrupted calls have no returned usage and are excluded from that
+estimate. This is not a billing invoice. [Raw archive](https://github.com/macterra/attcon/tree/main/audits/bound_content).
+
+The [preprint](PREPRINT.md), [results](BOUND_CONTENT_RESULTS.md), [reproduction](BOUND_CONTENT_REPRODUCTION.md),
+and [interactive viewer](bound-reports.html) now describe the completed demonstration.

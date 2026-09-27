@@ -5,6 +5,15 @@ reports of the attention model's contents. Previous assays and failures remain
 unchanged. Goal: accurate reports of represented objects and their modeled
 attention relations, with a separately assessed consciousness-report structure.
 
+## Completion
+
+The registered operational combination passes in fresh confirmation v5 across
+three model pairs and 24 episodes. All six implementation/confirmation steps are
+complete, with exact replay, actual reports, and retained failures. Read the
+[results](BOUND_CONTENT_RESULTS.md) and [preprint](PREPRINT.md). Automated
+correspondence is mostly mixed technical/access prose; human validation and the
+source-of-qualia interpretation remain further research.
+
 ## Mechanism
 
 Render colored shapes as small RGB patches. Train a visual encoder to recognize
