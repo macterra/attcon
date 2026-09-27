@@ -76,6 +76,13 @@ def verify_study(root):
             if 'parsed' in result:assert json.loads(response_text(result['response']))==result['parsed']
             judge_counts['complete' if result['response']['status']=='completed' and 'parsed' in result else 'incomplete']+=1
             for key in ('input_tokens','output_tokens'):judge_counts[key]+=result['response']['usage'][key]
+        if aborted:
+            stop=json.loads((folder/'aborted.json').read_text());recorded=stop['recorded_statuses']
+            assert judge_counts['planned']==stop['planned']
+            assert judge_counts['attempts']==sum(recorded.values())
+            assert judge_counts['unattempted']==stop['unattempted']
+            for observed,archived in [('complete','completed'),('incomplete','incomplete'),('interrupted','attempt_reserved'),('errors','error')]:
+                assert judge_counts[observed]==recorded.get(archived,0),(folder,observed)
         counts[folder.name]=judge_counts
     return counts
 
