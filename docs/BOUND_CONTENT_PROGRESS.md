@@ -2,6 +2,7 @@
 
 Active study following the user's request to report the attention model's contents.
 The overall goal is not marked achieved while confirmation remains in progress.
+Current run: [confirmation v3](BOUND_PROSE_CONFIRMATION_V3.md).
 
 - Implemented learned visual recognition of rendered colors/shapes.
 - Added explicit object–attention bindings consumed by content-directed control.
@@ -31,3 +32,18 @@ not independent human validation or proof of subjective experience.
 [prose audit](BOUND_PROSE_AUDIT.md), [revision v2](BOUND_CONTENT_REVISION_V2.md),
 [report revision v3](BOUND_REPORT_REVISION_V3.md), and
 [extractor revision](BOUND_EXTRACTOR_REVISION_V3.md) preserve the research sequence.
+
+## Second prose confirmation
+
+All 240 reports and separate audits completed. Every primary per-seed gate passes:
+checked color/shape accuracy 100%, content coverage 99.76–100%, conservative
+precision about 99%. Paired relations pass at 469/480, restoration at 94/96.
+All 48 ordinary/binding reports have evidence of all four registered structure
+features; 46/48 are classified subjective_access or mixed.
+
+The overall verdict nevertheless remains **failed** because the strict missing-
+component check fails. One report misreads a controllable command map; the audit
+also fails to resolve universal statements and misattributes control across views.
+All records and the failed gate are retained. Confirmation v3 supplies an exact
+command-destination diversity index and uses a quantified-claim audit validated
+on 26 fixtures. It uses fresh scenes and all unchanged thresholds.

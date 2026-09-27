@@ -5,8 +5,8 @@ Working preprint, updated 2026-09-27. The preceding inspection-model manuscript 
 part of the project record.
 
 > Update in progress: the active [object-linked study](BOUND_CONTENT_PROGRESS.md)
-> adds represented colored shapes and a separate free-prose audit. Its first
-> confirmation failed; fresh confirmation v2 is running. The manuscript below
+> adds represented colored shapes and a separate free-prose audit. Its first two
+> confirmations failed; fresh confirmation v3 is running. The manuscript below
 > describes the earlier numerical study, [archived here](PREDICTIVE_NUMERICAL_PREPRINT.md).
 
 ## Abstract
