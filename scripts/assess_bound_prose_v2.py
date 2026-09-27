@@ -77,10 +77,10 @@ def score(source,report,extraction):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--study',default='language_pilot_v1');args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--study',default='language_pilot_v1');p.add_argument('--extraction-folder',default='extraction_v2');args=p.parse_args()
     root=Path('audits/bound_content')/args.study;requests=json.loads((root/'requests.json').read_text());cases=[];groups=defaultdict(list)
     for req in requests:
-        response=json.loads((root/(req['id']+'.json')).read_text());path=root/'extraction_v2'/(req['id']+'.json')
+        response=json.loads((root/(req['id']+'.json')).read_text());path=root/args.extraction_folder/(req['id']+'.json')
         extraction=json.loads(path.read_text()) if path.exists() else {}
         result=score(req['source'],response.get('report',''),extraction.get('parsed',{}))
         result.update({'id':req['id'],'seed':req['seed'],'episode':req['episode'],'condition':req['condition'],
@@ -96,7 +96,7 @@ def main():
             'structure_counts':{k:sum(r['structure'].get(k,False) for r in rows) for k in ['object_linked_access','focal_background_contrast','graded_or_temporal_access','agency_relation']},
             'character_counts':{c:sum(r['character']==c for r in rows) for c in ['subjective_access','technical_process','object_description','generic_experience_claim','mixed','unclear']}}
     out={'status':'automated prose audit; no human ratings implied','summary':summary,'cases':cases}
-    (root/'assessment_v2.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(summary,indent=2))
+    (root/('assessment_'+args.extraction_folder+'.json')).write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(summary,indent=2))
 
 
 if __name__=='__main__':main()
