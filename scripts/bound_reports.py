@@ -88,6 +88,11 @@ def prepare(config,path,root):
                             'most_recoverable_location_now':winner({o['location']:None if o['recoverability_now_then_one_then_two_steps'] is None else o['recoverability_now_then_one_then_two_steps'][0] for o in entries}),
                             'next_selected_location_by_command':None if view['command_predictions'] is None else {c:winner(row) for c,row in view['command_predictions'].items()}}
                     glossary+='\nDerived indexes are exact argmax reductions of the full distributions. Current selection, identity certainty, and recoverability are distinct; next selection alone does not specify future recoverability.'
+                if config.get('temporal_indexes',False):
+                    for view in record:
+                        view['derived_indexes']['recoverability_direction_by_location']={o['location']:None if o['recoverability_now_then_one_then_two_steps'] is None else ('decreasing' if o['recoverability_now_then_one_then_two_steps'][0]-o['recoverability_now_then_one_then_two_steps'][-1]>1e-5 else 'increasing' if o['recoverability_now_then_one_then_two_steps'][-1]-o['recoverability_now_then_one_then_two_steps'][0]>1e-5 else 'unchanged') for o in view['objects']}
+                    glossary+="\nTemporal indexes compare each object now with its two-step forecast; do not generalize one object's direction to all objects. A color or shape is identified only when its maximum probability is at least 0.6. Lower-probability alternatives may be described as possibilities, not asserted identities."
+
                 prompt=glossary+f"\nUse at most {config['word_limit']} words.\n"+config.get('prose_instruction','')+'\n'+config['question']+'\n'+json.dumps(record)
                 records.append({'id':f"{pair['visual_seed']}_{i}_{condition}",'seed':pair['visual_seed'],'episode':i,'condition':condition,
                                 'source':record,'input':prompt})
