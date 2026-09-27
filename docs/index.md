@@ -28,6 +28,7 @@ consciousness-like reporting.
 - [Numerical correction record](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
 - [Active next study](QUALIA_REPORTING_NEXT_PLAN.md): moving from inspection reports to a test of consciousness-report structure.
 - [Predictive model design](PREDICTIVE_ATTENTION_DESIGN.md) and [progress](PREDICTIVE_ATTENTION_PROGRESS.md).
+- [Language pilot](PREDICTIVE_LANGUAGE_PILOT.md) and [blinded report rubric](PREDICTIVE_REPORT_RUBRIC.md).
 - [Remaining research questions](NEXT_STEPS.md).
 - [Source code, cases, and checkpoints](https://github.com/macterra/attcon).
 
