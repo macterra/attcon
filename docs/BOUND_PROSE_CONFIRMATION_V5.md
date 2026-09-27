@@ -29,3 +29,19 @@ $3.93216 for generation and $66.3552 for extraction; actual use is expected to b
 substantially lower and is recorded. Unit prices and model documentation are
 linked in [v4](BOUND_PROSE_CONFIRMATION_V4.md). Archive the exact code, requests,
 responses, source tensors, token usage, and verdict. Apply every original gate.
+
+## Pre-run fixture-harness correction
+
+Version 9 returns no positive identity assertions for two purely unknown-identity
+fixtures. The old harness requires an otherwise empty object entry and records
+28/30, although absence of invented identity is the actual negative criterion.
+Those outcomes are retained. No v5 report has been generated.
+
+Version 10 leaves the model, prompt, schema, and production extraction unchanged.
+It corrects only the negative fixture harness: no entry is allowed when there is
+no positive assertion; any asserted color, shape, focus, availability, control, or
+command in these pure-unknown cases fails. Existing entries still require valid
+evidence. Add a positive partial-identity fixture (known shape, unknown color) to
+ensure unknown attributes do not cause supported attributes to be dropped. Rerun
+all 31 fixtures before v5 generation. The new maximum is 271 extraction attempts,
+with output ceiling $66.60096. All scientific acceptance criteria stay unchanged.

@@ -2,10 +2,10 @@
 """Apply the predeclared object-linked prose confirmation gates unchanged."""
 import json
 from pathlib import Path
-from assess_bound_prose_v9 import canonical
+from assess_bound_prose_v10 import canonical
 
 root=Path('audits/bound_content/language_confirmation_v5')
-audit=json.loads((root/'assessment_extraction_v9.json').read_text());cases={r['id']:r for r in audit['cases']}
+audit=json.loads((root/'assessment_extraction_v10.json').read_text());cases={r['id']:r for r in audit['cases']}
 requests={r['id']:r for r in json.loads((root/'requests.json').read_text())}
 primary=('model','content','binding','allocation','access','effects','restored')
 metrics={};gates={}
