@@ -67,7 +67,16 @@ def prepare(config,path,root):
                         for obj in view['objects']:
                             keys=('selection_probability','recoverability_now_then_one_then_two_steps','next_selection_by_command') if condition=='visual_only' else ('color_distribution','shape_distribution')
                             for key in keys:obj[key]=None
-                prompt=GLOSSARY+f"\nUse at most {config['word_limit']} words.\n"+config['question']+'\n'+json.dumps(record)
+                if config.get('command_major',False):
+                    for view in record:
+                        entries=view['objects']
+                        view['command_predictions']={command:{obj['location']:obj['next_selection_by_command'][command] for obj in entries}
+                            for command in ('upper','right','lower','left')} if entries[0]['next_selection_by_command'] is not None else None
+                        for obj in entries:del obj['next_selection_by_command']
+                glossary=GLOSSARY
+                if config.get('command_major',False):
+                    glossary=glossary.replace('Next-selection-by-command gives the predicted selection of that location for each\npossible redirection command.', 'Command_predictions is grouped by command: each command maps every location to its\npredicted next-selection probability. Compare these rows to assess controllability.')
+                prompt=glossary+f"\nUse at most {config['word_limit']} words.\n"+config.get('prose_instruction','')+'\n'+config['question']+'\n'+json.dumps(record)
                 records.append({'id':f"{pair['visual_seed']}_{i}_{condition}",'seed':pair['visual_seed'],'episode':i,'condition':condition,
                                 'source':record,'input':prompt})
     assert len(records)==config['max_attempts']
