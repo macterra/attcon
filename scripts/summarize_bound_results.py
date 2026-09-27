@@ -81,6 +81,7 @@ for condition,label in [('model','Original bound state'),('binding','Binding cha
 lines += ['## Retained history','', '| Study | Verdict |','|---|---|']
 for base in sorted(Path('audits/bound_content').glob('language_confirmation_*')):
  g=base/'gates.json';status=('pass' if json.loads(g.read_text())['all_gates_pass'] else 'fail') if g.exists() else 'in progress'
+ if list(base.glob('extraction*/aborted.json')):status='incomplete audit (stopped)'
  lines.append(f'| {base.name} | {status} |')
 lines += ['', 'The earlier visual seed 1221 also remains a failed perception confirmation.',
           'Revisions used fresh scenes, documented interface/audit changes, and unchanged',

@@ -23,6 +23,6 @@ for path in sorted(root.rglob('*.json')):
 out={'status':'Token-derived estimate at registered prices, not a billing invoice. Failed requests without usage may incur unrecorded charges.',
      'prices_usd_per_million':{m:dict(zip(('uncached_input','cached_input','output'),p)) for m,p in prices.items()},
      'groups':dict(groups),'total_responses':sum(r['responses'] for r in groups.values()),
-     'total_estimated_usd':sum(r['estimated_usd'] for r in groups.values()),'errors':errors,'unfinished':unfinished}
+     'total_estimated_usd':sum(r['estimated_usd'] for r in groups.values()),'errors':errors,'unreturned_reservations':unfinished}
 (root/'usage.json').write_text(json.dumps(out,indent=2)+'\n')
 print(json.dumps(out,indent=2))
