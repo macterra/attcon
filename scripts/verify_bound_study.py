@@ -55,10 +55,18 @@ def verify_study(root):
         if not folder.is_dir():continue
         judge=json.loads((folder/'manifest.json').read_text());assert hashlib.sha256(judge['source'].encode()).hexdigest()==judge['source_sha256']
         judge_requests=json.loads((folder/'requests.json').read_text());assert len(judge_requests)<=judge['max_attempts']
-        judge_counts={'attempts':len(judge_requests),'complete':0,'errors':0,'incomplete':0,'input_tokens':0,'output_tokens':0}
+        judge_counts={'planned':len(judge_requests),'attempts':0,'unattempted':0,'interrupted':0,'complete':0,'errors':0,'incomplete':0,'input_tokens':0,'output_tokens':0}
+        aborted=(folder/'aborted.json').exists()
         for req in judge_requests:
             original=json.loads((root/(req['id']+'.json')).read_text());assert req['report']==original['report']
-            result=json.loads((folder/(req['id']+'.json')).read_text())
+            result_path=folder/(req['id']+'.json')
+            if not result_path.exists():
+                assert aborted, ('missing extraction',req['id'])
+                judge_counts['unattempted']+=1;continue
+            result=json.loads(result_path.read_text());judge_counts['attempts']+=1
+            if result['status']=='attempt_reserved':
+                assert aborted, ('unfinished extraction',req['id'])
+                judge_counts['interrupted']+=1;continue
             if result['status']=='error':judge_counts['errors']+=1;continue
             assert result['status']=='received', ('unfinished extraction',req['id'])
             assert result['response']['model']==judge['model']
