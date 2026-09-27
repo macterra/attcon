@@ -1,178 +1,166 @@
-# Reporting an Attention-Control Model: Faithful Counterfactual Reports and the Qualia Hypothesis
+# Reporting Bound Contents of an Attention-Control Model
 
-Working preprint, updated 2026-09-27. The preceding inspection-model manuscript is
-[archived unchanged](INSPECTION_MODEL_PREPRINT.md). All prior failed results remain
-part of the project record.
-
-> Update in progress: the active [object-linked study](BOUND_CONTENT_PROGRESS.md)
-> adds represented colored shapes and a separate free-prose audit. Its first three
-> confirmations failed; fresh confirmation v4 is running. The manuscript below
-> describes the earlier numerical study, [archived here](PREDICTIVE_NUMERICAL_PREPRINT.md).
+Working preprint, updated 2026-09-27. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
+and [inspection-model manuscript](INSPECTION_MODEL_PREPRINT.md) remain archived.
 
 ## Abstract
 
-We test an observable consequence proposed for the hypothesis that an attention-
-control model is the source of qualia: accurate reports of that model should show
-specified structure of consciousness reports. We distinguish identifying the
-model, reporting its state faithfully, and independently assessing report
-character. An initial inspection-model study achieved only 82.36–88.80% exact
-learned-report accuracy and failed intervention criteria. We therefore constructed
-a predictive attention model trained on allocation and reconstruction outcomes,
-without phenomenological labels. In three fresh confirmations, allocation accuracy
-is 100%, command-effect prediction accuracy 99.988–99.998%, and access-probability
-mean absolute error 0.0232–0.0240. Its command-effect predictions guide attention;
-interventions change choices and exact restoration recovers them. After retained
-reporting failures and an explicitly registered interface correction, a fixed
-language reporter produces correct structured commitments on 240/240 reports,
-including 72/72 selective-intervention pairs and 24/24 restorations. These reports
-cover twelve underlying episodes, three independently trained models, ten
-conditions, and neutral versus first-person styles. Physical forecasts and a
-matched history predictor each match the actual model's complete commitments on
-2/24 cases. Independent prose-fidelity and consciousness-report assessment remains
-pending. The experiment establishes faithful, counterfactually controlled reporting
-of an identified attention model within this engineered setting; it does not yet
-establish the proposed phenomenological correspondence or settle the theory.
+We test a proposed observable consequence of the theory that the attention-control
+model is the source of qualia: accurate reports of that model should exhibit
+specified structure of consciousness reports. We build a bound model combining
+learned representations of colored shapes, learned predictions of attention and
+information recovery, and an explicit spatial binding consumed by content-directed
+control. Three fresh visual-model confirmations achieve 99.951–100% joint
+color/shape accuracy. All 1,365 eligible observed-object control queries and their
+binding-rotation checks succeed; restoration is exact. A frozen language reporter
+reads the full bound model and generates free prose. Selective interventions
+change represented objects or attention relations while keeping the physical
+scene fixed. Three prose confirmations pass progressively more primary fidelity
+and correspondence criteria but retain failed overall verdicts. The latest
+completed confirmation passes primary per-seed thresholds, 470/480 paired object
+relations, and 95/96 restorations; a separate automated audit classifies all 48
+ordinary/binding reports as subjective-access or mixed. However, its strict
+missing-component control gate fails because the audit introduces unsupported
+predicates and wrong-view attributions. A fourth fresh confirmation with a
+separate reasoning-model audit is in progress. No overall success is asserted.
 
-## 1. Question and evidence standard
+## 1. Question
 
-The question is whether reports accurately describe the attention-control model's
-state in ways that correspond to consciousness reports. It is not whether
-conscious access is necessary for task performance, whether the model beats a
-simpler same-state decoder, or whether experience can be proven experimentally.
-Engineering the architecture and report interface is permitted, with its role
-made explicit.
+The target is accurate reporting of the **attention-control model’s contents** in
+ways that correspond to consciousness reports. Task performance, the necessity of
+conscious access, and superiority over another decoder given the same state are
+not acceptance criteria. Nor do fluent first-person statements alone establish
+fidelity or the proposed correspondence.
 
-The attention-schema account motivates a simplified representation of the
-agent–attention–object relation and dissociations between the process and its
-modeled state. [Webb and Graziano (2015)](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2015.00500/full).
-Human perceptual-awareness research motivates distinguishing graded reported
-clarity from mere task correctness. [Early Local Activity in Temporal Areas
-Reflects Graded Content of Visual Perception (2016)](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.00572/full).
-Neither source identifies simulated reconstruction probability with qualia.
-Our report distinctions are proposed operational correspondences, not established
-equivalences to human experience.
+The theory-facing claim is conditional: if a control-relevant model of the
+agent–attention–object relation produces faithful reports with the specified
+manner-of-access distinctions, that provides a concrete proposed correspondence
+for proponents and critics to assess. This experiment does not test whether the
+system has subjective experience or whether the theory is uniquely explanatory.
+The earlier manuscripts retain the theoretical background and earlier failures.
 
-## 2. Earlier inspection-model study
+## 2. Bound model and control
 
-We identified a learned inspection-history model that contributes directly to
-attention selection in three previously trained recurrent controllers. Fifteen
-reporters partly recovered its state, including mistaken model beliefs, but exact
-complete reports and robustness to isolated interventions failed registered
-criteria. Direct telemetry was exact, while authored report expressions supplied
-no independent consciousness-report evidence. The [archived manuscript](INSPECTION_MODEL_PREPRINT.md),
-[results](ATTENTION_MODEL_RESULTS.md), and [protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md)
-retain the methods, failures, and numerical correction. The following study is a
-new architecture and assay, not a retrospective reclassification of those results.
+Each scene contains two views with four spatial locations. Objects have one of
+four colors and four shapes, rendered as 16×16 RGB patches with variation in
+position, size, intensity, and noise. A convolutional encoder produces color and
+shape distributions. Unobserved contents are masked to uniform distributions;
+an identity is treated as identified only when its maximum probability is at
+least 0.6.
 
-## 3. Predictive model, task, and control
+The frozen recurrent attention model predicts current allocation, successful
+information recovery now and after one/two unattended steps, and allocation under
+each possible directional command. These models were learned from allocation and
+reconstruction outcomes in the preceding study. Their forecasts may be mistaken.
+Simulated reconstruction probability is an operational access measure, not an
+established measure of felt clarity.
 
-A two-channel simulator has four object slots per channel. One channel responds
-to the agent's commands; the other follows an independent cyclic allocation.
-Sampled signal strength determines an object's reconstruction probability;
-unattended information decays by 0.75 per step. Object identifiers V are separate
-from the recurrent attention model A. This is a toy reconstruction process, not
-natural perceptual experience or a probe of the language reporter's own attention.
+An explicit matrix binds visual representations to the attention model’s spatial
+entries. A content-directed controller uses the bound model to choose a command
+for a requested color/shape. Rotating the binding preserves visual and attention
+marginals but changes the selected command; restoring the binding restores the
+command exactly. The reported composite therefore participates in control. The
+binding is engineered, not claimed to emerge spontaneously or to be learned by
+the recurrent attention predictor itself. [Full design](BOUND_CONTENT_DESIGN.md).
 
-A GRU64 receives allocations, sampled strengths, and commands. It predicts current
-allocation, recoverability now and after two unattended delays, and next allocation
-under each alternative command. A policy selects commands from those predicted
-effects. Only simulator process targets train A; no consciousness-report targets
-enter that training. The policy consumes the command-effect component, while
-access and retention share the model without independent causal necessity for
-this policy. Full state, history, physical truth, and V are archived separately.
+## 3. Reporting interface and interventions
 
-Three development models (811/821/831) precede frozen confirmation models
-901/911/921. Each trains for 1200 updates with the same architecture and optimizer.
-The [internal confirmation protocol](PREDICTIVE_CONFIRMATION_PROTOCOL.md) fixes
-fresh contexts and acceptance criteria. All three models pass every gate and
-replay exactly. In separate development closed-loop assays, ordinary commands
-select queried controlled slots at 100%; rotating the modeled command table
-reduces this to 0%. Restoring the table reproduces the entire trajectory exactly.
-A subsequent [frozen closed-loop confirmation](PREDICTIVE_CLOSED_LOOP_CONFIRMATION.md)
-on the three exact reported models also passes all selection, rotation, and
-exact-restoration gates on fresh episodes. These tests establish functional
-identity; task advantage is not a qualia gate.
+The fixed reporter, `gpt-5-mini-2025-08-07`, receives all eight bound objects,
+their complete distributions, and the command-effect tables. Exact derived indexes
+identify current focus, most-recoverable location, next destination per command,
+per-object temporal direction, and distinct destinations across commands. These
+are transparent reductions of the model state. They supply no phenomenological
+labels or sample consciousness report.
 
-## 4. Report interface and retained corrections
+The open question asks what is currently available and how redirecting attention
+would change it. A glossary and ordinary-prose/system-perspective instruction are
+engineered parts of the interface. The pretrained language model’s prior training
+is not controlled by this project; the project’s visual and attention training
+uses no phenomenological targets. The reporter describes this external system’s
+model, not its own private transformer attention or experience.
 
-A frozen `gpt-5-mini-2025-08-07` reporter receives a target descriptor and model
-predictions. The initial numerical-array pilot fails through indexing errors and
-incomplete responses. A style-only pilot does not repair fidelity. A deterministic
-target-specific interface then exposes allocation probability, the channel maximum,
-recoverability, and command-dependent variation under explicit labels. It does
-not supply experiential labels or sample consciousness reports.
+Each fresh confirmation uses three independently trained visual/attention model
+pairs and eight fresh episodes per pair. Ten conditions yield 240 reports from
+24 underlying episodes: ordinary, content changed, binding changed, allocation
+changed, access changed, command effects changed, restored, visual-only,
+attention-only, and another episode’s full model. Conditions within an episode
+are correlated. The physical scene remains fixed under the internal interventions.
 
-The first explicit-interface confirmation passes all ordinary/intervention
-commitments but fails constant-state uncertainty handling. The correction makes
-the unknown/tie branch explicit and is tested on new contexts under unchanged
-scoring criteria. The [v1 protocol](PREDICTIVE_REPORT_CONFIRMATION.md) and
-[v2 correction](PREDICTIVE_REPORT_CONFIRMATION_V2.md) preserve this sequence.
-All failed versions, API errors, and responses remain archived.
+All attempts, full API responses, prompts, source states, checkpoints, code
+snapshots, and failures are archived. Requests are reserved before execution,
+with no automatic retries. Revisions use fresh episodes and preserve earlier
+verdicts. [Protocol sequence](BOUND_CONTENT_PROGRESS.md).
 
-Ten conditions include ordinary A, three isolated state interventions, restoration,
-physical forecasts, an independently trained history predictor, shuffled A,
-constant A, and V alone. V and uninvolved fields remain fixed under intervention.
-The history predictor has the same capacity and training budget and receives the
-same observations; it is another process model, not a model-free alternative.
-Two styles share identical facts: neutral prose and explicitly requested ordinary
-first-person prose. That instruction manipulates style and cannot itself provide
-evidence for consciousness-report correspondence.
+## 4. Separate prose audit
 
-## 5. Results
+The reporter supplies free prose without a parallel structured answer. A separate
+model, blind to source state, condition, theory, and desired answers, extracts
+identity/location conjunctions, focality, most-recoverable status, temporal direction,
+control attribution, and explicit command destinations. Canonical scoring compares
+these claims with the actual supplied model. Unresolved claims and invalid
+citations count against conservative precision.
 
-| Registered internal-model measure | Range over three confirmation seeds |
-| --- | --- |
-| Allocation accuracy | 100% |
-| Alternative-command effect accuracy | 99.988–99.998% |
-| Controllable-channel identification | 99.984–100% |
-| Recoverability MAE | 0.0232–0.0240 |
-| Maximum recoverability error | 0.2143–0.2395 |
-| Brier loss above simulator-probability oracle | 0.00116–0.00159 |
+Earlier extractors used quoted evidence and introduced copying errors. Later
+versions cite original sentence IDs, distinguish possible from dominant identities,
+and expand explicit quantified statements. Each revision has retained semantic
+fixtures. Version 8 uses `gpt-5.4-2026-03-05`, medium reasoning, validated on all
+30 fixtures. It retains the same claim and character rubric. The two language
+models share a vendor; this is not independent human validation.
 
-In report confirmation v2, all 240 structured commitments are correct relative to
-their supplied state, with 96/96 primary reports, 72/72 correct intervention pairs,
-and 24/24 exact restorations. Constant and missing inputs produce the stipulated
-uncertainty. The physical and history-predictor controls each match actual A's
-complete commitments on 2/24 cases; shuffled and constant controls match 0/24.
-Both controls match A's focality and responsive-channel categories on 24/24
-reports; the low complete-match rate comes from continuous access estimates
-under the strict 0.01 tolerance. It is not evidence of unique qualitative
-structure or equally large phenomenological differences. The controls'
-reports remain accurate about their own supplied forecasts.
+For each model, primary conditions require at least 98% checked color/shape
+accuracy, 95% for each other factual dimension, 90% identified-object coverage,
+95% conservative precision, and complete attempts. Paired focal/most-recoverable
+object relations and restoration each require at least 90%. Missing-component
+controls require no flagged inventions or unresolved/invalid evidence.
 
-The report sample contains twelve underlying episodes, not 240 independent
-situations. Prompt and intervention observations are correlated; replication over
-three seeds does not establish broad task or architecture generalization. All
-168 code tests pass. Offline verification checks complete provenance, target-view
-derivation, exact re-scoring, and all three confirmed checkpoint replays.
+Ordinary and binding reports must separately reach 75% for object-linked access,
+focal/background contrast, graded or temporal availability, and relation to the
+system’s control. At least 75% must be classified subjective-access or mixed.
+Mixed descriptions combine technical and access language; they are not treated
+as purely subjective descriptions. [Original criteria](BOUND_PROSE_CONFIRMATION.md).
 
-## 6. Interpretation and remaining crux
+## 5. Results and retained failures
 
-The identified model determines report content in a way that survives isolated
-counterfactual changes. The reporter can describe A even when its state disagrees
-with the physical process. This is stronger evidence of actual model-state
-reporting than the previous inspection-model decoder supplied.
+The [machine-generated results](BOUND_CONTENT_RESULTS.md) provide all per-model
+counts, intervention/restoration scores, control outcomes, character-category
+breakdowns, and complete first-case reports. The [interactive archive](bound-reports.html)
+exposes every report beside its represented contents and unchanged physical scene.
 
-However, structured-commitment accuracy does not establish free-text fidelity or
-consciousness-report character. The vocabulary comes partly from the language
-model's prior and, in the styled condition, an explicit first-person instruction.
-A functional reconstruction model plus an ordinary decoder may explain all
-observed results. The same-state simpler decoder is not a disqualifying rival;
-the unresolved issue is whether the faithfully expressed relations have the
-independently motivated structure at issue in the theory.
+Visual confirmation v1 retained a failed seed (1221, joint accuracy 99.414% against
+99.5%). A revised training schedule was frozen and tested on fresh models
+1301/1311/1321: 99.976%, 100%, and 99.951%. Their observed-query counts are 455,
+464, and 446 of 512 queries each; every eligible query, binding rotation, and
+restoration passes. Unobserved queries are excluded from the reported hit rate.
 
-The [blinded rubric](PREDICTIVE_REPORT_RUBRIC.md) and [review form](report-review.html)
-separate manner of access, graded presentation, agent–object relation, and prose
-fidelity from first-person wording and generic experience claims. Independent
-ratings have not been received. We therefore do not claim the overall research
-goal is achieved. A new criterion selected after seeing ratings would need fresh
-confirmation, and any subsequent failure must remain in the record.
+Prose confirmation v1 fails several fidelity/coverage and correspondence gates.
+Version 2 passes all primary thresholds, 469/480 paired relations, and 94/96
+restorations, but fails the strict control check, including a genuine mistaken
+command interpretation. Version 3 adds exact command-destination diversity and
+passes primary thresholds, 470/480 pairs, and 95/96 restorations. Its strict
+control failure contains audit errors: unsupported negative predicates, empty
+citations, and wrong-view command assignments. These remain failed confirmations.
+Version 4 retains the reporter and all thresholds, changes the blind auditor,
+and uses another fresh set of episodes. Its verdict is pending.
 
-## 7. Availability
+## 6. Interpretation and limitations
 
-[Full results](PREDICTIVE_ATTENTION_RESULTS.md), [offline reproduction](PREDICTIVE_ATTENTION_REPRODUCTION.md),
-and [current progress](PREDICTIVE_ATTENTION_PROGRESS.md) link the complete study.
-All models, simulator code, interventions, API requests/responses, failed versions,
-and review materials are in the repository. Reproducing the recorded mechanical
-results requires no new API calls. Hosted-model reruns are new observations and
-are not promised to be byte-identical.
+Selective internal interventions establish which representation the statements
+track: object identities can change in the report while the world remains fixed,
+and attention/access relations can change independently of those identities.
+This does not establish that the representation generates subjective experience.
+A same-state decoder could also succeed. The language interface, binding matrix,
+small vocabulary, and toy recovery task are substantial engineered choices.
+
+The audit checks specified factual dimensions and endpoint temporal direction,
+not every implication of unrestricted language. A sentence can add a causal or
+conditional qualification that these extracted fields do not fully test. Complete
+reports remain available for that reason. Automated character judgments are
+rubric-dependent and may disagree across models or with human readers. The
+qualitative category breakdown and missing-component controls must accompany any
+positive correspondence claim.
+
+A passing confirmation would establish the limited registered combination of
+model-content fidelity and automatically assessed report structure. Independent
+human review, broader tasks and architectures, alternative interpretations, and
+the source-of-qualia theory remain further research. [Offline reproduction](BOUND_CONTENT_REPRODUCTION.md)
+provides exact source/state replay and access to all retained records.
