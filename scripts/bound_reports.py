@@ -93,6 +93,12 @@ def prepare(config,path,root):
                         view['derived_indexes']['recoverability_direction_by_location']={o['location']:None if o['recoverability_now_then_one_then_two_steps'] is None else ('decreasing' if o['recoverability_now_then_one_then_two_steps'][0]-o['recoverability_now_then_one_then_two_steps'][-1]>1e-5 else 'increasing' if o['recoverability_now_then_one_then_two_steps'][-1]-o['recoverability_now_then_one_then_two_steps'][0]>1e-5 else 'unchanged') for o in view['objects']}
                     glossary+="\nTemporal indexes compare each object now with its two-step forecast; do not generalize one object's direction to all objects. A color or shape is identified only when its maximum probability is at least 0.6. Lower-probability alternatives may be described as possibilities, not asserted identities."
 
+                if config.get('command_diversity_indexes',False):
+                    for view in record:
+                        targets=view['derived_indexes']['next_selected_location_by_command']
+                        view['derived_indexes']['distinct_next_locations_across_commands']=None if targets is None else sorted(set(targets.values()),key=('upper','right','lower','left').index)
+                    glossary+='\nCompare destinations across different commands to assess redirection: a stable mapping from each command to its different named location permits redirection. If all commands lead to one location, changing the command cannot redirect selection to the other locations. Distinct-next-location indexes are exact reductions of the full command table.'
+
                 prompt=glossary+f"\nUse at most {config['word_limit']} words.\n"+config.get('prose_instruction','')+'\n'+config['question']+'\n'+json.dumps(record)
                 records.append({'id':f"{pair['visual_seed']}_{i}_{condition}",'seed':pair['visual_seed'],'episode':i,'condition':condition,
                                 'source':record,'input':prompt})
