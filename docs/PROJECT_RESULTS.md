@@ -2,7 +2,7 @@
 
 The active [object-linked study](BOUND_CONTENT_PROGRESS.md) tests reports of
 represented objects and their attention relations. Perception/control confirmations
-pass; the first two free-prose confirmations failed. [Fresh confirmation v3](BOUND_PROSE_CONFIRMATION_V3.md)
+pass; the first three free-prose confirmations failed. [Fresh confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md)
 is underway. [Inspect retained reports](bound-reports.html).
 
 ## Earlier numerical study

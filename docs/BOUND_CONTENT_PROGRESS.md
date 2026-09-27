@@ -2,7 +2,7 @@
 
 Active study following the user's request to report the attention model's contents.
 The overall goal is not marked achieved while confirmation remains in progress.
-Current run: [confirmation v3](BOUND_PROSE_CONFIRMATION_V3.md).
+Current run: [confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md).
 
 - Implemented learned visual recognition of rendered colors/shapes.
 - Added explicit object–attention bindings consumed by content-directed control.
@@ -47,3 +47,16 @@ also fails to resolve universal statements and misattributes control across view
 All records and the failed gate are retained. Confirmation v3 supplies an exact
 command-destination diversity index and uses a quantified-claim audit validated
 on 26 fixtures. It uses fresh scenes and all unchanged thresholds.
+
+## Third prose confirmation
+
+All primary per-seed gates pass again, paired relations reach 470/480 and
+restoration 95/96. All 48 ordinary/binding cases pass the automated structure and
+subjective-or-mixed character thresholds. The overall verdict remains **failed**:
+control-case auditing contains unsupported negative predicates, empty citations,
+and wrong-view command attribution. These are visible in the archived evidence.
+
+Confirmation v4 retains the exact reporter and criteria, uses fresh scenes, and
+changes the blind auditor to a fixed reasoning-model snapshot. All 30 semantic
+fixtures pass before the new report run. The stronger auditor's character
+judgments are not presumed to agree with earlier judgments.
