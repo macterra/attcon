@@ -13,9 +13,11 @@ python scripts/assess_bound_prose_v6.py --study language_confirmation_v2
 python scripts/bound_confirmation_gates_v2.py
 python scripts/assess_bound_prose_v7.py --study language_confirmation_v3
 python scripts/bound_confirmation_gates_v3.py
+python scripts/assess_bound_prose_v8.py --study language_confirmation_v4
+python scripts/bound_confirmation_gates_v4.py
 python scripts/summarize_bound_usage.py
 python scripts/verify_bound_study.py
-python scripts/build_bound_explorer.py --study language_confirmation_v3
+python scripts/build_bound_explorer.py --study language_confirmation_v4
 ```
 
 The final two commands require the completed archive and its verification
@@ -26,7 +28,7 @@ The assessor rewrites deterministic summaries; the explorer rewrites the HTML pa
 ## Archive and provenance
 
 `audits/bound_content` contains the pilot, two visual confirmations, three prose
-pilots, failed prose confirmation v1, and prose confirmations v2/v3. The visual
+pilots, failed prose confirmation v1, and prose confirmations v2/v3/v4. The visual
 checkpoints are paired with the frozen predictive attention models 901, 911, 921
 from `audits/predictive_attention`. Visual seed 1221's failed joint-accuracy gate
 is retained; visual seeds 1301, 1311, 1321 are the fresh confirmed models.
@@ -42,7 +44,8 @@ claims. It sees only the prose, never the source state, condition, theory, or
 expected answer. Fixture answers are scored locally and never sent to the API.
 Version 4 uses quoted evidence; versions 6/7 use original sentence IDs and distinguish
 dominant identities from explicit possibilities. Version 7 also resolves quantified
-claims and keeps control attribution within view context. Earlier failures are retained.
+claims and keeps control attribution within view context. Version 8 uses a separate reasoning model and enforces nonempty claim citations.
+Earlier failures are retained.
 Automated extraction and character judgments can be wrong; they are not human ratings.
 
 ## New experiments
@@ -53,7 +56,7 @@ study requires a new registered config and fresh output name, then:
 
 ```bash
 python scripts/bound_reports.py --config configs/bound_content/NEW_STUDY.json
-python scripts/extract_bound_prose_v7.py --study NEW_STUDY --limit 240
+python scripts/extract_bound_prose_v8.py --study NEW_STUDY --limit 240
 ```
 
 These two commands require an OpenAI API key and incur costs. Each attempt is
@@ -65,6 +68,6 @@ The manifests freeze model IDs, prompts, request/token limits, and provenance.
 
 Perception, attention forecasting, binding-mediated control, prose factuality,
 paired intervention following, and report character are separate checks. Read
-[confirmation v3](BOUND_PROSE_CONFIRMATION_V3.md) for the unchanged acceptance
+[confirmation v4](BOUND_PROSE_CONFIRMATION_V4.md) for the unchanged acceptance
 thresholds. Passing a report-character rubric would support a limited engineered
 analogue, not establish subjective experience or the source-of-qualia theory.

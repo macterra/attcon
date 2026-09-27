@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 from attcon.bound_content import COLORS,SHAPES,LOCATIONS
 
-p=argparse.ArgumentParser();p.add_argument('--study',default='language_confirmation_v3');args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--study',default='language_confirmation_v4');args=p.parse_args()
 root=Path('audits/bound_content')/args.study
 requests=json.loads((root/'requests.json').read_text());states=torch.load(root/'source_states.pt',weights_only=True)
 data={}
@@ -18,7 +18,7 @@ for req in requests:
         data[key]={'physical':physical,'conditions':{}}
     response=json.loads((root/(req['id']+'.json')).read_text())
     data[key]['conditions'][req['condition']]={'source':req['source'],'report':response.get('report','No completed report.'),'id':req['id']}
-protocol={'language_confirmation_v1':'BOUND_PROSE_CONFIRMATION.html','language_confirmation_v2':'BOUND_PROSE_CONFIRMATION_V2.html','language_confirmation_v3':'BOUND_PROSE_CONFIRMATION_V3.html'}[args.study]
+protocol={'language_confirmation_v1':'BOUND_PROSE_CONFIRMATION.html','language_confirmation_v2':'BOUND_PROSE_CONFIRMATION_V2.html','language_confirmation_v3':'BOUND_PROSE_CONFIRMATION_V3.html','language_confirmation_v4':'BOUND_PROSE_CONFIRMATION_V4.html'}[args.study]
 encoded=json.dumps(data).replace('<','\\u003c')
 html='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Attcon: inspect object-linked reports</title>
