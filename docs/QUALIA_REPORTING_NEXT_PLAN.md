@@ -1,7 +1,7 @@
 # Next study: attention-model reports as evidence about qualia
 
-Proposed 2026-09-27. Planning only; no new model or confirmatory experiment has
-been run. This follows the [completed inspection-model study](ATTENTION_MODEL_RESULTS.md).
+Started 2026-09-27. See the [implementation design](PREDICTIVE_ATTENTION_DESIGN.md)
+and [progress](PREDICTIVE_ATTENTION_PROGRESS.md). No confirmatory result exists yet. This follows the [completed inspection-model study](ATTENTION_MODEL_RESULTS.md).
 This document is a design plan, not yet a frozen experimental protocol.
 
 ## Intended achievement
