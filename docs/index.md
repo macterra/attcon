@@ -14,7 +14,14 @@ A predictive model guides attention and can be reported faithfully under selecti
 interventions. Independent assessment of the prose remains pending. First-person
 wording and accurate JSON commitments are not counted as that assessment.
 
-## Current predictive-model study
+## Active object-linked reporting study
+
+- [Plan](BOUND_CONTENT_PLAN.md) and [progress](BOUND_CONTENT_PROGRESS.md).
+- [Perception/binding protocol](BOUND_CONTENT_PROTOCOL.md) and [revision v2](BOUND_CONTENT_REVISION_V2.md).
+- [Prose audit](BOUND_PROSE_AUDIT.md), [report revision v3](BOUND_REPORT_REVISION_V3.md), and [extractor revision](BOUND_EXTRACTOR_REVISION_V3.md).
+- [Fresh prose confirmation](BOUND_PROSE_CONFIRMATION.md).
+
+## Earlier numerical predictive-model study
 
 - [Results and limitations](PREDICTIVE_ATTENTION_RESULTS.md), [overview](PROJECT_RESULTS.md), and [preprint](PREPRINT.md).
 - [Offline reproduction](PREDICTIVE_ATTENTION_REPRODUCTION.md).
