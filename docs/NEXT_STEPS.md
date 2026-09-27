@@ -1,5 +1,9 @@
 # Current outcome and further research
 
+The [proposed next study](QUALIA_REPORTING_NEXT_PLAN.md) specifies the predictive
+attention model, neutral report interface, and theory-facing tests needed to
+address the remaining gap. It is a plan, not a registered or completed experiment.
+
 The [attention-model evaluation](ATTENTION_MODEL_RESULTS.md) is complete: all
 registered reporters, interventions, controls, and replay checks have run. The
 learned inspection model contributes to attention and is partially reportable,

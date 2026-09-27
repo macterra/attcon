@@ -26,6 +26,7 @@ consciousness-like reporting.
 - [Identified model and state specification](ATTENTION_MODEL_STATE_SPEC.md).
 - [Registered fidelity and correspondence protocol](ATTENTION_MODEL_PHENOMENOLOGY_PROTOCOL.md).
 - [Numerical correction record](ATTENTION_MODEL_NUMERICAL_CORRECTION.md).
+- [Proposed next study](QUALIA_REPORTING_NEXT_PLAN.md): moving from inspection reports to a test of consciousness-report structure.
 - [Remaining research questions](NEXT_STEPS.md).
 - [Source code, cases, and checkpoints](https://github.com/macterra/attcon).
 
