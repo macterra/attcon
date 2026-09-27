@@ -5,7 +5,7 @@ from collections import defaultdict
 from pathlib import Path
 
 root=Path('audits/bound_content')
-prices={'gpt-5-mini-2025-08-07':(.25,.025,2.),'gpt-4.1-2025-04-14':(2.,.5,8.)}
+prices={'gpt-5-mini-2025-08-07':(.25,.025,2.),'gpt-4.1-2025-04-14':(2.,.5,8.),'gpt-5.4-2026-03-05':(2.5,.25,15.)}
 groups=defaultdict(lambda:{'responses':0,'input_tokens':0,'cached_input_tokens':0,'output_tokens':0,'estimated_usd':0.})
 errors=[];unfinished=[]
 for path in sorted(root.rglob('*.json')):
