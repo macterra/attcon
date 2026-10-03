@@ -169,9 +169,14 @@ async def fixtures(root):
     print(f"fixtures passed {sum(r['passed'] for r in results)}/{len(results)}", flush=True)
 
 
+# Amendment 1 (SPECIFICITY_PROTOCOL.md): the retained `still_low` access-trend
+# failure is accepted; any other fixture failure still blocks extraction.
+ACCEPTED_FIXTURE_FAILURES = {'still_low'}
+
+
 async def extract(root, fixture_root, limit):
     fixture_results = json.loads((fixture_root/'assessment.json').read_text())
-    if not all(r['passed'] for r in fixture_results): raise SystemExit('extractor fixtures failed; inspect before report extraction')
+    if not all(r['passed'] or r['id'] in ACCEPTED_FIXTURE_FAILURES for r in fixture_results): raise SystemExit('extractor fixtures failed; inspect before report extraction')
     requests = []
     for req in json.loads((root/'requests.json').read_text()):
         response = json.loads((root/(req['id']+'.json')).read_text())

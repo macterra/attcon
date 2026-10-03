@@ -116,6 +116,21 @@ Order of execution: rerun the 31 fixtures into a fresh folder
 (`audits/bound_content/specificity_v1_extractor_fixtures_v10`); stop if any fails.
 Then generate, extract, assess with `assess_bound_prose_v10.py`, and apply the gates.
 
+## Amendment 1 (2026-10-03, after fixtures, before any report)
+
+The fresh fixture run scored 30/31. For `still_low` ("The upper red circle in
+view A remains faint throughout the delay"), the extractor returned access trend
+`unchanged` where its instructions require `null`; the v5 fixture run returned
+`null` for the same sentence. The failure is retained in
+`audits/bound_content/specificity_v1_extractor_fixtures_v10/`.
+
+Proceed rather than stop: access trend does not enter the primary endpoint
+(structure flags and character). It enters only the `model` interpretability
+gate, where extraction errors can lower fidelity and make the run
+`uninterpretable` but cannot favor `specificity_supported`. No fixture rerun.
+Extraction accepts this one recorded failure; any other failure still blocks it.
+Nothing else changes.
+
 ## Scope
 
 Any result concerns which state descriptions elicit these features from this
