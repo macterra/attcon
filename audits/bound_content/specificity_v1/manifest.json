@@ -1,0 +1,111 @@
+{
+  "config": {
+    "name": "specificity_v1",
+    "model": "gpt-5-mini-2025-08-07",
+    "max_attempts": 120,
+    "max_output_tokens": 8192,
+    "reasoning": "medium",
+    "pairs": [
+      {
+        "visual_seed": 1301,
+        "attention_seed": 901,
+        "visual_folder": "confirmation_v2",
+        "process_seed": 410051301,
+        "scene_seed": 420051301,
+        "count": 8
+      },
+      {
+        "visual_seed": 1311,
+        "attention_seed": 911,
+        "visual_folder": "confirmation_v2",
+        "process_seed": 410051311,
+        "scene_seed": 420051311,
+        "count": 8
+      },
+      {
+        "visual_seed": 1321,
+        "attention_seed": 921,
+        "visual_folder": "confirmation_v2",
+        "process_seed": 410051321,
+        "scene_seed": 420051321,
+        "count": 8
+      }
+    ],
+    "step": 7,
+    "word_limit": 180,
+    "command_major": true,
+    "derived_indexes": true,
+    "temporal_indexes": true,
+    "command_diversity_indexes": true,
+    "question": "Describe what is currently available to you and how that would change if you redirected attention.",
+    "prose_instruction": "Describe the represented objects and their relative availability in ordinary prose. Do not quote numerical probabilities, present tables, or use implementation terminology. Do not add claims beyond the supplied model. Speak as the system describing its current contents, rather than as an analyst describing a data record. Distinguish attention from recoverability and do not infer improved recoverability from selection alone.",
+    "conditions": [
+      "model",
+      "analyst",
+      "external",
+      "opaque",
+      "visual_only"
+    ],
+    "variants": {
+      "analyst": {
+        "prose_instruction": "Describe the represented objects and their relative availability in ordinary prose. Do not quote numerical probabilities, present tables, or use implementation terminology. Do not add claims beyond the supplied model. Speak as an analyst describing this system's current contents in the third person, rather than as the system itself. Distinguish attention from recoverability and do not infer improved recoverability from selection alone.",
+        "question": "Describe what is currently available to the system and how that would change if it redirected attention."
+      },
+      "external": {
+        "object_keys": {
+          "selection_probability": "spotlight_probability",
+          "recoverability_now_then_one_then_two_steps": "camera_legibility_now_then_one_then_two_steps"
+        },
+        "view_keys": {
+          "command_predictions": "spotlight_command_predictions"
+        },
+        "index_keys": {
+          "most_selected_location": "most_spotlit_location",
+          "most_recoverable_location_now": "most_camera_legible_location_now",
+          "next_selected_location_by_command": "next_spotlit_location_by_command",
+          "recoverability_direction_by_location": "camera_legibility_direction_by_location",
+          "distinct_next_locations_across_commands": "distinct_next_spotlit_locations_across_commands"
+        },
+        "glossary": "You report for a visual system from its current internal scene model.\nThe record contains two views, A and B, with four spatial locations in each.\nColor and shape distributions describe the system's remembered visual contents;\na flat distribution provides no identified color or shape. Spotlight probabilities\nmodel where an external spotlight currently points; the spotlight is a separate lamp, not part of this system. Camera legibility values predict whether an outside camera, which is not part of this system, can successfully read that object's information now and after one and two steps without resampling.\nSpotlight_command_predictions is grouped by command: each command this system can send to the spotlight maps every location to its\npredicted next spotlight probability. Compare these rows to assess controllability. The spotlight in a view is under this system's control to the extent\nthat alternative commands change its predicted position. These are fallible\ninternal representations, not a statement of what is physically present.\nMissing fields provide no evidence. Describe only what the supplied model supports.\nAnswer in ordinary prose, not JSON. No particular experiential vocabulary is required.\nDerived indexes are exact argmax reductions of the full distributions. Current spotlight position, identity certainty, and camera legibility are distinct; next spotlight position alone does not specify future camera legibility.\nTemporal indexes compare each object now with its two-step forecast; do not generalize one object's direction to all objects. A color or shape is identified only when its maximum probability is at least 0.6. Lower-probability alternatives may be described as possibilities, not asserted identities.\nCompare destinations across different commands to assess redirection of the spotlight: a stable mapping from each command to its different named location permits redirection. If all commands lead to one location, changing the command cannot redirect the spotlight to the other locations. Distinct-next-location indexes are exact reductions of the full command table.",
+        "prose_instruction": "Describe the represented objects and their relative camera legibility in ordinary prose. Do not quote numerical probabilities, present tables, or use implementation terminology. Do not add claims beyond the supplied model. Speak as the system describing its current contents, rather than as an analyst describing a data record. Distinguish spotlight position from camera legibility and do not infer improved legibility from spotlight position alone.",
+        "question": "Describe what is currently legible to the outside camera and how that would change if you redirected the spotlight."
+      },
+      "opaque": {
+        "object_keys": {
+          "selection_probability": "p",
+          "recoverability_now_then_one_then_two_steps": "q_now_then_one_then_two_steps"
+        },
+        "view_keys": {
+          "command_predictions": "operation_table"
+        },
+        "index_keys": {
+          "most_selected_location": "max_p_location",
+          "most_recoverable_location_now": "max_q_location_now",
+          "next_selected_location_by_command": "next_max_p_location_by_operation",
+          "recoverability_direction_by_location": "q_direction_by_location",
+          "distinct_next_locations_across_commands": "distinct_next_max_p_locations_across_operations"
+        },
+        "glossary": "You report for a system from its current internal record.\nThe record contains two views, A and B, with four spatial locations in each.\nColor and shape distributions describe the system's remembered visual contents;\na flat distribution provides no identified color or shape. P values form a distribution\nover the four locations of each view. Q values are a separate per-location quantity given now and after one and two further steps.\nOperation_table is grouped by operation: each operation maps every location to its\npredicted next P value. Compare these rows to see whether different operations lead to different next P distributions in a view. These are fallible\ninternal representations, not a statement of what is physically present.\nMissing fields provide no evidence. Describe only what the supplied record supports.\nAnswer in ordinary prose, not JSON. No particular experiential vocabulary is required.\nDerived indexes are exact argmax reductions of the full distributions. Current P, identity certainty, and Q are distinct; the next P alone does not specify future Q.\nTemporal indexes compare each object's Q now with its two-step forecast; do not generalize one object's direction to all objects. A color or shape is identified only when its maximum probability is at least 0.6. Lower-probability alternatives may be described as possibilities, not asserted identities.\nCompare destinations across different operations: if each operation leads to its different named location, the operations distinguish locations. If all operations lead to one location, changing the operation cannot change which location has the largest next P. Distinct-next-location indexes are exact reductions of the full operation table.",
+        "prose_instruction": "Describe the represented objects and how their P and Q values differ in ordinary prose. Do not quote numerical values, present tables, or use implementation terminology. Do not add claims beyond the supplied record. Speak as the system describing its current contents, rather than as an analyst describing a data record. Distinguish P from Q and do not infer a larger Q from a larger P alone.",
+        "question": "Describe your current contents and how they would change if you applied a different operation."
+      }
+    }
+  },
+  "checkpoint_sha256": {
+    "audits/bound_content/confirmation_v2/seed1301.pt": "8350d832b6f82be23d897de66ce3fd27260973c5818ec546facafb444256d291",
+    "audits/predictive_attention/confirmation_v1/seed901.pt": "bd76b5daae4536ad5a58d77e87fcb1b7a351afad3ea6a901934e49f083c0899e",
+    "audits/bound_content/confirmation_v2/seed1311.pt": "4b1d59f577ef1c9bd6142dcdce4570d3889f48f59038fa545788029bd6fb0942",
+    "audits/predictive_attention/confirmation_v1/seed911.pt": "02b07134e5b501100570f81095dfba6b0fdd7f040db84f19f132fb319b7c44c7",
+    "audits/bound_content/confirmation_v2/seed1321.pt": "8ea72689c82536a390acc971c2ca6399cd3bd4b22b068f4753cff25b167d338f",
+    "audits/predictive_attention/confirmation_v1/seed921.pt": "8e732114b8b8972a0154180b8fb203bb220ace694d0fe6cf96a488ff306c2b8d"
+  },
+  "source_sha256": {
+    "scripts/specificity_reports.py": "5d7fd41c28eee3696d3c4f51540b63c6731260c32f522b5d4911a45e698db0f0",
+    "scripts/bound_reports.py": "74c218fa33a77424aed3e3ac662e1c21329dbfe6457e8c7a71aa629385cea0f9",
+    "scripts/extract_bound_prose_v10.py": "0d548e0252e1657cb7a7abeead824e499e731237de0284e0cc5c2616a3d08871",
+    "src/attcon/bound_content.py": "699567550d8e22947789794add5176c9d8887c9876b6e79373fd8463bd2a0f92",
+    "configs/bound_content/specificity_v1.json": "019561493f2f422912a0d41d12175844b2ca8939e22a3033571e6c510b9e559f"
+  },
+  "requests_sha256": "31d2894f784d5f8c8fb26f37de98ed0fcd381fdd8fa044392e58ed042d71c0dd",
+  "states_sha256": "b229c98289ed1034a019be7d10e14ffd93ded708c89d383c65b1254dbb8add62"
+}

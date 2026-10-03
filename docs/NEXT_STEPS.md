@@ -9,7 +9,7 @@ first-person framing. In order:
 
 1. **Specificity.** Test whether the features depend on a model of the system's own
    attention control rather than its labelling or framing. See the
-   [draft specificity protocol](SPECIFICITY_PROTOCOL.md) (not yet frozen).
+   [frozen specificity protocol](SPECIFICITY_PROTOCOL.md).
 2. **Independent human assessment** of the actual bound-content reports.
 3. **Generalization** to another task or architecture.
 

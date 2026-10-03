@@ -1,7 +1,7 @@
 # Report-structure specificity: draft protocol
 
-**Draft, 2026-10-03. Not frozen; no reports generated.** Freeze the open decisions
-below, validate fixtures, and record the exact configuration before any API call.
+**Frozen 2026-10-03, before any API call.** Drafted the same day; the open
+decisions were resolved with the defaults recorded under "Frozen decisions".
 
 ## Question
 
@@ -80,17 +80,41 @@ Scaling the v5 ceilings ($3.93216 generation for 240; $66.60096 extraction for 2
 attempts) gives about $2.0 generation and $37 extraction for 120 reports plus 31
 fixtures. Actual use is expected to be far lower.
 
-## Open decisions (resolve before freezing)
+## Frozen decisions
 
-1. **Threshold.** Proposed: specificity is supported if the primary conjunction
-   rate in `model` exceeds `external` by at least 25 percentage points with a
-   one-sided exact paired (McNemar) test p < 0.05. With 24 pairs this detects only
-   large effects; doubling episodes to 16 per pair roughly doubles cost.
-2. **Keep `opaque`?** It mainly quantifies how much the vocabulary contributes.
-   Dropping it saves a fifth of the cost.
-3. **Self-attribution measure.** The v10 extractor does not record whether access is
-   attributed to the reporting system itself. Adding that requires a new extractor
-   version and fixtures; leaving it out keeps comparability with v5.
+1. **Threshold.** Specificity is supported if the primary conjunction rate in
+   `model` exceeds `external` by at least 25 percentage points and a one-sided
+   exact paired (McNemar) test gives p < 0.05. 24 pairs detect only large effects.
+2. **`opaque` is kept.**
+3. **No self-attribution measure.** Extractor v10 is used unchanged for
+   comparability with v5.
+
+## Decision rule and implementation
+
+Verdicts are applied in order by `scripts/specificity_gates.py`:
+
+1. `incomplete` if any of the 48 `model`/`external` reports or their extractions
+   is missing. No retries; failures are retained.
+2. `uninterpretable` if `model` fails any v5 fidelity minimum (color, shape 98%;
+   focal, most recoverable, access trend, under own control, command next 95%;
+   coverage 90%; conservative precision 95%). With 8 `model` reports per seed,
+   these minima are applied pooled over the three seeds rather than per seed.
+3. `specificity_supported` if the threshold above is met; otherwise
+   `specificity_not_supported`.
+
+All other comparisons are descriptive. Rendering is in
+`scripts/specificity_reports.py`, with all condition texts in
+`configs/bound_content/specificity_v1.json`. Tests confirm that `model` and
+`visual_only` prompts reproduce the archived v5 prompts byte for byte, that the
+relabelled conditions preserve every value, and that `opaque` prompts contain no
+attention, access, selection, recovery, control, or focus vocabulary.
+
+Prepared requests (offline): SHA-256 `31d2894f784d5f8c8fb26f37de98ed0fcd381fdd8fa044392e58ed042d71c0dd`;
+source states `b229c98289ed1034a019be7d10e14ffd93ded708c89d383c65b1254dbb8add62`.
+
+Order of execution: rerun the 31 fixtures into a fresh folder
+(`audits/bound_content/specificity_v1_extractor_fixtures_v10`); stop if any fails.
+Then generate, extract, assess with `assess_bound_prose_v10.py`, and apply the gates.
 
 ## Scope
 
