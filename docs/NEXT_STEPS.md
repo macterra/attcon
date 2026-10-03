@@ -1,5 +1,14 @@
 # Current outcome and further research
 
+The [matched-observation hidden-state diagnostic](HIDDEN_EXPECTATION_RESULTS.md)
+now establishes causal use of predictive memory. Interventions also change other
+state estimates, so a distinct mismatch computation remains unresolved.
+
+The subsequent [consistency diagnostic](CONSISTENCY_DIAGNOSTIC_RESULTS.md) traces
+existing feedback and tests recurrent adaptation. State estimates recover after
+a controlled-channel swap; a novel command mapping is not learned in the assay.
+The bound representation's role in corrective model updates remains unestablished.
+
 The [bound-content study](BOUND_CONTENT_RESULTS.md) achieves its registered
 operational goal: faithful reporting of the attention model’s object contents and
 relations, selective-intervention following, and the specified automated report
