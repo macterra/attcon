@@ -50,8 +50,8 @@ def decide(cases):
 
 def main():
     config = json.loads(CONFIG.read_text())
-    cases = cases_from(ROOT, 'extraction_v13', config.get('normalize_labels', False))
-    (ROOT/'assessment_extraction_v13.json').write_text(json.dumps({'status': 'automated prose audit; no human ratings implied', 'cases': cases}, indent=2)+'\n')
+    cases = cases_from(ROOT, f"extraction_{config['extractor']}", config.get('normalize_labels', False))
+    (ROOT/f"assessment_extraction_{config['extractor']}.json").write_text(json.dumps({'status': 'automated prose audit; no human ratings implied', 'cases': cases}, indent=2)+'\n')
     out = decide(cases); (ROOT/'gates.json').write_text(json.dumps(out, indent=2)+'\n')
     strip = lambda d: {k: v for k, v in d.items() if k != 'pairs'}
     print(json.dumps({'verdict': out['verdict'], 'replication': strip(out['replication']), 'label_dependence': strip(out['label_dependence']),

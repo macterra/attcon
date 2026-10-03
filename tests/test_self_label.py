@@ -58,3 +58,10 @@ class SelfLabelGateTests(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
+
+class ExtractorV14Tests(unittest.TestCase):
+    def test_v13_preserved_with_one_clause(self):
+        import extract_bound_prose_v13 as v13, extract_bound_prose_v14 as v14
+        self.assertEqual(v14.INSTRUCTION.replace(v14.CLAUSE, ''), v13.INSTRUCTION)
+        self.assertEqual(v14.SCHEMA, v13.SCHEMA)

@@ -75,3 +75,19 @@ No verdict establishes subjective experience.
 
 Prepared requests SHA-256 `efc7f106588eb9a11fd8af320372c354358153ff4fdbaf4a5bc278ad7ff4c4a5`;
 source states `68388a611e7bcc612137eaf11ce6b71cb8531ffb4c1def9a43ec8cb05470aa1e`.
+
+## Amendment 1 (after v13 fixtures, before any report)
+
+The fresh v13 fixture run scored 49/51. `control` (v10, non-blocking) failed as in
+earlier runs. `dep_reduce` ("commanding the left location would make the right
+object harder for the camera to identify") was not flagged for stated content
+dependence, which blocks extraction. Both results are retained in
+`audits/bound_content/self_label_v1_extractor_fixtures_v13/`.
+
+**Extractor v14** = v13 plus one clause in the dependence paragraph: "This includes
+increases and decreases, and effects on objects other than the commanded one."
+Nothing else changes (tested). All fixtures are rerun fresh into
+`self_label_v1_extractor_fixtures_v14`, under the same blocking rule. No report has
+been generated, so the prepared requests are unchanged (same SHA-256). The config now
+names v14; the archived manifest's config copy still says v13 because it was written
+at preparation.
