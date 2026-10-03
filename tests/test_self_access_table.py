@@ -77,3 +77,11 @@ class ExtractorV12Tests(unittest.TestCase):
         self.assertTrue(v12.assess_counterfactual('x.', {'parsed': {'claims': [dict(claim, most_recoverable=None)]}}))
         results = [{'id': 'a', 'kind': 'v10_claim', 'passed': False}, {'id': 'b', 'kind': 'counterfactual', 'passed': False}]
         self.assertEqual(blocking_v12(results), ['b'])
+
+
+class NormalizationTests(unittest.TestCase):
+    def test_adjective_forms_map_to_trained_labels_only(self):
+        from self_coupled_gates import normalize
+        out = normalize({'claims': [{'shape': 'Circular', 'color': 'Blue'}, {'shape': 'hexagon', 'color': None}]})
+        self.assertEqual(out['claims'][0], {'shape': 'circle', 'color': 'blue'})
+        self.assertEqual(out['claims'][1]['shape'], 'hexagon')

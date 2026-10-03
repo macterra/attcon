@@ -92,3 +92,22 @@ leanings as asserted identities. v2 changes only the extractor and the seeds.
 
 Prepared v2 requests SHA-256 `40a06a02a34958ab000ff8a23e333feb2d99295cbaad93608414e9296cd36b8b`;
 source states `a6a05c6e7e7df44dcc354ba3ae1ecc405232b8932675662bbb80e4bc001adb3d`.
+
+## Registered v3 (2026-10-03, after v2, before any v3 call)
+
+v2 was [uninterpretable](SELF_ACCESS_TABLE_RESULTS.md) only because the scorer
+compared adjective forms such as "circular" literally with the trained labels.
+v3 changes only the seeds and adds one scoring step: before scoring, extracted
+colors and shapes are lowercased and the unambiguous forms circular, circles,
+triangular, triangles, squares, square-shaped, crosses, and cross-shaped are mapped
+to circle, triangle, square, and cross (`normalize` in
+`scripts/self_coupled_gates.py`; enabled by `normalize_labels` in the v3 config;
+earlier runs rescore unchanged). Any other value, including invented shapes,
+is scored as before.
+
+Extractor v12, fixture rule, conditions, reporter, decision rule, thresholds, and
+secondary contrasts are unchanged. Fresh seeds: process 410090000+visual seed,
+scene 420090000+visual seed. v1 and v2 are retained and not pooled.
+
+Prepared v3 requests SHA-256 `7f2d069eb46d177cf4df1c10902a0014901305770be85d941f58f1b8f4abf741`;
+source states `4860d9bc5e2b818a3ee62530141a93d84e5f0265db107aced9c2e888447d28eb`.

@@ -39,7 +39,7 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--config', default='configs/bound_content/self_access_table_v1.json'); args = p.parse_args()
     config = json.loads(Path(args.config).read_text()); version = config.get('extractor', 'v11')
     root = Path('audits/bound_content')/config['name']
-    cases = cases_from(root, f'extraction_{version}')
+    cases = cases_from(root, f'extraction_{version}', config.get('normalize_labels', False))
     (root/f'assessment_extraction_{version}.json').write_text(json.dumps({'status': 'automated prose audit; no human ratings implied', 'cases': cases}, indent=2)+'\n')
     out = decide(cases); (root/'gates.json').write_text(json.dumps(out, indent=2)+'\n')
     strip = lambda d: {k: v for k, v in d.items() if k != 'pairs'}

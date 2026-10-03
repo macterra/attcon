@@ -62,12 +62,30 @@ def decide(cases):
             'by_condition': by_condition}
 
 
-def cases_from(root, folder='extraction_v11'):
+# Registered for self_access_table_v3: map unambiguous adjective/plural forms of the
+# trained labels to those labels before scoring. Off by default (earlier runs).
+NORMALIZE = {'circular': 'circle', 'circles': 'circle', 'triangular': 'triangle', 'triangles': 'triangle',
+             'squares': 'square', 'square-shaped': 'square', 'crosses': 'cross', 'cross-shaped': 'cross'}
+
+
+def normalize(extraction):
+    claims = []
+    for claim in extraction.get('claims', []):
+        claim = dict(claim)
+        for key in ('color', 'shape'):
+            if isinstance(claim.get(key), str):
+                value = claim[key].strip().lower(); claim[key] = NORMALIZE.get(value, value)
+        claims.append(claim)
+    return {**extraction, 'claims': claims}
+
+
+def cases_from(root, folder='extraction_v11', normalize_labels=False):
     cases = []
     for req in json.loads((root/'requests.json').read_text()):
         response = json.loads((root/(req['id']+'.json')).read_text()); path = root/folder/(req['id']+'.json')
         extraction = json.loads(path.read_text()) if path.exists() else {}
-        result = score(req['source'], response.get('report', ''), extraction.get('parsed', {}))
+        parsed = extraction.get('parsed', {})
+        result = score(req['source'], response.get('report', ''), normalize(parsed) if normalize_labels else parsed)
         result.update({'id': req['id'], 'seed': req['seed'], 'episode': req['episode'], 'condition': req['condition'],
                        'complete': response.get('response', {}).get('status') == 'completed' and 'parsed' in extraction})
         cases.append(result)

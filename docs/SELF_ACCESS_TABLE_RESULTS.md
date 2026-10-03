@@ -33,3 +33,25 @@ revised extractor on fresh seeds, registered before any v2 call.
 
 Archived in `audits/bound_content/self_access_table_v1/` and
 `audits/bound_content/self_access_table_v1_extractor_fixtures_v11/`.
+
+## v2 (2026-10-03): uninterpretable under the frozen rule
+
+Extractor v12, fresh seeds. Fixtures 43/44: the non-blocking v10 `control` fixture
+returned a view-level control claim without the expected object fields. 96/96
+reports generated and extracted. **Verdict: `uninterpretable`.** `coupled_table`
+shape accuracy was 51/53 (96.2%) against the 98% minimum; every other gate passed.
+v12 removed both v1 failure modes: most recoverable was 93/93.
+
+| Contrast | Rates | Difference | Discordant | One-sided exact p |
+|---|---:|---:|---:|---:|
+| Primary: `coupled_table` vs `independent_table` | 13/24 vs 2/24 | 45.8 points | 11 vs 0 | 0.0005 |
+| Dissociation: vs `coupled_table_swapped` | 13/24 vs 2/24 | 45.8 points | 12 vs 1 | 0.0017 |
+| Table effect: vs `coupled_no_table` | 13/24 vs 2/24 | 45.8 points | 12 vs 1 | 0.0017 |
+
+**Inspection:** all six shape errors across the gated conditions are adjective forms
+("circular", "triangular") that the extractor copied from correct report sentences
+("the lower object as yellow and triangular", state: triangle 0.76). The scorer
+compares them literally with the trained labels. With those forms mapped to
+their labels (post hoc, descriptive only), v2 passes every gate (shape 53/53)
+and the primary contrast would read as supported. The frozen verdict is unchanged.
+A v3 registers this normalization before any v3 call.
