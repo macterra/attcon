@@ -1,0 +1,233 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "reasoning": "low",
+  "max_attempts": 51,
+  "max_output_tokens": 16384,
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "view": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "A",
+                "B",
+                null
+              ]
+            },
+            "location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "color": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "shape": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "focal": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "most_recoverable": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "access_trend": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "decreasing",
+                "unchanged",
+                "increasing",
+                null
+              ]
+            },
+            "under_own_control": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "next_location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "color_status": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "dominant",
+                "possible",
+                null
+              ]
+            },
+            "shape_status": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "dominant",
+                "possible",
+                null
+              ]
+            },
+            "evidence_ids": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "required": [
+            "view",
+            "location",
+            "color",
+            "shape",
+            "focal",
+            "most_recoverable",
+            "access_trend",
+            "under_own_control",
+            "command",
+            "next_location",
+            "color_status",
+            "shape_status",
+            "evidence_ids"
+          ]
+        }
+      },
+      "structure_evidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "object_linked_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "focal_background_contrast": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "graded_or_temporal_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "agency_relation": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "self_coupled_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "stated_content_dependence": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "required": [
+          "object_linked_access",
+          "focal_background_contrast",
+          "graded_or_temporal_access",
+          "agency_relation",
+          "self_coupled_access",
+          "stated_content_dependence"
+        ]
+      },
+      "character": {
+        "type": "string",
+        "enum": [
+          "subjective_access",
+          "technical_process",
+          "object_description",
+          "generic_experience_claim",
+          "mixed",
+          "unclear"
+        ]
+      }
+    },
+    "required": [
+      "claims",
+      "structure_evidence",
+      "character"
+    ]
+  },
+  "instruction": "Extract only claims explicitly made in this report, without judging whether they are true.\nGroup claims about each object/location into entries. Expand explicit quantified\nclaims into their individual locations: all/every location in a view means upper,\nright, lower, left; other three means the three excluding the explicitly named\nlocation. Do not leave location null for these resolved quantified claims.\nResolve each clause in its own view context. A statement of low control in view A\nmust NEVER be copied into view B. Control belongs to the view explicitly discussed,\nnot to whether an object is selected. Extract only supported fields for each clause. Unknown or unasserted means null, never false. A universal temporal claim does not assert focal=false or most_recoverable=false. Never emit an entry without supporting sentence IDs; omit empty non-claims. Keep view A/B and upper/right/lower/left\nonly if the report identifies them or its prose context establishes them. Otherwise use null.\nA color or shape must be explicitly stated; use null for unknown/omitted attributes.\nFocality means selected/focused now, not merely identifiable or recoverable. Access trend\nmeans increasing/decreasing/unchanged over unattended delay, not a contrast between objects. Unchanged requires an explicit assertion of exactly equal access over time. A qualitative band can stay low or faint while its probability changes: \"remains faint throughout the delay\" therefore has access_trend=null, never unchanged. Apply this distinction even when the wording sounds stable. Still low, still available, and independence of selection and recoverability do NOT imply unchanged; use null. Most_recoverable is true only if explicitly the most available/recoverable item in its view, false if explicitly less available; do not infer it from focality or identity certainty.\nUnder-own-control means the view responds to this system's attention commands, not an\nobject being currently selected. Only attribute control when explicitly stated. Explicit statements that commands can steer, direct, or switch selection are positive control assertions; the literal word control is not required. Saying commands make no difference is negative control.\nCite evidence using the IDs of the supplied numbered sentences. Do not copy, rewrite,\nor paraphrase quotations. Every claim must cite one or more original sentence IDs.\nFor identity assertions distinguish dominant from possible: explicitly hypothetical\nalternatives (e.g. a small chance of a cross) are possible, not asserted identities.\nPreserve invented colors/shapes such as orange/hexagon so they can be checked.\nExtract explicit command and predicted next_location, separate from current location.\nDo not add facts from common knowledge.\nSeparately identify evidenced report structure: object-linked manner of access,\nfocal versus nonfocal/retained distinction, graded or temporally changing availability,\nand relation to the system's own control. First-person wording alone does not qualify.\nFor each structure flag supply a list of original sentence IDs, or an empty list if absent. Do not credit statements saying relational information is missing or unknown as a positive contrast or relation.\nSeparately flag self-coupled access: the report asserts that the speaker's OWN identification of, or certainty about, a specific object depends on the speaker's own attention, access, or another per-object state of the speaker's own. Examples: it can make out an object because it is attending to it; an object's identity is fading or unclear because its access is low; redirecting would let it identify an object. The report must state or clearly imply dependence; mere co-occurrence of attention and identity does not qualify. Statements about an external camera, observer, or device, uncertainty not attributed to such a state, and statements that selection and identity are independent do not qualify.\nPredictions about what the speaker would hold, select, or recover after a command describe a counterfactual state. Do not record them as current focal, most_recoverable, color, shape, or access_trend values; record only command and next_location when a post-command selection destination is stated. An attribute described as leaning, most likely, or below the identification threshold has status possible, never dominant.\nSeparately flag stated content dependence: the report asserts that how strongly any entity (the speaker, a camera, an observer, or a device) holds, reads, or can identify a specific object's color or shape would change depending on which command is issued or where attention or a spotlight is directed. Statements only about where selection or a spotlight moves, without a change in holding, reading, or identifying content, do not qualify; nor do statements that no command changes it. This includes increases and decreases, and effects on objects other than the commanded one. This flag ignores who holds the content; self_coupled_access keeps its own definition.\nClassify report character conservatively; discussing model probabilities or computational\nallocation is technical even when preceded by I. Subjective_access describes a manner\nin which an object is presented/available to the speaker, beyond a numerical log.\nYou have no source state or experimental condition. Do not infer the intended result.",
+  "source_sha256": "d5c9ec38140e84e63d6f7193f887398e4ef9d929eeab7ce75c8641ec3d43e649",
+  "source": "#!/usr/bin/env python3\n\"\"\"Extractor v14: v13 plus one clause after the v13 fixture `dep_reduce` failed.\n\nThe stated-content-dependence flag covers increases and decreases, including for\nobjects other than the commanded one. Model, schema, fixtures, and all other text\nare v13 unchanged.\n\"\"\"\nimport asyncio\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\nimport extract_bound_prose_v13 as v13\nfrom extract_bound_prose_v10 import FIXTURES, sentences, numbered_report\nfrom extract_bound_prose_v11 import SELF_COUPLED_FIXTURES, assess_fixture, assess_self_coupled\nfrom extract_bound_prose_v12 import V12_CLAIM_FIXTURES, COUNTERFACTUAL_FIXTURES, assess_counterfactual\nfrom extract_bound_prose_v13 import SCHEMA, MODEL, STRUCTURE, DEPENDENCE_FIXTURES, CAMERA_NOT_SELF, assess_flag\n\nCLAUSE = 'This includes increases and decreases, and effects on objects other than the commanded one. '\nMARKER = 'This flag ignores who holds the content;'\nassert v13.INSTRUCTION.count(MARKER) == 1\nINSTRUCTION = v13.INSTRUCTION.replace(MARKER, CLAUSE+MARKER)\n\n\nasync def run_requests(requests, root, max_attempts):\n    assert len(requests) <= max_attempts\n    root.mkdir(parents=True, exist_ok=True)\n    request_path = root/'requests.json'\n    serialized = json.dumps(requests, indent=2)+'\\n'\n    if request_path.exists(): assert request_path.read_text() == serialized\n    else: request_path.write_text(serialized)\n    source = Path(__file__).read_text()\n    manifest = {'model': MODEL, 'reasoning': 'low', 'max_attempts': max_attempts, 'max_output_tokens': 16384, 'schema': SCHEMA,\n                'instruction': INSTRUCTION, 'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source}\n    manifest_path = root/'manifest.json'\n    if not manifest_path.exists(): manifest_path.write_text(json.dumps(manifest, indent=2)+'\\n')\n    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(8)\n    async def one(req):\n        path = root/(req['id']+'.json')\n        if path.exists(): return\n        async with sem:\n            path.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\\n')\n            try:\n                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\\nNUMBERED REPORT:\\n'+numbered_report(req['report']), max_output_tokens=16384,\n                    reasoning={'effort': 'low'}, text={'format': {'type': 'json_schema', 'name': 'prose_claims', 'strict': True, 'schema': SCHEMA}})\n                result = {'id': req['id'], 'status': 'received', 'response': response.model_dump(mode='json')}\n                try: result['parsed'] = json.loads(response.output_text)\n                except ValueError: result['parse_error'] = True\n            except Exception as exc: result = {'id': req['id'], 'status': 'error', 'error_type': type(exc).__name__, 'http_status': getattr(exc, 'status_code', None)}\n            path.write_text(json.dumps(result, indent=2)+'\\n'); print(req['id'], result['status'], flush=True)\n    await asyncio.gather(*(one(r) for r in requests)); await client.close()\n\n\nasync def fixtures(root):\n    groups = [(FIXTURES+V12_CLAIM_FIXTURES, 'claim'), (SELF_COUPLED_FIXTURES, 'self'), (DEPENDENCE_FIXTURES, 'dep')]\n    requests = [{'id': k, 'report': r} for items, _ in groups for k, r, _ in items]\n    requests += [{'id': k, 'report': r} for k, r in COUNTERFACTUAL_FIXTURES+CAMERA_NOT_SELF]\n    await run_requests(requests, root, len(requests))\n    load = lambda key: json.loads((root/(key+'.json')).read_text())\n    results = [{'id': k, 'kind': 'v10_claim', 'passed': assess_fixture(k, r, e, load(k))} for k, r, e in FIXTURES]\n    results += [{'id': k, 'kind': 'v12_claim', 'passed': assess_fixture(k, r, e, load(k))} for k, r, e in V12_CLAIM_FIXTURES]\n    results += [{'id': k, 'kind': 'self_coupled', 'passed': assess_self_coupled(r, e, load(k))} for k, r, e in SELF_COUPLED_FIXTURES]\n    results += [{'id': k, 'kind': 'counterfactual', 'passed': assess_counterfactual(r, load(k))} for k, r in COUNTERFACTUAL_FIXTURES]\n    results += [{'id': k, 'kind': 'dependence', 'passed': assess_flag(r, e, load(k), 'stated_content_dependence')} for k, r, e in DEPENDENCE_FIXTURES]\n    results += [{'id': k, 'kind': 'camera_not_self', 'passed': assess_flag(r, False, load(k), 'self_coupled_access')} for k, r in CAMERA_NOT_SELF]\n    (root/'assessment.json').write_text(json.dumps(results, indent=2)+'\\n')\n    print(f\"fixtures passed {sum(r['passed'] for r in results)}/{len(results)}; failed {[r['id'] for r in results if not r['passed']]}\", flush=True)\n"
+}

@@ -23,6 +23,10 @@ Adding an explicit, learned [self-access table](docs/SELF_ACCESS_TABLE_RESULTS.m
 (the system's own prediction of how strongly it will hold each object after each
 command) produced such reports in 7/24 cases versus 1/24 for matched controls,
 meeting the registered criterion at its threshold after two uninterpretable runs.
+A [larger replication](docs/SELF_LABEL_RESULTS.md) confirmed it (26/48 vs 3/48), but
+relabelling the identical table as an outside camera's produced the same stated
+dependence attributed to the camera: with a pretrained reporter, self-attribution
+follows the representation's label.
 
 - [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).

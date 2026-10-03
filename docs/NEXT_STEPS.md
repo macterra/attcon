@@ -25,15 +25,26 @@ flattened over identical coupled content, and 0/24 without the table. This meets
 the frozen criterion exactly at its threshold (p = 0.035). Reports follow the
 self-model rather than the coupling in the values. Character is unchanged.
 
+A [larger replication with a camera-labelled control](SELF_LABEL_RESULTS.md)
+confirmed the effect (26/48 vs 3/48, p = 2.8 × 10⁻⁶). With the identical table
+labelled as an outside camera's legibility, reports stated the same dependence
+(39/48 vs 41/48) and attributed it to the camera. Self-attribution follows the label.
+
+**Status of the goal.** Accurate reports of the attention-control model are met. A
+theory-derived report feature, self-coupled access, appears and follows the
+self-model when the self-access relation is explicitly represented. Whether it is
+specific to a model of the system's *own* access, rather than to a representation
+labelled that way, cannot be decided with a pretrained reporter that reads labelled
+state. This paradigm has reached its limit on that question.
+
 Remaining directions:
 
-1. **Self versus label for the explicit table.** Repeat with the identical table
-   relabelled as an external camera's legibility, to test whether self-coupled
-   access reports depend on the representation being of the system's own access.
-2. **Replication and strength.** The v3 effect is modest and at threshold; a larger
-   fresh replication would show whether it is reliable.
-3. **Independent human assessment**, including matched control reports.
-4. **Generalization** to another task or architecture.
+1. **A native reporter.** Train a reporter on the system's own state without
+   phenomenological targets or attention/self labels, then repeat the self-versus-
+   external comparison. This is the only route found that could separate self-models
+   from self-labels. It is a new research program.
+2. **Independent human assessment** of the bound, self-access, and control reports.
+3. **Generalization** to another task or architecture.
 
 ## Side investigation: MSTC comparison (not on the main line)
 
