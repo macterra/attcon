@@ -12,6 +12,11 @@ intervention, control, and automated report-structure criterion. The character
 judgments are mostly mixed technical/access descriptions; they do not establish
 subjective experience or prove the source-of-qualia theory.
 
+A follow-up [specificity test](docs/SPECIFICITY_RESULTS.md) did **not** support the
+report structure as specific to an attention-control model: the same features and
+mixed character appear when the identical state describes an external spotlight
+and camera that the system controls.
+
 - [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).
 - [Design](docs/BOUND_CONTENT_DESIGN.md), [completed plan](docs/BOUND_CONTENT_PLAN.md), and [successful confirmation protocol](docs/BOUND_PROSE_CONFIRMATION_V5.md).

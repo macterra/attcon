@@ -3,14 +3,18 @@
 ## Priorities toward the goal (2026-10-03)
 
 The goal's second leg (independently specified consciousness-report structure) is
-only partly met: the structure features pass, but character labels are nonspecific
-and the features may come from the reporter's attention/access vocabulary and
-first-person framing. In order:
+not established. The [specificity test](SPECIFICITY_RESULTS.md) did **not** support
+specificity: the structure features appear whenever the state has the same formal
+structure, even under unlabeled P/Q fields, and a mixed character appears about as
+often (21/24 vs 23/24) when the identical state describes an external spotlight and
+camera. Character depends on first-person framing and meaningful labels instead.
 
-1. **Specificity.** Test whether the features depend on a model of the system's own
-   attention control rather than its labelling or framing. See the
-   [frozen specificity protocol](SPECIFICITY_PROTOCOL.md).
-2. **Independent human assessment** of the actual bound-content reports.
+Remaining directions, to be prioritized in light of that result:
+
+1. **A discriminating report feature.** Specify, in advance and from the theory, a
+   report feature that a model of the system's own attention should produce and an
+   isomorphic external-process model should not; the current four do not.
+2. **Independent human assessment**, now including matched `external` reports.
 3. **Generalization** to another task or architecture.
 
 ## Side investigation: MSTC comparison (not on the main line)
