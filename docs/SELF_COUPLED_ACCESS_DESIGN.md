@@ -1,6 +1,6 @@
 # Self-coupled access: design note
 
-**Draft, 2026-10-03. Not frozen; nothing built or run.**
+**Design note, 2026-10-03.** Implemented and frozen as the [self-coupled access protocol](SELF_COUPLED_ACCESS_PROTOCOL.md) with forecast gating.
 
 ## Why
 
