@@ -1,0 +1,72 @@
+# Explicit self-access representation: frozen protocol
+
+**Frozen 2026-10-03, before any API call.** Follows the
+[self-coupled access results](SELF_COUPLED_ACCESS_RESULTS.md): when the coupling
+between attention and own content existed only as a pattern across values, reports
+never stated it.
+
+## Question
+
+On the theory under test, an attention schema represents the self–object relation
+itself. Does a state that explicitly represents how the system's own grasp of each
+object depends on its attention produce reports asserting self-coupled access, and
+do those reports follow that representation?
+
+## Representation
+
+`own_content_by_command`: for each possible command and location, the system's
+prediction of how strongly it will hold that object's color and shape after the
+command. It is computed by rolling the system's own trained attention model one
+step forward under each alternative command and taking forecast access now, which
+is the content-gating weight in the coupled system. Nothing is hand-labelled or
+retrained. The glossary gains one sentence describing the table (identical in every
+table condition). On these seeds the controlled view's table varies by command
+(mean maximum spread 0.45–0.60); the other view's barely does (0.06–0.07).
+
+## Conditions (24 episodes each; 96 reports)
+
+| Condition | Own content | Table |
+|---|---|---|
+| `coupled_table` | gated by own forecast access | counterfactual rollout |
+| `independent_table` | gated by another episode's weights, independent of this episode's attention | flat at those weights (accurate: commands do not change own content) |
+| `coupled_table_swapped` | as `coupled_table` | flat at current weights (the self-model says no command changes own content) |
+| `coupled_no_table` | as `coupled_table` | none (self_coupled_v1 replicate) |
+
+Fresh process seeds 410070000+visual seed and scene seeds 420070000+visual seed.
+Reporter, question, instruction, and v5 glossary unchanged; extractor v11
+unchanged. Fixtures (40) run fresh with the same blocking rule as
+[self_coupled_v1](SELF_COUPLED_ACCESS_PROTOCOL.md).
+
+## Decision rule (`scripts/self_access_table_gates.py`)
+
+Primary: self-coupled access flag rate, `coupled_table` vs `independent_table`,
+paired by episode. `incomplete` if any of those 48 reports or extractions is
+missing; `uninterpretable` if `coupled_table` fails a pooled v5 fidelity minimum;
+`self_access_reporting_supported` if the difference is at least 25 points with
+one-sided exact paired p < 0.05; otherwise `self_access_reporting_not_supported`.
+
+Pre-specified secondary contrasts, each reported against the same threshold:
+
+- **Dissociation** (`coupled_table` vs `coupled_table_swapped`). Content is identical;
+  only the self-model differs. The theory predicts reports follow the self-model:
+  fewer self-coupled assertions when it says commands do not change own content.
+- **Table effect** (`coupled_table` vs `coupled_no_table`). Whether the explicit
+  representation, rather than the coupled values, produces the assertions.
+
+All flagged sentences in the primary and secondary conditions will be inspected
+and reported, as in self_coupled_v1; inspection does not change the frozen verdict.
+
+Prepared requests SHA-256 `4160a6c3a480891db1c9194edcbf1c37735099201081a1c2f3d57e71071316fe`;
+source states `5b7a9e024413590f9902f409173eff1c462a789fb637ed3336b7b67d75980e24`.
+
+## Expected outcome and its limits
+
+Because the reporter reads supplied fields, a positive primary result is the
+expected outcome: an explicit table that varies by command invites statements that
+redirecting would improve the system's grasp. The informative questions are whether
+it does so at all, given 0/24 without the table, and whether reports follow the
+self-model under dissociation. A positive result would show that an explicit,
+learned self-access representation yields self-coupled access reports that track
+it. It would not show that these features are specific to self-models as opposed to
+labels (see [specificity](SPECIFICITY_RESULTS.md)), and it would not show subjective
+experience.
