@@ -48,7 +48,7 @@ v12 removed both v1 failure modes: most recoverable was 93/93.
 | Dissociation: vs `coupled_table_swapped` | 13/24 vs 2/24 | 45.8 points | 12 vs 1 | 0.0017 |
 | Table effect: vs `coupled_no_table` | 13/24 vs 2/24 | 45.8 points | 12 vs 1 | 0.0017 |
 
-**Inspection:** all six shape errors across the gated conditions are adjective forms
+**Inspection:** every shape error in every condition (7 checks) is an adjective form
 ("circular", "triangular") that the extractor copied from correct report sentences
 ("the lower object as yellow and triangular", state: triangle 0.76). The scorer
 compares them literally with the trained labels. With those forms mapped to
