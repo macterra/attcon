@@ -19,6 +19,10 @@ and camera that the system controls.
 A [self-coupled access test](docs/SELF_COUPLED_ACCESS_RESULTS.md), in which content
 certainty depends on modeled access, also did not support it: reports never stated
 that dependence.
+Adding an explicit, learned [self-access table](docs/SELF_ACCESS_TABLE_RESULTS.md)
+(the system's own prediction of how strongly it will hold each object after each
+command) produced such reports in 7/24 cases versus 1/24 for matched controls,
+meeting the registered criterion at its threshold after two uninterpretable runs.
 
 - [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).

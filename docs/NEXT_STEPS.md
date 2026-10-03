@@ -16,16 +16,24 @@ both coupled and matched decoupled conditions), so it also did not support
 specificity. The relation existed only as a pattern across values; the reported
 state has no explicit representation of the system's own access to its contents.
 
+The [explicit self-access test](SELF_ACCESS_TABLE_RESULTS.md) then added a learned
+own-content-by-command table, the system's own prediction of how strongly it will
+hold each object after each command. In the first interpretable run (v3), 7/24
+reports asserted that the system's own grasp depends on its commands, against 1/24
+for a system whose content does not depend on attention, 1/24 when the table was
+flattened over identical coupled content, and 0/24 without the table. This meets
+the frozen criterion exactly at its threshold (p = 0.035). Reports follow the
+self-model rather than the coupling in the values. Character is unchanged.
+
 Remaining directions:
 
-1. **An explicit self-access representation.** On the theory, the schema represents
-   the self–object relation itself. A next test would add that relation to the
-   model's state (learned, not hand-labelled) and ask whether reports then show
-   features absent from a matched external-process model. This is further
-   engineered architecture; decide whether the goal warrants it.
-2. **Independent human assessment**, including matched `external` and decoupled
-   reports.
-3. **Generalization** to another task or architecture.
+1. **Self versus label for the explicit table.** Repeat with the identical table
+   relabelled as an external camera's legibility, to test whether self-coupled
+   access reports depend on the representation being of the system's own access.
+2. **Replication and strength.** The v3 effect is modest and at threshold; a larger
+   fresh replication would show whether it is reliable.
+3. **Independent human assessment**, including matched control reports.
+4. **Generalization** to another task or architecture.
 
 ## Side investigation: MSTC comparison (not on the main line)
 
