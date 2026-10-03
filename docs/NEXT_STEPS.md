@@ -1,13 +1,41 @@
 # Current outcome and further research
 
-The [matched-observation hidden-state diagnostic](HIDDEN_EXPECTATION_RESULTS.md)
-now establishes causal use of predictive memory. Interventions also change other
-state estimates, so a distinct mismatch computation remains unresolved.
+## Priorities toward the goal (2026-10-03)
 
-The subsequent [consistency diagnostic](CONSISTENCY_DIAGNOSTIC_RESULTS.md) traces
-existing feedback and tests recurrent adaptation. State estimates recover after
-a controlled-channel swap; a novel command mapping is not learned in the assay.
-The bound representation's role in corrective model updates remains unestablished.
+The goal's second leg (independently specified consciousness-report structure) is
+only partly met: the structure features pass, but character labels are nonspecific
+and the features may come from the reporter's attention/access vocabulary and
+first-person framing. In order:
+
+1. **Specificity.** Test whether the features depend on a model of the system's own
+   attention control rather than its labelling or framing. See the
+   [draft specificity protocol](SPECIFICITY_PROTOCOL.md) (not yet frozen).
+2. **Independent human assessment** of the actual bound-content reports.
+3. **Generalization** to another task or architecture.
+
+## Side investigation: MSTC comparison (not on the main line)
+
+Heile's [MSTC v5](https://arxiv.org/abs/2512.01073v5) is a related but distinct
+theory. It locates qualia in the Modeler-schema, which builds a separate Quale World
+Model from World Model contents for consistency checking and Modeler refinement;
+attention control belongs to its Targeter. Our bound state is closest to its
+Concrete World Model and its Memories. The system has no Abstract World Model,
+Modeler-schema, or Quale World Model.
+
+Building that comparator would test MSTC rather than the theory that the
+attention-control model is the source of qualia, so it is out of scope unless the
+project later sets out to compare the two theories. Two exploratory diagnostics
+were completed before this decision:
+
+- The [matched-observation hidden-state diagnostic](HIDDEN_EXPECTATION_RESULTS.md)
+  establishes causal use of predictive memory. Interventions also change other
+  state estimates, so a distinct mismatch computation remains unresolved.
+- The [consistency diagnostic](CONSISTENCY_DIAGNOSTIC_RESULTS.md) traces existing
+  feedback and tests recurrent adaptation. State estimates recover after a
+  controlled-channel swap; a novel command mapping is not learned in the assay.
+  The bound representation does not take part in corrective model updates.
+
+## Completed demonstration
 
 The [bound-content study](BOUND_CONTENT_RESULTS.md) achieves its registered
 operational goal: faithful reporting of the attention model’s object contents and
