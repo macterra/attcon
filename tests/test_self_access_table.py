@@ -61,3 +61,19 @@ class TableGateTests(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
+
+class ExtractorV12Tests(unittest.TestCase):
+    def test_v11_instruction_preserved_with_one_addition(self):
+        import extract_bound_prose_v11 as v11, extract_bound_prose_v12 as v12
+        self.assertEqual(v12.INSTRUCTION.replace(v12.ADDITION, ''), v11.INSTRUCTION)
+        self.assertEqual(v12.SCHEMA, v11.SCHEMA); self.assertEqual(v12.MODEL, v11.MODEL)
+
+    def test_counterfactual_rule_and_blocking(self):
+        import extract_bound_prose_v12 as v12
+        from self_access_table_reports import blocking_v12
+        claim = {'focal': None, 'most_recoverable': True, 'access_trend': None}
+        self.assertFalse(v12.assess_counterfactual('x.', {'parsed': {'claims': [claim]}}))
+        self.assertTrue(v12.assess_counterfactual('x.', {'parsed': {'claims': [dict(claim, most_recoverable=None)]}}))
+        results = [{'id': 'a', 'kind': 'v10_claim', 'passed': False}, {'id': 'b', 'kind': 'counterfactual', 'passed': False}]
+        self.assertEqual(blocking_v12(results), ['b'])

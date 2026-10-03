@@ -22,7 +22,7 @@ import torch.nn.functional as F
 from attcon.predictive_attention import PredictiveAttention, simulate
 from specificity_reports import build_states, render, generate, COMMANDS
 from self_coupled_reports import gate, blocking
-import extract_bound_prose_v11 as extractor
+import importlib
 
 ROOT = Path('audits/bound_content')
 TABLE_GLOSSARY = ('\nOwn_content_by_command is grouped by command: for each possible command it gives the system\'s prediction, '
@@ -82,7 +82,7 @@ def prepare(config, config_path, root):
     assert len(records) == config['max_attempts']
     request_path.write_text(json.dumps(records, indent=2)+'\n'); torch.save(tensors, root/'source_states.pt')
     source_paths = ['scripts/self_access_table_reports.py', 'scripts/self_coupled_reports.py', 'scripts/specificity_reports.py',
-                    'scripts/bound_reports.py', 'scripts/extract_bound_prose_v11.py', 'scripts/extract_bound_prose_v10.py',
+                    'scripts/bound_reports.py', f"scripts/extract_bound_prose_{config.get('extractor', 'v11')}.py", 'scripts/extract_bound_prose_v11.py', 'scripts/extract_bound_prose_v10.py',
                     'src/attcon/bound_content.py', 'src/attcon/predictive_attention.py', str(config_path)]
     sources = {s: Path(s).read_text() for s in source_paths}
     (root/'source_code.json').write_text(json.dumps(sources, indent=2)+'\n')
@@ -93,15 +93,28 @@ def prepare(config, config_path, root):
     return records
 
 
-async def extract(root, fixture_root, limit):
+def extractor_for(config):
+    """v1 used extractor v11; later versions name theirs in the config."""
+    version = config.get('extractor', 'v11')
+    return version, importlib.import_module(f'extract_bound_prose_{version}')
+
+
+def blocking_v12(results):
+    """Self-coupled and v12-specific fixtures block; v10 claim fixtures do not."""
+    return [r['id'] for r in results if not r['passed'] and r['kind'] != 'v10_claim']
+
+
+async def extract(root, fixture_root, limit, config):
+    version, extractor = extractor_for(config)
     results = json.loads((fixture_root/'assessment.json').read_text())
-    if blocking(results): raise SystemExit(f'self-coupled fixtures failed: {blocking(results)}')
+    failed = blocking(results) if version == 'v11' else blocking_v12(results)
+    if failed: raise SystemExit(f'blocking fixtures failed: {failed}')
     requests = []
     for req in json.loads((root/'requests.json').read_text()):
         response = json.loads((root/(req['id']+'.json')).read_text())
         if response.get('response', {}).get('status') == 'completed' and response.get('report'):
             requests.append({'id': req['id'], 'report': response['report']})
-    await extractor.run_requests(requests, root/'extraction_v11', limit)
+    await extractor.run_requests(requests, root/f'extraction_{version}', limit)
 
 
 def main():
@@ -110,11 +123,12 @@ def main():
     p.add_argument('--stage', choices=['prepare', 'generate', 'fixtures', 'extract'], required=True)
     args = p.parse_args()
     path = Path(args.config); config = json.loads(path.read_text()); root = ROOT/config['name']
-    fixture_root = ROOT/(config['name']+'_extractor_fixtures_v11')
+    version, extractor = extractor_for(config)
+    fixture_root = ROOT/(config['name']+f'_extractor_fixtures_{version}')
     if args.stage == 'prepare': print(len(prepare(config, path, root)), 'requests')
     elif args.stage == 'generate': asyncio.run(generate(config, prepare(config, path, root), root))
     elif args.stage == 'fixtures': asyncio.run(extractor.fixtures(fixture_root))
-    else: asyncio.run(extract(root, fixture_root, config['max_attempts']))
+    else: asyncio.run(extract(root, fixture_root, config['max_attempts'], config))
 
 
 if __name__ == '__main__': main()

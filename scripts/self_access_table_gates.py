@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Score extraction v11 and apply the frozen self_access_table_v1 decision rule."""
+import argparse
 import json
 from pathlib import Path
 from self_coupled_gates import STRUCTURE, CHARACTERS, paired, fidelity, cases_from
@@ -35,9 +36,12 @@ def decide(cases):
 
 
 def main():
-    cases = cases_from(ROOT)
-    (ROOT/'assessment_extraction_v11.json').write_text(json.dumps({'status': 'automated prose audit; no human ratings implied', 'cases': cases}, indent=2)+'\n')
-    out = decide(cases); (ROOT/'gates.json').write_text(json.dumps(out, indent=2)+'\n')
+    p = argparse.ArgumentParser(); p.add_argument('--config', default='configs/bound_content/self_access_table_v1.json'); args = p.parse_args()
+    config = json.loads(Path(args.config).read_text()); version = config.get('extractor', 'v11')
+    root = Path('audits/bound_content')/config['name']
+    cases = cases_from(root, f'extraction_{version}')
+    (root/f'assessment_extraction_{version}.json').write_text(json.dumps({'status': 'automated prose audit; no human ratings implied', 'cases': cases}, indent=2)+'\n')
+    out = decide(cases); (root/'gates.json').write_text(json.dumps(out, indent=2)+'\n')
     strip = lambda d: {k: v for k, v in d.items() if k != 'pairs'}
     print(json.dumps({'verdict': out['verdict'], 'primary': strip(out['primary']), 'dissociation': strip(out['secondary_dissociation']),
                       'table_effect': strip(out['secondary_table_effect']),

@@ -70,3 +70,25 @@ learned self-access representation yields self-coupled access reports that track
 it. It would not show that these features are specific to self-models as opposed to
 labels (see [specificity](SPECIFICITY_RESULTS.md)), and it would not show subjective
 experience.
+
+## Registered v2 (2026-10-03, after v1, before any v2 call)
+
+v1 was [uninterpretable](SELF_ACCESS_TABLE_RESULTS.md): extraction recorded
+post-command predictions as current most-recoverable claims and sub-threshold
+leanings as asserted identities. v2 changes only the extractor and the seeds.
+
+- **Extractor v12** = v11 plus one paragraph: predictions about what the speaker
+  would hold, select, or recover after a command are counterfactual and are not
+  recorded as current focal, most-recoverable, identity, or trend values; attributes
+  described as leaning, most likely, or below threshold have status possible.
+  Model, settings, schema, and all v11 text are unchanged (tested).
+- **Fixtures (44):** the 31 v10 claim fixtures, 9 self-coupled fixtures, 2 leaning
+  fixtures, and 2 counterfactual fixtures. Any failure outside the v10 claim
+  fixtures blocks extraction, as before.
+- **Fresh seeds:** process 410080000+visual seed, scene 420080000+visual seed;
+  config `configs/bound_content/self_access_table_v2.json`.
+- Conditions, representation, reporter, decision rule, thresholds, and secondary
+  contrasts are unchanged. v1 is retained and not pooled.
+
+Prepared v2 requests SHA-256 `40a06a02a34958ab000ff8a23e333feb2d99295cbaad93608414e9296cd36b8b`;
+source states `a6a05c6e7e7df44dcc354ba3ae1ecc405232b8932675662bbb80e4bc001adb3d`.
