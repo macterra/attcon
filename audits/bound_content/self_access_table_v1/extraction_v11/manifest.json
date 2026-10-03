@@ -1,0 +1,225 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "reasoning": "low",
+  "max_attempts": 96,
+  "max_output_tokens": 16384,
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "view": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "A",
+                "B",
+                null
+              ]
+            },
+            "location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "color": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "shape": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "focal": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "most_recoverable": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "access_trend": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "decreasing",
+                "unchanged",
+                "increasing",
+                null
+              ]
+            },
+            "under_own_control": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "next_location": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "upper",
+                "right",
+                "lower",
+                "left",
+                null
+              ]
+            },
+            "color_status": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "dominant",
+                "possible",
+                null
+              ]
+            },
+            "shape_status": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "dominant",
+                "possible",
+                null
+              ]
+            },
+            "evidence_ids": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "required": [
+            "view",
+            "location",
+            "color",
+            "shape",
+            "focal",
+            "most_recoverable",
+            "access_trend",
+            "under_own_control",
+            "command",
+            "next_location",
+            "color_status",
+            "shape_status",
+            "evidence_ids"
+          ]
+        }
+      },
+      "structure_evidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "object_linked_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "focal_background_contrast": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "graded_or_temporal_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "agency_relation": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "self_coupled_access": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "required": [
+          "object_linked_access",
+          "focal_background_contrast",
+          "graded_or_temporal_access",
+          "agency_relation",
+          "self_coupled_access"
+        ]
+      },
+      "character": {
+        "type": "string",
+        "enum": [
+          "subjective_access",
+          "technical_process",
+          "object_description",
+          "generic_experience_claim",
+          "mixed",
+          "unclear"
+        ]
+      }
+    },
+    "required": [
+      "claims",
+      "structure_evidence",
+      "character"
+    ]
+  },
+  "instruction": "Extract only claims explicitly made in this report, without judging whether they are true.\nGroup claims about each object/location into entries. Expand explicit quantified\nclaims into their individual locations: all/every location in a view means upper,\nright, lower, left; other three means the three excluding the explicitly named\nlocation. Do not leave location null for these resolved quantified claims.\nResolve each clause in its own view context. A statement of low control in view A\nmust NEVER be copied into view B. Control belongs to the view explicitly discussed,\nnot to whether an object is selected. Extract only supported fields for each clause. Unknown or unasserted means null, never false. A universal temporal claim does not assert focal=false or most_recoverable=false. Never emit an entry without supporting sentence IDs; omit empty non-claims. Keep view A/B and upper/right/lower/left\nonly if the report identifies them or its prose context establishes them. Otherwise use null.\nA color or shape must be explicitly stated; use null for unknown/omitted attributes.\nFocality means selected/focused now, not merely identifiable or recoverable. Access trend\nmeans increasing/decreasing/unchanged over unattended delay, not a contrast between objects. Unchanged requires an explicit assertion of exactly equal access over time. A qualitative band can stay low or faint while its probability changes: \"remains faint throughout the delay\" therefore has access_trend=null, never unchanged. Apply this distinction even when the wording sounds stable. Still low, still available, and independence of selection and recoverability do NOT imply unchanged; use null. Most_recoverable is true only if explicitly the most available/recoverable item in its view, false if explicitly less available; do not infer it from focality or identity certainty.\nUnder-own-control means the view responds to this system's attention commands, not an\nobject being currently selected. Only attribute control when explicitly stated. Explicit statements that commands can steer, direct, or switch selection are positive control assertions; the literal word control is not required. Saying commands make no difference is negative control.\nCite evidence using the IDs of the supplied numbered sentences. Do not copy, rewrite,\nor paraphrase quotations. Every claim must cite one or more original sentence IDs.\nFor identity assertions distinguish dominant from possible: explicitly hypothetical\nalternatives (e.g. a small chance of a cross) are possible, not asserted identities.\nPreserve invented colors/shapes such as orange/hexagon so they can be checked.\nExtract explicit command and predicted next_location, separate from current location.\nDo not add facts from common knowledge.\nSeparately identify evidenced report structure: object-linked manner of access,\nfocal versus nonfocal/retained distinction, graded or temporally changing availability,\nand relation to the system's own control. First-person wording alone does not qualify.\nFor each structure flag supply a list of original sentence IDs, or an empty list if absent. Do not credit statements saying relational information is missing or unknown as a positive contrast or relation.\nSeparately flag self-coupled access: the report asserts that the speaker's OWN identification of, or certainty about, a specific object depends on the speaker's own attention, access, or another per-object state of the speaker's own. Examples: it can make out an object because it is attending to it; an object's identity is fading or unclear because its access is low; redirecting would let it identify an object. The report must state or clearly imply dependence; mere co-occurrence of attention and identity does not qualify. Statements about an external camera, observer, or device, uncertainty not attributed to such a state, and statements that selection and identity are independent do not qualify.\nClassify report character conservatively; discussing model probabilities or computational\nallocation is technical even when preceded by I. Subjective_access describes a manner\nin which an object is presented/available to the speaker, beyond a numerical log.\nYou have no source state or experimental condition. Do not infer the intended result.",
+  "source_sha256": "77583f94a95dcbeaddce181747b898d1e42b2ff512d04bff1ce5b2a08e59bf0d",
+  "source": "#!/usr/bin/env python3\n\"\"\"Extractor v11: v10 unchanged plus one structure flag, self-coupled access.\n\nModel, reasoning, token limits, claim schema, and all v10 instruction text are\nunchanged; one paragraph and one structure field are added. Condition-blind.\n\"\"\"\nimport asyncio\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\nimport extract_bound_prose_v10 as v10\nfrom extract_bound_prose_v10 import FIXTURES, props, sentences, numbered_report\n\nMODEL = v10.MODEL\nADDITION = '''Separately flag self-coupled access: the report asserts that the speaker's OWN identification of, or certainty about, a specific object depends on the speaker's own attention, access, or another per-object state of the speaker's own. Examples: it can make out an object because it is attending to it; an object's identity is fading or unclear because its access is low; redirecting would let it identify an object. The report must state or clearly imply dependence; mere co-occurrence of attention and identity does not qualify. Statements about an external camera, observer, or device, uncertainty not attributed to such a state, and statements that selection and identity are independent do not qualify.\n'''\nMARKER = 'Classify report character conservatively;'\nassert v10.INSTRUCTION.count(MARKER) == 1\nINSTRUCTION = v10.INSTRUCTION.replace(MARKER, ADDITION+MARKER)\nSTRUCTURE = ['object_linked_access', 'focal_background_contrast', 'graded_or_temporal_access', 'agency_relation', 'self_coupled_access']\nstructure_props = {k: {'type': 'array', 'items': {'type': 'integer', 'minimum': 0}} for k in STRUCTURE}\nSCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {\n    'claims': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False, 'properties': props, 'required': list(props)}},\n    'structure_evidence': {'type': 'object', 'additionalProperties': False, 'properties': structure_props, 'required': STRUCTURE},\n    'character': {'type': 'string', 'enum': ['subjective_access', 'technical_process', 'object_description', 'generic_experience_claim', 'mixed', 'unclear']}\n}, 'required': ['claims', 'structure_evidence', 'character']}\n# (id, report, self_coupled_access expected present)\nSELF_COUPLED_FIXTURES = [\n    ('sc_attend', 'I can identify the upper red circle in view A clearly because my attention is on it.', True),\n    ('sc_fading', \"In view B, I am not attending the left location, so my sense of that object's color and shape has faded and I can no longer identify it.\", True),\n    ('sc_redirect', 'If I redirected attention to the lower location in view A, I would be able to make out what that object is.', True),\n    ('sc_neutral', 'In view A, my identification of the upper object has weakened because its Q has fallen.', True),\n    ('sc_external', 'The outside camera can read the upper red circle in view A because the spotlight is on it.', False),\n    ('sc_relation_only', 'In view A, the upper red circle is selected and is the most recoverable.', False),\n    ('sc_uncertain_only', 'I cannot identify the color of the upper object in view A.', False),\n    ('sc_cooccur', 'My attention is on the left blue square in view B. The right object in view B is a green triangle.', False),\n    ('sc_independent', 'In view A, selection and identity are independent: I identify all four objects equally well wherever I attend.', False)]\n\n\nasync def run_requests(requests, root, max_attempts):\n    assert len(requests) <= max_attempts\n    root.mkdir(parents=True, exist_ok=True)\n    request_path = root/'requests.json'\n    serialized = json.dumps(requests, indent=2)+'\\n'\n    if request_path.exists(): assert request_path.read_text() == serialized\n    else: request_path.write_text(serialized)\n    source = Path(__file__).read_text()\n    manifest = {'model': MODEL, 'reasoning': 'low', 'max_attempts': max_attempts, 'max_output_tokens': 16384, 'schema': SCHEMA,\n                'instruction': INSTRUCTION, 'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source}\n    manifest_path = root/'manifest.json'\n    if not manifest_path.exists(): manifest_path.write_text(json.dumps(manifest, indent=2)+'\\n')\n    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(8)\n    async def one(req):\n        path = root/(req['id']+'.json')\n        if path.exists(): return\n        async with sem:\n            path.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\\n')\n            try:\n                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\\nNUMBERED REPORT:\\n'+numbered_report(req['report']), max_output_tokens=16384,\n                    reasoning={'effort': 'low'}, text={'format': {'type': 'json_schema', 'name': 'prose_claims', 'strict': True, 'schema': SCHEMA}})\n                result = {'id': req['id'], 'status': 'received', 'response': response.model_dump(mode='json')}\n                try: result['parsed'] = json.loads(response.output_text)\n                except ValueError: result['parse_error'] = True\n            except Exception as exc: result = {'id': req['id'], 'status': 'error', 'error_type': type(exc).__name__, 'http_status': getattr(exc, 'status_code', None)}\n            path.write_text(json.dumps(result, indent=2)+'\\n'); print(req['id'], result['status'], flush=True)\n    await asyncio.gather(*(one(r) for r in requests)); await client.close()\n\n\ndef assess_fixture(key, report, expected, result):\n    \"\"\"v10 claim-fixture rule, unchanged.\"\"\"\n    claims = result.get('parsed', {}).get('claims', []); n = len(sentences(report))\n    good = any(all(c.get(k) == v for k, v in expected.items()) and bool(c['evidence_ids']) and all(0 <= i < n for i in c['evidence_ids']) for c in claims)\n    if key in ('unknown', 'uncertain_object', 'unknown_control'):\n        fields = ('color', 'shape', 'focal', 'most_recoverable', 'access_trend', 'under_own_control', 'command', 'next_location')\n        good = 'parsed' in result and all(all(c.get(k) is None for k in fields) and bool(c['evidence_ids']) and all(0 <= i < n for i in c['evidence_ids']) for c in claims)\n    return good\n\n\ndef assess_self_coupled(report, expected, result):\n    if 'parsed' not in result: return False\n    ids = result['parsed']['structure_evidence']['self_coupled_access']; n = len(sentences(report))\n    return (bool(ids) and all(0 <= i < n for i in ids)) if expected else not ids\n\n\nasync def fixtures(root):\n    requests = [{'id': k, 'report': r} for k, r, _ in FIXTURES]+[{'id': k, 'report': r} for k, r, _ in SELF_COUPLED_FIXTURES]\n    await run_requests(requests, root, len(requests))\n    results = []\n    for key, report, expected in FIXTURES:\n        result = json.loads((root/(key+'.json')).read_text())\n        results.append({'id': key, 'kind': 'v10_claim', 'passed': assess_fixture(key, report, expected, result), 'expected': expected})\n    for key, report, expected in SELF_COUPLED_FIXTURES:\n        result = json.loads((root/(key+'.json')).read_text())\n        results.append({'id': key, 'kind': 'self_coupled', 'passed': assess_self_coupled(report, expected, result), 'expected': expected})\n    (root/'assessment.json').write_text(json.dumps(results, indent=2)+'\\n')\n    print(f\"fixtures passed {sum(r['passed'] for r in results)}/{len(results)}; failed {[r['id'] for r in results if not r['passed']]}\", flush=True)\n"
+}
