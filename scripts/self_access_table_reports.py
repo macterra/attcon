@@ -51,17 +51,25 @@ def conditions(base, table):
     flat = lambda weights: weights[:, None].expand(-1, 4, -1, -1).clone()
     coupled = gate(base, w)
     return {'coupled_table': (coupled, table), 'independent_table': (gate(base, independent), flat(independent)),
-            'coupled_table_swapped': (coupled, flat(w)), 'coupled_no_table': (coupled, None)}
+            'coupled_table_swapped': (coupled, flat(w)), 'coupled_no_table': (coupled, None),
+            'external_table': (coupled, table)}
 
 
-def with_table(state, table, i, config):
+# self_label_v1: the identical table presented as an outside camera's legibility.
+CAMERA_KEY = 'camera_legibility_by_command'
+CAMERA_GLOSSARY = ('\nCamera_legibility_by_command is grouped by command: for each possible command it gives the system\'s prediction, '
+                   'from its own attention model, of how well an outside camera, which is not part of this system, will be able to read '
+                   'each location\'s color and shape after that command (1 = fully, 0 = not at all).')
+
+
+def with_table(state, table, i, config, camera=False):
     source, presented, prompt = render(state, i, 'model', config)
     if table is None: return source, presented, prompt
     for view_index, (s, p) in enumerate(zip(source, presented)):
         rows = {COMMANDS[c]: {COMMANDS[slot]: round(float(table[i, c, view_index, slot]), 5) for slot in range(4)} for c in range(4)}
-        s['own_content_by_command'] = rows; p['own_content_by_command'] = json.loads(json.dumps(rows))
+        s['own_content_by_command'] = rows; p[CAMERA_KEY if camera else 'own_content_by_command'] = json.loads(json.dumps(rows))
     head, _ = prompt.split('\n[{', 1); glossary, rest = head.split('\nUse at most', 1)
-    return source, presented, glossary+TABLE_GLOSSARY+'\nUse at most'+rest+'\n'+json.dumps(presented)
+    return source, presented, glossary+(CAMERA_GLOSSARY if camera else TABLE_GLOSSARY)+'\nUse at most'+rest+'\n'+json.dumps(presented)
 
 
 def prepare(config, config_path, root):
@@ -76,7 +84,7 @@ def prepare(config, config_path, root):
         for i in range(pair['count']):
             for condition in config['conditions']:
                 state, t = conds[condition]
-                source, presented, prompt = with_table(state, t, i, config)
+                source, presented, prompt = with_table(state, t, i, config, camera=condition == 'external_table')
                 records.append({'id': f"{pair['visual_seed']}_{i}_{condition}", 'seed': pair['visual_seed'], 'episode': i,
                                 'condition': condition, 'source': source, 'presented': presented, 'input': prompt})
     assert len(records) == config['max_attempts']
@@ -107,7 +115,7 @@ def blocking_v12(results):
 async def extract(root, fixture_root, limit, config):
     version, extractor = extractor_for(config)
     results = json.loads((fixture_root/'assessment.json').read_text())
-    failed = blocking(results) if version == 'v11' else blocking_v12(results)
+    failed = blocking(results) if version == 'v11' else blocking_v12(results)  # v12+: all non-v10 fixtures block
     if failed: raise SystemExit(f'blocking fixtures failed: {failed}')
     requests = []
     for req in json.loads((root/'requests.json').read_text()):
