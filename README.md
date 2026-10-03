@@ -16,6 +16,9 @@ A follow-up [specificity test](docs/SPECIFICITY_RESULTS.md) did **not** support 
 report structure as specific to an attention-control model: the same features and
 mixed character appear when the identical state describes an external spotlight
 and camera that the system controls.
+A [self-coupled access test](docs/SELF_COUPLED_ACCESS_RESULTS.md), in which content
+certainty depends on modeled access, also did not support it: reports never stated
+that dependence.
 
 - [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).

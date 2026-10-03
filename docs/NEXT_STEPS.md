@@ -9,14 +9,22 @@ structure, even under unlabeled P/Q fields, and a mixed character appears about 
 often (21/24 vs 23/24) when the identical state describes an external spotlight and
 camera. Character depends on first-person framing and meaningful labels instead.
 
-Remaining directions, to be prioritized in light of that result:
+The [self-coupled access test](SELF_COUPLED_ACCESS_RESULTS.md) then made the
+system's own content certainty depend on its modeled access. Reports followed the
+coupled values accurately but never stated the dependence (0/24 on inspection, in
+both coupled and matched decoupled conditions), so it also did not support
+specificity. The relation existed only as a pattern across values; the reported
+state has no explicit representation of the system's own access to its contents.
 
-1. **A discriminating report feature.** In the current architecture the system's
-   own content never depends on attention, so its attention model is structurally
-   an external-process model. The [self-coupled access design](SELF_COUPLED_ACCESS_DESIGN.md)
-   (draft) proposes making content certainty depend on the modeled access and
-   testing for reports of that dependence against a matched decoupled control.
-2. **Independent human assessment**, now including matched `external` reports.
+Remaining directions:
+
+1. **An explicit self-access representation.** On the theory, the schema represents
+   the self–object relation itself. A next test would add that relation to the
+   model's state (learned, not hand-labelled) and ask whether reports then show
+   features absent from a matched external-process model. This is further
+   engineered architecture; decide whether the goal warrants it.
+2. **Independent human assessment**, including matched `external` and decoupled
+   reports.
 3. **Generalization** to another task or architecture.
 
 ## Side investigation: MSTC comparison (not on the main line)
