@@ -11,9 +11,11 @@ camera. Character depends on first-person framing and meaningful labels instead.
 
 Remaining directions, to be prioritized in light of that result:
 
-1. **A discriminating report feature.** Specify, in advance and from the theory, a
-   report feature that a model of the system's own attention should produce and an
-   isomorphic external-process model should not; the current four do not.
+1. **A discriminating report feature.** In the current architecture the system's
+   own content never depends on attention, so its attention model is structurally
+   an external-process model. The [self-coupled access design](SELF_COUPLED_ACCESS_DESIGN.md)
+   (draft) proposes making content certainty depend on the modeled access and
+   testing for reports of that dependence against a matched decoupled control.
 2. **Independent human assessment**, now including matched `external` reports.
 3. **Generalization** to another task or architecture.
 

@@ -58,6 +58,19 @@ attention-bearing conditions and 96.3% for `visual_only`.
   does not single out an attention-control model as the source of the specified
   report features. That is the second leg of the project's evidence.
 
+## Architectural explanation
+
+In the current system the reported content does not depend on attention. Visual
+distributions come from the encoder for every object observed at least once
+(`bind` in `src/attcon/bound_content.py`); the simulator keeps them independent of
+control and signal quality. "Recoverability" forecasts a simulated reconstruction
+outcome, not the system's own certainty about its contents. The attention model is
+therefore structurally a model of a process that does not gate the system's own
+contents, which is exactly what the `external` relabel describes. The null result
+is what that architecture should produce. The theory's distinguishing relation, a
+model of the system's own access to its contents, is not instantiated; see the
+[self-coupled access design](SELF_COUPLED_ACCESS_DESIGN.md).
+
 ## Limits
 
 24 pairs detect only large effects; a small real difference is not excluded. The
