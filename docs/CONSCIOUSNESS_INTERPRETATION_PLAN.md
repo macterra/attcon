@@ -152,6 +152,9 @@ publish its actual outcome, and distinguish a completed experiment from an achie
 theory-facing objective. Freeze the experimental protocol only after the rubric,
 identifiable comparison, reporting interface, and feasible power analysis exist.
 
+The [requirements audit](CONSCIOUSNESS_REQUIREMENTS_AUDIT.md) maps every stage to
+current evidence and outstanding work. Component checks do not establish completion.
+
 ## Execution order and documentation
 
 1. Prepare independent rubric and causal wiring specification.
