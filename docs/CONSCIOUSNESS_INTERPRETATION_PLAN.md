@@ -172,6 +172,8 @@ principally from malformed extracted selection addresses, with separate verified
 reporter contradictions and predominantly technical character. The [v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md) now enforces typed process
 addresses and forecast-presence metadata, with prepared inputs from unused row 3.
 [Qualification](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md) fails 1/32 fixtures and
-halts before reporting; forecast-presence semantics need explicit evidence. Independent rubric review and human ratings remain
+halts before reporting. The [v7 amendment](NEUTRAL_FUNCTIONAL_PILOT_V7.md) adds
+explicit forecast-supply evidence rules, retaining identical unused row-3 reporter
+inputs. Qualification and reporting remain pending. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.

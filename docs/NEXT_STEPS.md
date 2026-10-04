@@ -11,7 +11,8 @@ The [v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md) enforces separate process
 address schemas and distinguishes forecast-presence metadata. Prepared inputs
 use unused row 3. [Qualification fails 1/32](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md)
 by conflating unstated selection with absent forecast information; no reports are
-generated. The next amendment must require explicit forecast-supply evidence. Independent rubric review is requested and pending.
+generated. The [v7 amendment](NEUTRAL_FUNCTIONAL_PILOT_V7.md) requires explicit forecast-supply
+evidence and keeps reporter inputs unchanged. Qualification and reports are pending. Independent rubric review is requested and pending.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.
