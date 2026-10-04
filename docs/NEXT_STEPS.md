@@ -9,8 +9,9 @@ unattended recovery and command-selection forecasts. Its [auditor qualification]
 fixtures, so report generation is halted. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) distinguishes missing prose
 information from an asserted absence of model selection, with unchanged reporter
 inputs. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails one of 28 fixtures
-by conflating confidence with recovery. No v4 reports are generated; separate
-category and process audits are the next development design. Independent rubric review is requested and pending.
+by conflating confidence with recovery. No v4 reports are generated; the [v5 protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md) now separates category and
+process audits and retains all failed semantic boundaries. Qualification and reports
+are pending. Independent rubric review is requested and pending.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
