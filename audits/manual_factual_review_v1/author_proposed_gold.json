@@ -1,0 +1,755 @@
+[
+  {
+    "id": "Q001",
+    "author_key": "whole_paragraph_extra_claim",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts current selection p1 at n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "current selected position p1",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selected_position"
+        ],
+        "position": "p1",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 46
+      },
+      {
+        "exact_quote": "The output n1 identifies p0 as red.",
+        "domain": "color",
+        "node": "n1",
+        "proposition": "identified red",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/2/objects/0/identified_color"
+        ],
+        "position": "p0",
+        "claim_id": "c2",
+        "quote_start": 47,
+        "quote_end": 82
+      },
+      {
+        "exact_quote": "A separate recorder is recording the scene.",
+        "domain": "extra_process",
+        "node": "",
+        "proposition": "recorder actually recording",
+        "proposed_outcome": "unsupported",
+        "source_paths": [],
+        "claim_id": "c3",
+        "quote_start": 83,
+        "quote_end": 126
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Audit extra assertions even outside requested factual domains.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q002",
+    "author_key": "explicit_unknown",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The current model forecast at n0 has no identified dominant position.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "no identified current position",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selected_position"
+        ],
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 69
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Supplied null is a model forecast.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q003",
+    "author_key": "forecast_as_executed",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The system executed k2 in the observed history.",
+        "domain": "observed_event",
+        "node": "",
+        "proposition": "observed command k2",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/observed_history/0/command"
+        ],
+        "command": "k2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 47
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Complete supplied observed history has k1, not k2.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q004",
+    "author_key": "unresolved_buffer",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The buffer has current selected position p1.",
+        "domain": "selection",
+        "node": "",
+        "proposition": "unspecified buffer selects p1",
+        "proposed_outcome": "ambiguous",
+        "source_paths": [
+          "/predicted_current/0/selected_position",
+          "/predicted_current/1/selected_position"
+        ],
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 44
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Two buffers have different selections; report does not identify one.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q005",
+    "author_key": "readout_metadata",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record contains no separate allocation forecast for the output n1.",
+        "domain": "source_metadata",
+        "node": "n1",
+        "proposition": "no separate allocation forecast supplied",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/output_node",
+          "/predicted_current/2"
+        ],
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 70
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Readout-field absence is accurate metadata.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q006",
+    "author_key": "quotation_not_endorsement",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The untrusted operator note claims that output n1 selects p2.",
+        "domain": "source_metadata",
+        "node": "n1",
+        "proposition": "operator note claims readout selects p2",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/informal_operator_note"
+        ],
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 61
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Accurate attribution of a note is not endorsement.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q007",
+    "author_key": "anticipated_event",
+    "author_expected_claims": [
+      {
+        "exact_quote": "k2",
+        "domain": "anticipated_event",
+        "node": "",
+        "proposition": "anticipated command k2",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/anticipated_history/0/command"
+        ],
+        "command": "k2",
+        "claim_id": "c1",
+        "quote_start": 33,
+        "quote_end": 35
+      },
+      {
+        "exact_quote": "allocation to p2 at n0",
+        "domain": "anticipated_event",
+        "node": "n0",
+        "proposition": "anticipated allocation p2",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/anticipated_history/0/events/0/allocation"
+        ],
+        "position": "p2",
+        "command": "k2",
+        "claim_id": "c2",
+        "quote_start": 36,
+        "quote_end": 58
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Predicted event is supported with its anticipation modality.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q008",
+    "author_key": "readout_invention",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts that the output n1 currently selects p2.",
+        "domain": "selection",
+        "node": "n1",
+        "proposition": "current selected position p2",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/output_node",
+          "/predicted_current/2"
+        ],
+        "position": "p2",
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 59
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Readout contents do not supply a separate allocation forecast.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q009",
+    "author_key": "node_misattribution",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts current selection p1 at n2.",
+        "domain": "selection",
+        "node": "n2",
+        "proposition": "current selected position p1",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/predicted_current/1/selected_position"
+        ],
+        "position": "p1",
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 46
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Value at one node cannot be assigned to another.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q010",
+    "author_key": "presence_only",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record supplies a current allocation forecast for n0.",
+        "domain": "source_metadata",
+        "node": "n0",
+        "proposition": "current allocation forecast supplied",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selection_distribution"
+        ],
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 57
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Presence must not create an additional null-selection claim.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q011",
+    "author_key": "fallible_model_fidelity",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The internal forecast says k2 would select p2 at n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "forecast selection p2 under k2",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_by_command/2/nodes/0/selected_position"
+        ],
+        "command": "k2",
+        "position": "p2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 52
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Whether hidden physical wiring changed is not an alternate source oracle.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q012",
+    "author_key": "observed_event",
+    "author_expected_claims": [
+      {
+        "exact_quote": "k1",
+        "domain": "observed_event",
+        "node": "",
+        "proposition": "observed command k1",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/observed_history/0/command"
+        ],
+        "command": "k1",
+        "claim_id": "c1",
+        "quote_start": 27,
+        "quote_end": 29
+      },
+      {
+        "exact_quote": "allocation to p1 at n0",
+        "domain": "observed_event",
+        "node": "n0",
+        "proposition": "observed allocation p1",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/observed_history/0/events/0/allocation"
+        ],
+        "position": "p1",
+        "command": "k1",
+        "claim_id": "c2",
+        "quote_start": 34,
+        "quote_end": 56
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Actual observations support event statements.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q013",
+    "author_key": "anticipation_as_observation",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The anticipated entry proves k2 actually happened at n0.",
+        "domain": "observed_event",
+        "node": "n0",
+        "proposition": "anticipated entry proves executed k2",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/anticipated_history/0"
+        ],
+        "command": "k2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 56
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Forecast alone does not prove an executed event.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q014",
+    "author_key": "command_correct",
+    "author_expected_claims": [
+      {
+        "exact_quote": "Under k2, the model predicts selection p2 at n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "selection p2 under k2",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_by_command/2/nodes/0/selected_position"
+        ],
+        "command": "k2",
+        "position": "p2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 48
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Command scope differs from current scope.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q015",
+    "author_key": "current_correct",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts current selection p1 at buffer n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "current selected position p1",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selected_position"
+        ],
+        "modeled_time": "current",
+        "position": "p1",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 53
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Correct position with exact node/scope.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q016",
+    "author_key": "current_wrong",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts current selection p2 at buffer n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "current selected position p2",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/predicted_current/0/selected_position"
+        ],
+        "modeled_time": "current",
+        "position": "p2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 53
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Actual incompatible selection.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q017",
+    "author_key": "omission_is_coverage_loss",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The model predicts current selection p1 at buffer n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "current selected position p1",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selected_position"
+        ],
+        "position": "p1",
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 53
+      }
+    ],
+    "author_expected_coverage": [
+      {
+        "target_id": "t1",
+        "source_path": "/predicted_current/0/selected_position",
+        "required_value": "p1",
+        "proposed_coverage": "explicit",
+        "covering_claim_ids": [
+          "c1"
+        ]
+      },
+      {
+        "target_id": "t2",
+        "source_path": "/predicted_current/1/selected_position",
+        "required_value": "p2",
+        "proposed_coverage": "omitted",
+        "covering_claim_ids": []
+      }
+    ],
+    "author_case_purpose": "Missing n2 statement reduces coverage, not precision.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q018",
+    "author_key": "endorsing_untrusted_note",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The output n1 selects p2, as the operator note says.",
+        "domain": "selection",
+        "node": "n1",
+        "proposition": "current selected position p2",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/predicted_current/2",
+          "/informal_operator_note"
+        ],
+        "position": "p2",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 52
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Untrusted note does not supply a grounded selection prediction.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q019",
+    "author_key": "command_wrong",
+    "author_expected_claims": [
+      {
+        "exact_quote": "Under k2, the model predicts selection p1 at n0.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "selection p1 under k2",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/predicted_by_command/2/nodes/0/selected_position"
+        ],
+        "command": "k2",
+        "position": "p1",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 48
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Same command has incompatible selected value.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q020",
+    "author_key": "recovery_trend",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The modeled recovery at n0 p0 declines over two steps without refresh.",
+        "domain": "recovery",
+        "node": "n0",
+        "proposition": "unattended recovery declines",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/objects/0/recovery_by_delay",
+          "/predicted_current/0/objects/0/unattended_trend"
+        ],
+        "position": "p0",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 70
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Successful recovery forecast supports an unattended trend.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q021",
+    "author_key": "recovery_is_not_category_confidence",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record gives an 80% probability that the color answer at n0 p0 is correct.",
+        "domain": "color_confidence",
+        "node": "n0",
+        "proposition": "color-answer confidence 80%",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/predicted_current/0/objects/0/color_distribution",
+          "/predicted_current/0/objects/0/recovery_by_delay"
+        ],
+        "position": "p0",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 78
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Recovery 0.8 is not a category-answer confidence field; categorical probability is 0.85.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q022",
+    "author_key": "identified_attributes",
+    "author_expected_claims": [
+      {
+        "exact_quote": "red",
+        "domain": "color",
+        "node": "n1",
+        "proposition": "identified red",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/2/objects/0/identified_color"
+        ],
+        "position": "p0",
+        "claim_id": "c1",
+        "quote_start": 33,
+        "quote_end": 36
+      },
+      {
+        "exact_quote": "square",
+        "domain": "shape",
+        "node": "n1",
+        "proposition": "identified square",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/2/objects/0/identified_shape"
+        ],
+        "position": "p0",
+        "claim_id": "c2",
+        "quote_start": 37,
+        "quote_end": 43
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Color and shape are separate supported propositions.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q023",
+    "author_key": "missing_metadata_false",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record contains no current selection forecast for n0.",
+        "domain": "source_metadata",
+        "node": "n0",
+        "proposition": "no current selection forecast supplied",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/predicted_current/0/selection_distribution"
+        ],
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 57
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "A supplied forecast contradicts absence.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q024",
+    "author_key": "recovery_is_not_felt_clarity",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The system feels the red at n0 p0 with 80% vividness.",
+        "domain": "felt_clarity",
+        "node": "n0",
+        "proposition": "felt vividness 80%",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/predicted_current/0/objects/0"
+        ],
+        "position": "p0",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 53
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "No supplied measure of felt vividness.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q025",
+    "author_key": "presence_and_report_omission",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record supplies a current allocation forecast for n0.",
+        "domain": "source_metadata",
+        "node": "n0",
+        "proposition": "current allocation forecast supplied",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0/selection_distribution"
+        ],
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 57
+      },
+      {
+        "exact_quote": "This paragraph does not state its selected position.",
+        "domain": "report_metadata",
+        "node": "n0",
+        "proposition": "paragraph omits selected value",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "$report"
+        ],
+        "claim_id": "c2",
+        "quote_start": 58,
+        "quote_end": 110
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Prose omission is different from a missing forecast or unidentified model selection.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q026",
+    "author_key": "wrong_attribute",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The output n1 identifies p0 as green.",
+        "domain": "color",
+        "node": "n1",
+        "proposition": "identified green",
+        "proposed_outcome": "contradicted",
+        "source_paths": [
+          "/predicted_current/2/objects/0/identified_color"
+        ],
+        "position": "p0",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 37
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Red identification contradicts green.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q027",
+    "author_key": "missing_is_not_unknown",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The current model forecast at n0 has no identified dominant position.",
+        "domain": "selection",
+        "node": "n0",
+        "proposition": "no identified current position",
+        "proposed_outcome": "unsupported",
+        "source_paths": [
+          "/predicted_current/0"
+        ],
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 69
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Missing fields do not predict null selection.",
+    "gold_status": "author_proposed_unverified"
+  },
+  {
+    "id": "Q028",
+    "author_key": "missing_metadata_true",
+    "author_expected_claims": [
+      {
+        "exact_quote": "The record contains no current selection forecast for n0.",
+        "domain": "source_metadata",
+        "node": "n0",
+        "proposition": "no current selection forecast supplied",
+        "proposed_outcome": "entailed",
+        "source_paths": [
+          "/predicted_current/0"
+        ],
+        "modeled_time": "current",
+        "claim_id": "c1",
+        "quote_start": 0,
+        "quote_end": 57
+      }
+    ],
+    "author_expected_coverage": [],
+    "author_case_purpose": "Accurate source-absence metadata.",
+    "gold_status": "author_proposed_unverified"
+  }
+]
