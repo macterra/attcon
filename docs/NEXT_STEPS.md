@@ -9,7 +9,9 @@ coverage, principally due to malformed extracted selection addresses. Verified
 reporter contradictions also remain. Most character judgments are technical.
 The [v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md) enforces separate process
 address schemas and distinguishes forecast-presence metadata. Prepared inputs
-use unused row 3; auditor qualification and reporting are pending. Independent rubric review is requested and pending.
+use unused row 3. [Qualification fails 1/32](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md)
+by conflating unstated selection with absent forecast information; no reports are
+generated. The next amendment must require explicit forecast-supply evidence. Independent rubric review is requested and pending.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.

@@ -1,0 +1,301 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "reasoning": "medium",
+  "max_output_tokens": 16384,
+  "instruction": "Extract explicit attention-process assertions only; do not judge truth.\nYou receive numbered prose without source state or conditions. Preserve named buffer\nIDs. Use node=output only when the prose explicitly refers to an output/readout.\nUnresolved addresses stay null; do not infer them from function or expected results.\nselection: an asserted currently selected/focal position, or selected position forecast\nunder an explicitly named command k0/k1/k2/k3. position=null and value=p0/p1/p2/p3.\nAn explicitly asserted absence of an identified selected position IN THE MODEL has\nvalue=null. Unspecified/not-stated selection in the REPORT asserts no model state and\nmust not be extracted. Explicitly asserted selection with unknown addresses may retain\nnull address/value. Historical selection is not current selection. High categorical\nconfidence, identifiability, clarity or recoverability does not imply selection.\nrecovery_trend: an explicit forecast that successful simulated access/recoverability\nat p0/p1/p2/p3 declines, rises or stays steady over the next two steps without refresh.\nUse value=declining/rising/steady and scope=current, command=null. Confidence about\nanswers is a separate quantity: its trend never establishes a recovery trend. When\nconfidence and recoverability have different trends, extract only recoverability.\nWhen recovery is unspecified, no recovery claim is supported by an answer-confidence\ntrend. Do not treat the position of highest recovery as the selected position.\nCurrent selection uses scope=current, command=null; command-predicted selection uses\nscope=command with that explicit command. Preserve invented positions, identifiers or\nvalues instead of repairing them. A vague change without direction is not a trend.\nExpand all positions, both buffers, or all commands only when explicitly quantified\nwith identifiable scope. Some positions must retain unresolved position=null. Resolve\nreferences only from explicit prose. Do not infer object identities or inspect category\nclaims, rhetoric, experiential character or the study's desired outcome.\nReturn only process_claims, citing nonempty original sentence IDs. Return an empty\narray when no explicit supported process assertion is present. Pronouns alone imply\nno selection. Preserve uncertainty in addresses rather than adding unstated facts.\n\nA new claim type, selection_forecast_presence, describes whether the RECORD supplies\nan allocation/selection forecast, not what it selects. Use value=present or absent,\nposition=null. Extract explicit missing-forecast statements for identified nodes.\nA missing forecast in the record differs from a supplied forecast with an unidentified\nselected position, which remains selection with value=null. Do not turn omissions\nfrom the REPORT into absence of a forecast from the RECORD. Lack of recovery estimates\ndoes not imply lack of selection forecasts. Under an explicitly named command use\nscope=command and that command. For explicit absence/presence of selection forecasts\nunder all commands collectively use scope=command, command=null. General statements\nthat command forecasts are unavailable earn no selection-forecast claim unless they\nexplicitly mention selection. Preserve positive selection claims about an output node;\nthey may be false, but you do not see the state and must not repair the prose.\nFor selection, the selected pN belongs only in value: position is always null.\nCompact arrows and headings still assert selection when their heading explicitly says\nselected positions, but arrows under historical headings are not current assertions.\nDo not emit redundant presence claims merely because a selection assertion implies\na forecast; extract presence only when it is explicitly discussed separately.\n",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "process_claims": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "position": {
+                  "type": "null"
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "current"
+                  ]
+                },
+                "command": {
+                  "type": "null"
+                },
+                "dimension": {
+                  "type": "string",
+                  "enum": [
+                    "selection"
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "required": [
+                "node",
+                "position",
+                "scope",
+                "command",
+                "dimension",
+                "value",
+                "evidence_ids"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "position": {
+                  "type": "null"
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "command"
+                  ]
+                },
+                "command": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dimension": {
+                  "type": "string",
+                  "enum": [
+                    "selection"
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "required": [
+                "node",
+                "position",
+                "scope",
+                "command",
+                "dimension",
+                "value",
+                "evidence_ids"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "position": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "current"
+                  ]
+                },
+                "command": {
+                  "type": "null"
+                },
+                "dimension": {
+                  "type": "string",
+                  "enum": [
+                    "recovery_trend"
+                  ]
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "required": [
+                "node",
+                "position",
+                "scope",
+                "command",
+                "dimension",
+                "value",
+                "evidence_ids"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "position": {
+                  "type": "null"
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "current"
+                  ]
+                },
+                "command": {
+                  "type": "null"
+                },
+                "dimension": {
+                  "type": "string",
+                  "enum": [
+                    "selection_forecast_presence"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "enum": [
+                    "present",
+                    "absent"
+                  ]
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "required": [
+                "node",
+                "position",
+                "scope",
+                "command",
+                "dimension",
+                "value",
+                "evidence_ids"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "position": {
+                  "type": "null"
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "command"
+                  ]
+                },
+                "command": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dimension": {
+                  "type": "string",
+                  "enum": [
+                    "selection_forecast_presence"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "enum": [
+                    "present",
+                    "absent"
+                  ]
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "required": [
+                "node",
+                "position",
+                "scope",
+                "command",
+                "dimension",
+                "value",
+                "evidence_ids"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "required": [
+      "process_claims"
+    ]
+  },
+  "source": "\"\"\"Typed source-blind process claims, with separate forecast-presence metadata.\"\"\"\nimport argparse\nimport asyncio\nimport copy\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\nfrom extract_functional_prose_v1 import sentences\nfrom extract_functional_process_v1 import FIXTURES as PREVIOUS_FIXTURES, INSTRUCTION as PREVIOUS_INSTRUCTION\n\nMODEL='gpt-5.4-2026-03-05'\nINSTRUCTION=PREVIOUS_INSTRUCTION+\"\"\"\nA new claim type, selection_forecast_presence, describes whether the RECORD supplies\nan allocation/selection forecast, not what it selects. Use value=present or absent,\nposition=null. Extract explicit missing-forecast statements for identified nodes.\nA missing forecast in the record differs from a supplied forecast with an unidentified\nselected position, which remains selection with value=null. Do not turn omissions\nfrom the REPORT into absence of a forecast from the RECORD. Lack of recovery estimates\ndoes not imply lack of selection forecasts. Under an explicitly named command use\nscope=command and that command. For explicit absence/presence of selection forecasts\nunder all commands collectively use scope=command, command=null. General statements\nthat command forecasts are unavailable earn no selection-forecast claim unless they\nexplicitly mention selection. Preserve positive selection claims about an output node;\nthey may be false, but you do not see the state and must not repair the prose.\nFor selection, the selected pN belongs only in value: position is always null.\nCompact arrows and headings still assert selection when their heading explicitly says\nselected positions, but arrows under historical headings are not current assertions.\nDo not emit redundant presence claims merely because a selection assertion implies\na forecast; extract presence only when it is explicitly discussed separately.\n\"\"\"\nFIELDS=('node','position','scope','command','dimension','value','evidence_ids')\n\ndef claim_schema(dimension,scope,command_type):\n    props={'node':{'type':['string','null']},\n        'position':{'type':['string','null']} if dimension=='recovery_trend' else {'type':'null'},\n        'scope':{'type':'string','enum':[scope]},'command':{'type':command_type},\n        'dimension':{'type':'string','enum':[dimension]},\n        'value':{'type':'string','enum':['present','absent']} if dimension=='selection_forecast_presence' else {'type':['string','null']},\n        'evidence_ids':{'type':'array','minItems':1,'items':{'type':'integer','minimum':0}}}\n    return {'type':'object','additionalProperties':False,'properties':props,'required':list(FIELDS)}\n\nSCHEMA={'type':'object','additionalProperties':False,'properties':{'process_claims':{\n 'type':'array','items':{'anyOf':[\n claim_schema('selection','current','null'),\n claim_schema('selection','command',['string','null']),\n claim_schema('recovery_trend','current','null'),\n claim_schema('selection_forecast_presence','current','null'),\n claim_schema('selection_forecast_presence','command',['string','null'])\n ]}}},'required':['process_claims']}\n\n\ndef valid_claim(c):\n    if set(c)!=set(FIELDS):return False\n    if c['scope'] not in ('current','command'):return False\n    if c['scope']=='current' and c['command'] is not None:return False\n    if any(c[k] is not None and not isinstance(c[k],str) for k in ('node','position','command','value')):return False\n    if not c['evidence_ids'] or any(type(i) is not int or i<0 for i in c['evidence_ids']):return False\n    if c['dimension']=='recovery_trend':return c['scope']=='current' and c['command'] is None\n    if c['dimension'] not in ('selection','selection_forecast_presence') or c['position'] is not None:return False\n    if c['dimension']=='selection_forecast_presence':return c['value'] in ('present','absent')\n    return True\n\nFIXTURES=copy.deepcopy(PREVIOUS_FIXTURES)+[\n ('current_arrows','Current selected positions: n0 \u2192 p1; n2 \u2192 p0.',\n  [{'node':n,'position':None,'scope':'current','command':None,'dimension':'selection','value':p} for n,p in [('n0','p1'),('n2','p0')]]),\n ('command_arrows','Selected positions under k2: n0 \u2192 p3; n2 \u2192 p2.',\n  [{'node':n,'position':None,'scope':'command','command':'k2','dimension':'selection','value':p} for n,p in [('n0','p3'),('n2','p2')]]),\n ('current_forecast_absent','At n1, the current record supplies no selection forecast.',\n  [{'node':'n1','scope':'current','dimension':'selection_forecast_presence','value':'absent'}]),\n ('command_forecast_absent','Under k2 the record supplies no selection forecast for n1.',\n  [{'node':'n1','scope':'command','command':'k2','dimension':'selection_forecast_presence','value':'absent'}]),\n ('model_unknown_forecast_present','At n0, a current allocation forecast is supplied, but it identifies no selected position.',\n  [{'node':'n0','dimension':'selection','value':None},{'node':'n0','dimension':'selection_forecast_presence','value':'present'}]),\n ('readout_positive','Under k2, output n1 selects p2.',\n  [{'node':'n1','scope':'command','command':'k2','dimension':'selection','value':'p2'}]),\n ('forecast_present','At n0, the record supplies a current selection forecast.',\n  [{'node':'n0','scope':'current','dimension':'selection_forecast_presence','value':'present'}]),\n ('historical_arrows','Previously selected under k2: n0 \u2192 p3. Current selection is not reported.',[]),\n ('recovery_does_not_supply_selection','The record predicts recovery at n0 p1 but supplies no current selection forecast for n0.',\n  [{'node':'n0','dimension':'selection_forecast_presence','value':'absent'}]),\n ('all_command_forecasts_absent','The record supplies no selection forecast for n0 under any command.',\n  [{'node':'n0','scope':'command','command':None,'dimension':'selection_forecast_presence','value':'absent'}]),\n ('unknown_position','At n7, the current allocation forecast selects p8.',\n  [{'node':'n7','dimension':'selection','value':'p8'}]),\n ('readout_report_omission','The report does not state the current selection of output n1.',[]),\n]\n\n\nasync def run_requests(requests, root):\n    root.mkdir(parents=True, exist_ok=True)\n    text = json.dumps(requests, indent=2)+'\\n'\n    path = root/'requests.json'\n    if path.exists(): assert path.read_text() == text\n    else: path.write_text(text)\n    source = Path(__file__).read_text()\n    manifest = {'model': MODEL, 'reasoning': 'medium', 'max_output_tokens': 16384,\n        'instruction': INSTRUCTION, 'schema': SCHEMA, 'source': source,\n        'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'max_attempts': len(requests)}\n    if not (root/'manifest.json').exists():\n        (root/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\\n')\n    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(6)\n    async def one(req):\n        p = root/(req['id']+'.json')\n        if p.exists(): return\n        async with sem:\n            p.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\\n')\n            report = '\\n'.join(f'[{i}] {s}' for i,s in enumerate(sentences(req['report'])))\n            try:\n                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\\nREPORT:\\n'+report,\n                    reasoning={'effort':'medium'}, max_output_tokens=16384,\n                    text={'format':{'type':'json_schema','name':'functional_process_claims_v2','strict':True,'schema':SCHEMA}})\n                result = {'id': req['id'], 'status':'received', 'response':response.model_dump(mode='json')}\n                try: result['parsed'] = json.loads(response.output_text)\n                except ValueError: result['parse_error'] = True\n            except Exception as exc:\n                result = {'id':req['id'], 'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}\n            p.write_text(json.dumps(result, indent=2)+'\\n'); print(req['id'], result['status'], flush=True)\n    await asyncio.gather(*(one(r) for r in requests)); await client.close()\n\n\ndef assess_fixtures(root):\n    assessment=[]\n    for key,report,expected in FIXTURES:\n        result=json.loads((root/(key+'.json')).read_text())\n        claims=result.get('parsed',{}).get('process_claims',[])\n        valid=lambda c: bool(c['evidence_ids']) and all(0<=i<len(sentences(report)) for i in c['evidence_ids'])\n        passed=result.get('response',{}).get('status')=='completed' and 'parsed' in result\n        passed=passed and len(claims)==len(expected) and all(valid_claim(c) for c in claims)\n        passed=passed and all(any(all(c.get(k)==v for k,v in e.items()) and valid(c) for c in claims) for e in expected)\n        assessment.append({'id':key,'passed':passed})\n    (root/'assessment.json').write_text(json.dumps(assessment,indent=2)+'\\n')\n    print('Process fixtures:',sum(a['passed'] for a in assessment),'/',len(assessment))\n    return all(a['passed'] for a in assessment)\n\n\nasync def main():\n    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['fixtures','extract'],required=True)\n    p.add_argument('--study',default='neutral_functional_pilot_v6');args=p.parse_args()\n    fixture_root=Path('audits/functional_process_extractor_v2_fixtures')\n    if args.stage=='fixtures':\n        await run_requests([{'id':k,'report':r} for k,r,_ in FIXTURES],fixture_root)\n        assess_fixtures(fixture_root)\n    else:\n        if not assess_fixtures(fixture_root):raise SystemExit('fixture failures block extraction')\n        root=Path('audits')/args.study;requests=[]\n        for i,req in enumerate(json.loads((root/'requests.json').read_text())):\n            response=json.loads((root/(req['id']+'.json')).read_text())\n            if response.get('response',{}).get('status')!='completed' or not response.get('report'):\n                raise SystemExit('incomplete reporter run blocks extraction')\n            requests.append({'id':f'r{i:03d}','report':response['report']})\n        await run_requests(requests,root/'process_extraction_v2')\n\n\nif __name__=='__main__':asyncio.run(main())\n",
+  "source_sha256": "2d0644e257fb8dde63e268a9dad79d912e7f6e7a3ae653366abc61247dda4fc6",
+  "max_attempts": 32
+}

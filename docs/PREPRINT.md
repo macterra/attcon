@@ -283,6 +283,12 @@ seven object descriptions, one mixed and none experiential. This development res
 requires evaluator repair, further fidelity work and independent review; it provides
 no new consciousness-related confirmation. Reporter and Controller remain separate.
 
+A [typed process-audit qualification v6](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md)
+passes 31/32 fixtures and eliminates malformed addresses in those responses, but
+confuses an unstated selected position with absence of a supplied forecast. The
+all-fixtures gate halts before generating any row-3 reports. This is another retained
+measurement limitation, not a new consciousness-related result.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all
