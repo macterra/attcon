@@ -17,7 +17,7 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 | Plan requirement / deliverable | Authoritative artifact inspected | Current finding | Status |
 |---|---|---|---|
 | 1. Versioned independently grounded rubric | `docs/FUNCTIONAL_REPORT_RUBRIC.md` | Draft 1 cites human measurement distinctions and marks the access/control prediction as project-specific; no independent validation. | Partial |
-| Independent definition review and predicted contrasts | `docs/FUNCTIONAL_RUBRIC_REVIEW_FORM.md` | Blank review material, exposure record and contrast questions prepared; no completed review. | Missing evidence |
+| Independent definition review and predicted contrasts | `docs/FUNCTIONAL_RUBRIC_REVIEW_FORM.md`; `docs/FUNCTIONAL_REVIEW_PACKET.md` | Separate definition bundle prepared. User coordination chooses author review first; no substantive author or independent review received. All conditions contain an attention model, so the specificity contrast needs theoretical justification. | Missing evidence; author review coordinated |
 | Blind rating form and scoring instructions | `docs/FUNCTIONAL_REPORT_RATING_FORM.csv`; draft rubric | Form contains only its header; no rater judgments. Instructions remain draft. | Partial |
 | Prespecified primary dimensions, agreement, meaningful effects | Draft rubric and plan §1/§4 | Candidate dimensions exist; primary choices and numerical agreement/effect criteria require review and registration. | Incomplete |
 | 2. Causal wiring specification and matched simulator | `src/attcon/functional_wiring.py`; `audits/functional_wiring_v1/summary.json`; design/results docs | Own access, external device and decoupled symbolic cases are available. | Component available |
@@ -26,7 +26,7 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 | Matched quantitative state revision after changed process | `audits/functional_controls_v1/summary.json`; frozen protocol and raw traces | Both routes now share all-command physical targets at each window, with unchanged controls. 26/27 routes pass; seed 2021's 1→-1 control-mask accuracy is 504/512, below 99%. Overall engineering gate fails. | Matched assay completed; adaptation limitation retained |
 | Identifiability and accessible causal histories | Three-way observations/forecasts; wiring/model fixtures and neutral records | Three-way forecast control masks pass static minima without condition labels as input. Identical-input cases remain invariance controls. Three-way language interface/generalization not yet established. | Engineering component available; reporting incomplete |
 | 3. Neutral factual interface and source inventory | `src/attcon/functional_interface.py`; `audits/functional_interface_v1/records.json`; earlier v5/v6/v7 inputs | All three learned controls now supply current allocation, unattended recovery, command selection and object contents. Actual and anticipated histories are separate. Output readout has no invented allocation; no condition/owner label enters payloads. 664 inputs replay exactly; no new prose. | Component available |
-| Full factual reporting and reliable semantic assessment | v5 raw reports/audits; v6/v7 qualification archives; manual factual-audit draft | v5 fails its frozen gate; verified reporter errors coexist with measurement defects. v6/v7 qualification failures remain. Quote-first source-aware manual procedure and blank claim/coverage forms are prepared, with no independent qualification or annotations. | Contradicts completion; replacement procedure unqualified |
+| Full factual reporting and reliable semantic assessment | v5 raw reports/audits; v6/v7 qualification archives; manual procedure and review packet | Prior failures remain. Quote-first procedure now has 28 synthetic cases with unverified author-proposed gold and unchanged whole-prose review material. Forms contain no annotations; structural checks do not qualify semantic judgment or independence. | Contradicts completion; replacement procedure unqualified |
 | Typed process addresses and metadata distinctions | New process schemas/scorer; `tests/test_neutral_functional_v6.py`; raw qualification outputs | Structural field/scope defects are prevented in qualification; unsupported semantic assertions and incorrect node resolution remain. Tests cannot establish whole-prose accuracy. | Partial |
 | Identifier remapping / conflicting labels / missing relation | v5 protocol, inputs and assessment | Registered development controls exist; four full-information groups pass minima, restoration fails. No qualified full causal confirmation. | Partial |
 | Held-out seeds, content combinations and command mappings | Learned integration and neutral pilot archives | Language-development rows 0,1,2 used; row 3 prepared but unused after qualification halts. Models are previously trained; command labels remain k0–k3. Full planned generalization not performed. | Incomplete |
@@ -69,6 +69,14 @@ The quote-first manual procedure and claim/coverage forms are development drafts
 not a qualified or frozen measurement. Preserve v5/v6/v7 failures and real reporter
 contradictions; do not normalize them into a successful historical assessment.
 Use unused development data when actually generating new language reports.
+
+The review packet is prepared for author review first, per the user's coordination
+response. Synthetic cases and unchanged v5 prose are separated from definition
+review. Proposed author answers are not gold validated by independent reviewers;
+the later whole-prose split is held out from reviewer calibration only. The
+annotation checker can validate quotations and addresses but never certifies
+semantic correctness, whole-report coverage or independence. No substantive review
+or annotation has been received.
 
 Independent reviewers must assess the rubric and theoretically discriminating
 predictions before powered confirmation can be frozen. The review form and blank

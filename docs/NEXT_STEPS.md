@@ -25,7 +25,14 @@ and blank claim/coverage forms propose a different measurement procedure. Indepe
 qualification is still required before new prose collection. Diagnose adaptation
 without changing the original failure verdict. A blank
 [independent rubric-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now distinguishes
-definition/prediction review from later blind ratings. Independent rubric review is requested and pending.
+definition/prediction review from later blind ratings. The
+[review packet](FUNCTIONAL_REVIEW_PACKET.md) separates definitions, 28 synthetic
+factual cases and unchanged v5 whole-prose material. The user will review it first
+as author review; no substantive comments or annotations have been received.
+Independent rubric review and factual qualification remain pending. Justify the
+proposed functional contrast before confirmation: all current conditions contain
+an attention-control model, so wiring separability alone does not establish the
+source-of-qualia interpretation.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.

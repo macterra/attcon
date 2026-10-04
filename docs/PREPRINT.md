@@ -324,6 +324,16 @@ separates quoted propositions, source-aware judgments and required coverage; it
 remains an unqualified development draft with no human annotations. Independent
 rubric review and theory-facing confirmation are still outstanding.
 
+A [review-materials packet](FUNCTIONAL_REVIEW_PACKET.md) separates rubric-definition
+review, 28 synthetic source-aware factual cases, and all 36 unchanged v5 development
+reports. Proposed synthetic answers remain unverified author expectations. One
+model pair is reserved from reviewer calibration for a later whole-prose check;
+the reports were already inspected by the research team, so this is not fresh
+confirmation. Author review is coordinated but no substantive review or annotation
+has been received. All current functional conditions contain an attention-control
+model: an own/external wiring contrast needs an independently justified theoretical
+prediction, rather than being taken as a direct test of substrate presence.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

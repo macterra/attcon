@@ -55,6 +55,11 @@ Deliverables: versioned rubric, [independent definition-review form](FUNCTIONAL_
 blind rating form, scoring instructions, and
 prespecified mapping from theoretical predictions to each primary contrast.
 
+The [review packet](FUNCTIONAL_REVIEW_PACKET.md) is now prepared for author review
+first, as requested. It separates definition review from factual cases and unchanged
+development prose. That coordination is not a substantive review or independent
+validation; neither has been received.
+
 ## 2. Make the functional distinction identifiable
 
 Construct paired systems with matched objects, tasks, action opportunities, and
@@ -72,6 +77,13 @@ the represented relation while holding the physical process fixed, and change th
 process while initially holding the model fixed. Immediate reports should follow
 the supplied internal state; after new evidence, test whether state and reports
 update appropriately. Do not require a faithful reporter to know unobserved wiring.
+
+All three present fixture conditions contain an attention-control model. Wiring
+changes do not remove that proposed substrate. The own/external contrast tests a
+candidate specificity prediction, whose relevance must be justified in definition
+review; it is not already a derived necessary consequence of the source-of-qualia
+theory. If review finds the contrast nondiscriminating, revise the theory-facing
+protocol before freezing it rather than treating engineering separability as support.
 
 **Identifiability is a design gate.** If all reporter-visible states and histories
 are identical across two functional conditions, no reporter can infer which wiring
@@ -191,6 +203,11 @@ mistaken-model diagnostics. All input/tensor invariants hold; no new prose is
 generated. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
 separates quoted claims, judgments and coverage, with blank forms and no completed
 qualification. That procedure needs independent review before new reporting.
+The new [three-part review packet](FUNCTIONAL_REVIEW_PACKET.md) supplies 28 synthetic
+cases with unverified author-proposed answers and all 36 unchanged v5 reports,
+split by model pair for calibration/later whole-prose review. No human annotations
+have arrived and no earlier verdict is rescored. User coordination chooses author
+review first; independent review remains outstanding.
 The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
