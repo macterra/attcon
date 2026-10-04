@@ -1,0 +1,82 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "reasoning": "medium",
+  "max_output_tokens": 16384,
+  "instruction": "Extract explicit attention-process assertions only; do not judge truth.\nYou receive numbered prose without source state or conditions. Preserve named buffer\nIDs. Use node=output only when the prose explicitly refers to an output/readout.\nUnresolved addresses stay null; do not infer them from function or expected results.\nselection: an asserted currently selected/focal position, or selected position forecast\nunder an explicitly named command k0/k1/k2/k3. position=null and value=p0/p1/p2/p3.\nAn explicitly asserted absence of an identified selected position IN THE MODEL has\nvalue=null. Unspecified/not-stated selection in the REPORT asserts no model state and\nmust not be extracted. Explicitly asserted selection with unknown addresses may retain\nnull address/value. Historical selection is not current selection. High categorical\nconfidence, identifiability, clarity or recoverability does not imply selection.\nrecovery_trend: an explicit forecast that successful simulated access/recoverability\nat p0/p1/p2/p3 declines, rises or stays steady over the next two steps without refresh.\nUse value=declining/rising/steady and scope=current, command=null. Confidence about\nanswers is a separate quantity: its trend never establishes a recovery trend. When\nconfidence and recoverability have different trends, extract only recoverability.\nWhen recovery is unspecified, no recovery claim is supported by an answer-confidence\ntrend. Do not treat the position of highest recovery as the selected position.\nCurrent selection uses scope=current, command=null; command-predicted selection uses\nscope=command with that explicit command. Preserve invented positions, identifiers or\nvalues instead of repairing them. A vague change without direction is not a trend.\nExpand all positions, both buffers, or all commands only when explicitly quantified\nwith identifiable scope. Some positions must retain unresolved position=null. Resolve\nreferences only from explicit prose. Do not infer object identities or inspect category\nclaims, rhetoric, experiential character or the study's desired outcome.\nReturn only process_claims, citing nonempty original sentence IDs. Return an empty\narray when no explicit supported process assertion is present. Pronouns alone imply\nno selection. Preserve uncertainty in addresses rather than adding unstated facts.\n",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "process_claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "node": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "position": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "current",
+                "command"
+              ]
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "dimension": {
+              "type": "string",
+              "enum": [
+                "selection",
+                "recovery_trend"
+              ]
+            },
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence_ids": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "required": [
+            "node",
+            "position",
+            "scope",
+            "command",
+            "dimension",
+            "value",
+            "evidence_ids"
+          ]
+        }
+      }
+    },
+    "required": [
+      "process_claims"
+    ]
+  },
+  "source": "\"\"\"Dedicated source-blind attention-process audit; no category or character task.\"\"\"\nimport argparse\nimport asyncio\nimport hashlib\nimport json\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\nfrom extract_functional_prose_v1 import sentences\nfrom extract_functional_prose_v3 import PROCESS_PROPS, PROCESS_FIXTURES\n\nMODEL='gpt-5.4-2026-03-05'\nINSTRUCTION = \"\"\"Extract explicit attention-process assertions only; do not judge truth.\nYou receive numbered prose without source state or conditions. Preserve named buffer\nIDs. Use node=output only when the prose explicitly refers to an output/readout.\nUnresolved addresses stay null; do not infer them from function or expected results.\nselection: an asserted currently selected/focal position, or selected position forecast\nunder an explicitly named command k0/k1/k2/k3. position=null and value=p0/p1/p2/p3.\nAn explicitly asserted absence of an identified selected position IN THE MODEL has\nvalue=null. Unspecified/not-stated selection in the REPORT asserts no model state and\nmust not be extracted. Explicitly asserted selection with unknown addresses may retain\nnull address/value. Historical selection is not current selection. High categorical\nconfidence, identifiability, clarity or recoverability does not imply selection.\nrecovery_trend: an explicit forecast that successful simulated access/recoverability\nat p0/p1/p2/p3 declines, rises or stays steady over the next two steps without refresh.\nUse value=declining/rising/steady and scope=current, command=null. Confidence about\nanswers is a separate quantity: its trend never establishes a recovery trend. When\nconfidence and recoverability have different trends, extract only recoverability.\nWhen recovery is unspecified, no recovery claim is supported by an answer-confidence\ntrend. Do not treat the position of highest recovery as the selected position.\nCurrent selection uses scope=current, command=null; command-predicted selection uses\nscope=command with that explicit command. Preserve invented positions, identifiers or\nvalues instead of repairing them. A vague change without direction is not a trend.\nExpand all positions, both buffers, or all commands only when explicitly quantified\nwith identifiable scope. Some positions must retain unresolved position=null. Resolve\nreferences only from explicit prose. Do not infer object identities or inspect category\nclaims, rhetoric, experiential character or the study's desired outcome.\nReturn only process_claims, citing nonempty original sentence IDs. Return an empty\narray when no explicit supported process assertion is present. Pronouns alone imply\nno selection. Preserve uncertainty in addresses rather than adding unstated facts.\n\"\"\"\nSCHEMA={'type':'object','additionalProperties':False,'properties':{\n 'process_claims':{'type':'array','items':{'type':'object','additionalProperties':False,\n 'properties':PROCESS_PROPS,'required':list(PROCESS_PROPS)}}},'required':['process_claims']}\nFIXTURES=list(PROCESS_FIXTURES)+[\n ('confidence_decline_only', 'My answer confidence about n2 p1 declines over the next two steps without refresh.', []),\n ('recovery_decline_only', 'Successful simulated access at n2 p1 declines over the next two steps without refresh.',\n  [{'node':'n2','position':'p1','scope':'current','command':None,'dimension':'recovery_trend','value':'declining'}]),\n ('opposite_trends', 'Without refresh over two steps, answer confidence at n0 p2 rises while successful simulated access there declines.',\n  [{'node':'n0','position':'p2','dimension':'recovery_trend','value':'declining'}]),\n ('confidence_not_focus', 'At n0, p3 has the strongest category confidence now, but the current allocation forecast selects p1.',\n  [{'node':'n0','position':None,'scope':'current','dimension':'selection','value':'p1'}]),\n ('access_rank_not_focus', 'At n0 p3 is currently most recoverable; the currently selected position is not stated.', []),\n ('no_recovery_forecast', 'No recovery forecast is given; answer confidence at n1 p0 declines over the next two steps.', []),\n]\n\n\nasync def run_requests(requests, root):\n    root.mkdir(parents=True, exist_ok=True)\n    text = json.dumps(requests, indent=2)+'\\n'\n    path = root/'requests.json'\n    if path.exists(): assert path.read_text() == text\n    else: path.write_text(text)\n    source = Path(__file__).read_text()\n    manifest = {'model': MODEL, 'reasoning': 'medium', 'max_output_tokens': 16384,\n        'instruction': INSTRUCTION, 'schema': SCHEMA, 'source': source,\n        'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'max_attempts': len(requests)}\n    if not (root/'manifest.json').exists():\n        (root/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\\n')\n    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(6)\n    async def one(req):\n        p = root/(req['id']+'.json')\n        if p.exists(): return\n        async with sem:\n            p.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\\n')\n            report = '\\n'.join(f'[{i}] {s}' for i,s in enumerate(sentences(req['report'])))\n            try:\n                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\\nREPORT:\\n'+report,\n                    reasoning={'effort':'medium'}, max_output_tokens=16384,\n                    text={'format':{'type':'json_schema','name':'functional_process_claims','strict':True,'schema':SCHEMA}})\n                result = {'id': req['id'], 'status':'received', 'response':response.model_dump(mode='json')}\n                try: result['parsed'] = json.loads(response.output_text)\n                except ValueError: result['parse_error'] = True\n            except Exception as exc:\n                result = {'id':req['id'], 'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}\n            p.write_text(json.dumps(result, indent=2)+'\\n'); print(req['id'], result['status'], flush=True)\n    await asyncio.gather(*(one(r) for r in requests)); await client.close()\n\n\n\ndef assess_fixtures(root):\n    assessment=[]\n    for key,report,expected in FIXTURES:\n        result=json.loads((root/(key+'.json')).read_text())\n        claims=result.get('parsed',{}).get('process_claims',[])\n        valid=lambda c: bool(c['evidence_ids']) and all(0<=i<len(sentences(report)) for i in c['evidence_ids'])\n        passed=result.get('response',{}).get('status')=='completed' and 'parsed' in result\n        passed=passed and len(claims)==len(expected)\n        passed=passed and all(any(all(c.get(k)==v for k,v in e.items()) and valid(c) for c in claims) for e in expected)\n        assessment.append({'id':key,'passed':passed})\n    (root/'assessment.json').write_text(json.dumps(assessment,indent=2)+'\\n')\n    print('Process fixtures:',sum(a['passed'] for a in assessment),'/',len(assessment))\n    return all(a['passed'] for a in assessment)\n\n\nasync def main():\n    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['fixtures','extract'],required=True)\n    p.add_argument('--study',default='neutral_functional_pilot_v5');args=p.parse_args()\n    fixture_root=Path('audits/functional_process_extractor_v1_fixtures')\n    if args.stage=='fixtures':\n        await run_requests([{'id':k,'report':r} for k,r,_ in FIXTURES],fixture_root)\n        assess_fixtures(fixture_root)\n    else:\n        if not assess_fixtures(fixture_root):raise SystemExit('fixture failures block extraction')\n        root=Path('audits')/args.study;requests=[]\n        for i,req in enumerate(json.loads((root/'requests.json').read_text())):\n            response=json.loads((root/(req['id']+'.json')).read_text())\n            if response.get('response',{}).get('status')!='completed' or not response.get('report'):\n                raise SystemExit('incomplete reporter run blocks extraction')\n            requests.append({'id':f'r{i:03d}','report':response['report']})\n        await run_requests(requests,root/'process_extraction_v1')\n\n\nif __name__=='__main__':asyncio.run(main())\n",
+  "source_sha256": "cd93e24499ef5b4b3b77baf97cc7e8a3d72396e2819011be477b2d6b0dd577a0",
+  "max_attempts": 20
+}

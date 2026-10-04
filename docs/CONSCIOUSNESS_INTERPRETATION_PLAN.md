@@ -171,7 +171,7 @@ pre-data process-claim checks. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PI
 so no v3 reports are generated. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) preserves its reporter inputs
 and requalifies an auditor with explicit missing-information semantics. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails 1/28 fixtures,
 so no v4 reports are generated. The [v5 protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md) now separates process and
-category audits, keeping reporter inputs unchanged. Qualification, reports and
-independent rubric review remain pending;
+category audits, keeping reporter inputs unchanged. Both qualifications pass and all 36 report attempts complete without retries.
+Separate source-blind audits and independent rubric review remain pending;
 none of the six stages is complete in full. The updated preprint retains the September 27 study and incorporates the later
 specificity, self-label and neutral-pilot limitations.

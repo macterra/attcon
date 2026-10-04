@@ -10,8 +10,8 @@ fixtures, so report generation is halted. The [v4 amendment](NEUTRAL_FUNCTIONAL_
 information from an asserted absence of model selection, with unchanged reporter
 inputs. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails one of 28 fixtures
 by conflating confidence with recovery. No v4 reports are generated; the [v5 protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md) now separates category and
-process audits and retains all failed semantic boundaries. Qualification and reports
-are pending. Independent rubric review is requested and pending.
+process audits and retains all failed semantic boundaries. Both qualifications pass (14 categorical and 20 process fixtures). All 36
+report attempts complete without retries; separate source-blind audits are pending. Independent rubric review is requested and pending.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
