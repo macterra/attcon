@@ -42,12 +42,16 @@ The original failure is not rescored, and no new language or character evidence 
 collected. The immediate dependency is substantive author/independent definition
 review and factual-audit qualification using the prepared packet.
 
-The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) also identifies remaining
-independent engineering work: specify and execute a native Controller category
-decision rule and archive its action traces. Current inputs vary confidence and
-thresholded identification but preserve dominant category identity. The interface
-has no category-task action trace. This is a functional-use gap, not a new task-
-necessity requirement or evidence against accurate internal-state reporting.
+The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) identified missing executed
+Controller category decisions. The [new Controller assay](FUNCTIONAL_DECISIONS_RESULTS.md)
+now supplies that component: model-guided acquisition is 99.854–100% when commands
+control the task buffer, versus 23.975–25.781% with random commands, and effect
+swapping changes actual commands/outcomes. Both command and response restoration
+are exact. Physical task-buffer outcomes remain invariant in the other conditions;
+residual model-derived response changes are retained. The confidence/abstention
+rule is engineered, not a phenomenal boundary or a task-necessity requirement.
+Integrate the action traces into a neutral source inventory for subsequent reporting;
+new prose still waits on substantive review and factual-audit qualification.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.

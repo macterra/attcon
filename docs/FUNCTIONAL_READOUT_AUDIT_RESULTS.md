@@ -79,3 +79,11 @@ every retained array, metric and archive digest passed:
 
 The state archive SHA-256 is
 `3a1048b5a7e325fc412bf03c2af2ef8c2f575ea6e007ab00b553879a05002f13`.
+
+## Subsequent implementation
+
+The [explicit Controller decision assay](FUNCTIONAL_DECISIONS_RESULTS.md) now
+executes a declared inspect-then-answer rule, with actual-world feedback and
+separate model-only command/readout interventions. It supplies the missing action
+traces while retaining this audit's category-invariance finding and the engineered
+cutoff limitation. No new language or consciousness-related human ratings exist.

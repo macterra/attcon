@@ -357,10 +357,26 @@ vary across commands; in the neutral external-control and disconnected condition
 modeled identified/null variation affects 3.906–4.248% and 2.344–3.564% of
 position-episodes, respectively, whereas physical variation is zero. Those effects
 reflect forecast differences crossing the cutoff. The newer interface exports
-reporting inputs without executing native category-response actions; an explicit
-decision rule and action trace remain needed for that functional component.
+reporting inputs without executing native category-response actions; at that stage
+an explicit decision rule and action trace were missing for that functional component.
 Earlier bound-content control results remain valid. This limit does not require
 category changes for qualia or make task necessity a project criterion.
+
+The subsequent [explicit Controller assay](FUNCTIONAL_DECISIONS_RESULTS.md) adds
+a deterministic inspect-then-answer rule and retains 73,728 paired task branches
+across the same three models, three conditions, four query positions and four
+policies. When commands control the task buffer, model-guided queried acquisition
+is 99.854–100%, versus 23.975–25.781% with random commands; swapping modeled effect
+channels reduces it to 9.814–19.287%. Restoration reproduces full traces exactly.
+In the external-control and disconnected conditions, task-buffer physical outcomes
+are identical across policies, although model-derived response differences persist.
+A selective represented-recovery attenuation forces abstention while preserving
+dominant categories, and response restoration is exact. This demonstrates the
+new Controller's implemented dependence on modeled effects/recovery, with actual
+observations updating the estimator and no Reporter calls. The bridge/cutoff are
+engineered, raw category decoding remains possible, all conditions retain attention
+models and no new independent consciousness-report evidence is supplied. Seventeen
+relevant tests and exact replay pass; prior scientific/engineering failures remain.
 
 ## 7. Reproducibility
 

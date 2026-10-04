@@ -97,12 +97,20 @@ control, not a test that a reporter is expected to discriminate.
 Deliverables: causal wiring specification, matched simulator, intervention tests,
 and a documented inventory of what evidence each reporting condition exposes.
 
-The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) finds that the current
-bridge preserves dominant category identity and changes confidence/thresholded
-availability. The export contains no executed category-decision trace. Specify
-and execute a Controller decision rule with a declared information boundary before
-claiming that functional component. This adds no phenomenal criterion and does
-not require consciousness for task success.
+The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) finds that the bridge
+preserves dominant category identity and changes confidence/thresholded availability.
+The earlier export contained no executed category-decision trace, motivating an
+explicit Controller decision rule and declared information boundary. This adds no
+phenomenal criterion and does not require consciousness for task success.
+
+The subsequent [explicit Controller assay](FUNCTIONAL_DECISIONS_RESULTS.md) now
+implements that rule and archives executed category-task decisions. Modeled effects
+guide physical acquisition in the own-buffer condition, effect swapping alters
+commands/outcomes, and restoration is exact. External/disconnected task-buffer
+outcomes are physically invariant despite residual model-derived answer changes.
+The bridge/cutoff remain engineered; the new traces supply functional use rather
+than independent consciousness-report characterization. They are not yet integrated
+into new qualified language reporting.
 
 ## 3. Establish a factual reporting interface without supplying the interpretation
 

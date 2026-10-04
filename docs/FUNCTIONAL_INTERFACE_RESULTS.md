@@ -88,8 +88,9 @@ of a phenomenal boundary. Reporter and Controller remain separate.
 The subsequent [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) establishes
 that the bridge changes confidence and thresholded availability while preserving
 dominant category identity across commands. This export does not execute native
-category decisions. An explicit Controller decision rule and action trace remain
-needed to establish that functional component; task necessity is not the goal.
+category decisions. The subsequent [Controller assay](FUNCTIONAL_DECISIONS_RESULTS.md)
+implements an explicit decision rule and retains executed action traces for that
+functional component; it generates no new prose. Task necessity is not the goal.
 
 The next measurement option is the [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md).
 It separates quoted propositions, truth judgments and requested coverage; it is
