@@ -296,6 +296,21 @@ reporting. Repeated instruction amendments have not yet established semantic aud
 reliability. Typed schemas alone do not resolve the problem. A blank independent
 rubric-definition review form is prepared; no completed human review exists.
 
+A [frozen learned three-way engineering study](FUNCTIONAL_CONTROLS_RESULTS.md)
+trains three fresh forecast models with independent automatic schedules and no
+condition labels as inputs. All nine model/condition cases pass their static
+allocation, access, command-effect and control-mask minima. All nine process pairs
+per model compare feedback and no-feedback predictions against the same physical
+next-step target, including unchanged controls; 26/27 routes pass. Seed 2021's
+buffer 1→neither route reaches 504/512 correct control masks (98.4375%), below
+the registered 99% minimum. Its average effect/recovery metrics pass, but the
+overall engineering verdict fails. Every attempt and raw tensor is retained;
+checkpoints, scores and traces replay exactly. This closes the missing learned
+third-condition and unmatched-comparison gaps while exposing an adaptation
+limitation. It generates no language reports and supplies no new consciousness
+confirmation. Faithfully reporting a wrong internal model remains distinct from
+misreporting that model or accurately describing the physical process.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all
@@ -311,3 +326,6 @@ study-specific checks and retained fixture failures are recorded in their own
 protocols and result pages. The functional-model verifier exactly recreates its
 physical and represented tensors and all 24 neutral example records. No combined
 updated test-suite count is claimed here.
+The new three-way study has eleven relevant passing tests and exact checkpoint
+replay of every saved static/revision tensor, common target, metric and gate.
+Its failed engineering verdict remains unchanged by successful verification.

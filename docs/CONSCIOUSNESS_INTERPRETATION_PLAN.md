@@ -179,11 +179,14 @@ addresses and forecast-presence metadata, with prepared inputs from unused row 3
 halts before reporting. The [v7 amendment](NEUTRAL_FUNCTIONAL_PILOT_V7.md) adds
 explicit forecast-supply evidence rules, retaining identical unused row-3 reporter
 inputs, but [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md). No
-v6/v7 reports are generated; row 3 remains unused. A simpler semantic measurement
-design and complete learned three-way/crossed-intervention controls are next
-independent work. A [fixed-budget controls protocol](FUNCTIONAL_CONTROLS_PROTOCOL.md)
-and simulator are prepared for that engineering comparison, with training/evaluation
-pending. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+v6/v7 reports are generated; row 3 remains unused. The
+[fixed-budget three-way controls study](FUNCTIONAL_CONTROLS_RESULTS.md) now completes
+three fresh models: all nine static cases pass and 26/27 matched revision routes
+pass. Seed 2021's buffer 1→neither route fails control-mask accuracy (504/512,
+below 99%); the overall engineering verdict remains fail. Common physical targets
+and unchanged controls address the old unmatched comparison. No language reports
+are collected in this study. A simpler semantic measurement design and diagnosis
+of the retained adaptation failure are next independent work. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
