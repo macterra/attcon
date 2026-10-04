@@ -1,6 +1,6 @@
 # Reporting Bound Contents of an Attention-Control Model
 
-Working preprint, updated 2026-09-27. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
+Working preprint, updated 2026-10-04. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
 and [inspection-model manuscript](INSPECTION_MODEL_PREPRINT.md) remain archived.
 
 ## Abstract
@@ -25,7 +25,12 @@ also occur in 17/24 visual-only controls, so the character label alone is
 nonspecific. The result establishes the registered limited combination of
 model-content fidelity, counterfactual following, and automated report structure
 within this engineered system. It does not establish subjective experience or
-prove the source-of-qualia theory.
+prove the source-of-qualia theory. Subsequent matched-label controls show that the
+original structural features also occur in external-device descriptions. Explicit
+self-access reporting replicates (26/48 versus 3/48 independent-access controls),
+but the same table produces similar dependence descriptions under a camera label
+(41/48 versus 39/48). Self-attribution therefore follows supplied labels in that
+interface. The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
 
@@ -171,6 +176,37 @@ only the binding changed, it identifies the attended left object as a red cross.
 The attention allocation and physical scene remain fixed. The full paired reports
 and every other case are available in the results and viewer.
 
+### 5.1 Subsequent specificity and self-access studies
+
+The [specificity study](SPECIFICITY_RESULTS.md) presents equivalent state structure
+under neutral fields and as an external spotlight/camera. The originally specified
+features persist; mixed character is common in both system and camera descriptions
+(23/24 versus 21/24). The v5 structural success is therefore not specific evidence
+for an attention-control model as the source of qualia.
+
+In the [self-coupled access study](SELF_COUPLED_ACCESS_RESULTS.md), content certainty
+depends on modeled recovery, but inspected reports never state that dependence
+(0/24 in both coupled and matched decoupled conditions). Adding an explicit learned
+own-content-by-command table produces self-coupled descriptions in 7/24 reports
+versus 1/24 in the independent-content control, meeting the frozen threshold in
+the first interpretable run, v3. Earlier uninterpretable runs and extraction
+problems are retained. [Table study](SELF_ACCESS_TABLE_RESULTS.md).
+
+A [larger replication](SELF_LABEL_RESULTS.md) produces self-coupled descriptions in
+26/48 coupled-table reports versus 3/48 independent-table controls (registered
+one-sided paired exact p = 2.8 × 10⁻⁶). However, identical tables labelled as an
+external camera yield similar stated content dependence: 41/48 for self-labelled
+and 39/48 for camera-labelled tables. Self-attribution changes with the label.
+Subjective-access character occurs in 11/48 self-labelled and 0/48 camera-labelled
+reports; that contrast is descriptive, not a registered primary result. Apparent
+report character must therefore be evaluated alongside label and framing controls.
+
+These follow-ups retain accurate state description and demonstrate reporting of
+an explicitly represented dependence. They do not establish that the system's
+functional organization, rather than its verbal description, explains the
+consciousness-related report features. These trials share scenes within conditions;
+the quoted counts are paired reports, not independent samples for every condition.
+
 ## 6. Interpretation and limitations
 
 Selective internal interventions establish which representation the statements
@@ -188,11 +224,30 @@ rubric-dependent and may disagree across models or with human readers. The
 qualitative category breakdown and missing-component controls must accompany any
 positive correspondence claim.
 
+The pretrained reporter is external instrumentation and is distinct from the
+action-selecting Controller. Its full readout access is not a claim about the
+Controller's information access. The related MSTC comparison inquiry remains
+separate: recurrent diagnostics establish causal predictive memory but do not
+identify a comparison medium for corrective Modeler updates. Neither a separate
+reporter nor a control-relevant binding establishes that architecture.
+
 The passing confirmation establishes the limited registered combination of
 model-content fidelity and automatically assessed report structure. Independent
 human review, broader tasks and architectures, alternative interpretations, and
 the source-of-qualia theory remain further research. [Offline reproduction](BOUND_CONTENT_REPRODUCTION.md)
 provides exact source/state replay and access to all retained records.
+
+The [current plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md) addresses the remaining
+interpretive gap with identifiable functional wiring, neutral factual reporting,
+selective model/process interventions, and independent human assessment. A
+[causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md) and
+[learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) are development milestones;
+they provide no new phenomenological confirmation. The
+[neutral prose pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed 36 development
+reports; verified attribute errors leave the new interface's fidelity unestablished.
+It is not a powered confirmation. Independent rubric review and human ratings
+have not been obtained. A learned reporter is one possible method, not a guaranteed
+route to resolving subjective experience.
 
 ## 7. Reproducibility
 
@@ -203,3 +258,9 @@ explicitly stopped audit. Checksums and software versions are recorded in
 are adjacent. The previous numerical and inspection-model verifiers also pass.
 The [reproduction instructions](BOUND_CONTENT_REPRODUCTION.md) rebuild the public
 results and report viewer without API calls.
+
+The 185-test count describes the original reporting-study release. Subsequent
+study-specific checks and retained fixture failures are recorded in their own
+protocols and result pages. The functional-model verifier exactly recreates its
+physical and represented tensors and all 24 neutral example records. No combined
+updated test-suite count is claimed here.

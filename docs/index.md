@@ -19,6 +19,8 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 
 - [Current consciousness-interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md): functional organization versus supplied labels; no new experiment yet.
 - [Latest self-access replication and label control](SELF_LABEL_RESULTS.md) and [current priorities](NEXT_STEPS.md).
+- [Functional wiring development](FUNCTIONAL_WIRING_RESULTS.md), [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md), and [neutral reporting pilot protocol](NEUTRAL_FUNCTIONAL_PILOT_PROTOCOL.md).
+- [Neutral pilot results and retained errors](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) and [all actual outputs](NEUTRAL_FUNCTIONAL_PILOT_REPORTS.md).
 
 - [Results and limitations](BOUND_CONTENT_RESULTS.md), [overview](PROJECT_RESULTS.md), and [preprint](PREPRINT.md).
 - [Inspect all 240 actual reports and represented objects](bound-reports.html).

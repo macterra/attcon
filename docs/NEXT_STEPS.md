@@ -2,6 +2,11 @@
 
 ## Current plan (2026-10-04)
 
+The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
+36 reports. Verified attribute errors leave factual fidelity unestablished; the
+next pilot needs explicit position IDs and named distributions. The full failed
+interface record remains archived. There is no new consciousness confirmation.
+
 Second development milestone: [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md)
 passes all prespecified engineering minima in three paired models. Neutral records
 now contain grounded acquisition histories and fallible internal counterfactuals.
