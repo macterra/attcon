@@ -22,7 +22,7 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 | Prespecified primary dimensions, agreement, meaningful effects | Draft rubric and plan §1/§4 | Candidate dimensions exist; primary choices and numerical agreement/effect criteria require review and registration. | Incomplete |
 | 2. Causal wiring specification and matched simulator | `src/attcon/functional_wiring.py`; `audits/functional_wiring_v1/summary.json`; design/results docs | Own access, external device and decoupled symbolic cases are available. | Component available |
 | Learned matched functional systems across all three controls | `audits/functional_controls_v1/summary.json`; `audits/functional_interface_v1/summary.json` | All nine static forecast cases pass; new visual/neutral integration exports 664 inputs for all three controls and revision contexts. Explicit uncertainty bridge and task-readout boundary remain engineered. | Engineering integration available; report evidence pending |
-| Executed outcomes and model/world interventions | Learned integration source/results/state archive | Model-only effect-channel swap and exact restoration are present; physical outcomes are separate. Process change preserves the prior model until observation. | Partial |
+| Executed outcomes and model/world interventions | Learned integration and `audits/functional_readout_audit_v1/summary.json` | Physical allocation/recovery and model-only swaps/restoration are retained. The new export has no native category-task action trace; its bridge preserves dominant identity while confidence/thresholded availability vary. | Partial |
 | Matched quantitative state revision after changed process | Three-way summary; `audits/control_disconnection_diagnostic_v1/summary.json` | Original 26/27 routes pass and overall gate fails. Post-hoc fixed-model probes correct all eight retained seed-2021 cases with eight contradictory observations; random corrects seven, agreement none. Exact ambiguous continuations and original failed verdict remain. | Matched assay and diagnosis completed; original limitation retained |
 | Identifiability and accessible causal histories | Three-way inputs and fixed-model probe archives | Static masks pass without condition labels. Agreeing probes produce byte-identical observations/model states in disconnected/restored worlds despite different counterfactual truth, establishing an explicit invariance limit. Three-way language/generalization evidence remains incomplete. | Engineering component available; reporting incomplete |
 | 3. Neutral factual interface and source inventory | `src/attcon/functional_interface.py`; `audits/functional_interface_v1/records.json`; earlier v5/v6/v7 inputs | All three learned controls now supply current allocation, unattended recovery, command selection and object contents. Actual and anticipated histories are separate. Output readout has no invented allocation; no condition/owner label enters payloads. 664 inputs replay exactly; no new prose. | Component available |
@@ -35,7 +35,7 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 | Four causal report-feature contrasts in plan §4 | Current functional fixtures/pilots | None is fully established through a qualified powered test plus independent characterization. Mere generic dependence or self-attribution cannot substitute. | Incomplete |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
-| 6. Updated manuscript | `docs/PREPRINT.md` | Includes specificity, self-label, v1–v7 failures, three-way static/revision results, visual/interface export and post-hoc disconnection diagnosis with explicit limits. It does not claim new consciousness confirmation. | Current to latest study |
+| 6. Updated manuscript | `docs/PREPRINT.md` | Includes specificity, self-label, v1–v7 failures, three-way static/revision results, visual/interface export, disconnection diagnosis and readout dependency audit with explicit limits. It does not claim new consciousness confirmation. | Current to latest study |
 | Every attempt, source, raw response, score and milestone publication | Study archives, manifests, verifiers and local/GitHub commit history | Frozen attempts and failures are retained; protocols/results are committed and published at milestones. Archival completeness does not establish scientific completion. | Component available |
 
 ## What passing tests establish
@@ -65,6 +65,12 @@ Substantively review definitions and independently qualify the source-aware manu
 factual-audit procedure before collecting new integrated three-way prose. The
 functional readout boundary is an experimental definition; do not declare it a
 demonstrated phenomenal boundary.
+
+The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) is completed and replayed
+exactly. Further independent engineering can specify and execute a Controller
+category-decision rule with a declared information boundary and action traces.
+The current export establishes confidence/threshold dependence, not executed
+category-task decisions. This is not a new task-necessity requirement.
 
 The quote-first manual procedure and claim/coverage forms are development drafts,
 not a qualified or frozen measurement. Preserve v5/v6/v7 failures and real reporter

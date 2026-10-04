@@ -348,6 +348,20 @@ from the same supplied state. All 36 contexts and all windows replay exactly;
 there are no new reports or consciousness judgments. The examiner uses simulator
 phase, so this is not native Controller performance or a qualified theory contrast.
 
+A separately frozen [post-hoc readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md)
+covers 18 existing buffer-0 contexts without new reports or task trials. The bridge
+`b = q*v + (1-q)/4` preserves category ordering for positive recovery `q`.
+Current and future dominant color/shape match the visual representation in every
+context, including five-decimal rounding. Confidence and thresholded availability
+vary across commands; in the neutral external-control and disconnected conditions,
+modeled identified/null variation affects 3.906–4.248% and 2.344–3.564% of
+position-episodes, respectively, whereas physical variation is zero. Those effects
+reflect forecast differences crossing the cutoff. The newer interface exports
+reporting inputs without executing native category-response actions; an explicit
+decision rule and action trace remain needed for that functional component.
+Earlier bound-content control results remain valid. This limit does not require
+category changes for qualia or make task necessity a project criterion.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

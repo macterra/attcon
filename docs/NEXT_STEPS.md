@@ -42,6 +42,13 @@ The original failure is not rescored, and no new language or character evidence 
 collected. The immediate dependency is substantive author/independent definition
 review and factual-audit qualification using the prepared packet.
 
+The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) also identifies remaining
+independent engineering work: specify and execute a native Controller category
+decision rule and archive its action traces. Current inputs vary confidence and
+thresholded identification but preserve dominant category identity. The interface
+has no category-task action trace. This is a functional-use gap, not a new task-
+necessity requirement or evidence against accurate internal-state reporting.
+
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.
 

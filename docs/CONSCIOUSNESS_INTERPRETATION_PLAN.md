@@ -97,6 +97,13 @@ control, not a test that a reporter is expected to discriminate.
 Deliverables: causal wiring specification, matched simulator, intervention tests,
 and a documented inventory of what evidence each reporting condition exposes.
 
+The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) finds that the current
+bridge preserves dominant category identity and changes confidence/thresholded
+availability. The export contains no executed category-decision trace. Specify
+and execute a Controller decision rule with a declared information boundary before
+claiming that functional component. This adds no phenomenal criterion and does
+not require consciousness for task success.
+
 ## 3. Establish a factual reporting interface without supplying the interpretation
 
 Begin with neutral identifiers and fixed reporting instructions shared across

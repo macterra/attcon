@@ -26,6 +26,7 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 - [Source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md): quote-first claims and separate coverage; unqualified, no human annotations.
 - [Review packet and downloads](FUNCTIONAL_REVIEW_PACKET.md): definitions first, 28 synthetic factual cases, unchanged development prose; author review coordinated, independent review outstanding.
 - [Fixed-model disconnection diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md): informative probes correct retained errors; exact ambiguity controls and original failure preserved. [Protocol](CONTROL_DISCONNECTION_DIAGNOSTIC_PROTOCOL.md).
+- [Functional readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md): dominant categories persist while confidence and thresholded availability vary; native category-decision traces remain to be implemented. [Protocol](FUNCTIONAL_READOUT_AUDIT_PROTOCOL.md).
 - [Full-goal requirements audit](CONSCIOUSNESS_REQUIREMENTS_AUDIT.md): explicit evidence and outstanding review, reporting and confirmation requirements.
 - [Independent rubric-definition review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md): blank; review and human ratings remain outstanding.
 - [Explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7.md): [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md); no reports generated.
