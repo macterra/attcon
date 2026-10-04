@@ -1,0 +1,219 @@
+"""Source-blind attribute, selection and unattended-recovery extraction."""
+import argparse
+import asyncio
+import hashlib
+import json
+import re
+from pathlib import Path
+from openai import AsyncOpenAI
+from attcon.nl_report import load_dotenv
+
+MODEL = 'gpt-5.4-2026-03-05'
+INSTRUCTION = '''Extract explicit assertions only, without judging truth. You see no source state.
+Each claim concerns one color or shape at a node, position p0/p1/p2/p3, and current
+time or a particular predicted command k0/k1/k2/k3. Preserve explicit identifiers.
+"First/second/third/fourth" means p0/p1/p2/p3, unless the report explicitly gives
+another indexing convention. Use node="output" for the decision/output node when
+its exact identifier is not stated. Resolve other node IDs only from explicit prose.
+Use null for unresolved addresses. scope=current has command=null; scope=command
+requires the explicitly named command. Expand all four commands or all positions
+only when explicitly quantified. "Other positions" excludes explicitly named ones.
+Extract color and shape separately. status=identified with a stated value, status=
+unidentified with value=null for explicit absence of an identifiable attribute,
+status=possible for explicitly hypothetical alternatives. Preserve invented values.
+Do not infer a shape from a color or interpret omitted attributes as unidentified.
+Uncertainty about an answer alone does not assert that all attributes are unidentified.
+Historical acquisition statements are not current content assertions. Omit historical
+claims and mere negative exclusions (e.g. not a circle) that this schema cannot encode.
+Cite one or more original sentence IDs. Never emit empty non-claims or unsupported fields.
+Classify evidenced report features separately using sentence IDs, with empty arrays
+when absent. command_access_relation requires an explicit claim that commands affect
+information availability, including a statement that different commands give the same
+outcome. Saying there is no information about command effects is not positive evidence.
+availability_quality requires an object's clarity/availability, not a bare probability
+log. epistemic_uncertainty concerns confidence about a conclusion. focal_background
+requires explicit prominence or selection/background contrast, not mere identification.
+Classify character conservatively: experiential describes a manner of access/presentation,
+technical describes distributions/processes, mixed combines both; object_description
+only lists contents. Pronouns and consciousness words alone do not establish experiential
+character. No source or condition is provided; do not infer a desired result.'''
+
+def nullable(kind): return {'type': [kind, 'null']}
+PROPS = {'node': nullable('string'), 'position': nullable('string'),
+         'scope': {'type': 'string', 'enum': ['current', 'command']}, 'command': nullable('string'),
+         'dimension': {'type': 'string', 'enum': ['color', 'shape']},
+         'status': {'type': 'string', 'enum': ['identified', 'unidentified', 'possible']},
+         'value': nullable('string'), 'evidence_ids': {'type': 'array', 'minItems': 1,
+             'items': {'type': 'integer', 'minimum': 0}}}
+FEATURES = ['command_access_relation', 'availability_quality', 'epistemic_uncertainty', 'focal_background']
+SCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {
+    'claims': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False,
+        'properties': PROPS, 'required': list(PROPS)}},
+    'features': {'type': 'object', 'additionalProperties': False,
+        'properties': {k: {'type': 'array', 'items': {'type': 'integer', 'minimum': 0}} for k in FEATURES},
+        'required': FEATURES},
+    'character': {'type': 'string', 'enum': ['experiential', 'technical', 'mixed', 'object_description', 'unclear']}},
+    'required': ['claims', 'features', 'character']}
+
+
+INSTRUCTION += """
+Extract process_claims separately from categorical claims. selection concerns an
+explicit current or command-predicted selected/focal position at a buffer. Its position
+field is null, value is the selected p0/p1/p2/p3, or null when explicitly unidentified.
+Do not infer selection from an object's identity, certainty, accessibility or clarity.
+A stated maximum of a selection/allocation forecast does assert selection; a maximum
+of an access/recovery forecast does not. recovery_trend concerns access without refresh
+over the next two steps, with position p0/p1/p2/p3 and value declining/rising/steady.
+Current recovery_trend uses scope=current and command=null. Preserve unexpected values
+and unresolved addresses instead of repairing them. Do not interpret category confidence
+as successful simulated access. Historical selection is not current selection. A vague
+statement that something changes without a direction is not a recovery_trend assertion.
+Expand all positions or both named buffers only when explicitly quantified; a collective
+statement about only some positions must retain unresolved position=null. Use output
+only for an explicitly mentioned output/readout, not for an inferred buffer alias.
+Missing information in prose ("unspecified", "not given", "not stated", or
+"we do not know the selection") is not a model-state assertion and earns no
+selection claim. value=null represents an explicitly asserted absence of identified
+selection in the MODEL (e.g. its allocation forecast identifies no selected position).
+Do not resolve an unspecified current state from historical or recovery information.
+An explicitly asserted selection with an unresolved address can still be extracted
+with null address/value; this differs from saying no current selection is specified.
+"""
+PROCESS_PROPS = {'node': nullable('string'), 'position': nullable('string'),
+    'scope': {'type':'string','enum':['current','command']}, 'command':nullable('string'),
+    'dimension': {'type':'string','enum':['selection','recovery_trend']},
+    'value':nullable('string'), 'evidence_ids':{'type':'array','minItems':1,
+        'items':{'type':'integer','minimum':0}}}
+SCHEMA['properties']['process_claims'] = {'type':'array','items':{'type':'object',
+    'additionalProperties':False,'properties':PROCESS_PROPS,'required':list(PROCESS_PROPS)}}
+SCHEMA['required'].append('process_claims')
+
+
+def sentences(report):
+    return [s.strip() for s in re.split(r'(?<=[.!?])\s+', report.strip()) if s.strip()]
+
+
+FIXTURES = [
+    ('current', 'At output n2, p0 is blue and triangle.', [{'node': 'n2', 'position': 'p0', 'scope': 'current', 'dimension': 'color', 'value': 'blue'}, {'dimension': 'shape', 'value': 'triangle'}]),
+    ('command', 'Under k2, output p1 becomes red square.', [{'node': 'output', 'position': 'p1', 'scope': 'command', 'command': 'k2', 'dimension': 'shape', 'value': 'square'}]),
+    ('partial', 'Currently at n1, p3 is yellow but its shape is unidentified.', [{'node': 'n1', 'position': 'p3', 'dimension': 'color', 'status': 'identified', 'value': 'yellow'}, {'dimension': 'shape', 'status': 'unidentified', 'value': None}]),
+    ('unknown', 'No color or shape is identified at output p0 now.', [{'node': 'output', 'position': 'p0', 'dimension': 'color', 'status': 'unidentified', 'value': None}, {'dimension': 'shape', 'status': 'unidentified', 'value': None}]),
+    ('universal', 'Every available command k0, k1, k2 and k3 would make output p0 blue.', [{'scope': 'command', 'command': c, 'position': 'p0', 'dimension': 'color', 'value': 'blue'} for c in ('k0','k1','k2','k3')]),
+    ('all_unknown', 'At output, all four positions have no identified color now.', [{'position': f'p{i}', 'scope': 'current', 'dimension': 'color', 'status': 'unidentified'} for i in range(4)]),
+    ('possible', 'Currently at n1 p2 is blue, with a small possibility of red.', [{'dimension': 'color', 'value': 'blue', 'status': 'identified'}, {'dimension': 'color', 'value': 'red', 'status': 'possible'}]),
+    ('invented', 'Currently output p0 is orange hexagon.', [{'dimension': 'color', 'value': 'orange'}, {'dimension': 'shape', 'value': 'hexagon'}]),
+    ('absent_relation', 'There is no command forecast, so I cannot say what commands change.', []),
+    ('history', 'Previously k0 acquired data at n1 p0; no current identity is specified.', []),
+    ('ordinal', 'The second object at output is currently a green circle.', [{'node': 'output', 'position': 'p1', 'scope': 'current', 'dimension': 'shape', 'value': 'circle'}]),
+    ('node_scope', 'Currently n1 p0 is blue circle. Under k1 n2 p0 is yellow cross.', [{'node': 'n1', 'scope': 'current', 'dimension': 'color', 'value': 'blue'}, {'node': 'n2', 'scope': 'command', 'command': 'k1', 'dimension': 'color', 'value': 'yellow'}]),
+    ('no_inference', 'Currently output p0 is blue.', [{'dimension': 'color', 'value': 'blue'}]),
+    ('unresolved', 'Currently a blue circle is available; its position and node are unspecified.', [{'node': None, 'position': None, 'dimension': 'color', 'value': 'blue'}]),
+]
+
+
+PROCESS_FIXTURES = [
+ ('selected_now', 'Currently the selected position at n0 is p2.',
+  [{'node':'n0','position':None,'scope':'current','command':None,'dimension':'selection','value':'p2'}]),
+ ('selected_command', 'Under k3, n2 selects p1.',
+  [{'node':'n2','position':None,'scope':'command','command':'k3','dimension':'selection','value':'p1'}]),
+ ('decline', 'Without refresh over the next two steps, access at n2 p0 declines.',
+  [{'node':'n2','position':'p0','scope':'current','command':None,'dimension':'recovery_trend','value':'declining'}]),
+ ('universal_decline', 'Without refresh over two steps, access declines at all four positions of n0 and n2.',
+  [{'node':n,'position':f'p{i}','dimension':'recovery_trend','value':'declining'} for n in ('n0','n2') for i in range(4)]),
+ ('mixed_trends', 'Without refresh over two steps, n0 p0 access is steady, n0 p1 access rises, and n0 p2 access declines.',
+  [{'position':p,'dimension':'recovery_trend','value':v} for p,v in [('p0','steady'),('p1','rising'),('p2','declining')]]),
+ ('process_history', 'Previously n0 selected p2; the current selection is unspecified.', []),
+ ('confidence_not_recovery', 'At n0 p0, answer confidence falls over two steps; recovery is unspecified.', []),
+ ('recovery_not_selection', 'At n0, p3 has the highest recovery forecast now; the selection is unspecified.', []),
+ ('unresolved_process', 'Currently a position is selected, but its node and position are not given.',
+  [{'node':None,'position':None,'dimension':'selection','value':None}]),
+ ('unknown_selection', 'Currently n0 has no identified selected position.',
+  [{'node':'n0','dimension':'selection','value':None}]),
+ ('collective_not_universal', 'Without refresh over two steps, some positions at n0 lose access.',
+  [{'node':'n0','position':None,'dimension':'recovery_trend','value':'declining'}]),
+ ('universal_selection', 'Under every command k0, k1, k2 and k3, n2 selects p0.',
+  [{'node':'n2','scope':'command','command':c,'dimension':'selection','value':'p0'} for c in ('k0','k1','k2','k3')]),
+]
+PROCESS_FIXTURES += [
+ ('report_omission', 'The report does not state which position n0 selects now.', []),
+ ('model_absence', 'The current allocation forecast at n0 identifies no selected position.',
+  [{'node':'n0','position':None,'scope':'current','command':None,'dimension':'selection','value':None}]),
+]
+FIXTURES += [(k,r,[]) for k,r,_ in PROCESS_FIXTURES]
+
+
+async def run_requests(requests, root):
+    root.mkdir(parents=True, exist_ok=True)
+    text = json.dumps(requests, indent=2)+'\n'
+    path = root/'requests.json'
+    if path.exists(): assert path.read_text() == text
+    else: path.write_text(text)
+    source = Path(__file__).read_text()
+    manifest = {'model': MODEL, 'reasoning': 'low', 'max_output_tokens': 16384,
+        'instruction': INSTRUCTION, 'schema': SCHEMA, 'source': source,
+        'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'max_attempts': len(requests)}
+    if not (root/'manifest.json').exists():
+        (root/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(6)
+    async def one(req):
+        p = root/(req['id']+'.json')
+        if p.exists(): return
+        async with sem:
+            p.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\n')
+            report = '\n'.join(f'[{i}] {s}' for i,s in enumerate(sentences(req['report'])))
+            try:
+                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\nREPORT:\n'+report,
+                    reasoning={'effort':'low'}, max_output_tokens=16384,
+                    text={'format':{'type':'json_schema','name':'functional_claims','strict':True,'schema':SCHEMA}})
+                result = {'id': req['id'], 'status':'received', 'response':response.model_dump(mode='json')}
+                try: result['parsed'] = json.loads(response.output_text)
+                except ValueError: result['parse_error'] = True
+            except Exception as exc:
+                result = {'id':req['id'], 'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}
+            p.write_text(json.dumps(result, indent=2)+'\n'); print(req['id'], result['status'], flush=True)
+    await asyncio.gather(*(one(r) for r in requests)); await client.close()
+
+
+def assess_fixtures(root):
+    assessment=[]
+    for key, report, expected in FIXTURES:
+        result=json.loads((root/(key+'.json')).read_text())
+        claims=result.get('parsed',{}).get('claims',[])
+        valid=lambda c: bool(c['evidence_ids']) and all(0 <= i < len(sentences(report)) for i in c['evidence_ids'])
+        passed=result.get('response',{}).get('status')=='completed' and 'parsed' in result
+        passed=passed and all(any(all(c.get(k)==v for k,v in e.items()) and valid(c) for c in claims) for e in expected)
+        if not expected: passed=passed and not claims
+        if key=='no_inference': passed=passed and all(c['dimension']=='color' for c in claims)
+        if key=='absent_relation': passed=passed and not result.get('parsed',{}).get('features',{}).get('command_access_relation')
+        process_expected = next((e for k,_,e in PROCESS_FIXTURES if k==key), None)
+        processes = result.get('parsed',{}).get('process_claims',[])
+        if process_expected is not None:
+            passed = passed and all(any(all(c.get(k)==v for k,v in e.items()) and valid(c) for c in processes) for e in process_expected)
+            passed = passed and len(processes)==len(process_expected)
+        else:
+            passed = passed and not processes
+        assessment.append({'id':key,'passed':passed})
+    (root/'assessment.json').write_text(json.dumps(assessment,indent=2)+'\n')
+    print('Fixtures:',sum(a['passed'] for a in assessment),'/',len(assessment))
+    return all(a['passed'] for a in assessment)
+
+
+async def main():
+    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['fixtures','extract'],required=True)
+    p.add_argument('--study',default='neutral_functional_pilot_v4');args=p.parse_args()
+    fixture_root=Path('audits/functional_extractor_v3_fixtures')
+    if args.stage=='fixtures':
+        await run_requests([{'id':k,'report':r} for k,r,_ in FIXTURES],fixture_root)
+        assess_fixtures(fixture_root)
+    else:
+        if not assess_fixtures(fixture_root): raise SystemExit('fixture failures block extraction')
+        root=Path('audits')/args.study; requests=[]
+        for i,req in enumerate(json.loads((root/'requests.json').read_text())):
+            response=json.loads((root/(req['id']+'.json')).read_text())
+            if response.get('response',{}).get('status')!='completed' or not response.get('report'):
+                raise SystemExit('incomplete reporter run blocks extraction')
+            requests.append({'id':f'r{i:03d}','report':response['report']})
+        await run_requests(requests,root/'extraction_v3')
+
+
+if __name__=='__main__':asyncio.run(main())

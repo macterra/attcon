@@ -6,8 +6,9 @@ The [named neutral pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) has 100% ch
 attribute accuracy in all primary presentation groups, but fails coverage minima;
 its model intervention also reveals an unsupported buffer generalization. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now restores current allocation,
 unattended recovery and command-selection forecasts. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails two of 26
-fixtures, so report generation is halted. The next version must distinguish missing
-prose information from an asserted absence of model selection. Independent rubric review is requested and pending.
+fixtures, so report generation is halted. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) distinguishes missing prose
+information from an asserted absence of model selection, with unchanged reporter
+inputs. Auditor qualification and reporting are pending. Independent rubric review is requested and pending.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
