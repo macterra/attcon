@@ -181,7 +181,9 @@ explicit forecast-supply evidence rules, retaining identical unused row-3 report
 inputs, but [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md). No
 v6/v7 reports are generated; row 3 remains unused. A simpler semantic measurement
 design and complete learned three-way/crossed-intervention controls are next
-independent work. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+independent work. A [fixed-budget controls protocol](FUNCTIONAL_CONTROLS_PROTOCOL.md)
+and simulator are prepared for that engineering comparison, with training/evaluation
+pending. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.

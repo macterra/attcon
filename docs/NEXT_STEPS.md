@@ -11,7 +11,10 @@ Typed schemas remove the old malformed-address defect in qualification, but
 [v6](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md) fails 1/32 semantic fixtures and
 [v7](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md) fails 3/36. Both halt before reporting;
 row 3 remains unused. Next assess a simpler measurement design and complete the
-learned three-way/crossed-intervention engineering controls. A blank
+learned three-way/crossed-intervention engineering controls. The new
+[fixed-budget protocol](FUNCTIONAL_CONTROLS_PROTOCOL.md) includes independent
+automatic schedules, all nine process pairs and common next-step targets; training
+and evaluation are pending. A blank
 [independent rubric-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now distinguishes
 definition/prediction review from later blind ratings. Independent rubric review is requested and pending.
 
