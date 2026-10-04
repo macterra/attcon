@@ -169,8 +169,8 @@ halt at auditor qualification without reports. The
 allocation, unattended recovery and command selection; its qualifications pass and
 36 reports plus 72 audits complete. Restoration fails the frozen factual gate,
 principally from malformed extracted selection addresses, with separate verified
-reporter contradictions and predominantly technical character. Before another
-reporting test, enforce process-address schemas and missing-field semantics and
-use unused development data. Independent rubric review and human ratings remain
+reporter contradictions and predominantly technical character. The [v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md) now enforces typed process
+addresses and forecast-presence metadata, with prepared inputs from unused row 3.
+Qualification and reports remain pending. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
