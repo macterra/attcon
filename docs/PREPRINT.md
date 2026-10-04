@@ -378,6 +378,18 @@ engineered, raw category decoding remains possible, all conditions retain attent
 models and no new independent consciousness-report evidence is supplied. Seventeen
 relevant tests and exact replay pass; prior scientific/engineering failures remain.
 
+A [neutral task-input export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) subsequently
+connects retained Controller decisions to 5,184 reporter-input views and a frozen
+[source inventory](FUNCTIONAL_TASK_SOURCE_INVENTORY.md). Queries, pending commands,
+executed commands and emitted answers/abstentions are distinct from modeled
+predictions and actual observation history. Physical truth and condition/policy
+labels remain in evaluator archives/envelopes, outside payloads. Twenty relevant
+tests and byte-exact replay pass, including remapping of task addresses and exact
+restoration. This completes source integration without generating prose or
+qualifying semantic auditing. The new task vocabulary, independently justified
+report features, factual-audit qualification and powered confirmation remain
+review/measurement dependencies; all conditions still contain attention models.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

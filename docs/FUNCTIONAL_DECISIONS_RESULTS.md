@@ -96,6 +96,11 @@ Substantive author/independent definition review and factual-audit qualification
 remain pending, followed by fresh reporting, powered confirmation and replication.
 The prepared review packet and unspent language-development row are unchanged.
 
+The subsequent [task-input export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) now
+connects these retained traces to 5,184 neutral reporting inputs and a frozen
+source inventory. It distinguishes actual history, model forecasts and emitted
+actions, with no new reports or task trials. Semantic qualification remains pending.
+
 ## Verification and archive
 
 Seventeen relevant unit tests pass, including checks that execution uses actual

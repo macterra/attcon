@@ -50,8 +50,13 @@ swapping changes actual commands/outcomes. Both command and response restoration
 are exact. Physical task-buffer outcomes remain invariant in the other conditions;
 residual model-derived response changes are retained. The confidence/abstention
 rule is engineered, not a phenomenal boundary or a task-necessity requirement.
-Integrate the action traces into a neutral source inventory for subsequent reporting;
-new prose still waits on substantive review and factual-audit qualification.
+The [executed-task input export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) now connects
+the action traces to 5,184 neutral views and a frozen
+[source inventory](FUNCTIONAL_TASK_SOURCE_INVENTORY.md), including pending/answered/
+abstained responses and reversible task-address remapping. Twenty relevant tests
+and byte-exact replay pass. This closes source integration, not semantic reporting
+qualification. New prose still waits on substantive review and factual-audit
+qualification, including review of the new task vocabulary.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.

@@ -28,7 +28,15 @@ relabelling the identical table as an outside camera's produced the same stated
 dependence attributed to the camera: with a pretrained reporter, self-attribution
 follows the representation's label.
 
-- [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
+Later neutral reporting pilots retain factual-audit failures. The latest
+[Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed
+functional use of modeled effects/recovery, and its
+[neutral task inputs](docs/FUNCTIONAL_TASK_INTERFACE_RESULTS.md) connect observed
+history, modeled forecasts and emitted actions. No new prose or human judgments
+are added. Substantive author/independent review and factual-audit qualification
+remain pending; the source-of-qualia objective is unachieved.
+
+- [Object-content confirmation](docs/BOUND_CONTENT_RESULTS.md) and [updated preprint](docs/PREPRINT.md).
 - [Updated research plan](docs/CONSCIOUSNESS_INTERPRETATION_PLAN.md): test whether report features follow functional organization beyond supplied labels; the reporter remains external instrumentation.
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).
 - [Design](docs/BOUND_CONTENT_DESIGN.md), [completed plan](docs/BOUND_CONTENT_PLAN.md), and [successful confirmation protocol](docs/BOUND_PROSE_CONFIRMATION_V5.md).

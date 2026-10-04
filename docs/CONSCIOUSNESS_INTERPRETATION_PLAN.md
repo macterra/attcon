@@ -112,6 +112,14 @@ The bridge/cutoff remain engineered; the new traces supply functional use rather
 than independent consciousness-report characterization. They are not yet integrated
 into new qualified language reporting.
 
+The [executed-task input export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) now connects
+these traces to 5,184 neutral source records and a frozen
+[field inventory](FUNCTIONAL_TASK_SOURCE_INVENTORY.md). Current predictions, actual
+histories, pending commands and emitted answers/abstentions remain distinct; remapping
+and restoration replay exactly. This completes that source-integration component,
+with no new language reports or semantic-auditor qualification. Review the task
+vocabulary as part of factual-audit qualification before new prose collection.
+
 ## 3. Establish a factual reporting interface without supplying the interpretation
 
 Begin with neutral identifiers and fixed reporting instructions shared across
