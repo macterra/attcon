@@ -50,3 +50,14 @@ independently reviewed rubric, powered fresh-state contrasts, model/process sele
 interventions, and human characterization required by the current plan. In particular,
 this study's output distributions and acquisition histories supply ordinary causal
 evidence. The reporter remains external to the action-selecting Controller.
+
+## Renderer amendment before any API request
+
+The initial freeze was committed before a rendering-test failure was inspected.
+That test reused the same node object in two source sections; in-place conversion
+attempted to consume its array twice. Production JSON inputs contain independent
+objects, but the renderer was corrected to return new node objects for each section.
+The failing test is retained. All rendering/scoring tests must pass, and all 36
+previously prepared requests must reproduce byte-identical inputs, before generation.
+The initial source snapshot and manifest remain untouched; a separate amendment
+records corrected source hashes. No reporter or auditor API calls preceded the fix.

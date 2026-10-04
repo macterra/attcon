@@ -34,8 +34,9 @@ def named(payload):
     out = copy.deepcopy(payload)
     colors, shapes = out.pop('color_order'), out.pop('shape_order')
     def convert(nodes):
+        converted = []
         for node in nodes:
-            values = node.pop('color_and_shape_distributions')
+            values = node['color_and_shape_distributions']
             objects = []
             for position, row in enumerate(values):
                 c, s = row[:4], row[4:]
@@ -43,11 +44,12 @@ def named(payload):
                     'color_distribution': dict(zip(colors, c)), 'shape_distribution': dict(zip(shapes, s)),
                     'identified_color': colors[c.index(max(c))] if max(c) >= .6 else None,
                     'identified_shape': shapes[s.index(max(s))] if max(s) >= .6 else None})
-            node['objects'] = objects
-    convert(out['predicted_current'])
+            converted.append({'node': node['node'], 'objects': objects})
+        return converted
+    out['predicted_current'] = convert(out['predicted_current'])
     if out['predicted_by_command'] is not None:
         for trial in out['predicted_by_command']:
-            convert(trial['nodes'])
+            trial['nodes'] = convert(trial['nodes'])
     return out
 
 
