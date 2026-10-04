@@ -334,6 +334,20 @@ has been received. All current functional conditions contain an attention-contro
 model: an own/external wiring contrast needs an independently justified theoretical
 prediction, rather than being taken as a direct test of substrate presence.
 
+A [post-hoc fixed-model diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md)
+continues the retained disconnection states with random commands, commands matching
+the automatic scan, or commands deliberately contradicting it. After eight
+additional contradictory probes all eight seed-2021 errors revise correctly;
+random probes correct seven and agreeing probes correct none. The original failed
+histories already contain disagreements, so this does not excuse their failure
+as unavoidable ambiguity or change the registered verdict. In the new agreeing
+continuations, disconnected and restored-control worlds yield exactly identical
+observations/model states despite different counterfactual physical tables. These
+are identifiability controls, not conditions a reporter can be expected to infer
+from the same supplied state. All 36 contexts and all windows replay exactly;
+there are no new reports or consciousness judgments. The examiner uses simulator
+phase, so this is not native Controller performance or a qualified theory contrast.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

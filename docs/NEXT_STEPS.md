@@ -22,8 +22,8 @@ cover all three conditions, interventions/restoration, both revision contexts an
 targeted retained failures. Fourteen relevant tests and exact input/tensor replay
 pass. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
 and blank claim/coverage forms propose a different measurement procedure. Independent
-qualification is still required before new prose collection. Diagnose adaptation
-without changing the original failure verdict. A blank
+qualification is still required before new prose collection. The completed
+adaptation diagnostic below preserves the original failure verdict. A blank
 [independent rubric-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now distinguishes
 definition/prediction review from later blind ratings. The
 [review packet](FUNCTIONAL_REVIEW_PACKET.md) separates definitions, 28 synthetic
@@ -33,6 +33,14 @@ Independent rubric review and factual qualification remain pending. Justify the
 proposed functional contrast before confirmation: all current conditions contain
 an attention-control model, so wiring separability alone does not establish the
 source-of-qualia interpretation.
+
+The [retained-error diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md) is now
+completed with unchanged checkpoints and exact replay: after eight additional
+contradictory probes, all eight failed seed-2021 cases revise correctly (random:
+7/8; agreement: 0/8). Identical-input continuation worlds are exactly invariant.
+The original failure is not rescored, and no new language or character evidence is
+collected. The immediate dependency is substantive author/independent definition
+review and factual-audit qualification using the prepared packet.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.

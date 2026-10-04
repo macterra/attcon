@@ -212,3 +212,11 @@ The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
+
+The [fixed-model disconnection diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md)
+now completes the retained-error investigation: eight contradictory probes correct
+all eight failed seed-2021 cases, versus seven with random commands and none with
+agreement commands. Original histories already contain disagreements; the original
+failure remains. Exactly identical-input continuation worlds demonstrate the
+separate identifiability limit. No new reporting occurs. Further theory-facing
+collection waits on substantive definition review and factual-audit qualification.

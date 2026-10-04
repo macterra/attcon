@@ -68,8 +68,9 @@ export describes the error; its mechanism is not established.
 
 No extra updates, replacement seeds, best-checkpoint selection, changed thresholds
 or retries are used. Original records, verdicts and tensor archives are unchanged.
-A future assay may diagnose this adaptation limitation under a new protocol, but
-cannot retroactively turn this one into a passing experiment.
+The [subsequent fixed-model diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md)
+now tests additional informative probes under a new post-hoc protocol. It cannot
+retroactively turn this one into a passing experiment.
 
 ## What this contributes to the goal
 
