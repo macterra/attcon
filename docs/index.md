@@ -17,6 +17,9 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 
 ## Completed object-linked reporting study
 
+- [Current consciousness-interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md): functional organization versus supplied labels; no new experiment yet.
+- [Latest self-access replication and label control](SELF_LABEL_RESULTS.md) and [current priorities](NEXT_STEPS.md).
+
 - [Results and limitations](BOUND_CONTENT_RESULTS.md), [overview](PROJECT_RESULTS.md), and [preprint](PREPRINT.md).
 - [Inspect all 240 actual reports and represented objects](bound-reports.html).
 - [What the model contains](BOUND_CONTENT_DESIGN.md) and [offline reproduction](BOUND_CONTENT_REPRODUCTION.md).

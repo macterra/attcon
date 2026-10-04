@@ -1,6 +1,19 @@
 # Current outcome and further research
 
-## Priorities toward the goal (2026-10-03)
+## Current plan (2026-10-04)
+
+First development milestone: [causal-wiring validation](FUNCTIONAL_WIRING_RESULTS.md)
+and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). No new language
+reports or theory confirmation have been generated.
+
+The [updated consciousness-interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md)
+tests whether independently assessed report features follow functional organization
+rather than supplied labels. It specifies matched own-access/external-device systems,
+an identifiable neutral reporting interface, selective interventions, blind human
+assessment, and a future frozen confirmation. It is a design plan, not a completed
+experiment. The reporter remains external instrumentation, separate from the Controller.
+
+## Evidence motivating the plan (through 2026-10-03)
 
 The goal's second leg (independently specified consciousness-report structure) is
 not established. The [specificity test](SPECIFICITY_RESULTS.md) did **not** support
@@ -37,14 +50,11 @@ specific to a model of the system's *own* access, rather than to a representatio
 labelled that way, cannot be decided with a pretrained reporter that reads labelled
 state. This paradigm has reached its limit on that question.
 
-Remaining directions:
-
-1. **A native reporter.** Train a reporter on the system's own state without
-   phenomenological targets or attention/self labels, then repeat the self-versus-
-   external comparison. This is the only route found that could separate self-models
-   from self-labels. It is a new research program.
-2. **Independent human assessment** of the bound, self-access, and control reports.
-3. **Generalization** to another task or architecture.
+The next step is to specify the independent rubric and a comparison in which
+functional wiring is identifiable from neutrally encoded evidence. A native learned
+reporter is one candidate method, not the only route or a guaranteed solution.
+Independent human assessment and generalization are explicit stages of the updated
+plan. Existing experimental verdicts remain unchanged.
 
 ## Side investigation: MSTC comparison (not on the main line)
 

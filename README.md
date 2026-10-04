@@ -29,6 +29,7 @@ dependence attributed to the camera: with a pretrained reporter, self-attributio
 follows the representation's label.
 
 - [Current results](docs/BOUND_CONTENT_RESULTS.md) and [preprint](docs/PREPRINT.md).
+- [Updated research plan](docs/CONSCIOUSNESS_INTERPRETATION_PLAN.md): test whether report features follow functional organization beyond supplied labels; the reporter remains external instrumentation.
 - [Inspect all 240 reports and model states](https://macterra.org/attcon/bound-reports.html).
 - [Design](docs/BOUND_CONTENT_DESIGN.md), [completed plan](docs/BOUND_CONTENT_PLAN.md), and [successful confirmation protocol](docs/BOUND_PROSE_CONFIRMATION_V5.md).
 - [Reproduce offline](docs/BOUND_CONTENT_REPRODUCTION.md): exact state replay, complete API records, retained failures, and 185 passing tests.
