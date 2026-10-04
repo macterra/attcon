@@ -19,14 +19,15 @@ Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 h
 at auditor qualification without generating reports. All failures remain archived.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
-36 reports. Verified attribute errors leave factual fidelity unestablished; the
-next pilot needs explicit position IDs and named distributions. The full failed
+36 reports. Verified attribute errors left its factual fidelity unestablished. Explicit
+position IDs and named distributions were introduced in the later pilots above. The full failed
 interface record remains archived. There is no new consciousness confirmation.
 
 Second development milestone: [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md)
 passes all prespecified engineering minima in three paired models. Neutral records
 now contain grounded acquisition histories and fallible internal counterfactuals.
-The next step is a neutral factual-reporting pilot and identifier/label controls.
+That milestone supplied inputs for the subsequent neutral pilots and
+identifier/label controls; their retained outcomes are summarized above.
 
 At the first development milestone: [causal-wiring validation](FUNCTIONAL_WIRING_RESULTS.md)
 and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). Language reports and theory confirmation were not part of that milestone.
