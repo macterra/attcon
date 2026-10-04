@@ -259,6 +259,13 @@ also needs current allocation and unattended recovery forecasts to test the prop
 focal/background and changing-availability dimensions. This development result
 does not establish the broader theory-facing interpretation.
 
+A [complete-interface development protocol v3](NEUTRAL_FUNCTIONAL_PILOT_V3.md)
+adds current model allocation, unattended recovery and command-selection forecasts.
+Its [source-blind auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md)
+passes 24/26 semantic fixtures but confuses unspecified selection with an asserted
+absence of identified model selection in two fixtures. The frozen gate halts
+report generation; this version produces no new language-report evidence.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

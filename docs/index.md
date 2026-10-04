@@ -21,7 +21,7 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 - [Latest self-access replication and label control](SELF_LABEL_RESULTS.md) and [current priorities](NEXT_STEPS.md).
 - [Functional wiring development](FUNCTIONAL_WIRING_RESULTS.md), [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md), and [neutral reporting pilot protocol](NEUTRAL_FUNCTIONAL_PILOT_PROTOCOL.md).
 - [Neutral pilot results and retained errors](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) and [all actual outputs](NEUTRAL_FUNCTIONAL_PILOT_REPORTS.md).
-- [Complete neutral attention-state pilot v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md).
+- [Complete neutral attention-state pilot v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) and [retained auditor-qualification failure](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md).
 - [Named neutral pilot v2: accuracy, coverage, and remaining state-interface gap](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md).
 
 - [Results and limitations](BOUND_CONTENT_RESULTS.md), [overview](PROJECT_RESULTS.md), and [preprint](PREPRINT.md).

@@ -167,6 +167,7 @@ checks. Two neutral prose pilots are retained; [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_
 improves checked attribute accuracy but fails coverage and omits model fields needed
 for focal/background and unattended-availability reports. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now supplies current allocation,
 unattended recovery and command-selection forecasts, with prepared inputs and
-pre-data process-claim checks. Its API results and independent rubric review remain pending;
+pre-data process-claim checks. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails 2/26 fixtures,
+so no v3 reports are generated. A revised auditor and independent rubric review remain pending;
 none of the six stages is complete in full. The updated preprint retains the September 27 study and incorporates the later
 specificity, self-label and neutral-pilot limitations.
