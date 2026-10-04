@@ -169,7 +169,8 @@ for focal/background and unattended-availability reports. The [v3 protocol](NEUT
 unattended recovery and command-selection forecasts, with prepared inputs and
 pre-data process-claim checks. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails 2/26 fixtures,
 so no v3 reports are generated. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) preserves its reporter inputs
-and requalifies an auditor with explicit missing-information semantics. API results
-and independent rubric review remain pending;
+and requalifies an auditor with explicit missing-information semantics. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails 1/28 fixtures,
+so no v4 reports are generated. A separate process auditor and independent rubric
+review remain pending;
 none of the six stages is complete in full. The updated preprint retains the September 27 study and incorporates the later
 specificity, self-label and neutral-pilot limitations.

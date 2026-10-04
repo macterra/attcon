@@ -264,7 +264,10 @@ adds current model allocation, unattended recovery and command-selection forecas
 Its [source-blind auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md)
 passes 24/26 semantic fixtures but confuses unspecified selection with an asserted
 absence of identified model selection in two fixtures. The frozen gate halts
-report generation; this version produces no new language-report evidence.
+report generation; this version produces no new language-report evidence. A
+[v4 auditor amendment](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fixes those failures
+but fails a confidence-versus-recovery fixture (27/28 pass) and also halts before
+report generation. These retained failures constrain the use of machine judges.
 
 ## 7. Reproducibility
 

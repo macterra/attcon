@@ -8,7 +8,9 @@ its model intervention also reveals an unsupported buffer generalization. The [v
 unattended recovery and command-selection forecasts. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails two of 26
 fixtures, so report generation is halted. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) distinguishes missing prose
 information from an asserted absence of model selection, with unchanged reporter
-inputs. Auditor qualification and reporting are pending. Independent rubric review is requested and pending.
+inputs. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails one of 28 fixtures
+by conflating confidence with recovery. No v4 reports are generated; separate
+category and process audits are the next development design. Independent rubric review is requested and pending.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
