@@ -4,9 +4,9 @@
 
 The [named neutral pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) has 100% checked
 attribute accuracy in all primary presentation groups, but fails coverage minima;
-its model intervention also reveals an unsupported buffer generalization. Next
-restore current allocation and unattended recovery forecasts to the neutral state,
-then test complete reporting. Independent rubric review is requested and pending.
+its model intervention also reveals an unsupported buffer generalization. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now restores current allocation,
+unattended recovery and command-selection forecasts. Prepared inputs and process
+checks precede API execution; results remain pending. Independent rubric review is requested and pending.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
@@ -18,9 +18,8 @@ passes all prespecified engineering minima in three paired models. Neutral recor
 now contain grounded acquisition histories and fallible internal counterfactuals.
 The next step is a neutral factual-reporting pilot and identifier/label controls.
 
-First development milestone: [causal-wiring validation](FUNCTIONAL_WIRING_RESULTS.md)
-and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). No new language
-reports or theory confirmation have been generated.
+At the first development milestone: [causal-wiring validation](FUNCTIONAL_WIRING_RESULTS.md)
+and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). Language reports and theory confirmation were not part of that milestone.
 
 The [updated consciousness-interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md)
 tests whether independently assessed report features follow functional organization

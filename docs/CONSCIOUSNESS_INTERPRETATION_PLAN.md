@@ -1,7 +1,7 @@
 # Plan: test report structure against functional organization
 
-Updated 2026-10-04. **Design plan, not a frozen experimental protocol. No new
-experiment has been run under this plan.** This is the current next-stage plan;
+Updated 2026-10-04. **Design plan, not a frozen confirmation protocol. Development
+experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.
 
 ## Goal and current evidence
@@ -165,7 +165,8 @@ and [validated causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md) are availabl
 The [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) passes engineering
 checks. Two neutral prose pilots are retained; [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md)
 improves checked attribute accuracy but fails coverage and omits model fields needed
-for focal/background and unattended-availability reports. Independent rubric review
-and a complete neutral attention-state interface remain pending;
-none of the six stages is complete in full. The preprint's September 27 results remain valid for that study,
-but the manuscript needs the later specificity and self-label findings incorporated.
+for focal/background and unattended-availability reports. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now supplies current allocation,
+unattended recovery and command-selection forecasts, with prepared inputs and
+pre-data process-claim checks. Its API results and independent rubric review remain pending;
+none of the six stages is complete in full. The updated preprint retains the September 27 study and incorporates the later
+specificity, self-label and neutral-pilot limitations.
