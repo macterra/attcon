@@ -311,6 +311,19 @@ limitation. It generates no language reports and supplies no new consciousness
 confirmation. Faithfully reporting a wrong internal model remains distinct from
 misreporting that model or accurately describing the physical process.
 
+A [three-way visual/neutral interface export](FUNCTIONAL_INTERFACE_RESULTS.md)
+connects those models to existing visual encoders and the explicit categorical
+uncertainty bridge. Joint visual accuracy on 512 fresh scenes per pair is
+99.9023–100%. It archives 664 inputs across all three controls, presentation and
+model interventions, feedback/no-feedback revision contexts and targeted retained
+mistakes. Observed and anticipated histories remain separate; no condition or owner
+label enters the payload. Fourteen relevant tests and exact payload/tensor replay
+pass. No prose is generated, and the parent engineering failure remains unchanged.
+The proposed [manual factual-audit procedure](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
+separates quoted propositions, source-aware judgments and required coverage; it
+remains an unqualified development draft with no human annotations. Independent
+rubric review and theory-facing confirmation are still outstanding.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

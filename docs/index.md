@@ -22,6 +22,8 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 - [Functional wiring development](FUNCTIONAL_WIRING_RESULTS.md), [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md), and [neutral reporting pilot protocol](NEUTRAL_FUNCTIONAL_PILOT_PROTOCOL.md).
 - [Neutral pilot results and retained errors](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) and [all actual outputs](NEUTRAL_FUNCTIONAL_PILOT_REPORTS.md).
 - [Learned three-way and matched-revision results](FUNCTIONAL_CONTROLS_RESULTS.md): all nine static cases pass; 26/27 revision routes pass, overall engineering gate fails. [Frozen protocol](FUNCTIONAL_CONTROLS_PROTOCOL.md).
+- [Three-way visual/neutral interface results](FUNCTIONAL_INTERFACE_RESULTS.md): 664 input records and exact state replay; no new language reports. [Protocol](FUNCTIONAL_INTERFACE_PROTOCOL.md).
+- [Source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md): quote-first claims and separate coverage; unqualified, no human annotations.
 - [Full-goal requirements audit](CONSCIOUSNESS_REQUIREMENTS_AUDIT.md): explicit evidence and remaining engineering/review work.
 - [Independent rubric-definition review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md): blank; review and human ratings remain outstanding.
 - [Explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7.md): [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md); no reports generated.

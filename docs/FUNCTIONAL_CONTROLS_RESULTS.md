@@ -43,7 +43,7 @@ error in 99.609–100% of paired episodes; effect-accuracy gain exceeds the matc
 unchanged-route gain by 0.36914–0.75000. These are engineering summaries, not a
 powered theory-facing contrast or independent human characterization.
 
-![Control-mask revision in each fixed model](../audits/functional_controls_v1/control_revision.svg)
+![Control-mask revision in each fixed model](assets/functional_controls_control_revision.svg)
 
 Curves show each model separately. Intermediate windows are descriptive; only the
 prespecified 16-observation endpoint determines the revision verdict. Shared scenes
@@ -58,7 +58,7 @@ commands/channels is distinct from classifying each episode's entire control mas
 Its prospective recovery MAE is 0.02264 and its paired-improvement fraction is
 99.609%. Passing those quantities does not erase the mask failure.
 
-The post-hoc [mismatch export](../audits/functional_controls_v1/final_control_mismatches.csv)
+The post-hoc [mismatch export](https://github.com/macterra/attcon/blob/main/audits/functional_controls_v1/final_control_mismatches.csv)
 names all nine final-window misclassified episodes across the study: eight on that
 failed route and one on seed 2031's buffer 0→neither route, which still meets its
 99% gate at 511/512. The eight failed-route buffer-1 TV values are 1.366–1.490,
@@ -101,9 +101,9 @@ and revision tensor, common target, metric and gate from the final checkpoints
 without retraining or API calls. The verifier checks frozen source and archive hashes.
 
 Each model has its original record, checkpoint and lossless trace in
-`audits/functional_controls_v1/`. [Summary](../audits/functional_controls_v1/summary.json),
-[static CSV](../audits/functional_controls_v1/static_metrics.csv),
-[all-window revision CSV](../audits/functional_controls_v1/revision_metrics.csv),
+`audits/functional_controls_v1/`. [Summary](https://github.com/macterra/attcon/blob/main/audits/functional_controls_v1/summary.json),
+[static CSV](https://github.com/macterra/attcon/blob/main/audits/functional_controls_v1/static_metrics.csv),
+[all-window revision CSV](https://github.com/macterra/attcon/blob/main/audits/functional_controls_v1/revision_metrics.csv),
 PNG/SVG figure and the mismatch export are post-hoc summaries of unchanged outcomes.
 The original static trace explicitly names final modeled heads, while scores use
 five observations. Additional `seed*_static_tail.pt.gz` supplements explicitly

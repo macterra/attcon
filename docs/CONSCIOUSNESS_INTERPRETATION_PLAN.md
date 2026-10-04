@@ -184,9 +184,14 @@ v6/v7 reports are generated; row 3 remains unused. The
 three fresh models: all nine static cases pass and 26/27 matched revision routes
 pass. Seed 2021's buffer 1→neither route fails control-mask accuracy (504/512,
 below 99%); the overall engineering verdict remains fail. Common physical targets
-and unchanged controls address the old unmatched comparison. No language reports
-are collected in this study. A simpler semantic measurement design and diagnosis
-of the retained adaptation failure are next independent work. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+and unchanged controls address the old unmatched comparison. The
+[three-way visual/interface export](FUNCTIONAL_INTERFACE_RESULTS.md) now supplies
+664 neutral inputs including static controls, both revision contexts and retained
+mistaken-model diagnostics. All input/tensor invariants hold; no new prose is
+generated. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
+separates quoted claims, judgments and coverage, with blank forms and no completed
+qualification. That procedure needs independent review before new reporting.
+The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
