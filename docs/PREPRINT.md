@@ -249,6 +249,16 @@ It is not a powered confirmation. Independent rubric review and human ratings
 have not been obtained. A learned reporter is one possible method, not a guaranteed
 route to resolving subjective experience.
 
+A [named-distribution pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) completes
+36 reports and 36 source-blind audits after 14 semantic fixtures pass. Checked
+attribute accuracy reaches 100% in the primary presentation groups, but coverage
+of identified output attributes is only 71.11–84.44% in three groups, below the
+90% feasibility minimum. A model-intervention report overgeneralizes across buffers.
+Automated character judgments are 30 technical and six mixed. The neutral interface
+also needs current allocation and unattended recovery forecasts to test the proposed
+focal/background and changing-availability dimensions. This development result
+does not establish the broader theory-facing interpretation.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

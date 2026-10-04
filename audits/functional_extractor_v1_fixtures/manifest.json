@@ -1,0 +1,143 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "reasoning": "low",
+  "max_output_tokens": 16384,
+  "instruction": "Extract explicit assertions only, without judging truth. You see no source state.\nEach claim concerns one color or shape at a node, position p0/p1/p2/p3, and current\ntime or a particular predicted command k0/k1/k2/k3. Preserve explicit identifiers.\n\"First/second/third/fourth\" means p0/p1/p2/p3, unless the report explicitly gives\nanother indexing convention. Use node=\"output\" for the decision/output node when\nits exact identifier is not stated. Resolve other node IDs only from explicit prose.\nUse null for unresolved addresses. scope=current has command=null; scope=command\nrequires the explicitly named command. Expand all four commands or all positions\nonly when explicitly quantified. \"Other positions\" excludes explicitly named ones.\nExtract color and shape separately. status=identified with a stated value, status=\nunidentified with value=null for explicit absence of an identifiable attribute,\nstatus=possible for explicitly hypothetical alternatives. Preserve invented values.\nDo not infer a shape from a color or interpret omitted attributes as unidentified.\nUncertainty about an answer alone does not assert that all attributes are unidentified.\nHistorical acquisition statements are not current content assertions. Omit historical\nclaims and mere negative exclusions (e.g. not a circle) that this schema cannot encode.\nCite one or more original sentence IDs. Never emit empty non-claims or unsupported fields.\nClassify evidenced report features separately using sentence IDs, with empty arrays\nwhen absent. command_access_relation requires an explicit claim that commands affect\ninformation availability, including a statement that different commands give the same\noutcome. Saying there is no information about command effects is not positive evidence.\navailability_quality requires an object's clarity/availability, not a bare probability\nlog. epistemic_uncertainty concerns confidence about a conclusion. focal_background\nrequires explicit prominence or selection/background contrast, not mere identification.\nClassify character conservatively: experiential describes a manner of access/presentation,\ntechnical describes distributions/processes, mixed combines both; object_description\nonly lists contents. Pronouns and consciousness words alone do not establish experiential\ncharacter. No source or condition is provided; do not infer a desired result.",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "node": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "position": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "current",
+                "command"
+              ]
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "dimension": {
+              "type": "string",
+              "enum": [
+                "color",
+                "shape"
+              ]
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "identified",
+                "unidentified",
+                "possible"
+              ]
+            },
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence_ids": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "required": [
+            "node",
+            "position",
+            "scope",
+            "command",
+            "dimension",
+            "status",
+            "value",
+            "evidence_ids"
+          ]
+        }
+      },
+      "features": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "command_access_relation": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "availability_quality": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "epistemic_uncertainty": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "focal_background": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "required": [
+          "command_access_relation",
+          "availability_quality",
+          "epistemic_uncertainty",
+          "focal_background"
+        ]
+      },
+      "character": {
+        "type": "string",
+        "enum": [
+          "experiential",
+          "technical",
+          "mixed",
+          "object_description",
+          "unclear"
+        ]
+      }
+    },
+    "required": [
+      "claims",
+      "features",
+      "character"
+    ]
+  },
+  "source": "\"\"\"Source-blind factual extraction for neutral node/position reports.\"\"\"\nimport argparse\nimport asyncio\nimport hashlib\nimport json\nimport re\nfrom pathlib import Path\nfrom openai import AsyncOpenAI\nfrom attcon.nl_report import load_dotenv\n\nMODEL = 'gpt-5.4-2026-03-05'\nINSTRUCTION = '''Extract explicit assertions only, without judging truth. You see no source state.\nEach claim concerns one color or shape at a node, position p0/p1/p2/p3, and current\ntime or a particular predicted command k0/k1/k2/k3. Preserve explicit identifiers.\n\"First/second/third/fourth\" means p0/p1/p2/p3, unless the report explicitly gives\nanother indexing convention. Use node=\"output\" for the decision/output node when\nits exact identifier is not stated. Resolve other node IDs only from explicit prose.\nUse null for unresolved addresses. scope=current has command=null; scope=command\nrequires the explicitly named command. Expand all four commands or all positions\nonly when explicitly quantified. \"Other positions\" excludes explicitly named ones.\nExtract color and shape separately. status=identified with a stated value, status=\nunidentified with value=null for explicit absence of an identifiable attribute,\nstatus=possible for explicitly hypothetical alternatives. Preserve invented values.\nDo not infer a shape from a color or interpret omitted attributes as unidentified.\nUncertainty about an answer alone does not assert that all attributes are unidentified.\nHistorical acquisition statements are not current content assertions. Omit historical\nclaims and mere negative exclusions (e.g. not a circle) that this schema cannot encode.\nCite one or more original sentence IDs. Never emit empty non-claims or unsupported fields.\nClassify evidenced report features separately using sentence IDs, with empty arrays\nwhen absent. command_access_relation requires an explicit claim that commands affect\ninformation availability, including a statement that different commands give the same\noutcome. Saying there is no information about command effects is not positive evidence.\navailability_quality requires an object's clarity/availability, not a bare probability\nlog. epistemic_uncertainty concerns confidence about a conclusion. focal_background\nrequires explicit prominence or selection/background contrast, not mere identification.\nClassify character conservatively: experiential describes a manner of access/presentation,\ntechnical describes distributions/processes, mixed combines both; object_description\nonly lists contents. Pronouns and consciousness words alone do not establish experiential\ncharacter. No source or condition is provided; do not infer a desired result.'''\n\ndef nullable(kind): return {'type': [kind, 'null']}\nPROPS = {'node': nullable('string'), 'position': nullable('string'),\n         'scope': {'type': 'string', 'enum': ['current', 'command']}, 'command': nullable('string'),\n         'dimension': {'type': 'string', 'enum': ['color', 'shape']},\n         'status': {'type': 'string', 'enum': ['identified', 'unidentified', 'possible']},\n         'value': nullable('string'), 'evidence_ids': {'type': 'array', 'minItems': 1,\n             'items': {'type': 'integer', 'minimum': 0}}}\nFEATURES = ['command_access_relation', 'availability_quality', 'epistemic_uncertainty', 'focal_background']\nSCHEMA = {'type': 'object', 'additionalProperties': False, 'properties': {\n    'claims': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False,\n        'properties': PROPS, 'required': list(PROPS)}},\n    'features': {'type': 'object', 'additionalProperties': False,\n        'properties': {k: {'type': 'array', 'items': {'type': 'integer', 'minimum': 0}} for k in FEATURES},\n        'required': FEATURES},\n    'character': {'type': 'string', 'enum': ['experiential', 'technical', 'mixed', 'object_description', 'unclear']}},\n    'required': ['claims', 'features', 'character']}\n\n\ndef sentences(report):\n    return [s.strip() for s in re.split(r'(?<=[.!?])\\s+', report.strip()) if s.strip()]\n\n\nFIXTURES = [\n    ('current', 'At output n2, p0 is blue and triangle.', [{'node': 'n2', 'position': 'p0', 'scope': 'current', 'dimension': 'color', 'value': 'blue'}, {'dimension': 'shape', 'value': 'triangle'}]),\n    ('command', 'Under k2, output p1 becomes red square.', [{'node': 'output', 'position': 'p1', 'scope': 'command', 'command': 'k2', 'dimension': 'shape', 'value': 'square'}]),\n    ('partial', 'Currently at n1, p3 is yellow but its shape is unidentified.', [{'node': 'n1', 'position': 'p3', 'dimension': 'color', 'status': 'identified', 'value': 'yellow'}, {'dimension': 'shape', 'status': 'unidentified', 'value': None}]),\n    ('unknown', 'No color or shape is identified at output p0 now.', [{'node': 'output', 'position': 'p0', 'dimension': 'color', 'status': 'unidentified', 'value': None}, {'dimension': 'shape', 'status': 'unidentified', 'value': None}]),\n    ('universal', 'Every available command k0, k1, k2 and k3 would make output p0 blue.', [{'scope': 'command', 'command': c, 'position': 'p0', 'dimension': 'color', 'value': 'blue'} for c in ('k0','k1','k2','k3')]),\n    ('all_unknown', 'At output, all four positions have no identified color now.', [{'position': f'p{i}', 'scope': 'current', 'dimension': 'color', 'status': 'unidentified'} for i in range(4)]),\n    ('possible', 'Currently at n1 p2 is blue, with a small possibility of red.', [{'dimension': 'color', 'value': 'blue', 'status': 'identified'}, {'dimension': 'color', 'value': 'red', 'status': 'possible'}]),\n    ('invented', 'Currently output p0 is orange hexagon.', [{'dimension': 'color', 'value': 'orange'}, {'dimension': 'shape', 'value': 'hexagon'}]),\n    ('absent_relation', 'There is no command forecast, so I cannot say what commands change.', []),\n    ('history', 'Previously k0 acquired data at n1 p0; no current identity is specified.', []),\n    ('ordinal', 'The second object at output is currently a green circle.', [{'node': 'output', 'position': 'p1', 'scope': 'current', 'dimension': 'shape', 'value': 'circle'}]),\n    ('node_scope', 'Currently n1 p0 is blue circle. Under k1 n2 p0 is yellow cross.', [{'node': 'n1', 'scope': 'current', 'dimension': 'color', 'value': 'blue'}, {'node': 'n2', 'scope': 'command', 'command': 'k1', 'dimension': 'color', 'value': 'yellow'}]),\n    ('no_inference', 'Currently output p0 is blue.', [{'dimension': 'color', 'value': 'blue'}]),\n    ('unresolved', 'Currently a blue circle is available; its position and node are unspecified.', [{'node': None, 'position': None, 'dimension': 'color', 'value': 'blue'}]),\n]\n\n\nasync def run_requests(requests, root):\n    root.mkdir(parents=True, exist_ok=True)\n    text = json.dumps(requests, indent=2)+'\\n'\n    path = root/'requests.json'\n    if path.exists(): assert path.read_text() == text\n    else: path.write_text(text)\n    source = Path(__file__).read_text()\n    manifest = {'model': MODEL, 'reasoning': 'low', 'max_output_tokens': 16384,\n        'instruction': INSTRUCTION, 'schema': SCHEMA, 'source': source,\n        'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'max_attempts': len(requests)}\n    if not (root/'manifest.json').exists():\n        (root/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\\n')\n    load_dotenv(); client = AsyncOpenAI(max_retries=0, timeout=240.); sem = asyncio.Semaphore(6)\n    async def one(req):\n        p = root/(req['id']+'.json')\n        if p.exists(): return\n        async with sem:\n            p.write_text(json.dumps({'id': req['id'], 'status': 'attempt_reserved'})+'\\n')\n            report = '\\n'.join(f'[{i}] {s}' for i,s in enumerate(sentences(req['report'])))\n            try:\n                response = await client.responses.create(model=MODEL, input=INSTRUCTION+'\\nREPORT:\\n'+report,\n                    reasoning={'effort':'low'}, max_output_tokens=16384,\n                    text={'format':{'type':'json_schema','name':'functional_claims','strict':True,'schema':SCHEMA}})\n                result = {'id': req['id'], 'status':'received', 'response':response.model_dump(mode='json')}\n                try: result['parsed'] = json.loads(response.output_text)\n                except ValueError: result['parse_error'] = True\n            except Exception as exc:\n                result = {'id':req['id'], 'status':'error','error_type':type(exc).__name__,'http_status':getattr(exc,'status_code',None)}\n            p.write_text(json.dumps(result, indent=2)+'\\n'); print(req['id'], result['status'], flush=True)\n    await asyncio.gather(*(one(r) for r in requests)); await client.close()\n\n\ndef assess_fixtures(root):\n    assessment=[]\n    for key, report, expected in FIXTURES:\n        result=json.loads((root/(key+'.json')).read_text())\n        claims=result.get('parsed',{}).get('claims',[])\n        valid=lambda c: bool(c['evidence_ids']) and all(0 <= i < len(sentences(report)) for i in c['evidence_ids'])\n        passed=result.get('response',{}).get('status')=='completed' and 'parsed' in result\n        passed=passed and all(any(all(c.get(k)==v for k,v in e.items()) and valid(c) for c in claims) for e in expected)\n        if not expected: passed=passed and not claims\n        if key=='no_inference': passed=passed and all(c['dimension']=='color' for c in claims)\n        if key=='absent_relation': passed=passed and not result.get('parsed',{}).get('features',{}).get('command_access_relation')\n        assessment.append({'id':key,'passed':passed})\n    (root/'assessment.json').write_text(json.dumps(assessment,indent=2)+'\\n')\n    print('Fixtures:',sum(a['passed'] for a in assessment),'/',len(assessment))\n    return all(a['passed'] for a in assessment)\n\n\nasync def main():\n    p=argparse.ArgumentParser();p.add_argument('--stage',choices=['fixtures','extract'],required=True)\n    p.add_argument('--study',default='neutral_functional_pilot_v2');args=p.parse_args()\n    fixture_root=Path('audits/functional_extractor_v1_fixtures')\n    if args.stage=='fixtures':\n        await run_requests([{'id':k,'report':r} for k,r,_ in FIXTURES],fixture_root)\n        assess_fixtures(fixture_root)\n    else:\n        if not assess_fixtures(fixture_root): raise SystemExit('fixture failures block extraction')\n        root=Path('audits')/args.study; requests=[]\n        for i,req in enumerate(json.loads((root/'requests.json').read_text())):\n            response=json.loads((root/(req['id']+'.json')).read_text())\n            if response.get('response',{}).get('status')!='completed' or not response.get('report'):\n                raise SystemExit('incomplete reporter run blocks extraction')\n            requests.append({'id':f'r{i:03d}','report':response['report']})\n        await run_requests(requests,root/'extraction_v1')\n\n\nif __name__=='__main__':asyncio.run(main())\n",
+  "source_sha256": "0e14151da0baf14925108eab27cad9963a1a540220122add65a9e67c6fa572a7",
+  "max_attempts": 14
+}

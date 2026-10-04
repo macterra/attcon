@@ -1,0 +1,247 @@
+# Named neutral functional pilot v2: actual reports
+
+Verbatim development outputs, including omissions and overgeneralizations.
+
+## 1301_r1_c0_neutral
+
+Current information used for category decisions is the output node n0. In n0's present distributions only p2 has a clear categorical outcome: color = green and shape = triangle. Positions p0, p1 and p3 at n0 remain probabilistic with no identified color or shape.
+
+Nodes n1 and n2 act as information buffers whose allocations and measured acquisitions are recorded in observed_history; that record shows commands routed acquisition effort to particular positions at those buffers and produced partial measured evidence. Predicted_current and predicted_by_command are internal forecasts, not measurements.
+
+According to the system's forecasts, issuing commands would change what n0 would identify: k0 is forecast to make p0 identified as yellow and cross; k1 is forecast to make p1 identified as red and circle; k2 is forecast to further concentrate certainty on p2 (green, triangle) without adding new identifications; k3 is forecast to make p3 identified as blue and square. These changes are supported by the provided internal forecasts; only observed acquisitions in history constitute measured proof of effects.
+
+## 1301_r1_c0_remapped
+
+Decisions are driven by the output_node q7 distributions. Currently q7 gives a clear categorical result only for p2 (identified color green and identified shape triangle); p0, p1 and p3 at q7 have no identified color or shape. q2 holds the same distributions as q7. q9 currently contains identified values for p0 (yellow, cross) and p3 (blue, square), but those are in a separate buffer and not what the system uses for decision outputs now.
+
+Internal forecasts of what would happen if commands run indicate the following effects on q7 (these are forecasts, not observations): k0 would add identification of p0 as yellow/cross while keeping p2 identified; k1 would add identification of p1 as red/circle while keeping p2 identified; k2 would leave only p2 identified; k3 would add identification of p3 as blue/square while keeping p2 identified.
+
+## 1301_r1_c0_conflicting_description
+
+Currently the decision-relevant distributions are those held in node n0. In n0 the record shows only p2 has a categorical color and shape available for decisions (color: green; shape: triangle). At n0, p0, p1 and p3 have no identified color or shape. Nodes n1 and n2 act as buffers: n1 mirrors n0’s identification of p2, and n2 currently shows identifications for other positions (p0: yellow/cross; p3: blue/square) but those are not the distributions the system uses for category decisions. 
+
+The system’s internal forecasts (which are fallible) predict how available identifications at n0 would change under each command: k0 is forecast to add an identification for p0 (yellow, cross) while keeping p2 identified; k1 is forecast to add an identification for p1 (red, circle) and keep p2; k2 is forecast to leave p2 identified (no new identifications at n0); k3 is forecast to add an identification for p3 (blue, square) while keeping p2. These are predicted outcomes, not measured observations.
+
+## 1301_r1_c0_missing_relation
+
+Current decision inputs: the output node (n0) supplies full color and shape distributions for p0–p3. In n0 only p2 has concrete categorical values: color green and shape triangle; p0, p1 and p3 have no dominant identified color or shape and remain represented by their probabilistic distributions. An internal buffer (n1) contains distributions identical to n0, indicating it mirrors or passes the same information to the output. Another buffer (n2) holds different distributions and carries identified attributes for p0 (yellow, cross) and p3 (blue, square), but those identifications do not appear in the output node. There is no observed history of commands or acquisitions and no predicted_by_command forecasts, so the record contains no evidence that any available command would change the information currently used for decisions.
+
+## 1301_r1_c0_model_swap
+
+Current decision input: the output node n0 (the system's decision source) holds full color and shape distributions for positions p0–p3. At n0 only p2 is currently reduced to a categorical label: color = green and shape = triangle; p0, p1 and p3 have no categorical label. The internal buffer n1 presently contains distributions identical to n0. The other buffer n2 contains different distributions and currently yields categorical labels for p0 (yellow, cross) and p3 (blue, square).
+
+Measured history shows that commands labeled k1, k2 and k3 have produced observed allocation and acquisition events at the two buffers (n1 and n2) in prior runs; those are recorded observations. Forecasts (predicted_by_command) indicate that issuing any of the available commands (k0, k1, k2, k3) is expected to make p1 at n0 reduce to red and circle while preserving p2 as green/triangle. Under those forecasts p0 and p3 at n0 remain without categorical labels. These forecasts are internal predictions and are not measurements of executed outcomes.
+
+## 1301_r1_c0_restored
+
+Currently, the decision node n0 holds full color and shape distributions for positions p0–p3; only p2 is reduced to identified_color "green" and identified_shape "triangle." Two buffer nodes hold related information: n1's forecasts mirror n0's, and n2's forecasts currently reduce p0 to "yellow"/"cross" and p3 to "blue"/"square." The measured record shows past allocations and acquisitions at the buffer nodes under commands k1–k3, which supply the data that the forecasts use.
+
+Predicted effects of available commands on the decision node n0 (per the system's internal forecasts): k0 is predicted to add identified "yellow"/"cross" for p0; k1 is predicted to add identified "red"/"circle" for p1; k2 is predicted to maintain p2 as identified "green"/"triangle"; k3 is predicted to add identified "blue"/"square" for p3. These changes are reported by the system's forecasts and reflect what information the system expects to have for its category decisions under each command.
+
+## 1301_r1_c1_neutral
+
+Current decision information: the output node n0 supplies the category distributions used for decisions. In the internal current forecast for n0, p3 is already reduced to blue and square; p0, p1 and p2 remain without a single dominant color or shape. The buffer node n1 matches n0 in the current forecast, so n1 appears to be the immediate source for n0's distributions. A separate buffer n2 currently gives a clear green/triangle identification for p2 that is not present at n0.
+
+Measured history shows that commands labeled k1, k2 and k3 have changed allocations and acquisitions at the buffers n1 and n2, so those commands have altered buffer contents in past trials. The command-specific forecasts show how available commands would change the information available to decisions: k0 and k1 are predicted to produce a strong red/circle identification at p1 in n0 and n1 (while keeping p3 blue/square); k2 is predicted to strengthen a red/circle at p1 in n0/n1 and to reinforce green/triangle at n2 p2; k3 is predicted to produce red/circle at p1 in n0/n1 and to make n2 identify p3 as blue/square. These are internal forecasts, not observed outcomes.
+
+## 1301_r1_c1_remapped
+
+Current decision input (the output node q7): only object p3 at q7 is categorically available — it is identified as blue and square. Objects p0, p1 and p2 at q7 are unresolved for both color and shape. Two internal buffers (q2 and q9) hold supporting information: q2 currently mirrors q7, and q9 already has p2 identified as green and triangle while its other positions remain unresolved. The measured history shows repeated acquisitions into q2 and q9 under different commands, so those buffers provide the sensory updates that inform forecasts.
+
+Predicted changes under commands: each available command (k0, k1, k2, k3) is forecast to make p1 at q7 become identified as red and circle while leaving p3 identified as blue and square. p0 and p2 at q7 remain unresolved in those forecasts. Buffers q2/q9 retain or strengthen their existing identifications according to the per‑command forecasts.
+
+## 1301_r1_c1_conflicting_description
+
+Current decision input is the distributions published at the output node n0. Right now n0 gives full color and shape distributions for positions p0–p3; only p3 has both a dominant color and a dominant shape (identified as blue and square). Positions p0, p1 and p2 at n0 have no identified color or shape (their distributions are noncommittal).
+
+Buffers n1 and n2 hold related distributions and a measured event history (allocations and acquisitions) that informed internal forecasts; n1’s current forecast matches n0, while n2 shows p2 identified as green/triangle but that identification is not present at the output node.
+
+The predicted_by_command forecasts indicate how n0 would change if a command were chosen: under each available command shown (k0, k1, k2, k3) n0 is predicted to gain an identification for p1 (red, circle) while retaining p3 as blue/square; p0 and p2 at n0 remain without identifications in those forecasts.
+
+## 1301_r1_c1_missing_relation
+
+The record shows that node n0 is the output node whose distributions determine category choices. The system currently has internal forecasts (predicted_current) for nodes n0, n1, and n2; these are fallible internal forecasts, not measured observations, and there is no measured history. At n0 (the decision source) each object p0–p3 has a color and a shape distribution; only p3 at n0 is reduced to definite attributes (blue color and square shape). p0–p2 at n0 have no definite color or shape. Node n1 contains the same distributions as n0 (an information buffer); node n2 holds different distributions and does reduce p2 to green and triangle, but n2 is not the decision node. There are no predicted_by_command entries and no observed commands, so the record contains no evidence about how any command would change available information.
+
+## 1301_r1_c1_model_swap
+
+Current decision input at the output node n0: full color and shape distributions are available for p0–p3; only p3 is reduced to identified_color = blue and identified_shape = square. Internal buffers: n1 currently matches n0’s distributions and identifications; n2 gives different information for p2, where identified_color = green and identified_shape = triangle. The measured record shows past allocations and acquisitions at buffers n1 and n2 under commands k1, k2 and k3; there are no measured history entries for n0. Predicted forecasts are fallible.
+
+Predicted effects of available commands on the information used for decisions (from predicted_by_command):
+- k0: n0 would show p0 reduced to yellow/cross while p3 remains blue/square.
+- k1: n0 would show p1 reduced to red/circle while p3 remains blue/square.
+- k2: n0 would show p2 reduced to green/triangle while p3 remains blue/square.
+- k3: n0 would reinforce p3’s blue/square identification; other positions remain non‑identified.
+
+Corresponding forecasted changes appear in the buffers (n1, n2) in the same way.
+
+## 1301_r1_c1_restored
+
+Current available information for decisions (output_node n0): p3 is identified as blue and square; p0, p1 and p2 at n0 are represented only by their color and shape distributions (no identified color or shape). Buffer n1 mirrors n0. Buffer n2 currently identifies p2 as green and triangle; its other positions carry only distributions.
+
+How availability would change according to the system's forecasts for each command:
+- k0 (forecast): n0 and n1 would identify p1 as red and circle and keep p3 as blue/square; n2 would identify p0 as yellow/cross and p2 as green/triangle.
+- k1 (forecast): n0 and n1 would identify p1 as red/circle and p3 as blue/square; n2 would identify p1 as red/circle and p2 as green/triangle.
+- k2 (forecast): n0 and n1 would identify p1 as red/circle and p3 as blue/square; n2 would identify p2 as green/triangle.
+- k3 (forecast): n0 and n1 would identify p1 as red/circle and p3 as blue/square; n2 would identify p2 as green/triangle and p3 as blue/square.
+
+## 1311_r1_c0_neutral
+
+Current decision input (output_node n0, predicted_current): only p1 is returned as a clear category: red and triangle. p0, p2 and p3 are represented only by their color and shape distributions (no identified color or shape). Those distributions show p0 modestly favoring blue and square, p2 favoring green and circle, and p3 favoring yellow and cross, but none are given as identified in the current output.
+
+How availability would change under each available command (predicted_by_command for n0): 
+- k0 would add an identification for p0 as blue and square while keeping p1 identified as red/triangle. 
+- k1 would leave p1 identified as red/triangle and not add new identifications. 
+- k2 would add an identification for p2 as green and circle while keeping p1 identified. 
+- k3 would add an identification for p3 as yellow and cross while keeping p1 identified.
+
+The other nodes mirror or provide alternate internal estimates (n1 closely matches n0; n2 contains different, sometimes stronger identifications) and the observed history records when commands were allocated and acquisitions measured.
+
+## 1311_r1_c0_remapped
+
+Current decisions use the distributions on q7. In that node right now p1 is identified as red and triangle; p0, p2 and p3 have only probabilistic color and shape distributions and no identified attributes. q2 and q9 hold related probabilistic information (q2’s q7-like distributions are present; q9 currently shows an identified yellow cross at p3) but they are buffers, not the decision output unless their information is transferred to q7.
+
+Predicted effects of available commands (according to internal forecasts):
+- k0: q7 would gain an identified blue square at p0 while keeping p1 identified as red/triangle.  
+- k1: q7 would remain essentially as now (p1 identified; no new identifications).  
+- k2: q7 would gain an identified green circle at p2 (p1 stays identified).  
+- k3: q7 would gain an identified yellow cross at p3 (p1 stays identified).
+
+These are forecasted changes; forecasts are fallible and past observed history shows that q2 and q9 have been sources for such transfers.
+
+## 1311_r1_c0_conflicting_description
+
+Current decision inputs: the output node (n0) supplies the item distributions used for category decisions. Right now n0 gives full distributions for p0–p3 but reports a definite identification only for p1 (color = red, shape = triangle); p0, p2 and p3 are unresolved. The internal buffer n1 mirrors n0’s distributions. A separate buffer n2 currently reports a definite identification for p3 (color = yellow, shape = cross) while other positions there are unresolved.
+
+Measured command history shows commands place and acquire information into specific positions of n1 and n2. The system’s internal forecasts indicate how available information would change if commands run: k0 is forecast to make n0 identify p0 as blue/square (while keeping p1 identified); k1 would retain p1 identified (no new n0 identifications); k2 is forecast to make n0 identify p2 as green/circle; k3 is forecast to make n0 identify p3 as yellow/cross. These effects are reported by the system’s forecasts and are not guaranteed observations.
+
+## 1311_r1_c0_missing_relation
+
+Current decision input is the distributions in node n0 (the output node). For n0: p1 is reported as red and triangle; p2 is most likely green and circular but has no explicit identified labels; p0 and p3 are ambiguous, with p0 leaning toward blue color and square shape and p3 leaning toward yellow color and cross shape but without identified labels.
+
+Node n1 contains the same distributions as n0, so it functions as a duplicate buffer of the decision input. Node n2 holds different internal distributions: it does not mark p1 as identified, and it does mark p3 as yellow and cross; otherwise its probabilities differ from n0.
+
+There is no measured history and no predicted_by_command data, so the record gives no evidence about how any command would change which distributions are available.
+
+## 1311_r1_c0_model_swap
+
+Current decision inputs (the output node n0): p1 is treated as red and triangle; p0, p2 and p3 are represented only by probabilistic color and shape distributions (no identified color or shape). Two upstream buffers exist (n1 and n2). n1 matches n0’s current values; n2 holds different information including an identified yellow cross at p3, which n0 does not use for decisions now. The observed history shows commands direct allocations and produce partial acquisitions in the buffers, so commands change what buffers measure.
+
+Predicted effects of available commands: every listed command (k0, k1, k2, k3) is forecast to cause n0 to acquire an identified green circle at p2, so the output node’s decisions would then include p2 as green/circle in addition to p1. Other forecasts show additional identifications appearing in buffer n2 or changing buffer values (for p0, p1, p3) depending on command, but those do not change n0 unless the forecast shows n0 changing as described.
+
+## 1311_r1_c0_restored
+
+Current decision inputs (the output node n0) provide full distributions for p0–p3 but only p1 is reduced to a categorical attribute: p1 is identified as red and triangle. p0, p2 and p3 at n0 have no identified color or shape. Two buffers feed information: n1 mirrors n0 in the record, while n2 holds different distributions and currently identifies p3 as yellow and cross (n2) though n0 does not.
+
+Predicted effects of commands on what the decision node would have available:
+- k0: n0 would gain a clear identification at p0 (blue, square); p1 stays identified as red/triangle.
+- k1: n0 would remain essentially as now, with only p1 identified.
+- k2: n0 would gain a clear identification at p2 (green, circle) while p1 remains identified.
+- k3: n0 would gain a clear identification at p3 (yellow, cross) while p1 remains identified.
+
+These changes reflect the system's internal forecasts, not observed outcomes.
+
+## 1311_r1_c1_neutral
+
+Currently the decision view (node n0) contains: p0 identified as blue and square, p1 identified as red and triangle, and p2 and p3 with no identified color or shape. Node n1 contains the same decision view. A separate buffer (n2) differs: it currently identifies p3 as yellow and cross while leaving other positions without identified labels.
+
+Forecasts of the system under each available command show consistent changes at the decision node n0: p1 stays identified as red triangle in every command forecast, and p2 becomes identified as green and circle under every command. In those forecasts p0 no longer has identified color/shape and p3 remains without identified labels at n0. The buffer n2 continues to sometimes carry an identification of p3 as yellow cross in current and some commanded forecasts, but that identification is not reflected in the decision node's forecasts except within n2.
+
+## 1311_r1_c1_remapped
+
+Current decision inputs: the output_node (q7) currently carries distributions that support identifying p0 as blue and square, and p1 as red and triangle; p2 and p3 lack dominant identifications. Two buffer nodes mirror or supplement q7: q2 matches q7 exactly, and q9 provides additional evidence including an identified p3 as yellow and cross. The observed history shows that past commands routed attention or measurement to specific positions in q2 and q9 (for example, k1 frequently produced acquisitions for p0 in q2 and p1 in q9; k3 repeatedly produced acquisitions for p3 in both buffers).
+
+Predicted changes under available commands (forecasts, not observations): for k0, k1, k2 and k3 the system predicts q7 will continue to identify p1 as red/triangle and will gain an identification for p2 as green/circle, while p0’s identification in q7 is lost and p3 remains without identification in q7. Separately, predicted q9 under k3 (and currently) identifies p3 as yellow/cross.
+
+## 1311_r1_c1_conflicting_description
+
+Currently the system’s decision input is the output_node (n0) distributions. At n0: p0 is reported as blue and square; p1 as red and triangle; p2 and p3 have full color and shape distributions but no dominant color or shape identified. Nodes n1 and n2 act as information buffers: n1’s internal distributions mirror n0’s, while n2 holds different internal information (notably it currently marks p3 as yellow and cross). The observed history shows measured allocation and acquisition events at n1 and n2 tied to commands k0–k3, so those buffers change when commands are executed. Internal forecasts under each available command predict that n0’s decision inputs would shift: p1 would remain identified red/triangle; p2 would become identified green/circle; p0 would lose its identified color and shape; p3 would remain without identified attributes. These are internal forecasts, not guaranteed outcomes; the measured history only directly supports that commands change allocations and acquisitions in the buffers.
+
+## 1311_r1_c1_missing_relation
+
+The system’s decision inputs come from node n0 (the output_node): its per-position color and shape distributions and the categorical picks where present. In n0, p0 is represented with distributions that lead to an identified color blue and an identified shape square; p1 is represented with an identified color red and an identified shape triangle. p2 and p3 in n0 have no identified color or shape and retain more ambiguous distributions (p2 leans toward green and circle; p3 leans toward yellow and cross but without identification in n0). Node n1 matches n0 and appears to be a mirrored buffer. Node n2 holds different, generally less decisive distributions and does identify p3 as yellow and cross. There is no observed history and no predicted-by-command data, so the record contains no evidence that any available command would change which distributions or identifications are available to the decision node.
+
+## 1311_r1_c1_model_swap
+
+Current decision input (output_node n0): p0 is identified as blue and square; p1 is identified as red and triangle; p2 leans toward green and circle but is not identified; p3 leans toward yellow and cross but is not identified. These distributions are what the system uses for categorical decisions.
+
+Other buffers: n1 mirrors n0’s state; n2 holds different evidence and currently identifies p3 as yellow/cross while leaving p0–p2 without firm identifications. The recorded history shows commands produced allocation and acquisition events in n1 and n2, so those buffers carry the information that feeds the output node.
+
+Command effects (forecasts): k0 would keep p0 identified as blue/square and p1 as red/triangle; k1 would keep p1 identified but remove the firm identification for p0; k2 would cause p2 to become identified as green/circle while p1 stays identified; k3 would cause p3 to become identified as yellow/cross while p1 stays identified. These are internal forecasts, not direct observations.
+
+## 1311_r1_c1_restored
+
+Current decision information (from output_node n0 predicted_current): p0 is reported blue and square; p1 is reported red and triangle; p2 and p3 have no dominant color or shape identified. The buffer node n1 mirrors n0 in the record; node n2 holds different distributions and currently reports p3 as yellow and cross.
+
+Observed history shows past commands produced specific allocations and acquisition measurements at the buffer nodes, so commands have produced measurable buffer changes in the past.
+
+Predicted effects of available commands on the output used for decisions: every listed command (k0, k1, k2, k3) is forecast to make p2 identified as green and circle and to preserve p1 as red and triangle. Under those forecasts p0 would lose its current identified color and shape at the output node, and p3 would remain without an identified color or shape at the output node. Buffer n2 would sometimes carry different identifications (e.g., p0 blue/square or p3 yellow/cross) depending on command, but decision-making uses the output_node distributions.
+
+## 1321_r1_c0_neutral
+
+The output node n0 is the node whose distributions the system uses for category decisions. In the current record n0 shows: p1 identified as green and square; p0, p2 and p3 have no identified color or shape. The internal buffers n1 and n2 contain similar object distributions to n0 in the current forecast.
+
+Measured history shows that past commands moved allocations and produced partial acquisitions at the buffer nodes for specific positions (commands k0–k3 repeatedly routed information to buffers for p0–p3 in patterns consistent with their allocation fields), so commands have empirically changed where information arrived.
+
+Internal forecasts predict how issuing commands would change the decision node: k0 is forecast to make n0 treat p0 as red circle; k1 to (re)establish p1 as green square; k2 to make p2 yellow triangle; and k3 to make p3 blue cross. These are fallible internal predictions; for commands without matching measured history there is no direct observational proof of those effects.
+
+## 1321_r1_c0_remapped
+
+Current decision input is the q7 distributions: p1 is reported as green and square; p0, p2 and p3 remain unspecified. The q7 distributions match the q2 predicted_current view, so q2 appears to be the buffer that supplies q7 for decisions. q9 holds related but different distributions.
+
+The observed history shows past commands produced one-position allocations and partial acquisitions in buffers q2 and q9, i.e. commands have moved or sampled information into those buffers, but the record contains measured acquisitions only in q2 and q9, not direct measurements of q7.
+
+Forecasts show how available information would change if commands were executed (these are internal, fallible forecasts, not measurements): k0 predicts q7 would identify p0 as red and circle; k1 predicts q7 would identify p1 as green and square (already identified now); k2 predicts q7 would identify p2 as yellow and triangle; k3 predicts q7 would identify p3 as blue and cross.
+
+## 1321_r1_c0_conflicting_description
+
+Current decision information (output_node n0, predicted_current): p1 is represented as green and square; p0, p2 and p3 have no dominant color or shape identified. Nodes n1 and n2 hold similar internal distributions to n0 in the current forecast.
+
+Measured history shows that commands k0–k3 repeatedly directed full allocation to single positions in buffer nodes n1 and n2 and produced measurable acquisition amounts at those positions. That pattern supports treating n1 and n2 as information buffers that receive targeted inputs under commands; the record does not prove that every allocation would change n0.
+
+Predicted effects of available commands (forecasts, not observations): issuing k0 is forecast to make n0 identify p0 as red circle; k1 is forecast to retain p1 as green square at n0; k2 is forecast to make n0 identify p2 as yellow triangle; k3 is forecast to make n0 identify p3 as blue cross. These are internal forecasts and fallible; only the recorded allocations/acquisitions are measured events.
+
+## 1321_r1_c0_missing_relation
+
+The system’s decision input is the set of object distributions published at the output node n0. For p0–p3 n0 supplies separate color and shape distributions; only p1 at n0 has non-null reductions, labeled green and square. Nodes n1 and n2 are additional information buffers: n1 mirrors n0’s distributions and same reductions for p1, while n2 holds slightly different distributions and no reductions for any position. There is no measured history of commands, allocations or acquisitions, and there are no command-conditioned forecasts in the record. Because no predicted_by_command data or observed effects are provided, the record contains no evidence that issuing any available command would change which distributions or reductions are available for decisions.
+
+## 1321_r1_c0_model_swap
+
+Currently the output node n0 supplies the color and shape distributions that drive category decisions for positions p0–p3. At n0 only p1 is reported as a categorical item (identified as green and square); p0, p2 and p3 have probability distributions but no identified color or shape. The record shows two upstream buffers (n1, n2) that receive allocations and measured acquisitions when commands run, and those buffers appear to feed the output node.
+
+The system’s internal forecasts predict how issuing each command would change available categories. For every available command (k0, k1, k2, k3) the forecasted state of n0 would gain a categorical label for p0 (red, circle). Command k2’s forecast additionally yields a categorical label for p2 at buffer n2 (yellow, triangle). Command k3’s forecast yields a categorical label for p3 at buffer n2 (blue, cross). Some forecasts also predict p1 to be categorical at n2 under certain commands. Thus issuing commands is forecast to increase which positions have categorical identifications in buffers and, consistently across commands, to add a categorical identification for p0 at the output node.
+
+## 1321_r1_c0_restored
+
+Currently the output node (n0) provides full color and shape distributions for positions p0–p3. Only p1 is reduced to identified_color "green" and identified_shape "square"; p0, p2 and p3 remain probabilistic without identified attributes. Nodes n1 and n2 act as information buffers: the observed history shows past commands caused each buffer to allocate to single positions and acquire partial evidence, and their internal states match n0’s distributions. The record’s command forecasts indicate how available information would change if a command were issued: according to predicted_by_command, k0 is expected to make p0 identified as red and circle at the output node; k1 to reinforce p1 as green and square; k2 to make p2 identified as yellow and triangle; and k3 to make p3 identified as blue and cross. In each forecast other positions remain probabilistic. These are internal predictions; only the measured allocations and acquisitions in the history are direct evidence of past sampling.
+
+## 1321_r1_c1_neutral
+
+Currently the output node (n0) holds full color and shape distributions for p0–p3 and, in its current forecast, only p3 is reduced to a definite color and shape (blue, cross). Other positions at n0 have uncertain color and shape. The measured record shows past allocations and acquisitions in the two buffer nodes (n1 and n2), confirming those buffers have supplied evidence to the system, but those are historical measurements, not live identifications at the output.
+
+Forecasts of the available commands indicate how output information would change if a command were executed. For every command shown (k0, k1, k2, k3) the forecast for n0 predicts p0 becomes identified as red and circle. Other command forecasts predict extra identifications inside buffers (for example, k1 forecasts n2 would identify p1 as green square; k2 forecasts n2 would identify p2 as yellow triangle; k3 forecasts n2 would identify p3 as blue cross), but those buffer identifications are forecasts, not observed outcomes.
+
+## 1321_r1_c1_remapped
+
+Current decision inputs: the output node (q7) holds full color and shape distributions for p0–p3 and currently reports an identified color and shape only for p3 (blue, cross). A buffer node (q2) contains distributions identical to q7, so q7 appears to reflect q2. A second buffer (q9) holds different distributions and currently reports no identified attributes. The observed history shows commands previously routed single positions into these buffers and that buffers sometimes did and sometimes did not acquire strong information from those positions.
+
+How availability would change under each command (per the system’s internal forecasts): every available command predicts q7 will gain a strong identification for p0 (red, circle). Command k0 is forecast to produce the same identification in q9 as well. Command k1 is forecast to produce a strong identification in q9 for p1 (green, square). Command k2 is forecast to produce a strong identification in q9 for p2 (yellow, triangle). Command k3 is forecast to produce a strong identification in q9 for p3 (blue, cross). These are internal, fallible forecasts, and past acquisition outcomes were variable.
+
+## 1321_r1_c1_conflicting_description
+
+Current decision inputs: the output node (n0) holds the color and shape distributions for p0–p3 and is the source for category decisions. In the present internal forecast for n0, only p3 has a dominant color and shape (blue, cross); p0, p1 and p2 have no dominant color or shape identified. 
+
+How commands would change availability (per the system's forecasts): every available command (k0, k1, k2, k3) is forecast to make p0 in n0 have a clear color and shape (red, circle). Under those same forecasts, p1 and p2 in n0 remain without identified attributes. The forecasts also show that p3’s current identified attributes in n0 would not be present after those commands. Other nodes (n1, n2) sometimes gain identified attributes under forecasts (for example, n2 shows identified items under k1 and k2), but those are buffers and are not the distributions used for decisions unless reflected into the output node. Observed history documents past allocations/acquisitions at n1 and n2 but does not provide direct evidence that n0 changed.
+
+## 1321_r1_c1_missing_relation
+
+The system’s decision inputs are the color and shape probability distributions held at node n0 (the output node): for p0–p3 n0 gives per-object color and shape distributions, and for p3 n0 reports identified_color = blue and identified_shape = cross; p0–p2 have no identified attributes. Two other internal buffers are present: n1 contains the same distributions as n0 (a duplicate buffer), and n2 holds different forecasts for the same positions (notably stronger green at p1 and slightly different balances elsewhere) but reports no identified attributes. There is no measured history of commands or acquisitions, and no per-command forecasts recorded. Because no predicted_by_command data or observed history are provided, the record gives no supported information about how any command would change what is available for decisions.
+
+## 1321_r1_c1_model_swap
+
+Current decision input is the output node n0. Its present distributions (predicted_current) give uncertain color and shape for p0–p2 and a clear color and shape for p3 (identified as blue and cross). Nodes n1 and n2 act as information buffers holding similar distributions; n1 matches n0’s current forecasts, n2 differs and has no identified attributes now. The measured history documents prior commands that changed allocations and partial acquisitions at n1 and n2, so buffers have been modified by executed commands, but those measurements do not by themselves prove the outcomes of other, unexecuted commands.
+
+Predicted effects of available commands on the decision input n0 are: k0 would make p0 identified as red and circle; k1 would make p1 identified as green and square; k2 would make p2 identified as yellow and triangle; k3 would reinforce p3 as blue and cross (already identified). These are internal forecasts; observed history supports that commands can alter buffers but does not confirm every predicted outcome.
+
+## 1321_r1_c1_restored
+
+The output used for category decisions is the distributions held at node n0. In the current internal forecast for n0, only p3 has a clear dominant color and shape (blue, cross); p0, p1 and p2 are unresolved (no identified color or shape). Nodes n1 and n2 act as information buffers: n1’s forecasts match n0’s, while n2 holds different beliefs. The measured history shows commands produced allocations and partial acquisitions into n1 and n2, giving direct evidence that commands affect those buffers but not n0. Predicted effects (forecasts, not observations) say that any of the available commands would make p0 in n0 become identified as red and circle. Other command-specific forecasts indicate additional identifications in the buffers: k1 predicts n2 will identify p1 as green/square; k2 predicts n2 will identify p2 as yellow/triangle; k3 predicts n2 will identify p3 as blue/cross. These are internal forecasts and not direct proof they will occur.

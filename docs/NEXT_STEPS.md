@@ -2,6 +2,12 @@
 
 ## Current plan (2026-10-04)
 
+The [named neutral pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) has 100% checked
+attribute accuracy in all primary presentation groups, but fails coverage minima;
+its model intervention also reveals an unsupported buffer generalization. Next
+restore current allocation and unattended recovery forecasts to the neutral state,
+then test complete reporting. Independent rubric review is requested and pending.
+
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the
 next pilot needs explicit position IDs and named distributions. The full failed

@@ -162,6 +162,10 @@ identifiable comparison, reporting interface, and feasible power analysis exist.
 
 Current completion: a [draft rubric](FUNCTIONAL_REPORT_RUBRIC.md), rating form,
 and [validated causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md) are available.
-Independent rubric review and integration with learned model state remain pending;
+The [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) passes engineering
+checks. Two neutral prose pilots are retained; [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md)
+improves checked attribute accuracy but fails coverage and omits model fields needed
+for focal/background and unattended-availability reports. Independent rubric review
+and a complete neutral attention-state interface remain pending;
 none of the six stages is complete in full. The preprint's September 27 results remain valid for that study,
 but the manuscript needs the later specificity and self-label findings incorporated.
