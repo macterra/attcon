@@ -44,6 +44,11 @@ words “conscious,” “feel,” or “aware” are insufficient evidence. Req
 explanation of the judgment and record whether a technical interpretation fits
 equally well. Do not reward expressiveness or verbosity.
 
+A blank [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) separates rubric
+review and theoretical predictions from later report ratings. It includes an
+exposure record and asks which contrasts also fit ordinary apparatus descriptions.
+No completed independent review has been received.
+
 ## Blinded review procedure
 
 Before confirmation, reviewers receive this draft and the independent grounding,

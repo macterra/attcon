@@ -289,6 +289,13 @@ confuses an unstated selected position with absence of a supplied forecast. The
 all-fixtures gate halts before generating any row-3 reports. This is another retained
 measurement limitation, not a new consciousness-related result.
 
+An [explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md)
+passes 33/36 fixtures but misaddresses one explicit readout claim and adds unsupported
+unknown-selection assertions in two presence/omission fixtures. It also halts before
+reporting. Repeated instruction amendments have not yet established semantic audit
+reliability. Typed schemas alone do not resolve the problem. A blank independent
+rubric-definition review form is prepared; no completed human review exists.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

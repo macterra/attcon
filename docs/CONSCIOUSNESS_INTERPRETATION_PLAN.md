@@ -51,7 +51,8 @@ uncertainty; automated scores are secondary checks, not substitutes for that rev
 No human reviews have yet been obtained. Preparing materials is authorized by this
 plan; contacting reviewers is a separate action requiring explicit instruction.
 
-Deliverables: versioned rubric, blind rating form, scoring instructions, and
+Deliverables: versioned rubric, [independent definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md),
+blind rating form, scoring instructions, and
 prespecified mapping from theoretical predictions to each primary contrast.
 
 ## 2. Make the functional distinction identifiable
@@ -174,6 +175,10 @@ addresses and forecast-presence metadata, with prepared inputs from unused row 3
 [Qualification](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md) fails 1/32 fixtures and
 halts before reporting. The [v7 amendment](NEUTRAL_FUNCTIONAL_PILOT_V7.md) adds
 explicit forecast-supply evidence rules, retaining identical unused row-3 reporter
-inputs. Qualification and reporting remain pending. Independent rubric review and human ratings remain
+inputs, but [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md). No
+v6/v7 reports are generated; row 3 remains unused. A simpler semantic measurement
+design and complete learned three-way/crossed-intervention controls are next
+independent work. The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+is prepared but contains no completed human review. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.

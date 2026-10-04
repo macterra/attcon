@@ -21,7 +21,8 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 - [Latest self-access replication and label control](SELF_LABEL_RESULTS.md) and [current priorities](NEXT_STEPS.md).
 - [Functional wiring development](FUNCTIONAL_WIRING_RESULTS.md), [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md), and [neutral reporting pilot protocol](NEUTRAL_FUNCTIONAL_PILOT_PROTOCOL.md).
 - [Neutral pilot results and retained errors](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) and [all actual outputs](NEUTRAL_FUNCTIONAL_PILOT_REPORTS.md).
-- [Explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7.md): unchanged row-3 reporter inputs; qualification pending.
+- [Independent rubric-definition review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md): blank; review and human ratings remain outstanding.
+- [Explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7.md): [qualification fails 3/36](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md); no reports generated.
 - [Typed process-audit pilot v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md): [qualification fails 1/32](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md); no reports generated.
 - [Complete-interface pilot v5 results](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md): coverage improves; restoration fails the frozen audit gate. [All 36 actual reports](NEUTRAL_FUNCTIONAL_V5_REPORTS.md) and [protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md).
 - [Auditor-amended complete-interface pilot v4](NEUTRAL_FUNCTIONAL_PILOT_V4.md): [qualification fails 1/28](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md); no reports generated.

@@ -7,12 +7,13 @@ The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) comple
 groups pass the full factual minima, but restoration fails precision and process
 coverage, principally due to malformed extracted selection addresses. Verified
 reporter contradictions also remain. Most character judgments are technical.
-The [v6 protocol](NEUTRAL_FUNCTIONAL_PILOT_V6.md) enforces separate process
-address schemas and distinguishes forecast-presence metadata. Prepared inputs
-use unused row 3. [Qualification fails 1/32](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md)
-by conflating unstated selection with absent forecast information; no reports are
-generated. The [v7 amendment](NEUTRAL_FUNCTIONAL_PILOT_V7.md) requires explicit forecast-supply
-evidence and keeps reporter inputs unchanged. Qualification and reports are pending. Independent rubric review is requested and pending.
+Typed schemas remove the old malformed-address defect in qualification, but
+[v6](NEUTRAL_FUNCTIONAL_PILOT_V6_RESULTS.md) fails 1/32 semantic fixtures and
+[v7](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS.md) fails 3/36. Both halt before reporting;
+row 3 remains unused. Next assess a simpler measurement design and complete the
+learned three-way/crossed-intervention engineering controls. A blank
+[independent rubric-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now distinguishes
+definition/prediction review from later blind ratings. Independent rubric review is requested and pending.
 
 Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
 at auditor qualification without generating reports. All failures remain archived.
