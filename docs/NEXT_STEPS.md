@@ -2,6 +2,11 @@
 
 ## Current plan (2026-10-04)
 
+Second development milestone: [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md)
+passes all prespecified engineering minima in three paired models. Neutral records
+now contain grounded acquisition histories and fallible internal counterfactuals.
+The next step is a neutral factual-reporting pilot and identifier/label controls.
+
 First development milestone: [causal-wiring validation](FUNCTIONAL_WIRING_RESULTS.md)
 and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). No new language
 reports or theory confirmation have been generated.
