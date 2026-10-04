@@ -269,6 +269,20 @@ report generation; this version produces no new language-report evidence. A
 but fails a confidence-versus-recovery fixture (27/28 pass) and also halts before
 report generation. These retained failures constrain the use of machine judges.
 
+A [separately audited complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md)
+passes categorical/process qualifications (14/14 and 20/20) and completes 36 reports
+plus 72 source-blind audits. Coverage improves, but the restored group fails the
+frozen conservative-precision (89.46%) and process-coverage (72.22%) minima. Forty
+selected positions are duplicated into the wrong extraction field, including thirty
+in restoration; their values match the state, but the frozen contract rejects their
+addresses. Other failed fields include six verified categorical contradictions,
+eight unsupported positive readout-selection claims, and seventeen null-valued
+readout-selection assertions conflated with missing forecast information. All scores
+and actual outputs remain retained. Machine character ratings are 28 technical,
+seven object descriptions, one mixed and none experiential. This development result
+requires evaluator repair, further fidelity work and independent review; it provides
+no new consciousness-related confirmation. Reporter and Controller remain separate.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

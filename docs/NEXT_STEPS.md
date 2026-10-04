@@ -2,16 +2,16 @@
 
 ## Current plan (2026-10-04)
 
-The [named neutral pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) has 100% checked
-attribute accuracy in all primary presentation groups, but fails coverage minima;
-its model intervention also reveals an unsupported buffer generalization. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now restores current allocation,
-unattended recovery and command-selection forecasts. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails two of 26
-fixtures, so report generation is halted. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) distinguishes missing prose
-information from an asserted absence of model selection, with unchanged reporter
-inputs. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails one of 28 fixtures
-by conflating confidence with recovery. No v4 reports are generated; the [v5 protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md) now separates category and
-process audits and retains all failed semantic boundaries. Both qualifications pass (14 categorical and 20 process fixtures). All 36
-report attempts complete without retries; separate source-blind audits are pending. Independent rubric review is requested and pending.
+The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) completes
+36 reports and two sets of 36 source-blind audits. Four presentation/intervention
+groups pass the full factual minima, but restoration fails precision and process
+coverage, principally due to malformed extracted selection addresses. Verified
+reporter contradictions also remain. Most character judgments are technical.
+Next enforce process-address schemas and missing-field semantics, then test a new
+development sample. Independent rubric review is requested and pending.
+
+Earlier [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) fails coverage; v3 and v4 halt
+at auditor qualification without generating reports. All failures remain archived.
 
 The [neutral functional pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed all
 36 reports. Verified attribute errors leave factual fidelity unestablished; the

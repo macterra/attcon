@@ -21,7 +21,7 @@ are mostly mixed technical/access descriptions; this does not prove qualia.
 - [Latest self-access replication and label control](SELF_LABEL_RESULTS.md) and [current priorities](NEXT_STEPS.md).
 - [Functional wiring development](FUNCTIONAL_WIRING_RESULTS.md), [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md), and [neutral reporting pilot protocol](NEUTRAL_FUNCTIONAL_PILOT_PROTOCOL.md).
 - [Neutral pilot results and retained errors](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) and [all actual outputs](NEUTRAL_FUNCTIONAL_PILOT_REPORTS.md).
-- [Complete-interface pilot v5 with separate factual audits](NEUTRAL_FUNCTIONAL_PILOT_V5.md): qualifications pass; 36 reports complete; audits pending.
+- [Complete-interface pilot v5 results](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md): coverage improves; restoration fails the frozen audit gate. [All 36 actual reports](NEUTRAL_FUNCTIONAL_V5_REPORTS.md) and [protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md).
 - [Auditor-amended complete-interface pilot v4](NEUTRAL_FUNCTIONAL_PILOT_V4.md): [qualification fails 1/28](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md); no reports generated.
 - [Complete neutral attention-state pilot v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) and [retained auditor-qualification failure](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md).
 - [Named neutral pilot v2: accuracy, coverage, and remaining state-interface gap](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md).

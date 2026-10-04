@@ -161,17 +161,16 @@ identifiable comparison, reporting interface, and feasible power analysis exist.
 6. Update the preprint with retained follow-up results and the resulting claim limits.
 
 Current completion: a [draft rubric](FUNCTIONAL_REPORT_RUBRIC.md), rating form,
-and [validated causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md) are available.
-The [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) passes engineering
-checks. Two neutral prose pilots are retained; [v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md)
-improves checked attribute accuracy but fails coverage and omits model fields needed
-for focal/background and unattended-availability reports. The [v3 protocol](NEUTRAL_FUNCTIONAL_PILOT_V3.md) now supplies current allocation,
-unattended recovery and command-selection forecasts, with prepared inputs and
-pre-data process-claim checks. Its [auditor qualification](NEUTRAL_FUNCTIONAL_PILOT_V3_RESULTS.md) fails 2/26 fixtures,
-so no v3 reports are generated. The [v4 amendment](NEUTRAL_FUNCTIONAL_PILOT_V4.md) preserves its reporter inputs
-and requalifies an auditor with explicit missing-information semantics. Its [qualification](NEUTRAL_FUNCTIONAL_PILOT_V4_RESULTS.md) fails 1/28 fixtures,
-so no v4 reports are generated. The [v5 protocol](NEUTRAL_FUNCTIONAL_PILOT_V5.md) now separates process and
-category audits, keeping reporter inputs unchanged. Both qualifications pass and all 36 report attempts complete without retries.
-Separate source-blind audits and independent rubric review remain pending;
-none of the six stages is complete in full. The updated preprint retains the September 27 study and incorporates the later
-specificity, self-label and neutral-pilot limitations.
+[validated causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md), and
+[learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) are available. All neutral
+pilot failures remain retained: v1 has attribute errors, v2 fails coverage, and v3/v4
+halt at auditor qualification without reports. The
+[complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) supplies current
+allocation, unattended recovery and command selection; its qualifications pass and
+36 reports plus 72 audits complete. Restoration fails the frozen factual gate,
+principally from malformed extracted selection addresses, with separate verified
+reporter contradictions and predominantly technical character. Before another
+reporting test, enforce process-address schemas and missing-field semantics and
+use unused development data. Independent rubric review and human ratings remain
+pending; none of the six stages is complete in full. The updated preprint retains
+the September 27 study and incorporates later findings and limitations.
