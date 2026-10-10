@@ -1,0 +1,62 @@
+{
+  "kind": "fresh_context_ai_prefreeze_methods_and_code_review",
+  "reviewer": "/root/frozen_source_assay_review",
+  "created_utc": "2026-10-10T21:49:10.792242+00:00",
+  "review_scope": "Bounded synthetic physical-information source-localization diagnostic only",
+  "source_sha256": {
+    "docs/PHYSICAL_SOURCE_LOCALIZATION_V1_PROTOCOL.md": "22b1321c43da5387acfca59cec49b0cb5ec94d3fe69c22cc6ed7a7063dbcfcac",
+    "scripts/physical_source_localization_v1.py": "654dead82e62305b1980458b0bd5614c9af099652be71cf024c9b9b3cc48a776",
+    "tests/test_physical_source_localization.py": "7ff0e79786740a3b604a58ec148e53da1243ca0797b404ad9c12e1221a874c67",
+    "src/attcon/functional_model.py": "56ae1a431f7dd2fa31f8499f1549daaff587f24149c8fb5cf3f22d22169d1613",
+    "src/attcon/bound_content.py": "699567550d8e22947789794add5176c9d8887c9876b6e79373fd8463bd2a0f92",
+    "src/attcon/predictive_attention.py": "021b1158e86df555e214de81a82c9d93fc4b7b06b9033dfc0b7740fda9a26560",
+    "src/attcon/functional_controls.py": "4806e3e35045ebe97d90b25db5d3a88d8137afe3ac51c712060262cc7bb810f2",
+    "scripts/bound_reports.py": "74c218fa33a77424aed3e3ac662e1c21329dbfe6457e8c7a71aa629385cea0f9",
+    "audits/integrated_report_pilot_v2/methods_review/review.md": "c2d6da6a5a11f03bbcaa930b74a28ad5d9ef5ab33d9f32865c6f361fa041c562"
+  },
+  "new_assay_outputs_seen": false,
+  "target_reports_generated": false,
+  "model_collection_run_by_reviewer": false,
+  "files_changed": [
+    "audits/physical_source_localization_v1/design_review/review.md",
+    "audits/physical_source_localization_v1/design_review/metadata.json"
+  ],
+  "review_exposure_boundary": {
+    "before_source_registration": true,
+    "before_model_attempt": true,
+    "results_present": false,
+    "states_present": false
+  },
+  "validation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m unittest tests.test_physical_source_localization",
+    "tests": 4,
+    "result": "passed",
+    "model_outputs_collected": false
+  },
+  "first_pass_issues": [
+    {
+      "id": "R1",
+      "severity": "medium",
+      "status": "corrected_by_parent_before_freeze_and_model_outputs",
+      "finding": "Protocol promises retained scenes and causal checks; inspected collector returns derived features/targets/categories/checks but not direct pixel/process/causal tensors. Preserve these sources or narrow retention claim.",
+      "correction": "Collector now retains base patches, process observations/allocation, and last-variant original/attenuated/restored access and binding tensors."
+    },
+    {
+      "id": "R2",
+      "severity": "low",
+      "status": "corrected_by_parent_before_freeze_and_model_outputs",
+      "finding": "Access attenuation and binding-roll change sizes are measured but not asserted nonzero. If intended as nondegeneracy gates, assert before freeze and retain failures.",
+      "correction": "Collector now asserts nonzero access attenuation/binding-roll changes and nonzero physical-target energy."
+    }
+  ],
+  "interpretive_gate": "No appearance, experience, or theory acceptance verdict supplied",
+  "independence_limits": [
+    "AI reviewer shares parent model/training and commissioning context.",
+    "Prior project outcomes were available in inherited context; this is not a naive historical-results review.",
+    "Procedural separation is not independent human judgment or empirical reference qualification.",
+    "Parent may revise source after this first-pass review; recorded hashes identify reviewed bytes."
+  ],
+  "hash_scope": "Final pre-freeze source reread after parent corrected first-pass recommendations; initial pre-correction bytes were not separately archived or hashed by this reviewer.",
+  "correction_verified_utc": "2026-10-10T21:49:32.085844+00:00",
+  "final_prefreeze_outstanding_critical_issues": []
+}
