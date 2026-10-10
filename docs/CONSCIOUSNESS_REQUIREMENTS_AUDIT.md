@@ -22,8 +22,14 @@ new reports and two source-first AI audits after bounded qualification. All 504
 requested facts are judged covered, with one unsupported command-forecast recovery
 presupposition retained. Both blind raters find technical reports and no candidate
 appearance pattern. This changes source-integration/reporting evidence, not the
-unachieved theory-facing conclusion. Next test frozen-state source sufficiency;
-no humans are required.
+unachieved theory-facing conclusion. The subsequent
+[physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md) completes
+objective calibration on 384 held-out scenes: strong upstream visual-hidden
+prediction, weak category/bound/buffer probes and exact recurrent attention-state
+invariance at fixed history. No participant appearance judgments are tested. AI
+reference discovery identifies candidate archives, but their raw trials/stimuli
+remain unverified. Complete reference qualification and valid stimulus transfer
+before the full appearance assay; no humans are required.
 
 ## Requirement-by-requirement evidence
 
@@ -46,6 +52,8 @@ no humans are required.
 | 4. Powered frozen theory-facing protocol | Interpretation plan; pilot protocols; `audits/functional_power_feasibility_v1/summary.json` | An unfrozen candidate design has 64 exact sensitivity cases; no measured rating dependence or validated endpoint. No theory-facing protocol fixes independent rubric, raters, contrasts, multiplicity, model/episode budget and stopping rules. | Feasibility component available; protocol missing |
 | Confirmation reports and randomized source-blind ratings with reviewer provenance | Current blank form and development archives | Original object-content confirmation remains valid for its narrower registered study. New functional-interpretation reports are development; no new confirmation ratings; AI raters are authorized. | Missing evidence |
 | Candidate grounding comparisons and causal/fidelity controls in plan §4 | Current fixtures/pilots; draft-2 review response | Model interventions/revision/missing fields are fidelity/source controls. Neutral/remapped attribution remains a candidate grounding endpoint; reference review now specifies an appearance/clarity candidate separately. No qualified powered correspondence result exists. | Incomplete |
+| Frozen source-sufficiency physical calibration | Physical-source protocol/results, frozen raw tensors and replay receipt | Three existing pairs; 384 held-out scenes. Physical transformation signal is strong in upstream visual hidden features and weak under category/bound/buffer probes. Attention hidden/forecast are exactly invariant at fixed history. Exact access/binding restoration and bridge reconstruction pass. This does not test participant appearance or all bound-model properties. | Physical component complete; appearance/reference component unachieved |
+| Archived participant appearance/task/confidence reference and stimulus conversion | Physical-source reference discovery review | Primary studies and author archives identified; no actual trial data or stimulus code downloaded/qualified. Clarity/confidence ratings do not supply a validated free-prose reference distribution. | Candidate discovery complete; file-level qualification and domain transfer incomplete |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
 | 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |
@@ -89,8 +97,9 @@ changes. The cutoff is engineered and raw categories remain decodable. The new
 [task-source export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) now integrates these
 traces into neutral reporting inputs and a frozen field inventory. Twenty tests
 and exact replay validate its source correspondence, not prose accuracy or human
-characterization. Task-vocabulary review and a bounded new pilot now follow; do not substitute
-this component for independent review or introduce a task-necessity requirement.
+characterization. Task-vocabulary review and the bounded integrated pilot have
+subsequently completed; do not substitute source integration for reference
+correspondence or introduce a task-necessity requirement.
 
 The quote-first manual procedure and claim/coverage forms are development drafts,
 not a qualified or frozen measurement. Preserve v5/v6/v7 failures and real reporter
@@ -107,13 +116,16 @@ review errors, corrected in addenda without replacing original annotations.
 The [AI review results](AI_REVIEW_RESULTS_V1.md) distinguish these completed review
 components from outstanding measurement/experimental requirements. New task
 synthetic cases are not new Controller trials or Reporter outputs. Quote/address
-validation does not certify semantics. Their retrospective coverage checklists
-need a prospective source-first replacement. The appearance candidate is externally
-motivated but remains unvalidated on fresh target reports.
+validation does not certify semantics. The integrated pilot subsequently supplies
+prospective source-first coverage and bounded supportedness qualification. The
+appearance candidate is externally motivated but remains unvalidated on fresh
+target reports or qualified participant data.
 
-Human review is optional. Next freeze scoped task-auditor qualification and required
-coverage before collecting new integrated-task prose, then evaluate the fixed-budget
-development pilot and register confirmation/replication. Grounding, operational
+Human review is optional. Bounded task-auditor qualification, integrated-task prose
+and physical-source calibration now complete. Next qualify actual archived
+appearance judgments and stimuli, establish a valid frozen-model input conversion,
+and separately register the reference-qualified source assay before more prose.
+Only then prepare theory-facing confirmation/replication. Grounding, operational
 reference correspondence and optional comparator specificity remain separate.
 No reviewer outreach has occurred. Goal completion remains unestablished, but lack
 of human participation no longer blocks work.

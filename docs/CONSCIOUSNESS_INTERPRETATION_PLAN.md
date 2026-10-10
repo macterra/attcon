@@ -63,6 +63,16 @@ ordinary content/answer controls; a stimulus-property decoder is not itself a qu
 report. Do this before further prose, rather than injecting desired terminology.
 Operational correspondence, powered confirmation and replication remain incomplete.
 
+The [physical-source component](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md) is now
+complete under a separate pre-output registration. Visual hidden features retain
+strong intensity/edge signal; existing categorical/bound/buffer probes are weak,
+and recurrent attention hidden/forecast states are exactly invariant to image
+changes at fixed history. This is an input-path and physical calibration result,
+not an appearance judgment or falsification of the broader bound-model theory.
+AI data discovery identifies archived clarity/confidence studies, but raw trial
+files and stimuli have not been qualified. That reference/transfer step precedes
+the full appearance assay and further reporting. Human review remains optional.
+
 ## 1. Specify the target features before observing new reports
 
 Prepare a rubric grounded in independent descriptions of consciousness reports,

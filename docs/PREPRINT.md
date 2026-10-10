@@ -30,7 +30,12 @@ original structural features also occur in external-device descriptions. Explici
 self-access reporting replicates (26/48 versus 3/48 independent-access controls),
 but the same table produces similar dependence descriptions under a camera label
 (41/48 versus 39/48). Self-attribution therefore follows supplied labels in that
-interface. The broader theory-facing interpretation remains unresolved.
+interface. A later neutral pilot produces 18 technical reports without presentation
+manner. A separately registered physical calibration diagnostic locates strong
+stimulus information in upstream visual hidden features, with weaker category-based
+probes and exact recurrent attention-state invariance at fixed history. Neither
+objective decoding nor these language findings establishes appearance judgments.
+The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
 
@@ -448,6 +453,36 @@ requirement this interface can meet. Lack of explicit appearance heads is an
 interface limitation and untested representational question, not architectural
 impossibility. Human review remains optional; independent reference validation,
 confirmation, power and replication remain incomplete.
+
+### 6.0a Frozen physical-information source diagnostic
+
+A [separately registered diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
+uses all three existing visual/functional-attention pairs, each with 128 development
+and 128 held-out scenes. Each scene has six intensity/blur variants and eight
+objects; the 18,432 held-out object-variant rows represent 384 base scenes, not
+independent replicates. Within-object centered, development-only fixed ridge probes
+predict pixel mean and neighboring-pixel squared difference. Upstream visual hidden
+features explain 98.91–99.42% and 74.49–87.28% of the respective variation. Category,
+memory-masked bound and recovery-buffer probes predict much less. These scores
+describe this readout, not all retained information. Hidden visual features are
+discarded by production binding and were not available to existing reports.
+
+Recurrent attention hidden and forecast tensors are exactly invariant across the
+pixel variants with process history fixed, and responsive under a separate
+acquisition-history perturbation. Access attenuation affects the deterministic
+category bridge, with exact restoration and category/q/interaction reconstruction.
+Binding rotation/restoration changes/restores the location-content relation with
+marginals fixed. Category confidence is not matched despite 99.707–100% identity
+accuracy. Some transformations are outside the original visual training domain.
+Raw sources/interventions, all cases and exact replay are retained. Architecture
+weights remain frozen; only the registered diagnostic readouts are fitted to
+development physical targets. No new prose or participant judgments are collected.
+
+This is physical source localization, not the reference-qualified appearance assay,
+an absent-experience result, or a falsification of all properties of the broader
+bound model. Separate-context AI review identifies archived clarity/confidence
+data, but trial/stimulus files and model-domain transfer remain unqualified. Human
+participation remains optional. The full consciousness-related goal remains open.
 
 ### 6.1 Authorized AI review route
 The user has authorized separate-context AI reviewers instead of waiting for

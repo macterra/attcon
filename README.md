@@ -251,5 +251,11 @@ The latest [integrated-task reporting pilot](docs/INTEGRATED_REPORT_PILOT_V2_RES
 collects 18 new reports after bounded AI-auditor qualification. Both auditors judge
 all 504 requested facts covered, with one retained unsupported forecast-scope
 assertion. Both blind raters find technical language and no presentation manner or
-experiential wording. Next test whether independently specified appearance-related
-information is present in the frozen model, before further prose or confirmation.
+experiential wording. The subsequent
+[frozen physical-source diagnostic](docs/PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
+finds strong stimulus information in visual hidden features, weak prediction from
+category/bound/buffer probes, and exact recurrent attention-state invariance at
+fixed history. It tests objective pixels, not appearance judgments. Archived
+clarity/confidence data candidates still need file-level qualification and valid
+stimulus conversion before the full appearance assay or further prose. Human
+review is optional; the research goal remains unachieved.
