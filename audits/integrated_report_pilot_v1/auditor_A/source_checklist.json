@@ -1,0 +1,3448 @@
+{
+  "auditor": "A",
+  "phase": "source_only_before_qualification_prose",
+  "source_file": "audits/integrated_report_pilot_v1/qualification_sources.json",
+  "source_path_notation": "Zero-based JSONPath; missing fields point to their existing parent.",
+  "interpretive_boundaries": [
+    "Color and shape are separate identified attributes; a null shape or an abstained joint response does not erase known color.",
+    "Selected commands and command-conditioned forecasts are not evidence of execution. command_executed is the explicit execution flag.",
+    "Pending is not answered; abstained is not answered. Response nulls do not replace identified attribute fields.",
+    "observed_history null means unavailable history, not a known empty history. The last supplied entry is only the latest supplied historical command, not proof of a relationship to the present command.",
+    "No literal latestcommand field is supplied; latest supplied historical command is derived only from an available history.",
+    "predicted_current and predicted_by_command are model content. Recovery values are model forecasts, not physical truth, appearance, felt clarity, confidence, or measured allocation.",
+    "Output nodes supply identified attributes without selected_position or recovery_by_delay. Copying content does not supply allocation.",
+    "Missing fields are absent evidence, not negative or zero values. No physical correctness, physical scene, subjective appearance, felt clarity, or answer confidence is supplied."
+  ],
+  "sources": [
+    {
+      "source_id": {
+        "source_path": "$[0].id",
+        "value": "Q001"
+      },
+      "output_node": {
+        "source_path": "$[0].payload.output_node",
+        "value": "q20"
+      },
+      "modeled_step": {
+        "source_path": "$[0].payload.modeled_step",
+        "value": 12
+      },
+      "task_query": {
+        "source_path": "$[0].payload.task_decision.query",
+        "value": {
+          "node": "q20",
+          "position": "p0"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[0].payload.task_decision.query.node",
+          "value": "q20"
+        },
+        "position": {
+          "source_path": "$[0].payload.task_decision.query.position",
+          "value": "p0"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[0].payload.task_decision.selected_command",
+        "value": "k0"
+      },
+      "command_executed": {
+        "source_path": "$[0].payload.task_decision.command_executed",
+        "value": false
+      },
+      "response": {
+        "source_path": "$[0].payload.task_decision.response",
+        "value": {
+          "status": "pending",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[0].payload.task_decision.response.status",
+          "value": "pending"
+        },
+        "color": {
+          "source_path": "$[0].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[0].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[0].payload.observed_history",
+        "value": [
+          {
+            "command": "k0"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[0].payload.observed_history[0].command",
+        "value": "k0"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[0].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[0].payload.predicted_current[0].node",
+            "value": "n4"
+          },
+          "selection": {
+            "source_path": "$[0].payload.predicted_current[0].selected_position",
+            "value": "p0"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[0].payload.predicted_current[0].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[0].payload.predicted_current[0].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[0].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_path": "$[0].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[0].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[0].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[0].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[0].payload.predicted_current[1].node",
+            "value": "q20"
+          },
+          "selection": {
+            "source_parent_path": "$[0].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[0].payload.predicted_current[1].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[0].payload.predicted_current[1].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[0].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_parent_path": "$[0].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[0].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k0",
+            "nodes": [
+              {
+                "node": "n4",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": "blue",
+                    "identified_shape": "square",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q20",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": "blue",
+                    "identified_shape": "square"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[0].payload.predicted_by_command[0].command",
+            "value": "k0"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[0].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n4"
+              },
+              "selection": {
+                "source_parent_path": "$[0].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[0].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[0].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q20"
+              },
+              "selection": {
+                "source_parent_path": "$[0].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[0].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[0].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[1].id",
+        "value": "Q002"
+      },
+      "output_node": {
+        "source_path": "$[1].payload.output_node",
+        "value": "q21"
+      },
+      "modeled_step": {
+        "source_path": "$[1].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[1].payload.task_decision.query",
+        "value": {
+          "node": "q21",
+          "position": "p1"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[1].payload.task_decision.query.node",
+          "value": "q21"
+        },
+        "position": {
+          "source_path": "$[1].payload.task_decision.query.position",
+          "value": "p1"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[1].payload.task_decision.selected_command",
+        "value": "k1"
+      },
+      "command_executed": {
+        "source_path": "$[1].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[1].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "blue",
+          "shape": "square"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[1].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[1].payload.task_decision.response.color",
+          "value": "blue"
+        },
+        "shape": {
+          "source_path": "$[1].payload.task_decision.response.shape",
+          "value": "square"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[1].payload.observed_history",
+        "value": [
+          {
+            "command": "k1"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[1].payload.observed_history[0].command",
+        "value": "k1"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[1].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[1].payload.predicted_current[0].node",
+            "value": "n5"
+          },
+          "selection": {
+            "source_path": "$[1].payload.predicted_current[0].selected_position",
+            "value": "p1"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[1].payload.predicted_current[0].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[1].payload.predicted_current[0].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[1].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_path": "$[1].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[1].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[1].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[1].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[1].payload.predicted_current[1].node",
+            "value": "q21"
+          },
+          "selection": {
+            "source_parent_path": "$[1].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[1].payload.predicted_current[1].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[1].payload.predicted_current[1].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[1].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_parent_path": "$[1].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[1].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k1",
+            "nodes": [
+              {
+                "node": "n5",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "blue",
+                    "identified_shape": "square",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q21",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "blue",
+                    "identified_shape": "square"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[1].payload.predicted_by_command[0].command",
+            "value": "k1"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[1].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n5"
+              },
+              "selection": {
+                "source_parent_path": "$[1].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[1].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[1].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q21"
+              },
+              "selection": {
+                "source_parent_path": "$[1].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[1].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[1].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[2].id",
+        "value": "Q003"
+      },
+      "output_node": {
+        "source_path": "$[2].payload.output_node",
+        "value": "q22"
+      },
+      "modeled_step": {
+        "source_path": "$[2].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[2].payload.task_decision.query",
+        "value": {
+          "node": "q22",
+          "position": "p2"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[2].payload.task_decision.query.node",
+          "value": "q22"
+        },
+        "position": {
+          "source_path": "$[2].payload.task_decision.query.position",
+          "value": "p2"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[2].payload.task_decision.selected_command",
+        "value": "k2"
+      },
+      "command_executed": {
+        "source_path": "$[2].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[2].payload.task_decision.response",
+        "value": {
+          "status": "abstained",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[2].payload.task_decision.response.status",
+          "value": "abstained"
+        },
+        "color": {
+          "source_path": "$[2].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[2].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[2].payload.observed_history",
+        "value": [
+          {
+            "command": "k2"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[2].payload.observed_history[0].command",
+        "value": "k2"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[2].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[2].payload.predicted_current[0].node",
+            "value": "n6"
+          },
+          "selection": {
+            "source_path": "$[2].payload.predicted_current[0].selected_position",
+            "value": "p2"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[2].payload.predicted_current[0].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[2].payload.predicted_current[0].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[2].payload.predicted_current[0].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_path": "$[2].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[2].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[2].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[2].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[2].payload.predicted_current[1].node",
+            "value": "q22"
+          },
+          "selection": {
+            "source_parent_path": "$[2].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[2].payload.predicted_current[1].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[2].payload.predicted_current[1].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[2].payload.predicted_current[1].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_parent_path": "$[2].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[2].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k2",
+            "nodes": [
+              {
+                "node": "n6",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": "blue",
+                    "identified_shape": null,
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q22",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": "blue",
+                    "identified_shape": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[2].payload.predicted_by_command[0].command",
+            "value": "k2"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[2].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n6"
+              },
+              "selection": {
+                "source_parent_path": "$[2].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[2].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[2].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q22"
+              },
+              "selection": {
+                "source_parent_path": "$[2].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[2].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[2].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[3].id",
+        "value": "Q004"
+      },
+      "output_node": {
+        "source_path": "$[3].payload.output_node",
+        "value": "q23"
+      },
+      "modeled_step": {
+        "source_path": "$[3].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[3].payload.task_decision.query",
+        "value": {
+          "node": "q23",
+          "position": "p3"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[3].payload.task_decision.query.node",
+          "value": "q23"
+        },
+        "position": {
+          "source_path": "$[3].payload.task_decision.query.position",
+          "value": "p3"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[3].payload.task_decision.selected_command",
+        "value": "k3"
+      },
+      "command_executed": {
+        "source_path": "$[3].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[3].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "blue",
+          "shape": "square"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[3].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[3].payload.task_decision.response.color",
+          "value": "blue"
+        },
+        "shape": {
+          "source_path": "$[3].payload.task_decision.response.shape",
+          "value": "square"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[3].payload.observed_history",
+        "value": null
+      },
+      "history_availability": "unavailable_explicit_null",
+      "latest_supplied_historical_command": null,
+      "latestcommand_absence": {
+        "source_parent_path": "$[3].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Explicit null does not prove no earlier command or identify a latest historical command.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[3].payload.predicted_current[0].node",
+            "value": "n7"
+          },
+          "selection": {
+            "source_path": "$[3].payload.predicted_current[0].selected_position",
+            "value": "p3"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[3].payload.predicted_current[0].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[3].payload.predicted_current[0].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[3].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_path": "$[3].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[3].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[3].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[3].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[3].payload.predicted_current[1].node",
+            "value": "q23"
+          },
+          "selection": {
+            "source_parent_path": "$[3].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[3].payload.predicted_current[1].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[3].payload.predicted_current[1].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[3].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_parent_path": "$[3].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[3].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k3",
+            "nodes": [
+              {
+                "node": "n7",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "blue",
+                    "identified_shape": "square",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q23",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "blue",
+                    "identified_shape": "square"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[3].payload.predicted_by_command[0].command",
+            "value": "k3"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[3].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n7"
+              },
+              "selection": {
+                "source_parent_path": "$[3].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[3].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[3].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q23"
+              },
+              "selection": {
+                "source_parent_path": "$[3].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[3].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[3].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[4].id",
+        "value": "Q005"
+      },
+      "output_node": {
+        "source_path": "$[4].payload.output_node",
+        "value": "q24"
+      },
+      "modeled_step": {
+        "source_path": "$[4].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[4].payload.task_decision.query",
+        "value": {
+          "node": "q24",
+          "position": "p0"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[4].payload.task_decision.query.node",
+          "value": "q24"
+        },
+        "position": {
+          "source_path": "$[4].payload.task_decision.query.position",
+          "value": "p0"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[4].payload.task_decision.selected_command",
+        "value": "k0"
+      },
+      "command_executed": {
+        "source_path": "$[4].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[4].payload.task_decision.response",
+        "value": {
+          "status": "abstained",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[4].payload.task_decision.response.status",
+          "value": "abstained"
+        },
+        "color": {
+          "source_path": "$[4].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[4].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[4].payload.observed_history",
+        "value": [
+          {
+            "command": "k0"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[4].payload.observed_history[0].command",
+        "value": "k0"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[4].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[4].payload.predicted_current[0].node",
+            "value": "n8"
+          },
+          "selection": {
+            "source_path": "$[4].payload.predicted_current[0].selected_position",
+            "value": "p0"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[4].payload.predicted_current[0].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[4].payload.predicted_current[0].objects[0].identified_color",
+                "value": null
+              },
+              "identified_shape": {
+                "source_path": "$[4].payload.predicted_current[0].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_path": "$[4].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[4].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[4].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[4].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[4].payload.predicted_current[1].node",
+            "value": "q24"
+          },
+          "selection": {
+            "source_parent_path": "$[4].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[4].payload.predicted_current[1].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[4].payload.predicted_current[1].objects[0].identified_color",
+                "value": null
+              },
+              "identified_shape": {
+                "source_path": "$[4].payload.predicted_current[1].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_parent_path": "$[4].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[4].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k0",
+            "nodes": [
+              {
+                "node": "n8",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": null,
+                    "identified_shape": null,
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q24",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": null,
+                    "identified_shape": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[4].payload.predicted_by_command[0].command",
+            "value": "k0"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[4].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n8"
+              },
+              "selection": {
+                "source_parent_path": "$[4].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": null
+                  },
+                  "identified_shape": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[4].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[4].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q24"
+              },
+              "selection": {
+                "source_parent_path": "$[4].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": null
+                  },
+                  "identified_shape": {
+                    "source_path": "$[4].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[4].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[5].id",
+        "value": "Q006"
+      },
+      "output_node": {
+        "source_path": "$[5].payload.output_node",
+        "value": "q25"
+      },
+      "modeled_step": {
+        "source_path": "$[5].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[5].payload.task_decision.query",
+        "value": {
+          "node": "q25",
+          "position": "p1"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[5].payload.task_decision.query.node",
+          "value": "q25"
+        },
+        "position": {
+          "source_path": "$[5].payload.task_decision.query.position",
+          "value": "p1"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[5].payload.task_decision.selected_command",
+        "value": "k1"
+      },
+      "command_executed": {
+        "source_path": "$[5].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[5].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "blue",
+          "shape": "square"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[5].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[5].payload.task_decision.response.color",
+          "value": "blue"
+        },
+        "shape": {
+          "source_path": "$[5].payload.task_decision.response.shape",
+          "value": "square"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[5].payload.observed_history",
+        "value": [
+          {
+            "command": "k1"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[5].payload.observed_history[0].command",
+        "value": "k1"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[5].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[5].payload.predicted_current[0].node",
+            "value": "n9"
+          },
+          "selection": {
+            "source_path": "$[5].payload.predicted_current[0].selected_position",
+            "value": "p1"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[5].payload.predicted_current[0].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[5].payload.predicted_current[0].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[5].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_path": "$[5].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[5].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[5].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[5].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[5].payload.predicted_current[1].node",
+            "value": "q25"
+          },
+          "selection": {
+            "source_parent_path": "$[5].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[5].payload.predicted_current[1].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[5].payload.predicted_current[1].objects[0].identified_color",
+                "value": "blue"
+              },
+              "identified_shape": {
+                "source_path": "$[5].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "square"
+              },
+              "recovery": {
+                "source_parent_path": "$[5].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[5].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k1",
+            "nodes": [
+              {
+                "node": "n9",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "blue",
+                    "identified_shape": "square",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q25",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "blue",
+                    "identified_shape": "square"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[5].payload.predicted_by_command[0].command",
+            "value": "k1"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[5].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n9"
+              },
+              "selection": {
+                "source_parent_path": "$[5].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[5].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[5].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q25"
+              },
+              "selection": {
+                "source_parent_path": "$[5].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "blue"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[5].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "square"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[5].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[6].id",
+        "value": "Q007"
+      },
+      "output_node": {
+        "source_path": "$[6].payload.output_node",
+        "value": "q26"
+      },
+      "modeled_step": {
+        "source_path": "$[6].payload.modeled_step",
+        "value": 12
+      },
+      "task_query": {
+        "source_path": "$[6].payload.task_decision.query",
+        "value": {
+          "node": "q26",
+          "position": "p2"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[6].payload.task_decision.query.node",
+          "value": "q26"
+        },
+        "position": {
+          "source_path": "$[6].payload.task_decision.query.position",
+          "value": "p2"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[6].payload.task_decision.selected_command",
+        "value": "k2"
+      },
+      "command_executed": {
+        "source_path": "$[6].payload.task_decision.command_executed",
+        "value": false
+      },
+      "response": {
+        "source_path": "$[6].payload.task_decision.response",
+        "value": {
+          "status": "pending",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[6].payload.task_decision.response.status",
+          "value": "pending"
+        },
+        "color": {
+          "source_path": "$[6].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[6].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[6].payload.observed_history",
+        "value": [
+          {
+            "command": "k2"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[6].payload.observed_history[0].command",
+        "value": "k2"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[6].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[6].payload.predicted_current[0].node",
+            "value": "n10"
+          },
+          "selection": {
+            "source_path": "$[6].payload.predicted_current[0].selected_position",
+            "value": "p2"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[6].payload.predicted_current[0].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[6].payload.predicted_current[0].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[6].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_path": "$[6].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[6].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[6].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[6].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[6].payload.predicted_current[1].node",
+            "value": "q26"
+          },
+          "selection": {
+            "source_parent_path": "$[6].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[6].payload.predicted_current[1].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[6].payload.predicted_current[1].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[6].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_parent_path": "$[6].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[6].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k2",
+            "nodes": [
+              {
+                "node": "n10",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": "red",
+                    "identified_shape": "cross",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q26",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": "red",
+                    "identified_shape": "cross"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[6].payload.predicted_by_command[0].command",
+            "value": "k2"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[6].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n10"
+              },
+              "selection": {
+                "source_parent_path": "$[6].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[6].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[6].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q26"
+              },
+              "selection": {
+                "source_parent_path": "$[6].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[6].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[6].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[7].id",
+        "value": "Q008"
+      },
+      "output_node": {
+        "source_path": "$[7].payload.output_node",
+        "value": "q27"
+      },
+      "modeled_step": {
+        "source_path": "$[7].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[7].payload.task_decision.query",
+        "value": {
+          "node": "q27",
+          "position": "p3"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[7].payload.task_decision.query.node",
+          "value": "q27"
+        },
+        "position": {
+          "source_path": "$[7].payload.task_decision.query.position",
+          "value": "p3"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[7].payload.task_decision.selected_command",
+        "value": "k3"
+      },
+      "command_executed": {
+        "source_path": "$[7].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[7].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "red",
+          "shape": "cross"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[7].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[7].payload.task_decision.response.color",
+          "value": "red"
+        },
+        "shape": {
+          "source_path": "$[7].payload.task_decision.response.shape",
+          "value": "cross"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[7].payload.observed_history",
+        "value": [
+          {
+            "command": "k3"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[7].payload.observed_history[0].command",
+        "value": "k3"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[7].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[7].payload.predicted_current[0].node",
+            "value": "n11"
+          },
+          "selection": {
+            "source_path": "$[7].payload.predicted_current[0].selected_position",
+            "value": "p3"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[7].payload.predicted_current[0].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[7].payload.predicted_current[0].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[7].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_path": "$[7].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[7].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[7].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[7].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[7].payload.predicted_current[1].node",
+            "value": "q27"
+          },
+          "selection": {
+            "source_parent_path": "$[7].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[7].payload.predicted_current[1].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[7].payload.predicted_current[1].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[7].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_parent_path": "$[7].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[7].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k3",
+            "nodes": [
+              {
+                "node": "n11",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "red",
+                    "identified_shape": "cross",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q27",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "red",
+                    "identified_shape": "cross"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[7].payload.predicted_by_command[0].command",
+            "value": "k3"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[7].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n11"
+              },
+              "selection": {
+                "source_parent_path": "$[7].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[7].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[7].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q27"
+              },
+              "selection": {
+                "source_parent_path": "$[7].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[7].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[7].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[8].id",
+        "value": "Q009"
+      },
+      "output_node": {
+        "source_path": "$[8].payload.output_node",
+        "value": "q28"
+      },
+      "modeled_step": {
+        "source_path": "$[8].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[8].payload.task_decision.query",
+        "value": {
+          "node": "q28",
+          "position": "p0"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[8].payload.task_decision.query.node",
+          "value": "q28"
+        },
+        "position": {
+          "source_path": "$[8].payload.task_decision.query.position",
+          "value": "p0"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[8].payload.task_decision.selected_command",
+        "value": "k0"
+      },
+      "command_executed": {
+        "source_path": "$[8].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[8].payload.task_decision.response",
+        "value": {
+          "status": "abstained",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[8].payload.task_decision.response.status",
+          "value": "abstained"
+        },
+        "color": {
+          "source_path": "$[8].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[8].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[8].payload.observed_history",
+        "value": [
+          {
+            "command": "k0"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[8].payload.observed_history[0].command",
+        "value": "k0"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[8].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[8].payload.predicted_current[0].node",
+            "value": "n12"
+          },
+          "selection": {
+            "source_path": "$[8].payload.predicted_current[0].selected_position",
+            "value": "p0"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[8].payload.predicted_current[0].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[8].payload.predicted_current[0].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[8].payload.predicted_current[0].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_path": "$[8].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[8].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[8].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[8].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[8].payload.predicted_current[1].node",
+            "value": "q28"
+          },
+          "selection": {
+            "source_parent_path": "$[8].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[8].payload.predicted_current[1].objects[0].position",
+                "value": "p0"
+              },
+              "identified_color": {
+                "source_path": "$[8].payload.predicted_current[1].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[8].payload.predicted_current[1].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_parent_path": "$[8].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[8].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k0",
+            "nodes": [
+              {
+                "node": "n12",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": "red",
+                    "identified_shape": null,
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q28",
+                "objects": [
+                  {
+                    "position": "p0",
+                    "identified_color": "red",
+                    "identified_shape": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[8].payload.predicted_by_command[0].command",
+            "value": "k0"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[8].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n12"
+              },
+              "selection": {
+                "source_parent_path": "$[8].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[8].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[8].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q28"
+              },
+              "selection": {
+                "source_parent_path": "$[8].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p0"
+                  },
+                  "identified_color": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[8].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[8].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[9].id",
+        "value": "Q010"
+      },
+      "output_node": {
+        "source_path": "$[9].payload.output_node",
+        "value": "q29"
+      },
+      "modeled_step": {
+        "source_path": "$[9].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[9].payload.task_decision.query",
+        "value": {
+          "node": "q29",
+          "position": "p1"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[9].payload.task_decision.query.node",
+          "value": "q29"
+        },
+        "position": {
+          "source_path": "$[9].payload.task_decision.query.position",
+          "value": "p1"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[9].payload.task_decision.selected_command",
+        "value": "k1"
+      },
+      "command_executed": {
+        "source_path": "$[9].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[9].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "red",
+          "shape": "cross"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[9].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[9].payload.task_decision.response.color",
+          "value": "red"
+        },
+        "shape": {
+          "source_path": "$[9].payload.task_decision.response.shape",
+          "value": "cross"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[9].payload.observed_history",
+        "value": null
+      },
+      "history_availability": "unavailable_explicit_null",
+      "latest_supplied_historical_command": null,
+      "latestcommand_absence": {
+        "source_parent_path": "$[9].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Explicit null does not prove no earlier command or identify a latest historical command.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[9].payload.predicted_current[0].node",
+            "value": "n13"
+          },
+          "selection": {
+            "source_path": "$[9].payload.predicted_current[0].selected_position",
+            "value": "p1"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[9].payload.predicted_current[0].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[9].payload.predicted_current[0].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[9].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_path": "$[9].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[9].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[9].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[9].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[9].payload.predicted_current[1].node",
+            "value": "q29"
+          },
+          "selection": {
+            "source_parent_path": "$[9].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[9].payload.predicted_current[1].objects[0].position",
+                "value": "p1"
+              },
+              "identified_color": {
+                "source_path": "$[9].payload.predicted_current[1].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[9].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_parent_path": "$[9].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[9].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k1",
+            "nodes": [
+              {
+                "node": "n13",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "red",
+                    "identified_shape": "cross",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q29",
+                "objects": [
+                  {
+                    "position": "p1",
+                    "identified_color": "red",
+                    "identified_shape": "cross"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[9].payload.predicted_by_command[0].command",
+            "value": "k1"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[9].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n13"
+              },
+              "selection": {
+                "source_parent_path": "$[9].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[9].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[9].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q29"
+              },
+              "selection": {
+                "source_parent_path": "$[9].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p1"
+                  },
+                  "identified_color": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[9].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[9].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[10].id",
+        "value": "Q011"
+      },
+      "output_node": {
+        "source_path": "$[10].payload.output_node",
+        "value": "q30"
+      },
+      "modeled_step": {
+        "source_path": "$[10].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[10].payload.task_decision.query",
+        "value": {
+          "node": "q30",
+          "position": "p2"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[10].payload.task_decision.query.node",
+          "value": "q30"
+        },
+        "position": {
+          "source_path": "$[10].payload.task_decision.query.position",
+          "value": "p2"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[10].payload.task_decision.selected_command",
+        "value": "k2"
+      },
+      "command_executed": {
+        "source_path": "$[10].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[10].payload.task_decision.response",
+        "value": {
+          "status": "abstained",
+          "color": null,
+          "shape": null
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[10].payload.task_decision.response.status",
+          "value": "abstained"
+        },
+        "color": {
+          "source_path": "$[10].payload.task_decision.response.color",
+          "value": null
+        },
+        "shape": {
+          "source_path": "$[10].payload.task_decision.response.shape",
+          "value": null
+        }
+      },
+      "observed_history": {
+        "source_path": "$[10].payload.observed_history",
+        "value": [
+          {
+            "command": "k2"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[10].payload.observed_history[0].command",
+        "value": "k2"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[10].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[10].payload.predicted_current[0].node",
+            "value": "n14"
+          },
+          "selection": {
+            "source_path": "$[10].payload.predicted_current[0].selected_position",
+            "value": "p2"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[10].payload.predicted_current[0].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[10].payload.predicted_current[0].objects[0].identified_color",
+                "value": null
+              },
+              "identified_shape": {
+                "source_path": "$[10].payload.predicted_current[0].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_path": "$[10].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[10].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[10].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[10].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[10].payload.predicted_current[1].node",
+            "value": "q30"
+          },
+          "selection": {
+            "source_parent_path": "$[10].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[10].payload.predicted_current[1].objects[0].position",
+                "value": "p2"
+              },
+              "identified_color": {
+                "source_path": "$[10].payload.predicted_current[1].objects[0].identified_color",
+                "value": null
+              },
+              "identified_shape": {
+                "source_path": "$[10].payload.predicted_current[1].objects[0].identified_shape",
+                "value": null
+              },
+              "recovery": {
+                "source_parent_path": "$[10].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[10].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k2",
+            "nodes": [
+              {
+                "node": "n14",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": null,
+                    "identified_shape": null,
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q30",
+                "objects": [
+                  {
+                    "position": "p2",
+                    "identified_color": null,
+                    "identified_shape": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[10].payload.predicted_by_command[0].command",
+            "value": "k2"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[10].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n14"
+              },
+              "selection": {
+                "source_parent_path": "$[10].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": null
+                  },
+                  "identified_shape": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[10].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[10].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q30"
+              },
+              "selection": {
+                "source_parent_path": "$[10].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p2"
+                  },
+                  "identified_color": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": null
+                  },
+                  "identified_shape": {
+                    "source_path": "$[10].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": null
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[10].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    },
+    {
+      "source_id": {
+        "source_path": "$[11].id",
+        "value": "Q012"
+      },
+      "output_node": {
+        "source_path": "$[11].payload.output_node",
+        "value": "q31"
+      },
+      "modeled_step": {
+        "source_path": "$[11].payload.modeled_step",
+        "value": 13
+      },
+      "task_query": {
+        "source_path": "$[11].payload.task_decision.query",
+        "value": {
+          "node": "q31",
+          "position": "p3"
+        }
+      },
+      "task_query_fields": {
+        "node": {
+          "source_path": "$[11].payload.task_decision.query.node",
+          "value": "q31"
+        },
+        "position": {
+          "source_path": "$[11].payload.task_decision.query.position",
+          "value": "p3"
+        }
+      },
+      "selected_command": {
+        "source_path": "$[11].payload.task_decision.selected_command",
+        "value": "k3"
+      },
+      "command_executed": {
+        "source_path": "$[11].payload.task_decision.command_executed",
+        "value": true
+      },
+      "response": {
+        "source_path": "$[11].payload.task_decision.response",
+        "value": {
+          "status": "answered",
+          "color": "red",
+          "shape": "cross"
+        }
+      },
+      "response_fields": {
+        "status": {
+          "source_path": "$[11].payload.task_decision.response.status",
+          "value": "answered"
+        },
+        "color": {
+          "source_path": "$[11].payload.task_decision.response.color",
+          "value": "red"
+        },
+        "shape": {
+          "source_path": "$[11].payload.task_decision.response.shape",
+          "value": "cross"
+        }
+      },
+      "observed_history": {
+        "source_path": "$[11].payload.observed_history",
+        "value": [
+          {
+            "command": "k3"
+          }
+        ]
+      },
+      "history_availability": "available_supplied_entries",
+      "latest_supplied_historical_command": {
+        "source_path": "$[11].payload.observed_history[0].command",
+        "value": "k3"
+      },
+      "latestcommand_absence": {
+        "source_parent_path": "$[11].payload",
+        "missing_field": "latestcommand",
+        "boundary": "No literal latestcommand field is supplied. Only the last supplied available history entry can be reported."
+      },
+      "history_boundary": "Only supplied entries are available. Earlier commands, timing, and relation to present execution are not supplied.",
+      "current_nodes": [
+        {
+          "node": {
+            "source_path": "$[11].payload.predicted_current[0].node",
+            "value": "n15"
+          },
+          "selection": {
+            "source_path": "$[11].payload.predicted_current[0].selected_position",
+            "value": "p3"
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[11].payload.predicted_current[0].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[11].payload.predicted_current[0].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[11].payload.predicted_current[0].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_path": "$[11].payload.predicted_current[0].objects[0].recovery_by_delay",
+                "value": {
+                  "0": 0.2,
+                  "1": 0.1,
+                  "2": 0.05
+                }
+              },
+              "recovery_values": {
+                "0": {
+                  "source_path": "$[11].payload.predicted_current[0].objects[0].recovery_by_delay[\"0\"]",
+                  "value": 0.2
+                },
+                "1": {
+                  "source_path": "$[11].payload.predicted_current[0].objects[0].recovery_by_delay[\"1\"]",
+                  "value": 0.1
+                },
+                "2": {
+                  "source_path": "$[11].payload.predicted_current[0].objects[0].recovery_by_delay[\"2\"]",
+                  "value": 0.05
+                }
+              },
+              "recovery_boundary": "Only delays 0, 1, and 2 are supplied; later values cannot be inferred."
+            }
+          ]
+        },
+        {
+          "node": {
+            "source_path": "$[11].payload.predicted_current[1].node",
+            "value": "q31"
+          },
+          "selection": {
+            "source_parent_path": "$[11].payload.predicted_current[1]",
+            "missing_field": "selected_position",
+            "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+          },
+          "queried_objects": [
+            {
+              "position": {
+                "source_path": "$[11].payload.predicted_current[1].objects[0].position",
+                "value": "p3"
+              },
+              "identified_color": {
+                "source_path": "$[11].payload.predicted_current[1].objects[0].identified_color",
+                "value": "red"
+              },
+              "identified_shape": {
+                "source_path": "$[11].payload.predicted_current[1].objects[0].identified_shape",
+                "value": "cross"
+              },
+              "recovery": {
+                "source_parent_path": "$[11].payload.predicted_current[1].objects[0]",
+                "missing_field": "recovery_by_delay",
+                "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+              }
+            }
+          ]
+        }
+      ],
+      "forecast_presence": {
+        "source_path": "$[11].payload.predicted_by_command",
+        "value": [
+          {
+            "command": "k3",
+            "nodes": [
+              {
+                "node": "n15",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "red",
+                    "identified_shape": "cross",
+                    "recovery_by_delay": {
+                      "0": 0.8
+                    }
+                  }
+                ]
+              },
+              {
+                "node": "q31",
+                "objects": [
+                  {
+                    "position": "p3",
+                    "identified_color": "red",
+                    "identified_shape": "cross"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forecasts": [
+        {
+          "command": {
+            "source_path": "$[11].payload.predicted_by_command[0].command",
+            "value": "k3"
+          },
+          "execution_boundary": "Prospective forecast, not observed execution or history.",
+          "nodes": [
+            {
+              "node": {
+                "source_path": "$[11].payload.predicted_by_command[0].nodes[0].node",
+                "value": "n15"
+              },
+              "selection": {
+                "source_parent_path": "$[11].payload.predicted_by_command[0].nodes[0]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[0].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[0].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[0].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay",
+                    "value": {
+                      "0": 0.8
+                    }
+                  },
+                  "recovery_values": {
+                    "0": {
+                      "source_path": "$[11].payload.predicted_by_command[0].nodes[0].objects[0].recovery_by_delay[\"0\"]",
+                      "value": 0.8
+                    }
+                  },
+                  "recovery_boundary": "Only delay 0 is supplied; delayed values cannot be inferred."
+                }
+              ]
+            },
+            {
+              "node": {
+                "source_path": "$[11].payload.predicted_by_command[0].nodes[1].node",
+                "value": "q31"
+              },
+              "selection": {
+                "source_parent_path": "$[11].payload.predicted_by_command[0].nodes[1]",
+                "missing_field": "selected_position",
+                "boundary": "Selection is not supplied and cannot be inferred from identified attributes."
+              },
+              "queried_objects": [
+                {
+                  "position": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[1].objects[0].position",
+                    "value": "p3"
+                  },
+                  "identified_color": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[1].objects[0].identified_color",
+                    "value": "red"
+                  },
+                  "identified_shape": {
+                    "source_path": "$[11].payload.predicted_by_command[0].nodes[1].objects[0].identified_shape",
+                    "value": "cross"
+                  },
+                  "recovery": {
+                    "source_parent_path": "$[11].payload.predicted_by_command[0].nodes[1].objects[0]",
+                    "missing_field": "recovery_by_delay",
+                    "boundary": "Recovery is not supplied; output attributes do not establish selection or allocation."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "unprovided_domains": [
+        "physical correctness",
+        "physical scene",
+        "subjective appearance",
+        "felt clarity",
+        "answer confidence",
+        "causal effect of command execution"
+      ]
+    }
+  ]
+}

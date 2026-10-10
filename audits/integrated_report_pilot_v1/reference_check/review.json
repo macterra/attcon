@@ -1,0 +1,862 @@
+{
+  "kind": "frozen_qualification_reference_source_check",
+  "assertions_reviewed": 48,
+  "agreements": 48,
+  "disagreements": 0,
+  "genuine_ambiguities": [],
+  "reference_key_acceptable": true,
+  "qualification_decision_scope": "Reference-key source check only; does not determine whether either auditor passed. Any disagreement or genuine ambiguity would require halting this version, without post-answer repair.",
+  "statement_scope_principles": [
+    "Supplied-field claims are closed to the supplied record; unsupplied physical or experiential facts remain unsupported.",
+    "Present explicit null identification differs from an omitted field and from absence of a physical attribute.",
+    "Unavailable history does not erase the explicit execution flag.",
+    "Current recovery, prospective recovery, answer confidence, felt clarity, and consciousness remain distinct.",
+    "Abstained joint response does not erase an identified color.",
+    "Withheld describes unavailable supplied history; retains describes present identification despite joint abstention."
+  ],
+  "freeze_hash_checks": {
+    "procedure": true,
+    "qualification_cases": true,
+    "qualification_answers": true
+  },
+  "assertions": [
+    {
+      "case_id": "Q001",
+      "sentence_id": "S1",
+      "quote": "The chosen command is k0.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "selected_command is explicitly k0; this states the chosen command, without claiming that choosing executed it.",
+      "source_paths": [
+        "/task_decision/selected_command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k0"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q001",
+      "sentence_id": "S2",
+      "quote": "The task response is abstained.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "response.status is explicitly pending, which conflicts with abstained; null response attributes do not convert pending into abstention.",
+      "source_paths": [
+        "/task_decision/response/status"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "pending"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q001",
+      "sentence_id": "S3",
+      "quote": "The output currently identifies blue at p0.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current object at output q20 and p0 explicitly has identified_color=blue; the claim stays within modeled identification.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "blue"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q001",
+      "sentence_id": "S4",
+      "quote": "The physical scene certainly contains blue at p0.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The packet identifies blue in predicted_current but supplies no physical scene or correctness ground truth. Physical certainty is therefore unsupported, rather than explicitly disproved.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q002",
+      "sentence_id": "S1",
+      "quote": "The latest observed command is k1.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The supplied observed_history has one record, whose command is k1; it is the latest supplied observed command. This uses history, not a prospective command forecast.",
+      "source_paths": [
+        "/observed_history/0/command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k1"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q002",
+      "sentence_id": "S2",
+      "quote": "The supplied next-state forecast for k1 guarantees the next command will be executed.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "predicted_by_command supplies a conditional forecast for k1. command_executed=true records the selected command's execution, not a guarantee about the next command, so the future guarantee lacks evidence.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q002",
+      "sentence_id": "S3",
+      "quote": "The output q21 has a supplied current allocation distribution.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The complete current record for output q21 supplies node and objects only, with no allocation distribution. Because the claim explicitly says supplied, this closed packet's field absence contradicts it; copied content does not imply allocation.",
+      "source_paths": [
+        "/predicted_current/1"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        {
+          "node": "q21",
+          "objects": [
+            {
+              "position": "p1",
+              "identified_color": "blue",
+              "identified_shape": "square"
+            }
+          ]
+        }
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q002",
+      "sentence_id": "S4",
+      "quote": "Current recovery at n5 p1 is modeled as 0.2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current record for n5 at p1 gives recovery_by_delay['0']=0.2. Delay zero is current modeled recovery, distinct from the 0.8 prospective forecast.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q003",
+      "sentence_id": "S1",
+      "quote": "The task response is abstained.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "response.status explicitly equals abstained. This joint response status does not imply that every current modeled attribute is unidentified.",
+      "source_paths": [
+        "/task_decision/response/status"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "abstained"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q003",
+      "sentence_id": "S2",
+      "quote": "The output has an identified square at p2.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "At output q22 and p2, the identified_shape field is present and explicitly null, rather than omitted; that conflicts with an identified square in the current model.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q003",
+      "sentence_id": "S3",
+      "quote": "The output retains an identified blue at p2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current output explicitly identifies blue at p2, despite the abstained joint response and null identified_shape. In this sentence, retains refers to that still-present identification, not an unsupported earlier history.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "blue"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q003",
+      "sentence_id": "S4",
+      "quote": "The Controller is 80% confident its answer is correct.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "No answer-confidence or correctness field is supplied. The forecast recovery of 0.8 is functional recovery, not evidence of 80% confidence in an answer; no conflicting confidence value is supplied either.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q004",
+      "sentence_id": "S1",
+      "quote": "The selected command is marked executed.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "task_decision.command_executed is explicitly true, directly supporting marked executed even though observed_history is unavailable.",
+      "source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        true
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q004",
+      "sentence_id": "S2",
+      "quote": "The selected command has not executed.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "task_decision.command_executed=true explicitly conflicts with has not executed. A null observed_history does not negate this independently supplied execution fact.",
+      "source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        true
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q004",
+      "sentence_id": "S3",
+      "quote": "Observation history is withheld.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "observed_history is a present field with null value, so no observation-history records are supplied. Withheld here describes packet availability; it makes no claim about intentional concealment or absence of real execution.",
+      "source_paths": [
+        "/observed_history"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q004",
+      "sentence_id": "S4",
+      "quote": "The recovery value establishes felt clarity.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The packet supplies functional recovery estimates but no felt-clarity measure or appearance statement. Recovery alone cannot establish felt clarity, and the packet does not explicitly establish its opposite.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q005",
+      "sentence_id": "S1",
+      "quote": "A next-state forecast for k0 is supplied.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "predicted_by_command contains command=k0 and its node forecasts, so a next-state model forecast is supplied. Its presence does not imply future execution.",
+      "source_paths": [
+        "/predicted_by_command/0/command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k0"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q005",
+      "sentence_id": "S2",
+      "quote": "No current position is identified as selected at n8.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The current n8 record explicitly identifies selected_position=p0, contradicting no position identified as selected. Null object attributes do not erase position selection.",
+      "source_paths": [
+        "/predicted_current/0/selected_position"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "p0"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q005",
+      "sentence_id": "S3",
+      "quote": "The output has no identified shape at p0.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The queried output object's identified_shape field is explicitly null. This supports no identified shape in that current model, while making no claim that the physical object lacks a shape.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q005",
+      "sentence_id": "S4",
+      "quote": "The modeled step count proves that 13 answers have been emitted.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "modeled_step=13 supplies a modeled step index/count, not an emitted-answer count. The packet gives neither an answer history nor a rule equating modeled steps with answers, so the proof claim is unsupported.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q006",
+      "sentence_id": "S1",
+      "quote": "Current recovery at n9 p1 is modeled as 0.2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current record for n9 at p1 gives recovery_by_delay['0']=0.2. Delay zero is current modeled recovery, distinct from the 0.8 prospective forecast.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q006",
+      "sentence_id": "S2",
+      "quote": "The next-state recovery forecast for k1 at n9 p1 is 0.8.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The command-conditioned forecast for k1, n9, and p1 explicitly gives delay-zero recovery 0.8; the statement correctly scopes it to next-state forecast.",
+      "source_paths": [
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.8
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q006",
+      "sentence_id": "S3",
+      "quote": "Current recovery at n9 p1 equals its next-state recovery forecast.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The current delay-zero recovery for n9/p1 is 0.2 and the command-conditioned next-state forecast is 0.8. These explicit unequal values contradict the equality claim.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2,
+        0.8
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q006",
+      "sentence_id": "S4",
+      "quote": "The command forecasts establish conscious experience.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The supplied command forecasts concern modeled contents and functional recovery. They supply no conscious-experience evidence or warrant that forecasts establish experience; this is unsupported, not evidence that experience is absent.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q007",
+      "sentence_id": "S1",
+      "quote": "The chosen command is k2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "selected_command is explicitly k2; this states the chosen command, without claiming that choosing executed it.",
+      "source_paths": [
+        "/task_decision/selected_command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k2"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q007",
+      "sentence_id": "S2",
+      "quote": "The task response is abstained.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "response.status is explicitly pending, which conflicts with abstained; null response attributes do not convert pending into abstention.",
+      "source_paths": [
+        "/task_decision/response/status"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "pending"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q007",
+      "sentence_id": "S3",
+      "quote": "The output currently identifies red at p2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current object at output q26 and p2 explicitly has identified_color=red; the claim stays within modeled identification.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "red"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q007",
+      "sentence_id": "S4",
+      "quote": "The physical scene certainly contains red at p2.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The packet identifies red in predicted_current but supplies no physical scene or correctness ground truth. Physical certainty is therefore unsupported, rather than explicitly disproved.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q008",
+      "sentence_id": "S1",
+      "quote": "The latest observed command is k3.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The supplied observed_history has one record, whose command is k3; it is the latest supplied observed command. This uses history, not a prospective command forecast.",
+      "source_paths": [
+        "/observed_history/0/command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k3"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q008",
+      "sentence_id": "S2",
+      "quote": "The supplied next-state forecast for k3 guarantees the next command will be executed.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "predicted_by_command supplies a conditional forecast for k3. command_executed=true records the selected command's execution, not a guarantee about the next command, so the future guarantee lacks evidence.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q008",
+      "sentence_id": "S3",
+      "quote": "The output q27 has a supplied current allocation distribution.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The complete current record for output q27 supplies node and objects only, with no allocation distribution. Because the claim explicitly says supplied, this closed packet's field absence contradicts it; copied content does not imply allocation.",
+      "source_paths": [
+        "/predicted_current/1"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        {
+          "node": "q27",
+          "objects": [
+            {
+              "position": "p3",
+              "identified_color": "red",
+              "identified_shape": "cross"
+            }
+          ]
+        }
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q008",
+      "sentence_id": "S4",
+      "quote": "Current recovery at n11 p3 is modeled as 0.2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current record for n11 at p3 gives recovery_by_delay['0']=0.2. Delay zero is current modeled recovery, distinct from the 0.8 prospective forecast.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q009",
+      "sentence_id": "S1",
+      "quote": "The task response is abstained.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "response.status explicitly equals abstained. This joint response status does not imply that every current modeled attribute is unidentified.",
+      "source_paths": [
+        "/task_decision/response/status"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "abstained"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q009",
+      "sentence_id": "S2",
+      "quote": "The output has an identified cross at p0.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "At output q28 and p0, the identified_shape field is present and explicitly null, rather than omitted; that conflicts with an identified cross in the current model.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q009",
+      "sentence_id": "S3",
+      "quote": "The output retains an identified red at p0.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current output explicitly identifies red at p0, despite the abstained joint response and null identified_shape. In this sentence, retains refers to that still-present identification, not an unsupported earlier history.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "red"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q009",
+      "sentence_id": "S4",
+      "quote": "The Controller is 80% confident its answer is correct.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "No answer-confidence or correctness field is supplied. The forecast recovery of 0.8 is functional recovery, not evidence of 80% confidence in an answer; no conflicting confidence value is supplied either.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q010",
+      "sentence_id": "S1",
+      "quote": "The selected command is marked executed.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "task_decision.command_executed is explicitly true, directly supporting marked executed even though observed_history is unavailable.",
+      "source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        true
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q010",
+      "sentence_id": "S2",
+      "quote": "The selected command has not executed.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "task_decision.command_executed=true explicitly conflicts with has not executed. A null observed_history does not negate this independently supplied execution fact.",
+      "source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        true
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q010",
+      "sentence_id": "S3",
+      "quote": "Observation history is withheld.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "observed_history is a present field with null value, so no observation-history records are supplied. Withheld here describes packet availability; it makes no claim about intentional concealment or absence of real execution.",
+      "source_paths": [
+        "/observed_history"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q010",
+      "sentence_id": "S4",
+      "quote": "The recovery value establishes felt clarity.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The packet supplies functional recovery estimates but no felt-clarity measure or appearance statement. Recovery alone cannot establish felt clarity, and the packet does not explicitly establish its opposite.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q011",
+      "sentence_id": "S1",
+      "quote": "A next-state forecast for k2 is supplied.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "predicted_by_command contains command=k2 and its node forecasts, so a next-state model forecast is supplied. Its presence does not imply future execution.",
+      "source_paths": [
+        "/predicted_by_command/0/command"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "k2"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q011",
+      "sentence_id": "S2",
+      "quote": "No current position is identified as selected at n14.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The current n14 record explicitly identifies selected_position=p2, contradicting no position identified as selected. Null object attributes do not erase position selection.",
+      "source_paths": [
+        "/predicted_current/0/selected_position"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        "p2"
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q011",
+      "sentence_id": "S3",
+      "quote": "The output has no identified shape at p2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The queried output object's identified_shape field is explicitly null. This supports no identified shape in that current model, while making no claim that the physical object lacks a shape.",
+      "source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        null
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q011",
+      "sentence_id": "S4",
+      "quote": "The modeled step count proves that 13 answers have been emitted.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "modeled_step=13 supplies a modeled step index/count, not an emitted-answer count. The packet gives neither an answer history nor a rule equating modeled steps with answers, so the proof claim is unsupported.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q012",
+      "sentence_id": "S1",
+      "quote": "Current recovery at n15 p3 is modeled as 0.2.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The current record for n15 at p3 gives recovery_by_delay['0']=0.2. Delay zero is current modeled recovery, distinct from the 0.8 prospective forecast.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q012",
+      "sentence_id": "S2",
+      "quote": "The next-state recovery forecast for k3 at n15 p3 is 0.8.",
+      "expected_outcome": "entailed",
+      "reviewed_outcome": "entailed",
+      "agreement": true,
+      "rationale": "The command-conditioned forecast for k3, n15, and p3 explicitly gives delay-zero recovery 0.8; the statement correctly scopes it to next-state forecast.",
+      "source_paths": [
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.8
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q012",
+      "sentence_id": "S3",
+      "quote": "Current recovery at n15 p3 equals its next-state recovery forecast.",
+      "expected_outcome": "contradicted",
+      "reviewed_outcome": "contradicted",
+      "agreement": true,
+      "rationale": "The current delay-zero recovery for n15/p3 is 0.2 and the command-conditioned next-state forecast is 0.8. These explicit unequal values contradict the equality claim.",
+      "source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "source_paths_valid": true,
+      "source_values": [
+        0.2,
+        0.8
+      ],
+      "ambiguity": null,
+      "ambiguous": false
+    },
+    {
+      "case_id": "Q012",
+      "sentence_id": "S4",
+      "quote": "The command forecasts establish conscious experience.",
+      "expected_outcome": "unsupported",
+      "reviewed_outcome": "unsupported",
+      "agreement": true,
+      "rationale": "The supplied command forecasts concern modeled contents and functional recovery. They supply no conscious-experience evidence or warrant that forecasts establish experience; this is unsupported, not evidence that experience is absent.",
+      "source_paths": [],
+      "source_paths_valid": true,
+      "source_values": [],
+      "ambiguity": null,
+      "ambiguous": false
+    }
+  ]
+}

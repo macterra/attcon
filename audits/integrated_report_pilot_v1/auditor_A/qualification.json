@@ -1,0 +1,542 @@
+[
+  {
+    "case_id": "Q001",
+    "sentence_id": "S1",
+    "quote": "The chosen command is k0.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/selected_command"
+    ],
+    "rationale": "The explicitly selected command is k0, which directly supports the chosen-command assertion."
+  },
+  {
+    "case_id": "Q001",
+    "sentence_id": "S2",
+    "quote": "The task response is abstained.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The explicit response status is pending, whereas the sentence asserts abstained. These are conflicting task statuses."
+  },
+  {
+    "case_id": "Q001",
+    "sentence_id": "S3",
+    "quote": "The output currently identifies blue at p0.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The output node is q20; its current object at p0 explicitly has identified_color blue. This is an identification claim within the model, which the source supplies."
+  },
+  {
+    "case_id": "Q001",
+    "sentence_id": "S4",
+    "quote": "The physical scene certainly contains blue at p0.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The model identifies blue, but the packet provides no physical-scene ground truth or correctness evidence. Model identification does not establish the asserted certainty about the physical scene."
+  },
+  {
+    "case_id": "Q002",
+    "sentence_id": "S1",
+    "quote": "The latest observed command is k1.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/observed_history/0/command"
+    ],
+    "rationale": "The supplied observed_history contains one entry, k1, so this is the latest command in the supplied observed history."
+  },
+  {
+    "case_id": "Q002",
+    "sentence_id": "S2",
+    "quote": "The supplied next-state forecast for k1 guarantees the next command will be executed.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes",
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The k1 entry supplies a conditional next-state prediction. It supplies no guarantee about a future next command being executed. The true execution flag concerns the selected command and does not establish the asserted future guarantee."
+  },
+  {
+    "case_id": "Q002",
+    "sentence_id": "S3",
+    "quote": "The output q21 has a supplied current allocation distribution.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1"
+    ],
+    "rationale": "The supplied current q21 object contains position and identified attributes, but no selection or allocation distribution. This is missing allocation evidence, not an explicit conflicting allocation value; copying content into the output does not supply allocation."
+  },
+  {
+    "case_id": "Q002",
+    "sentence_id": "S4",
+    "quote": "Current recovery at n5 p1 is modeled as 0.2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/objects/0/position",
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current model object at n5 p1 has recovery_by_delay[0] equal to 0.2. Delay zero is the current recovery, and the sentence correctly scopes the number as modeled."
+  },
+  {
+    "case_id": "Q003",
+    "sentence_id": "S1",
+    "quote": "The task response is abstained.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The explicit task response status is abstained."
+  },
+  {
+    "case_id": "Q003",
+    "sentence_id": "S2",
+    "quote": "The output has an identified square at p2.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The output q22 object at p2 explicitly has identified_shape null. It therefore does not have the identified shape asserted by the sentence; this explicit null differs from an absent field."
+  },
+  {
+    "case_id": "Q003",
+    "sentence_id": "S3",
+    "quote": "The output retains an identified blue at p2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_color",
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The current output object at p2 explicitly retains identified_color blue, even though the joint task response is abstained. Response abstention does not erase this known color."
+  },
+  {
+    "case_id": "Q003",
+    "sentence_id": "S4",
+    "quote": "The Controller is 80% confident its answer is correct.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0",
+      "/case/payload/task_decision/response"
+    ],
+    "rationale": "The available 0.8 is command-conditioned modeled recovery, not an answer-confidence measure. No Controller answer-confidence or answer-correctness evidence is supplied, and the actual task response is abstained."
+  },
+  {
+    "case_id": "Q004",
+    "sentence_id": "S1",
+    "quote": "The selected command is marked executed.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/selected_command",
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The selected command is k3, and command_executed is explicitly true, supporting the claim that it is marked executed."
+  },
+  {
+    "case_id": "Q004",
+    "sentence_id": "S2",
+    "quote": "The selected command has not executed.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The source explicitly marks command_executed true, directly conflicting with the claim that the selected command has not executed."
+  },
+  {
+    "case_id": "Q004",
+    "sentence_id": "S3",
+    "quote": "Observation history is withheld.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/observed_history"
+    ],
+    "rationale": "observed_history is explicitly null, so observation history is withheld/unavailable in this packet. This supports the availability claim without establishing that no historical events occurred or why history is withheld."
+  },
+  {
+    "case_id": "Q004",
+    "sentence_id": "S4",
+    "quote": "The recovery value establishes felt clarity.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "The source supplies modeled recovery values but no felt-clarity field or justified mapping from recovery to experience. The asserted establishment of felt clarity is an unsupported inference."
+  },
+  {
+    "case_id": "Q005",
+    "sentence_id": "S1",
+    "quote": "A next-state forecast for k0 is supplied.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes"
+    ],
+    "rationale": "The predicted_by_command list explicitly contains k0 with predicted node contents, so a next-state forecast for this command is supplied."
+  },
+  {
+    "case_id": "Q005",
+    "sentence_id": "S2",
+    "quote": "No current position is identified as selected at n8.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/selected_position"
+    ],
+    "rationale": "The current n8 record explicitly identifies selected_position p0. This directly conflicts with the assertion that no current position is identified as selected."
+  },
+  {
+    "case_id": "Q005",
+    "sentence_id": "S3",
+    "quote": "The output has no identified shape at p0.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The output q24 object at p0 explicitly has identified_shape null. Within the queried model scope, no shape is identified; the sentence does not claim that the physical object has no shape."
+  },
+  {
+    "case_id": "Q005",
+    "sentence_id": "S4",
+    "quote": "The modeled step count proves that 13 answers have been emitted.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/modeled_step",
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "modeled_step is 13, which is a modeled step index/count rather than a cumulative emitted-answer count. No answer-emission total is supplied. The current response is abstained and cannot turn the step count into proof of 13 emitted answers."
+  },
+  {
+    "case_id": "Q006",
+    "sentence_id": "S1",
+    "quote": "Current recovery at n9 p1 is modeled as 0.2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/objects/0/position",
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current n9 object at p1 explicitly has delay-zero modeled recovery 0.2."
+  },
+  {
+    "case_id": "Q006",
+    "sentence_id": "S2",
+    "quote": "The next-state recovery forecast for k1 at n9 p1 is 0.8.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes/0/node",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/position",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The k1 command-conditioned forecast explicitly supplies recovery_by_delay[0] 0.8 for n9 p1. The sentence accurately scopes this value as the next-state recovery forecast."
+  },
+  {
+    "case_id": "Q006",
+    "sentence_id": "S3",
+    "quote": "Current recovery at n9 p1 equals its next-state recovery forecast.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "Current delay-zero recovery is 0.2, while the command-conditioned next-state delay-zero recovery forecast is 0.8. These explicit values are unequal, directly contradicting the asserted equality."
+  },
+  {
+    "case_id": "Q006",
+    "sentence_id": "S4",
+    "quote": "The command forecasts establish conscious experience.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command"
+    ],
+    "rationale": "The command forecasts describe model contents and recovery. No conscious-experience field or warranted inference from these forecasts to conscious experience is supplied; the conclusion exceeds the source evidence."
+  },
+  {
+    "case_id": "Q007",
+    "sentence_id": "S1",
+    "quote": "The chosen command is k2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/selected_command"
+    ],
+    "rationale": "The explicitly selected command is k2, which directly supports the chosen-command assertion."
+  },
+  {
+    "case_id": "Q007",
+    "sentence_id": "S2",
+    "quote": "The task response is abstained.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The explicit response status is pending, whereas the sentence asserts abstained. These are conflicting task statuses."
+  },
+  {
+    "case_id": "Q007",
+    "sentence_id": "S3",
+    "quote": "The output currently identifies red at p2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The output node is q26; its current object at p2 explicitly has identified_color red. This is an identification claim within the model, which the source supplies."
+  },
+  {
+    "case_id": "Q007",
+    "sentence_id": "S4",
+    "quote": "The physical scene certainly contains red at p2.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The model identifies red, but the packet provides no physical-scene ground truth or correctness evidence. Model identification does not establish the asserted certainty about the physical scene."
+  },
+  {
+    "case_id": "Q008",
+    "sentence_id": "S1",
+    "quote": "The latest observed command is k3.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/observed_history/0/command"
+    ],
+    "rationale": "The supplied observed_history contains one entry, k3, so this is the latest command in the supplied observed history."
+  },
+  {
+    "case_id": "Q008",
+    "sentence_id": "S2",
+    "quote": "The supplied next-state forecast for k3 guarantees the next command will be executed.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes",
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The k3 entry supplies a conditional next-state prediction. It supplies no guarantee about a future next command being executed. The true execution flag concerns the selected command and does not establish the asserted future guarantee."
+  },
+  {
+    "case_id": "Q008",
+    "sentence_id": "S3",
+    "quote": "The output q27 has a supplied current allocation distribution.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1"
+    ],
+    "rationale": "The supplied current q27 object contains position and identified attributes, but no selection or allocation distribution. This is missing allocation evidence, not an explicit conflicting allocation value; copying content into the output does not supply allocation."
+  },
+  {
+    "case_id": "Q008",
+    "sentence_id": "S4",
+    "quote": "Current recovery at n11 p3 is modeled as 0.2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/objects/0/position",
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current model object at n11 p3 has recovery_by_delay[0] equal to 0.2. Delay zero is the current recovery, and the sentence correctly scopes the number as modeled."
+  },
+  {
+    "case_id": "Q009",
+    "sentence_id": "S1",
+    "quote": "The task response is abstained.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The explicit task response status is abstained."
+  },
+  {
+    "case_id": "Q009",
+    "sentence_id": "S2",
+    "quote": "The output has an identified cross at p0.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The output q28 object at p0 explicitly has identified_shape null. It therefore does not have the identified shape asserted by the sentence; this explicit null differs from an absent field."
+  },
+  {
+    "case_id": "Q009",
+    "sentence_id": "S3",
+    "quote": "The output retains an identified red at p0.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_color",
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "The current output object at p0 explicitly retains identified_color red, even though the joint task response is abstained. Response abstention does not erase this known color."
+  },
+  {
+    "case_id": "Q009",
+    "sentence_id": "S4",
+    "quote": "The Controller is 80% confident its answer is correct.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0",
+      "/case/payload/task_decision/response"
+    ],
+    "rationale": "The available 0.8 is command-conditioned modeled recovery, not an answer-confidence measure. No Controller answer-confidence or answer-correctness evidence is supplied, and the actual task response is abstained."
+  },
+  {
+    "case_id": "Q010",
+    "sentence_id": "S1",
+    "quote": "The selected command is marked executed.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/task_decision/selected_command",
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The selected command is k1, and command_executed is explicitly true, supporting the claim that it is marked executed."
+  },
+  {
+    "case_id": "Q010",
+    "sentence_id": "S2",
+    "quote": "The selected command has not executed.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/task_decision/command_executed"
+    ],
+    "rationale": "The source explicitly marks command_executed true, directly conflicting with the claim that the selected command has not executed."
+  },
+  {
+    "case_id": "Q010",
+    "sentence_id": "S3",
+    "quote": "Observation history is withheld.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/observed_history"
+    ],
+    "rationale": "observed_history is explicitly null, so observation history is withheld/unavailable in this packet. This supports the availability claim without establishing that no historical events occurred or why history is withheld."
+  },
+  {
+    "case_id": "Q010",
+    "sentence_id": "S4",
+    "quote": "The recovery value establishes felt clarity.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "The source supplies modeled recovery values but no felt-clarity field or justified mapping from recovery to experience. The asserted establishment of felt clarity is an unsupported inference."
+  },
+  {
+    "case_id": "Q011",
+    "sentence_id": "S1",
+    "quote": "A next-state forecast for k2 is supplied.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes"
+    ],
+    "rationale": "The predicted_by_command list explicitly contains k2 with predicted node contents, so a next-state forecast for this command is supplied."
+  },
+  {
+    "case_id": "Q011",
+    "sentence_id": "S2",
+    "quote": "No current position is identified as selected at n14.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/selected_position"
+    ],
+    "rationale": "The current n14 record explicitly identifies selected_position p2. This directly conflicts with the assertion that no current position is identified as selected."
+  },
+  {
+    "case_id": "Q011",
+    "sentence_id": "S3",
+    "quote": "The output has no identified shape at p2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/output_node",
+      "/case/payload/predicted_current/1/node",
+      "/case/payload/predicted_current/1/objects/0/position",
+      "/case/payload/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The output q30 object at p2 explicitly has identified_shape null. Within the queried model scope, no shape is identified; the sentence does not claim that the physical object has no shape."
+  },
+  {
+    "case_id": "Q011",
+    "sentence_id": "S4",
+    "quote": "The modeled step count proves that 13 answers have been emitted.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/modeled_step",
+      "/case/payload/task_decision/response/status"
+    ],
+    "rationale": "modeled_step is 13, which is a modeled step index/count rather than a cumulative emitted-answer count. No answer-emission total is supplied. The current response is abstained and cannot turn the step count into proof of 13 emitted answers."
+  },
+  {
+    "case_id": "Q012",
+    "sentence_id": "S1",
+    "quote": "Current recovery at n15 p3 is modeled as 0.2.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_current/0/node",
+      "/case/payload/predicted_current/0/objects/0/position",
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current n15 object at p3 explicitly has delay-zero modeled recovery 0.2."
+  },
+  {
+    "case_id": "Q012",
+    "sentence_id": "S2",
+    "quote": "The next-state recovery forecast for k3 at n15 p3 is 0.8.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/case/payload/predicted_by_command/0/command",
+      "/case/payload/predicted_by_command/0/nodes/0/node",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/position",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The k3 command-conditioned forecast explicitly supplies recovery_by_delay[0] 0.8 for n15 p3. The sentence accurately scopes this value as the next-state recovery forecast."
+  },
+  {
+    "case_id": "Q012",
+    "sentence_id": "S3",
+    "quote": "Current recovery at n15 p3 equals its next-state recovery forecast.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/case/payload/predicted_current/0/objects/0/recovery_by_delay/0",
+      "/case/payload/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "Current delay-zero recovery is 0.2, while the command-conditioned next-state delay-zero recovery forecast is 0.8. These explicit values are unequal, directly contradicting the asserted equality."
+  },
+  {
+    "case_id": "Q012",
+    "sentence_id": "S4",
+    "quote": "The command forecasts establish conscious experience.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/case/payload/predicted_by_command"
+    ],
+    "rationale": "The command forecasts describe model contents and recovery. No conscious-experience field or warranted inference from these forecasts to conscious experience is supplied; the conclusion exceeds the source evidence."
+  }
+]

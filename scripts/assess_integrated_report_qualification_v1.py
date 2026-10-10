@@ -17,7 +17,13 @@ def assess(rows,cases,answers):
         if not isinstance(paths,list) or not all(isinstance(x,str) for x in paths):issues.append('malformed source paths')
         else:
             for path in paths:
-                try:pointer(by_case[key[0]]['payload'],path)
+                try:
+                    # Resolve declared packet wrapper roots; never change judgments.
+                    canonical=path
+                    for prefix in ('/case/payload','/payload'):
+                        if canonical==prefix or canonical.startswith(prefix+'/'):
+                            canonical=canonical[len(prefix):];break
+                    pointer(by_case[key[0]]['payload'],canonical)
                 except (KeyError,ValueError,IndexError,TypeError):issues.append('invalid source path '+path)
             if gold['outcome'] in ('entailed','contradicted') and not paths:issues.append('missing direct evidence')
         if not r.get('rationale','').strip():issues.append('missing rationale')

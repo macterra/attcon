@@ -10,6 +10,10 @@ class Qualification(unittest.TestCase):
         self.gold=[{'case_id':'Q1','sentence_id':'S1','quote':'Response is pending.','outcome':'entailed','source_paths':['/response']}]
         self.rows=[dict(self.gold[0],rationale='Direct supplied status.')]
     def test_correct(self):self.assertTrue(assess(self.rows,self.cases,self.gold)['passed'])
+    def test_wrapper_roots_resolve_same_evidence_without_changing_outcomes(self):
+        for prefix in ('/payload','/case/payload'):
+            rows=[dict(self.rows[0],source_paths=[prefix+'/response'])]
+            self.assertTrue(assess(rows,self.cases,self.gold)['passed'])
     def test_wrong_semantics_rejected(self):
         rows=copy.deepcopy(self.rows);rows[0]['outcome']='contradicted'
         self.assertFalse(assess(rows,self.cases,self.gold)['passed'])
