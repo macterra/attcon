@@ -246,7 +246,7 @@ they provide no new phenomenological confirmation. The
 [neutral prose pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed 36 development
 reports; verified attribute errors leave the new interface's fidelity unestablished.
 It is not a powered confirmation. Separate rubric review and source-blind ratings
-have not been obtained. A learned reporter is one possible method, not a guaranteed
+were absent at that stage; the later AI review is reported below. A learned reporter is one possible method, not a guaranteed
 route to resolving subjective experience.
 
 A [named-distribution pilot v2](NEUTRAL_FUNCTIONAL_PILOT_V2_RESULTS.md) completes
@@ -321,16 +321,16 @@ label enters the payload. Fourteen relevant tests and exact payload/tensor repla
 pass. No prose is generated, and the parent engineering failure remains unchanged.
 The proposed [manual factual-audit procedure](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
 separates quoted propositions, source-aware judgments and required coverage; it
-remains an unqualified development draft with no human annotations. Independent
-rubric review and theory-facing confirmation are still outstanding.
+remains an unqualified development draft with no human annotations. At that stage, separate
+rubric review and theory-facing confirmation were outstanding.
 
 A [review-materials packet](FUNCTIONAL_REVIEW_PACKET.md) separates rubric-definition
 review, 28 synthetic source-aware factual cases, and all 36 unchanged v5 development
 reports. Proposed synthetic answers remain unverified author expectations. One
 model pair is reserved from reviewer calibration for a later whole-prose check;
 the reports were already inspected by the research team, so this is not fresh
-confirmation. Human author review is coordinated, with no human review or factual
-annotations received. All current functional conditions contain an attention-control
+confirmation. Human author review was initially coordinated without substantive
+comments; later AI annotations and reference review are reported below. All current functional conditions contain an attention-control
 model: an own/external wiring contrast needs an independently justified theoretical
 prediction, rather than being taken as a direct test of substrate presence.
 
@@ -421,12 +421,36 @@ The user has authorized separate-context AI reviewers instead of waiting for
 human participation. The [development review protocol](AI_REVIEW_PROTOCOL_V1.md)
 assigns one reviewer to draft-2 definitions and two to all 28 original synthetic
 factual cases and 12 unchanged whole-prose reports. First-pass annotations,
-inventory disagreements and adjudication will be retained. Shared model/training
+inventory differences and correction addenda are retained. Shared model/training
 and project commissioning limit independence; AI review is not human validation
 or scientific replication. Human review is optional. Existing qualification
 failures remain unchanged, and structural checks do not establish semantics.
 This route permits substantive measurement development without a human-only gate;
 it does not itself validate a consciousness-related endpoint or complete confirmation.
+
+Reviewer D has completed definition review with disclosed project affiliation and
+no experimental-output exposure. [Draft 3](FUNCTIONAL_REPORT_RUBRIC_V3.md) adopts
+its selection/prominence, presentation-referent, attribution-axis and
+access/experiential-wording distinctions. A separately archived clarification
+distinguishes operational reference correspondence from stronger comparator
+specificity. Information-matched ordinary-description parity limits specificity
+but need not erase independently demonstrated correspondence. Neither establishes
+experience. Source-blind AI character review of the unchanged development texts
+completed under its [prospective protocol](AI_CHARACTER_REVIEW_PROTOCOL_V1.md); those
+ratings are not independent reference validation or fresh confirmation.
+
+The [completed review results](AI_REVIEW_RESULTS_V1.md) retain two AI factual
+inventories of 40 original records (948 and 985 rows), then 16 synthetic task cases
+(38 and 42 rows), with granularity differences and corrected interpretation errors.
+No aggregate precision/semantic agreement is inferred from those unmatched rows.
+Two source-blind raters agree on 129/132 dimension labels across 12 texts, all
+classified technical, with no presentation-manner or experiential wording. Three
+identity-certainty ambiguities differ. These are repeated presentations of two
+episodes, not independent replication. A separate primary-reference review motivates
+a candidate content-specific appearance/clarity pattern while retaining recovery
+and attribution as structural measures. It does not empirically validate machine
+correspondence. Human review is optional; prospective task-auditor qualification,
+source-first coverage and fresh controlled reporting remain the next work.
 
 ## 7. Reproducibility
 

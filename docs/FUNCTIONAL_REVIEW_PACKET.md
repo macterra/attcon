@@ -2,19 +2,25 @@
 
 Updated 2026-10-10. The original v1 packet was prepared October 4 for author review
 first. R-C1 has since supplied an exposed AI contributor review, preserved with
-its provenance. No completed human author/independent review or factual annotations
-have arrived. The [review response](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) records
+its provenance. No completed human author/independent review has arrived. Separate AI factual
+annotations and source-blind character ratings are now retained. The [review response](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) records
 adopted/deferred recommendations. No existing experimental verdict is changed.
 
 The latest user instruction authorizes AI subagents instead of requiring humans.
 The [AI review protocol](AI_REVIEW_PROTOCOL_V1.md) governs this new review round;
 human review is optional. Historical packet sources remain intact, including their
-original wording. Substantive semantic judgments and source-blind correspondence
-assessment are still required; separate contexts are not independent human validation.
+original wording. The [completed review results](AI_REVIEW_RESULTS_V1.md) retain substantive semantic
+judgments, source-blind ratings and corrections; prospective qualification and
+correspondence testing remain; separate contexts are not independent human validation.
 
 ## Start with definitions
 
-Read [draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md) and complete its
+For the new AI review route, use [draft 3](FUNCTIONAL_REPORT_RUBRIC_V3.md) and
+[source-blind character-review instructions](AI_CHARACTER_REVIEW_PROTOCOL_V1.md).
+Draft 3 follows reviewer D; its ratings remain development observations.
+
+The preserved draft-2 route remains available for historical reproduction. Read
+[draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md) and complete its
 [blank definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md). The
 [draft-2 definition bundle](assets/functional_review_v2/definition_review.zip)
 contains those documents, reviewer metadata and a blank candidate rating form,

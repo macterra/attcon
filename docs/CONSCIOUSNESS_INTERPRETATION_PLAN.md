@@ -59,18 +59,40 @@ Report first-pass agreement, inventory differences, disagreements and uncertaint
 A structural validator is separate from substantive semantic judgment. Optional
 human review may add evidence but is not required. No external contact is authorized.
 
-Deliverables: [rubric draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md), [blank definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md),
-blind rating form, scoring instructions, and
+Deliverables: [rubric draft 3](FUNCTIONAL_REPORT_RUBRIC_V3.md), archived definition
+reviews, [blank rating form](FUNCTIONAL_REPORT_RATING_FORM_V3.csv), scoring instructions, and
 prespecified mapping from theoretical predictions to each primary contrast.
 
-The [review packet](FUNCTIONAL_REVIEW_PACKET.md) is now prepared for author review
-first, as requested. It separates definition review from factual cases and unchanged
+The original [review packet](FUNCTIONAL_REVIEW_PACKET.md) was prepared for author
+review first; the current instruction instead authorizes AI reviews to proceed. It separates definition review from factual cases and unchanged
 development prose. The received R-C1 review is an exposed AI contributor review;
 its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) adopts semantic splits and
 recasts intervention/revision checks as fidelity controls. It does not establish
 independent human validation. Primary theory-facing criteria remain unfrozen, and
-separate-context AI definition review and factual-audit development are proceeding.
+separate-context AI definition, factual and character reviews have now been completed.
 Author feedback may still be added, without blocking those tasks.
+
+Separate-context reviewer D has now supplied a substantive
+[first pass](https://github.com/macterra/attcon/blob/main/audits/ai_review_v1/definition/review_D.md) and separately preserved
+[clarification](https://github.com/macterra/attcon/blob/main/audits/ai_review_v1/definition/review_D/clarification.md).
+[Draft 3](FUNCTIONAL_REPORT_RUBRIC_V3.md) separates selection/prominence and
+access/experiential wording, and splits attribution role from internal/external
+location. Two source-aware AI auditors have inventoried all 28 synthetic cases, 12 unchanged
+development reports and 16 task-vocabulary cases; source-blind raters followed the
+[character-review protocol](AI_CHARACTER_REVIEW_PROTOCOL_V1.md). These development
+judgments do not themselves validate a consciousness-reference pattern. See the
+[review results](AI_REVIEW_RESULTS_V1.md) for preserved disagreements and corrections.
+A separate [primary-reference review](CONSCIOUSNESS_REFERENCE_GROUNDING_V1.md)
+now motivates an identified-content/appearance/answer distinction. Both character
+raters classify every development text as technical with no presentation-manner
+or experiential wording; this is descriptive, not a retrospectively failed gate.
+
+The theory-facing primary is operational correspondence: faithful reports match a
+prospectively specified pattern independently grounded in documented consciousness
+reports. Information-matched ordinary narrators/reference descriptions measure
+overlap and optional stronger specificity. Comparator superiority is not necessary
+for every incremental contribution. Parity limits specificity without erasing
+demonstrated correspondence. Neither outcome certifies subjective experience.
 
 ## 2. Make the functional distinction identifiable
 
@@ -202,7 +224,8 @@ retry or replace failures. Revisions require a new version and fresh confirmatio
 | Outcome | Warranted conclusion and next action |
 |---|---|
 | Factual fidelity inadequate | Interface experiment is uninterpretable; improve it on development data and register a fresh test. |
-| Fidelity passes; features follow labels or are equally generic | Accurate description remains supported; the stronger interpretation is unsupported by this assay. Preserve the result. |
+| Fidelity passes; features follow labels | Label-grounded description is supported; robust attention-model correspondence is unsupported by this assay. Preserve the result. |
+| Fidelity and independently grounded reference matching pass; ordinary descriptions match too | Operational correspondence supplies graded support with low specificity; the ordinary-description alternative remains sufficient for these endpoints. |
 | Functional contrast and selective interventions pass, but separate report characterization fails | Causal reporting of access is supported; consciousness-report correspondence remains unresolved. |
 | Fidelity, independent characterization, functional contrast, and label robustness pass | Evidence supports the proposed connection between attention-control organization and consciousness-report structure within the tested system. |
 
@@ -229,7 +252,7 @@ current evidence and outstanding work. Component checks do not establish complet
 5. Analyze all registered contrasts and replicate any positive result.
 6. Update the preprint with retained follow-up results and the resulting claim limits.
 
-Current completion: a [draft rubric](FUNCTIONAL_REPORT_RUBRIC.md), rating form,
+Current completion: a [draft rubric](FUNCTIONAL_REPORT_RUBRIC_V3.md), rating form,
 [validated causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md), and
 [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) are available. All neutral
 pilot failures remain retained: v1 has attribute errors, v2 fails coverage, and v3/v4
@@ -265,8 +288,8 @@ review first; the newer instruction authorizes AI reviews without waiting for it
 The [original review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now contains R-C1's
 completed exposed AI review. Draft 2 has a separate blank form and definition bundle;
 the original review and v1 packet are retained unchanged. No completed human review
-exists or is required. Separate AI rubric review and factual annotations are now
-authorized; none of the six stages is complete in full. The updated preprint retains
+exists or is required. Separate AI rubric reviews and factual/character annotations are now
+received; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
 
 The [fixed-model disconnection diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md)

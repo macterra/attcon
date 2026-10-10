@@ -12,6 +12,18 @@ The historical rubric/packet bytes remain preserved; this instruction supersedes
 their prospective human-only gates. Qualification still needs substantive source
 checks, task-vocabulary cases and acceptance rules frozen before new reporting.
 
+Reviewer D has completed definition review. [Draft 3](FUNCTIONAL_REPORT_RUBRIC_V3.md)
+adopts its semantic distinctions. Source-blind AI character ratings have now been
+completed under a [separate development protocol](AI_CHARACTER_REVIEW_PROTOCOL_V1.md).
+The intended theory-facing primary is independently grounded operational
+correspondence; ordinary-description controls quantify overlap. Superiority supports
+a stronger specificity claim but is not a condition for every credible contribution.
+The [completed AI review](AI_REVIEW_RESULTS_V1.md) preserves two factual review
+corrections and three character disagreements; all 12 texts are technical.
+Primary-literature reference review now motivates a candidate appearance/clarity
+component, which these texts lack. Next freeze integrated-task qualification and
+source-first coverage and a new reporting pilot, then register confirmation and replication.
+
 The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) completes
 36 reports and two sets of 36 source-blind audits. Four presentation/intervention
 groups pass the full factual minima, but restoration fails precision and process
@@ -33,7 +45,7 @@ targeted retained failures. Fourteen relevant tests and exact input/tensor repla
 pass. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
 and blank claim/coverage forms propose a different measurement procedure. Independent
 qualification is still required before new prose collection. The completed
-adaptation diagnostic below preserves the original failure verdict. A blank
+adaptation diagnostic below preserves the original failure verdict. A separate
 [blank draft-2 review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md) now distinguishes
 definition/prediction review from later blind ratings. The
 [review packet](FUNCTIONAL_REVIEW_PACKET.md) separates definitions, 28 synthetic
@@ -41,7 +53,7 @@ factual cases and unchanged v5 whole-prose material. The user previously offered
 subagents to proceed without waiting. The received [R-C1 review](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is an exposed AI contributor review; its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md)
 produces draft 2 without claiming independent validation. No human comments have arrived. Separate AI rubric review and source-aware factual
-annotation are now proceeding; human involvement is optional. Justify the
+annotation are now completed; human involvement is optional. Justify the
 proposed functional contrast before confirmation: all current conditions contain
 an attention-control model, so wiring separability alone does not establish the
 source-of-qualia interpretation. Draft 2 separates recovery, category certainty,
@@ -61,8 +73,9 @@ completed with unchanged checkpoints and exact replay: after eight additional
 contradictory probes, all eight failed seed-2021 cases revise correctly (random:
 7/8; agreement: 0/8). Identical-input continuation worlds are exactly invariant.
 The original failure is not rescored, and no new language or character evidence is
-collected. The immediate dependency is substantive separate-context definition
-review and factual-audit qualification using the prepared packet.
+collected. Substantive separate-context definition review is complete. The next measurement
+work is prospective task-auditor qualification and source-first coverage, followed
+by the fixed-budget reporting pilot.
 
 The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) identified missing executed
 Controller category decisions. The [new Controller assay](FUNCTIONAL_DECISIONS_RESULTS.md)

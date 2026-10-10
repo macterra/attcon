@@ -43,7 +43,12 @@ recovery, category certainty, presentation manner and answer confidence, while
 retaining ordinary causal description as an alternative. This is revision work;
 AI subagent review is authorized by the latest instruction; human validation is
 optional and factual-audit qualification remains necessary. See the
-[review protocol](docs/AI_REVIEW_PROTOCOL_V1.md).
+[review protocol](docs/AI_REVIEW_PROTOCOL_V1.md). A fresh-context definition review
+has produced [draft 3](docs/FUNCTIONAL_REPORT_RUBRIC_V3.md); factual inventories
+and source-blind development character ratings are [completed](docs/AI_REVIEW_RESULTS_V1.md).
+Both raters classify all 12 development texts as technical, without presentation
+manner or experiential wording. Review corrections and raw disagreements are retained. Operational
+correspondence and stronger comparator specificity are distinct claims.
 
 - [Object-content confirmation](docs/BOUND_CONTENT_RESULTS.md) and [updated preprint](docs/PREPRINT.md).
 - [Updated research plan](docs/CONSCIOUSNESS_INTERPRETATION_PLAN.md): test whether report features follow functional organization beyond supplied labels; the reporter remains external instrumentation.

@@ -21,34 +21,34 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 
 | Plan requirement / deliverable | Authoritative artifact inspected | Current finding | Status |
 |---|---|---|---|
-| 1. Versioned independently grounded rubric | `docs/FUNCTIONAL_REPORT_RUBRIC_V2.md`; review response | Draft 2 splits recovery/certainty/presentation/confidence and records referents/cues following exposed AI review R-C1. AI definition review is now authorized; no human validation is required. | Partial |
-| Independent definition review and predicted contrasts | Received R-C1; `audits/functional_rubric_revision_v2/received_review.json`; blank v2 form | One exposed AI contributor review received, with prior design/results involvement disclosed. No human review; a fresh-context AI reviewer is assigned. All conditions retain attention models and grounding does not by itself establish correspondence. | Separate-context AI review proceeding |
-| Blind rating form and scoring instructions | `docs/FUNCTIONAL_REPORT_RATING_FORM_V2.csv`; draft 2 | New header-only form separates dimensions and attribution cues; no rater judgments. Instructions remain draft. | Partial |
-| Prespecified primary dimensions, agreement, meaningful effects | Draft 2; analytical power feasibility; plan §1/§4 | R-C1's numerical proposals remain unregistered. Exact sensitivity separates independent-pair power from illustrative clustered-null inflation and whole-model resolution. Actual dependence, chosen estimand and a justified theory-facing endpoint remain missing. | Analytical component available; requirement incomplete |
+| 1. Versioned independently grounded rubric | Rubric 3; D first pass/clarification; R1 reference review | Separate AI reviews clarify selection/prominence, access/experiential wording and attribution axes. Primary literature motivates a candidate content-specific appearance pattern; empirical machine/reference validation is incomplete. | Definition/reference development completed; measurement validation partial |
+| Separate-context definition review and predicted contrasts | D; R1; AI review results | D and R1 read no target outputs or peer reviews. Their papers/mappings and project affiliation are disclosed. Operational correspondence can give graded support; ordinary-description overlap limits stronger specificity. No human prerequisite. | Substantive AI reviews received |
+| Blind rating form and scoring instructions | Rubric 3; `audits/ai_character_review_v1/`; character protocol | S1/S2 each rate all 12 opaque development texts. 129/132 labels match; all texts technical, with no appearance or experiential wording. Three identity-certainty ambiguities differ. Shared-model and two-episode limits retained. | Development ratings received; confirmation measurement partial |
+| Prespecified primary dimensions, agreement, meaningful effects | Draft 3; reference review; analytical power feasibility; plan §1/§4 | R-C1's numerical proposals remain unregistered. Exact sensitivity separates independent-pair power from illustrative clustered-null inflation and whole-model resolution. Actual dependence, chosen estimand and a justified theory-facing endpoint remain missing. | Analytical component available; requirement incomplete |
 | 2. Causal wiring specification and matched simulator | `src/attcon/functional_wiring.py`; `audits/functional_wiring_v1/summary.json`; design/results docs | Own access, external device and decoupled symbolic cases are available. | Component available |
 | Learned matched functional systems across all three controls | `audits/functional_controls_v1/summary.json`; `audits/functional_interface_v1/summary.json` | All nine static forecast cases pass; new visual/neutral integration exports 664 inputs for all three controls and revision contexts. Explicit uncertainty bridge and task-readout boundary remain engineered. | Engineering integration available; report evidence pending |
 | Executed outcomes and model/world interventions | `audits/functional_decisions_v1/summary.json`; `audits/functional_task_interface_v1/summary.json` | New deterministic Controller executes commands and answer/abstention decisions, with actual feedback, model-only interventions and exact restoration. Traces now supply 5,184 neutral inputs. Raw identity remains stable and the cutoff is engineered; no new qualified prose. | Functional-use/source component available; theory-facing requirement partial |
 | Matched quantitative state revision after changed process | Three-way summary; `audits/control_disconnection_diagnostic_v1/summary.json` | Original 26/27 routes pass and overall gate fails. Post-hoc fixed-model probes correct all eight retained seed-2021 cases with eight contradictory observations; random corrects seven, agreement none. Exact ambiguous continuations and original failed verdict remain. | Matched assay and diagnosis completed; original limitation retained |
 | Identifiability and accessible causal histories | Three-way inputs and fixed-model probe archives | Static masks pass without condition labels. Agreeing probes produce byte-identical observations/model states in disconnected/restored worlds despite different counterfactual truth, establishing an explicit invariance limit. Three-way language/generalization evidence remains incomplete. | Engineering component available; reporting incomplete |
 | 3. Neutral factual interface and source inventory | Original 664 inputs; `src/attcon/functional_task_interface.py`; frozen task inventory; `audits/functional_task_interface_v1/summary.json` | Task export adds 5,184 views with queried/emitted actions, actual history and modeled forecasts. Response/history/readout correspondence, remapping and restoration replay exactly; evaluator labels/truth remain outside payloads. No new prose or task-vocabulary qualification. | Source-integration component available; reporting requirement incomplete |
-| Full factual reporting and reliable semantic assessment | v5 raw reports/audits; v6/v7 qualification archives; manual procedure and review packet | Prior failures remain. Quote-first procedure now has 28 synthetic cases with unverified author-proposed gold and unchanged whole-prose review material. Original forms contain no annotations; two separate AI inventories are proceeding; structural checks do not qualify semantic judgment or independence. | Contradicts completion; replacement procedure unqualified |
+| Full factual reporting and reliable semantic assessment | Original v5/v6/v7 archives; A/B first passes, task reviews and correction addenda | Each AI reviewer inventories 28 original synthetic cases, 12 whole reports and 16 task cases. Different granularity, retrospective coverage and two corrected review errors are retained. Quotes/pointers/counts replay; semantic completeness and prospective qualification are not certified. | Substantive annotations received; qualification incomplete |
 | Typed process addresses and metadata distinctions | New process schemas/scorer; `tests/test_neutral_functional_v6.py`; raw qualification outputs | Structural field/scope defects are prevented in qualification; unsupported semantic assertions and incorrect node resolution remain. Tests cannot establish whole-prose accuracy. | Partial |
 | Identifier remapping / conflicting labels / missing relation | v5 protocol, inputs and assessment | Registered development controls exist; four full-information groups pass minima, restoration fails. No qualified full causal confirmation. | Partial |
 | Held-out seeds, content combinations and command mappings | Learned integration and neutral pilot archives | Language-development rows 0,1,2 used; row 3 prepared but unused after qualification halts. Models are previously trained; command labels remain k0–k3. Full planned generalization not performed. | Incomplete |
 | 4. Powered frozen theory-facing protocol | Interpretation plan; pilot protocols; `audits/functional_power_feasibility_v1/summary.json` | An unfrozen candidate design has 64 exact sensitivity cases; no measured rating dependence or validated endpoint. No theory-facing protocol fixes independent rubric, raters, contrasts, multiplicity, model/episode budget and stopping rules. | Feasibility component available; protocol missing |
 | Confirmation reports and randomized source-blind ratings with reviewer provenance | Current blank form and development archives | Original object-content confirmation remains valid for its narrower registered study. New functional-interpretation reports are development; no new confirmation ratings; AI raters are authorized. | Missing evidence |
-| Candidate grounding comparisons and causal/fidelity controls in plan §4 | Current fixtures/pilots; draft-2 review response | Model interventions/revision/missing fields are fidelity/source controls. Neutral/remapped attribution remains a candidate grounding endpoint; no qualified powered result or independently justified consciousness-report correspondence exists. | Incomplete |
+| Candidate grounding comparisons and causal/fidelity controls in plan §4 | Current fixtures/pilots; draft-2 review response | Model interventions/revision/missing fields are fidelity/source controls. Neutral/remapped attribution remains a candidate grounding endpoint; reference review now specifies an appearance/clarity candidate separately. No qualified powered correspondence result exists. | Incomplete |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
-| 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1/draft-2 distinctions and analytic power/dependence sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |
+| 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |
 | Every attempt, source, raw response, score and milestone publication | Archives, manifests, historical GitHub history and isolated local milestone commits | Earlier studies are published. Review revision preserves R-C1, original blank form and v1 ZIPs; local commits are saved separately because repository metadata writes/network are restricted. Push is pending. Archival completeness is not scientific completion. | Historical component available; latest publication blocked |
 
 ## What passing tests establish
 
 Twelve relevant evaluator/interface tests pass. v6/v7 prepared inputs replay exactly
 against learned-state/code hashes. Raw fixture responses match their parsed claims,
-and qualification scores replay deterministically. The current form is blank, and
-the qualification archives are terminal completed failures, not live jobs awaiting
+and qualification scores replay deterministically. The original forms remain blank templates; new AI response files are separate.
+The qualification archives are terminal completed failures, not live jobs awaiting
 success. v7's reporter inputs are byte-identical to v6, so row 3 remains unspent.
 
 The original learned integration's six model/ownership combinations pass its component
@@ -66,7 +66,7 @@ failure; the engineering invariants do not establish language fidelity or charac
 
 The retained control-disconnection diagnosis is completed, with all fixed-model
 probes and exact ambiguity controls archived. It preserves the failed parent study.
-Substantively review definitions and independently qualify the source-aware manual
+Definitions have substantive AI review. Prospectively qualify the source-aware
 factual-audit procedure before collecting new integrated three-way prose. The
 functional readout boundary is an experimental definition; do not declare it a
 demonstrated phenomenal boundary.
@@ -89,22 +89,23 @@ not a qualified or frozen measurement. Preserve v5/v6/v7 failures and real repor
 contradictions; do not normalize them into a successful historical assessment.
 Use unused development data when actually generating new language reports.
 
-The review packet is prepared for author review first, per the user's coordination
-response. Synthetic cases and unchanged v5 prose are separated from definition
-review. Proposed author answers are not gold validated by independent reviewers;
-the later whole-prose split is held out from reviewer calibration only. The
-annotation checker can validate quotations and addresses but never certifies
-semantic correctness, whole-report coverage or independence. R-C1 is preserved
-as an exposed AI contributor review. The new instruction authorizes a separate
-AI definition reviewer and two AI factual auditors; their first passes are archived
-separately from R-C1 and original blank forms. Draft 2 and its blank review bundle are available; v1 ZIPs
-replay from the original blank source without replacing the completed review.
+The original packet and author-review coordination are preserved historically.
+The latest user instruction replaces mandatory human review with AI subagents.
+D and R1 completed definition/reference reviews without target-output or peer-review
+exposure. A and B each completed 56 factual records, including 16 task cases; S1
+and S2 supplied separate source-blind character ratings. Source checking found two
+review errors, corrected in addenda without replacing original annotations.
 
-Independent reviewers must assess the rubric and theoretically discriminating
-predictions before powered confirmation can be frozen. The review form and blank
-rating template are prepared. No reviewer contact has been authorized or performed. Human review is optional.
-Proceed with separate AI review, source-aware adjudication, integrated-task
-qualification and prospective experimental registration. Scientific measurement
-requirements remain; lack of human participation is no longer a blocking condition.
-Goal completion remains unestablished.
-Do not claim success from a technical prose description alone.
+The [AI review results](AI_REVIEW_RESULTS_V1.md) distinguish these completed review
+components from outstanding measurement/experimental requirements. New task
+synthetic cases are not new Controller trials or Reporter outputs. Quote/address
+validation does not certify semantics. Their retrospective coverage checklists
+need a prospective source-first replacement. The appearance candidate is externally
+motivated but remains unvalidated on fresh target reports.
+
+Human review is optional. Next freeze scoped task-auditor qualification and required
+coverage before collecting new integrated-task prose, then evaluate the fixed-budget
+development pilot and register confirmation/replication. Grounding, operational
+reference correspondence and optional comparator specificity remain separate.
+No reviewer outreach has occurred. Goal completion remains unestablished, but lack
+of human participation no longer blocks work.
