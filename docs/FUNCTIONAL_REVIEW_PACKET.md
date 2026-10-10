@@ -6,6 +6,12 @@ its provenance. No completed human author/independent review or factual annotati
 have arrived. The [review response](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) records
 adopted/deferred recommendations. No existing experimental verdict is changed.
 
+The latest user instruction authorizes AI subagents instead of requiring humans.
+The [AI review protocol](AI_REVIEW_PROTOCOL_V1.md) governs this new review round;
+human review is optional. Historical packet sources remain intact, including their
+original wording. Substantive semantic judgments and source-blind correspondence
+assessment are still required; separate contexts are not independent human validation.
+
 ## Start with definitions
 
 Read [draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md) and complete its
@@ -69,15 +75,15 @@ pair from reviewer calibration, not fresh confirmation from the research team.
 The original v5 failure remains unchanged. Do not infer qualification from matching
 short synthetic examples alone. Quote and audit every additional factual assertion
 in the prose, not only the prompted checklist. Preserve first-pass judgments before
-adjudication. Independent character raters need separate source-blind materials and
+adjudication. Separate character raters need source-blind materials and
 a reviewed rubric; these source-aware audit bundles do not serve that purpose.
 
 ## Returning and checking annotations
 
 Use the blank [claims CSV](FUNCTIONAL_FACTUAL_AUDIT_CLAIMS.csv) and
 [coverage CSV](FUNCTIONAL_FACTUAL_AUDIT_COVERAGE.csv). Record `role` in the included
-metadata CSV as `author`, `independent` or `other`; this session's first review is
-`author`. Claim spans are zero-based and end-exclusive Unicode character positions
+metadata CSV as `author`, `independent` or `other`; the earlier coordinated first review was
+`author`, while new AI subagents use `other` and disclose their reviewer type. Claim spans are zero-based and end-exclusive Unicode character positions
 in the unchanged report. `source_paths` is a JSON array of source pointers, such
 as `["/predicted_current/0/selected_position"]`; `$report` refers to report metadata.
 Do not invent an unavailable source field as evidence of a negative statement.

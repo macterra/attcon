@@ -2,6 +2,16 @@
 
 ## Current plan (2026-10-10)
 
+The latest user instruction authorizes subagent reviews instead of a human-only
+dependency. Follow the [AI review protocol](AI_REVIEW_PROTOCOL_V1.md): one fresh
+context reviews definitions and two separately audit source-aware propositions in
+28 synthetic cases and 12 existing development reports. Archive first passes and
+adjudication; disclose common model/training. Optional author/human feedback can
+be incorporated later. Human absence does not block further experiments.
+The historical rubric/packet bytes remain preserved; this instruction supersedes
+their prospective human-only gates. Qualification still needs substantive source
+checks, task-vocabulary cases and acceptance rules frozen before new reporting.
+
 The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) completes
 36 reports and two sets of 36 source-blind audits. Four presentation/intervention
 groups pass the full factual minima, but restoration fails precision and process
@@ -27,12 +37,11 @@ adaptation diagnostic below preserves the original failure verdict. A blank
 [blank draft-2 review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md) now distinguishes
 definition/prediction review from later blind ratings. The
 [review packet](FUNCTIONAL_REVIEW_PACKET.md) separates definitions, 28 synthetic
-factual cases and unchanged v5 whole-prose material. The user will review it first
-as human author review. The received [R-C1 review](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+factual cases and unchanged v5 whole-prose material. The user previously offered author review first; the latest instruction authorizes
+subagents to proceed without waiting. The received [R-C1 review](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
 is an exposed AI contributor review; its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md)
-produces draft 2 without claiming independent validation. No human comments or
-factual annotations have arrived. Independent rubric review and factual qualification
-remain pending. Justify the
+produces draft 2 without claiming independent validation. No human comments have arrived. Separate AI rubric review and source-aware factual
+annotation are now proceeding; human involvement is optional. Justify the
 proposed functional contrast before confirmation: all current conditions contain
 an attention-control model, so wiring separability alone does not establish the
 source-of-qualia interpretation. Draft 2 separates recovery, category certainty,
@@ -52,7 +61,7 @@ completed with unchanged checkpoints and exact replay: after eight additional
 contradictory probes, all eight failed seed-2021 cases revise correctly (random:
 7/8; agreement: 0/8). Identical-input continuation worlds are exactly invariant.
 The original failure is not rescored, and no new language or character evidence is
-collected. The immediate dependency is substantive author/independent definition
+collected. The immediate dependency is substantive separate-context definition
 review and factual-audit qualification using the prepared packet.
 
 The [readout audit](FUNCTIONAL_READOUT_AUDIT_RESULTS.md) identified missing executed
@@ -91,8 +100,7 @@ and a [draft human-review rubric](FUNCTIONAL_REPORT_RUBRIC.md). Language reports
 The [updated consciousness-interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md)
 tests whether independently assessed report features follow functional organization
 rather than supplied labels. It specifies matched own-access/external-device systems,
-an identifiable neutral reporting interface, selective interventions, blind human
-assessment, and a future frozen confirmation. It is a design plan, not a completed
+an identifiable neutral reporting interface, selective interventions, source-blind AI assessment with disclosed shared-model limitations, and a future frozen confirmation. It is a design plan, not a completed
 experiment. The reporter remains external instrumentation, separate from the Controller.
 
 ## Evidence motivating the plan (through 2026-10-03)
@@ -135,8 +143,8 @@ state. This paradigm has reached its limit on that question.
 The next step is to specify the independent rubric and a comparison in which
 functional wiring is identifiable from neutrally encoded evidence. A native learned
 reporter is one candidate method, not the only route or a guaranteed solution.
-Independent human assessment and generalization are explicit stages of the updated
-plan. Existing experimental verdicts remain unchanged.
+Separate report assessment and generalization are explicit stages of the updated
+plan; human assessment is optional. Existing experimental verdicts remain unchanged.
 
 ## Side investigation: MSTC comparison (not on the main line)
 
@@ -168,8 +176,7 @@ relations, selective-intervention following, and the specified automated report
 structure. All criteria pass in fresh confirmation v5. Earlier failed and
 incomplete runs remain archived.
 
-The next research questions concern generalization and interpretation: independent
-human assessment of these actual bound-content reports, additional tasks and
+The next research questions concern generalization and interpretation: additional separate-context assessment of these actual bound-content reports, additional tasks and
 architectures, and whether the proposed correspondence supports the source-of-qualia
 theory. Mixed character labels are common even in visual-only controls; the
 structure/fidelity conjunction carries the more specific finding. Do not treat

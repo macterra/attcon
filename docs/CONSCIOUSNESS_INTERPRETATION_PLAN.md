@@ -4,6 +4,13 @@ Updated 2026-10-10. **Design plan, not a frozen confirmation protocol. Developme
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.
 
+The user has authorized separate-context AI subagents in place of mandatory human
+review. Human participation is optional, not a prerequisite. The
+[AI review protocol](AI_REVIEW_PROTOCOL_V1.md) preserves reviewer provenance,
+first-pass disagreements and the limits of shared model training. Historical
+rubric/packet versions remain exact; their human-only prerequisites are superseded
+for future work by this plan. The scientific fidelity and correspondence goals remain.
+
 ## Goal and current evidence
 
 Test the proposed connection between an attention-control model and independently
@@ -45,11 +52,12 @@ Separate generic factual dependence, attribution to a particular subsystem, and
 phenomenological character. A self-only flag cannot by itself establish specificity.
 First-person wording, fluency, or use of a consciousness word cannot earn success.
 
-Have independent human reviewers assess the rubric and later score blinded,
-randomized reports from every condition. Report agreement, disagreements, and
-uncertainty; automated scores are secondary checks, not substitutes for that review.
-No human reviews have yet been obtained. Preparing materials is authorized by this
-plan; contacting reviewers is a separate action requiring explicit instruction.
+Have separately contextualized reviewers assess the rubric and later score
+source-blind, randomized reports from every condition. AI reviewers are authorized;
+record shared model/training and project commissioning as limits on independence.
+Report first-pass agreement, inventory differences, disagreements and uncertainty.
+A structural validator is separate from substantive semantic judgment. Optional
+human review may add evidence but is not required. No external contact is authorized.
 
 Deliverables: [rubric draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md), [blank definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md),
 blind rating form, scoring instructions, and
@@ -61,7 +69,8 @@ development prose. The received R-C1 review is an exposed AI contributor review;
 its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) adopts semantic splits and
 recasts intervention/revision checks as fidelity controls. It does not establish
 independent human validation. Primary theory-facing criteria remain unfrozen, and
-human author review, independent review and factual qualification remain pending.
+separate-context AI definition review and factual-audit development are proceeding.
+Author feedback may still be added, without blocking those tasks.
 
 ## 2. Make the functional distinction identifiable
 
@@ -185,7 +194,7 @@ dependence statements should remain separately scored.
 
 The unit of independent evidence is the episode/model, not each correlated report
 or extracted assertion. Archive all attempts and failures, exact source states,
-requests, checkpoints, code versions, and human/automated ratings. Do not silently
+requests, checkpoints, code versions, and AI/optional-human ratings with provenance. Do not silently
 retry or replace failures. Revisions require a new version and fresh confirmation.
 
 ## 5. Interpretation, replication, and stopping
@@ -194,7 +203,7 @@ retry or replace failures. Revisions require a new version and fresh confirmatio
 |---|---|
 | Factual fidelity inadequate | Interface experiment is uninterpretable; improve it on development data and register a fresh test. |
 | Fidelity passes; features follow labels or are equally generic | Accurate description remains supported; the stronger interpretation is unsupported by this assay. Preserve the result. |
-| Functional contrast and selective interventions pass, but human characterization fails | Causal reporting of access is supported; consciousness-report correspondence remains unresolved. |
+| Functional contrast and selective interventions pass, but separate report characterization fails | Causal reporting of access is supported; consciousness-report correspondence remains unresolved. |
 | Fidelity, independent characterization, functional contrast, and label robustness pass | Evidence supports the proposed connection between attention-control organization and consciousness-report structure within the tested system. |
 
 A positive result warrants replication with fresh trained systems and another
@@ -246,17 +255,18 @@ and unchanged controls address the old unmatched comparison. The
 mistaken-model diagnostics. All input/tensor invariants hold; no new prose is
 generated. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDIT.md)
 separates quoted claims, judgments and coverage, with blank forms and no completed
-qualification. That procedure needs independent review before new reporting.
+qualification. That procedure needs substantive qualification before new reporting; AI reviewers
+can supply the required semantic assessments.
 The new [three-part review packet](FUNCTIONAL_REVIEW_PACKET.md) supplies 28 synthetic
 cases with unverified author-proposed answers and all 36 unchanged v5 reports,
 split by model pair for calibration/later whole-prose review. No human annotations
-have arrived and no earlier verdict is rescored. User coordination chooses author
-review first; independent review remains outstanding.
+have arrived and no earlier verdict is rescored. Earlier coordination chose author
+review first; the newer instruction authorizes AI reviews without waiting for it.
 The [original review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now contains R-C1's
 completed exposed AI review. Draft 2 has a separate blank form and definition bundle;
 the original review and v1 packet are retained unchanged. No completed human review
-exists. Independent rubric review and human ratings remain
-pending; none of the six stages is complete in full. The updated preprint retains
+exists or is required. Separate AI rubric review and factual annotations are now
+authorized; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
 
 The [fixed-model disconnection diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md)
@@ -265,4 +275,7 @@ all eight failed seed-2021 cases, versus seven with random commands and none wit
 agreement commands. Original histories already contain disagreements; the original
 failure remains. Exactly identical-input continuation worlds demonstrate the
 separate identifiability limit. No new reporting occurs. Further theory-facing
-collection waits on substantive definition review and factual-audit qualification.
+collection requires substantive definition review and factual-audit qualification,
+which can be established by the authorized AI review process. No human-only gate
+remains. Complete task-vocabulary qualification and freeze a development pilot
+before new prose, then register the theory-facing test and replication.

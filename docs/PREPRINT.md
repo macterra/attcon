@@ -1,6 +1,6 @@
 # Reporting Bound Contents of an Attention-Control Model
 
-Working preprint, updated 2026-10-04. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
+Working preprint, updated 2026-10-10. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
 and [inspection-model manuscript](INSPECTION_MODEL_PREPRINT.md) remain archived.
 
 ## Abstract
@@ -239,13 +239,13 @@ provides exact source/state replay and access to all retained records.
 
 The [current plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md) addresses the remaining
 interpretive gap with identifiable functional wiring, neutral factual reporting,
-selective model/process interventions, and independent human assessment. A
+selective model/process interventions, and separate source-blind assessment. A
 [causal-wiring fixture](FUNCTIONAL_WIRING_RESULTS.md) and
 [learned-model integration](FUNCTIONAL_MODEL_RESULTS.md) are development milestones;
 they provide no new phenomenological confirmation. The
 [neutral prose pilot](NEUTRAL_FUNCTIONAL_PILOT_RESULTS.md) completed 36 development
 reports; verified attribute errors leave the new interface's fidelity unestablished.
-It is not a powered confirmation. Independent rubric review and human ratings
+It is not a powered confirmation. Separate rubric review and source-blind ratings
 have not been obtained. A learned reporter is one possible method, not a guaranteed
 route to resolving subjective experience.
 
@@ -415,6 +415,18 @@ it tests sign balance rather than automatically testing a population mean.
 All 64 numerical cases and probability arrays replay exactly. The analysis
 distinguishes fixed-checkpoint inference from generalization over training models;
 it selects neither a consciousness endpoint nor a final confirmation design.
+
+### 6.1 Authorized AI review route
+The user has authorized separate-context AI reviewers instead of waiting for
+human participation. The [development review protocol](AI_REVIEW_PROTOCOL_V1.md)
+assigns one reviewer to draft-2 definitions and two to all 28 original synthetic
+factual cases and 12 unchanged whole-prose reports. First-pass annotations,
+inventory disagreements and adjudication will be retained. Shared model/training
+and project commissioning limit independence; AI review is not human validation
+or scientific replication. Human review is optional. Existing qualification
+failures remain unchanged, and structural checks do not establish semantics.
+This route permits substantive measurement development without a human-only gate;
+it does not itself validate a consciousness-related endpoint or complete confirmation.
 
 ## 7. Reproducibility
 

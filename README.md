@@ -33,15 +33,17 @@ Later neutral reporting pilots retain factual-audit failures. The latest
 functional use of modeled effects/recovery, and its
 [neutral task inputs](docs/FUNCTIONAL_TASK_INTERFACE_RESULTS.md) connect observed
 history, modeled forecasts and emitted actions. No new prose or human judgments
-are added. Substantive human author/independent review and factual-audit qualification
-remain pending; the source-of-qualia objective is unachieved.
+are added. Separate-context AI definition and factual reviews are now authorized instead
+of waiting for humans; substantive qualification remains necessary; the source-of-qualia objective is unachieved.
 
 An exposed AI contributor review, R-C1, has now led to
 [rubric draft 2](docs/FUNCTIONAL_REPORT_RUBRIC_V2.md) and a
 [documented response](docs/FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md). It separates
 recovery, category certainty, presentation manner and answer confidence, while
 retaining ordinary causal description as an alternative. This is revision work;
-independent human validation and factual-audit qualification remain outstanding.
+AI subagent review is authorized by the latest instruction; human validation is
+optional and factual-audit qualification remains necessary. See the
+[review protocol](docs/AI_REVIEW_PROTOCOL_V1.md).
 
 - [Object-content confirmation](docs/BOUND_CONTENT_RESULTS.md) and [updated preprint](docs/PREPRINT.md).
 - [Updated research plan](docs/CONSCIOUSNESS_INTERPRETATION_PLAN.md): test whether report features follow functional organization beyond supplied labels; the reporter remains external instrumentation.
