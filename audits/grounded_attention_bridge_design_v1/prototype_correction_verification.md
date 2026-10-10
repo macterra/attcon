@@ -1,0 +1,5 @@
+# Prototype evidence-coordinate correction: static verification
+
+After the first-pass static review was saved, the parent renamed `represented_content()` to `uncalibrated_orientation_coordinates()` and added explicit comments that the normalized raw-logit transform is not a calibrated probability or posterior and is not multiplied by attention success. Raw logits remain separately stored. Fixture references were renamed consistently. This reviewer inspected those lines statically and confirms the requested semantic clarification is present.
+
+The first-pass prototype review/metadata and their original source hashes remain unchanged. The parent reports four fixtures passing after correction; this reviewer did not run them. No checkpoints, model outputs or qualification inference were loaded. The parent will document tensor mutability, caller-provided noise and permissive sensor-callback boundaries in the design documentation before the milestone. Those are remaining driver/architecture qualification requirements; this static check does not verify a not-yet-written study driver or certify an outcome model.
