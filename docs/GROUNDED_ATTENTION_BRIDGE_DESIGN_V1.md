@@ -1,6 +1,6 @@
 # Grounded attention/acquisition bridge: design v1
 
-**Unfrozen proposal, not an executed study or evidence of qualia.** A separate subagent reviewed the architecture and proposed an outcome-grounded bridge; its [full review](../audits/grounded_attention_bridge_design_v1/review.md) and [provenance](../audits/grounded_attention_bridge_design_v1/metadata.json) are preserved. The [sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) is complete with an overall FAIL; it supplies explicitly partial raw decision evidence under the amendment below, not a qualified attention model. Human review is optional; shared AI commissioning/model limitations remain.
+**Architecture proposal; its [first functional study](GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md) is now frozen and completed. No evidence of qualia is established.** A separate subagent reviewed the architecture and proposed an outcome-grounded bridge; its [full review](../audits/grounded_attention_bridge_design_v1/review.md) and [provenance](../audits/grounded_attention_bridge_design_v1/metadata.json) are preserved. The [sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) is complete with an overall FAIL; it supplies explicitly partial raw decision evidence under the amendment below, not a qualified attention model. Human review is optional; shared AI commissioning/model limitations remain.
 
 The existing acquisition simulator assigns quality and decay. The proposed bridge instead predicts events and correctness from executed sensory observations:
 
@@ -60,7 +60,7 @@ The [prototype review](../audits/grounded_attention_bridge_design_v1/prototype_r
 and [correction verification](../audits/grounded_attention_bridge_design_v1/prototype_correction_verification.md)
 preserve the initial naming issue and its precommit correction. Tests use toy
 callbacks and supplied noise; they do not execute a qualified learned system.
-Frozen dataclasses do not prevent callers mutating tensor contents. The branch
+These remain primitive-level limits; the subsequent study freezes and audits an image-only sensor and its noise schedule. Frozen dataclasses do not prevent callers mutating tensor contents. The branch
 helper consumes caller noise and cannot certify its independence; an eventual
 frozen experiment must sample and record the declared fresh-noise schedule.
 A permissive sensor callback is not an information boundary: before learned

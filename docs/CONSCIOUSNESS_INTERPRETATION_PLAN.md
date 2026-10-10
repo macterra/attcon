@@ -100,11 +100,18 @@ sensory evidence while excluding the failed probabilities entirely; this does
 not trigger the sensory protocol's pass permission or qualify a bridge.
 The [grounded bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) learns delivery
 and decision-success forecasts from executed outcomes on fresh data and must
-qualify its own conditional predictions. World/memory primitives and four tests
-are available; the learned bridge is unfrozen and unexecuted. Keep evaluator truth
-out of inference and preserve separate sensory, memory, attention-model,
-Controller and Reporter roles. Do not promote task confidence or a consumed
-binding into appearance by definition.
+qualify its own conditional predictions. Its [first executed-outcome study](GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md)
+now passes all 56 declared functional gates per model, with 18 fixture tests,
+exact full-budget replay and independent raw/result reconstruction. Calibration
+passes observable status cells while seen zero-contrast overprediction remains.
+Controller gains and represented-route corruption effects establish routing use;
+history-only parity and constant unseen-query risk inputs preclude a content-specific
+appearance interpretation. Keep evaluator truth out of inference and preserve
+separate sensory, memory, attention-model, Controller and Reporter roles.
+Next qualify an independent appearance endpoint and matched source/intervention
+dissociation on naturally reached seen content. Neutral factual reporting of the
+new model is separately useful, but does not supply appearance correspondence.
+Do not promote task confidence or a consumed binding into appearance by definition.
 
 ## 1. Specify the target features before observing new reports
 

@@ -277,6 +277,10 @@ The [all-condition sensory adapter](docs/SENSORY_TASK_ADAPTER_V1_RESULTS.md)
 raises highest-contrast hidden accuracy above 99% but still fails overall in every
 model because conditional correctness calibration fails. Numerical scaling also
 limits categorical controls. The [amended grounded bridge design](docs/GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md)
-uses raw sensory evidence and excludes the failed probabilities; four world/memory
-tests pass. Its learned action/outcome forecasts and the full qualia-source goal
-remain unqualified. Independent audit and full replay preserve all failures.
+uses raw sensory evidence and excludes the failed probabilities. The subsequent
+[grounded attention-outcome study](docs/GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md)
+passes all 56 declared functional gates in each of three models, with exact replay
+and independent reconstruction. Controller gains are 21–22 percentage points on
+unseen queries, but history-only parity identifies routing as their main source.
+Seen zero-contrast forecasts still overestimate success. Appearance correspondence
+and the full qualia-source goal remain unestablished; all earlier failures remain.

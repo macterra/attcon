@@ -27,8 +27,16 @@ The [amended bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) instead uses
 raw sensory evidence and learns delivery/realized-success forecasts on fresh
 executed outcomes. Two unblinded methodological reviews support excluding a
 failed instrument that no consumer uses; they do not rescore the old result.
-Four world/memory prototype tests pass. Freeze and qualify the learned bridge's
-own forecasts and source/intervention controls before appearance interpretation.
+The [fresh grounded attention-outcome study](GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md)
+now passes 56/56 declared functional gates per model. Actual branches, source
+controls, represented-route corruption, observed physical-remap revision, exact
+replay and independent reconstruction are retained. Current/refresh/after
+forecasts pass status-based calibration; seen zero-contrast errors remain.
+The unseen-query Controller reduces largely to routing and history-only performs
+similarly. Next qualify an independent appearance endpoint and matched
+source/intervention dissociation on naturally reached seen content, including
+decision-risk and criterion controls. Neutral factual integration of this new
+model can proceed separately; it is not appearance evidence by definition.
 
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base

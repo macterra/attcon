@@ -57,7 +57,12 @@ highest-contrast hidden discrimination above 99% but fails conditional calibrati
 in all models. Exact replay and independent audit retain that result and the
 categorical-control numerical limits. An [amended bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md)
 excludes failed probabilities and proposes fresh direct action/outcome learning;
-four primitive tests pass, but no learned bridge or appearance endpoint is qualified.
+the [fresh grounded attention-outcome study](GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md)
+now passes all 56 declared functional gates per model. Exact replay and independent
+reconstruction confirm inputs, targets, forecasts and outcomes. Seen zero-contrast
+errors remain; unseen-query Controller benefit primarily identifies routing,
+with history-only parity. A bounded functional bridge is qualified; appearance
+correspondence and the qualia-source interpretation remain unqualified.
 
 ## Requirement-by-requirement evidence
 
@@ -84,7 +89,7 @@ four primitive tests pass, but no learned bridge or appearance endpoint is quali
 | Archived participant appearance/task/confidence reference and stimulus conversion | Physical-source reference discovery review | Primary studies and author archives identified; no actual trial data or stimulus code downloaded/qualified. Clarity/confidence ratings do not supply a validated free-prose reference distribution. | Candidate discovery complete; file-level qualification and domain transfer incomplete |
 | Ancillary orientation information under a synthetic sensory conversion | Orientation-transfer protocol, three frozen checkpoints, raw tensors and exact replay | Paired hidden readouts achieve 100% at highest contrast and 50% at zero. Counterfactual partners are used; texture/mask classes can repeat. No isolated-image or native-stimulus task ability, human appearance judgments or attention-source effect is established. | Ancillary gate passes; full reference transfer incomplete |
 | Isolated sensory decisions and synthetic correctness instrument | Isolated-task protocol, held-out inputs/fits, exact companion replay and results | Overall engineering FAIL: 89.84%, 94.73%, 93.95% highest-contrast hidden accuracy; .90 required per model. Pooled ECE/Brier passes conceal high contrast-specific ECE. No fit promoted as acquisition/appearance model; original verifier traversal failure retained. | Failed prerequisite preserved; task development remains |
-| All-condition task adapter and direct-outcome bridge design | Frozen sensory protocol/results/replay/independent audit; two boundary reviews; world/memory code/tests | Classification component passes; overall FAIL because conditional calibration fails. No probability promoted. Raw-evidence path is a prospective new architecture requiring its own outcome/source qualification; primitive tests do not qualify a learned model. | Failed full prerequisite retained; bridge implementation/qualification incomplete |
+| All-condition task adapter and fresh direct-outcome bridge | Frozen sensory failure; boundary/design reviews; grounded outcome protocol/results/raw archives/replay/independent audit | Old calibration FAIL retained. Fresh bridge excludes those probabilities and passes 56/56 declared functional gates in each model. Seen zero-contrast overprediction remains. Controller gains/corruption effects primarily test routing; history-only parity and constant unseen-query risk inputs do not identify appearance integration. No Reporter run. | Bounded functional bridge complete; appearance/source interpretation incomplete |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
 | 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |
@@ -152,10 +157,13 @@ prospective source-first coverage and bounded supportedness qualification. The
 appearance candidate is externally motivated but remains unvalidated on fresh
 target reports or qualified participant data.
 
-Human review is optional. Bounded task-auditor qualification, integrated-task prose
-and physical-source calibration now complete. Next qualify actual archived
-appearance judgments and stimuli, establish a valid frozen-model input conversion,
-and separately register the reference-qualified source assay before more prose.
+Human review is optional. Bounded task-auditor qualification, integrated-task prose,
+physical-source calibration and the declared direct-outcome functional bridge
+now complete. Next qualify actual archived appearance judgments and stimuli,
+establish a valid input conversion, and register a matched source/intervention
+assay on naturally reached seen content before appearance-facing prose. Neutral
+factual integration of the new bridge can proceed separately; it is not an
+appearance endpoint or a test of whether consciousness is needed for performance.
 Only then prepare theory-facing confirmation/replication. Grounding, operational
 reference correspondence and optional comparator specificity remain separate.
 No reviewer outreach has occurred. Goal completion remains unestablished, but lack

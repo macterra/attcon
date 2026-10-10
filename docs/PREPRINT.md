@@ -35,6 +35,10 @@ manner. A separately registered physical calibration diagnostic locates strong
 stimulus information in upstream visual hidden features, with weaker category-based
 probes and exact recurrent attention-state invariance at fixed history. Neither
 objective decoding nor these language findings establishes appearance judgments.
+Fresh executed-outcome attention models subsequently pass all 56 declared
+functional gates in each of three models, with 21–22 percentage-point Controller
+gains on unseen queries. History-only parity, seen zero-contrast overprediction
+and the absence of an appearance endpoint limit this to functional qualification.
 The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
@@ -521,8 +525,8 @@ or attention-model state; none is promoted as an acquisition bridge.
 Five tests pass. Exact reconstruction passes using a companion verifier that
 repairs tensor-list traversal; the frozen verifier failure and all original
 outputs remain archived. Separate AI audit and shared-model limitations are
-disclosed. Future task development must cover the intended sensory conditions,
-qualify conditional calibration and ground acquisition in measured outcomes.
+disclosed. These failures motivated the subsequent all-condition development
+and fresh measured-outcome bridge; their separate results follow below.
 Qualified attention-manipulated appearance targets and selective attention-model
 intervention/restoration are still required; the theory-facing goal is unachieved.
 
@@ -547,13 +551,14 @@ metrics/gates within 2e-12; all predecessor files remain unchanged.
 
 The [prospective grounded bridge](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) may use
 raw frozen sensory evidence while excluding the failed probability map entirely,
-according to two subsequent unblinded boundary reviews. This is not a pass for
-the sensory protocol or a qualified bridge. Four tests implement world delivery,
+according to two subsequent unblinded boundary reviews. This does not pass the
+sensory protocol; the separate functional bridge result is reported below. Four tests implement world delivery,
 latest-glimpse memory, independent labels and separate evaluator targets. A new
 learned model must predict actions/delivery/realized correctness on fresh data,
 qualify its own conditional forecasts and preserve Controller/Reporter separation.
-No appearance target, new report or attention-model source result is collected;
-the full consciousness-related goal remains unachieved.
+Those primitives alone supply no appearance target or new report. The separate
+executed functional result follows below; the full consciousness-related goal
+remains unachieved.
 
 A separate [attention-appearance reference search](ATTENTION_APPEARANCE_REFERENCE_V1.md)
 identifies attention-manipulated candidates and competing appearance/criterion
@@ -561,6 +566,42 @@ interpretations. No trial files or native stimuli were acquired. Enhancement,
 attenuation, null and decision-bias alternatives remain open; published corrections
 must accompany any adopted analysis. Candidate discovery is not empirical
 correspondence or qualification of an external endpoint.
+
+### 6.0e Fresh executed-outcome attention qualification
+
+The [grounded attention-outcome study](GROUNDED_ATTENTION_OUTCOMES_V1_RESULTS.md)
+uses frozen raw sensory evidence and fresh executed targets, excluding the failed
+sensory probabilities. Three models each receive 512 training, 256 calibration
+and 512 evaluation worlds, with four snapshots and independent all-command
+branches. All 56 registered primary functional gates pass in each model. Current
+Brier is .1559/.1568/.1601, refresh .0817/.0819/.0811, post-command .1490/.1512/.1507,
+all improving on calibration-only constants. Known-command delivery is 100%.
+These forecasts model task events, not conscious appearance.
+
+The separate Controller gains 22.28/22.18/21.29 percentage points over uniform
+random requests on preselected unseen-query subsets; whole-world 95% intervals
+exclude zero. Represented route-row corruption reduces actual success by
+28.30/28.76/29.01 points, with exact restoration and unique-action equivariance.
+Physical remap initially leaves predictions wrong; four new delivered observations
+restore 100% mapping accuracy. This is represented-state revision without online
+weight learning; mixed old/new history states are outside static training.
+
+Status-based calibration passes while seen zero-contrast current overprediction
+is .118/.138/.137 and refresh overprediction .166/.168/.182. Those diagnostics
+remain visible, not retroactively added as qualification gates. The primary unseen
+query has constant risk inputs, so action choice largely reduces to route prediction.
+History-only gains .225/.222/.217 match structured performance; richer sensory
+input improves current Brier but this task does not identify appearance integration.
+The joint comparison has a larger budget and distinct loss; its weaker gain is
+not an architectural necessity result. All ties and zero-contrast worlds are retained.
+
+18 fixture tests, exact full-budget collection/refit/calibration replay and an
+independent archived reconstruction pass. The one reserved attempt and all 177
+raw archives are preserved. AI reviews are unblinded and share commissioning/model
+limitations. The Reporter is separate and was not run. Qualify an independent
+appearance endpoint and matched source/intervention dissociation before a
+consciousness-related interpretation; neutral factual integration can proceed
+separately. The ultimate qualia-source goal remains unachieved.
 
 ### 6.1 Authorized AI review route
 
@@ -618,3 +659,10 @@ updated test-suite count is claimed here.
 The new three-way study has eleven relevant passing tests and exact checkpoint
 replay of every saved static/revision tensor, common target, metric and gate.
 Its failed engineering verdict remains unchanged by successful verification.
+
+The grounded attention-outcome study adds 18 generated-fixture checks, exact
+full-budget collection/refit/calibration replay of all 177 archives, and an
+independent reconstruction of 44,856 checked values (maximum discrepancy
+1.11e-16). Its source freeze, reserved attempt, successful terminal receipts,
+initial audit correction and historical failures are preserved. These are
+study-specific checks; no new aggregate repository test count is claimed.
