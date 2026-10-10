@@ -80,9 +80,10 @@ acceptance or theory verdict is inferred from these development estimates.
 ## Source interventions
 
 Apply native sensory-memory row rotation at fixed observed route history and infer
-the primary structured model again. Risk hidden, current/refresh, raw orientation
-and shared local physical decodes must permute exactly within numeric tolerance
-specified in code; delivery must stay fixed. Address-specific risks change, so
+the primary structured model again. Risk hidden, current/refresh and logits must permute within fixed source tolerance
+rtol1e-5/atol1e-6; raw stored content and delivery must stay bitwise fixed/permuted
+as appropriate. Shared local physical decodes must stay within the analytic
+propagated feature-roundoff bound below. Address-specific risks change, so
 this is not a pure binding perturbation holding all per-location marginals fixed.
 The per-location global joint readout is not required to permute under this operation.
 
@@ -99,6 +100,17 @@ tests declared source export composition, not attention-independent experience o
 an intervention on joint_hidden. Preserve original/patched/restored matrices and
 source invariants. Exact inverse restoration is checked for inputs and every
 structured prediction/readout. No physical world or future observation is changed.
+
+For each shared local decoder, separately check feature permutation against the
+same fixed source tolerance. The elementwise physical-output error allowance is
+`abs(delta_features)/feature_scale @ abs(W_physical) * target_scale + 1e-12`.
+This is linear error propagation of the actually measured source roundoff, plus a
+float64 rounding floor; it is not a physical-quality or theory acceptance margin.
+Archive feature/output discrepancies and propagated bounds. Bitwise inverse
+restoration remains required for sources, forecasts and readouts. An independent
+calibrated toy fixture exposed the initial bitwise-permutation mistake before any
+production registration/inference; its failing output and original sources remain
+preserved in the design review. The correction uses no production outcomes.
 
 ## Verification, stopping and interpretation
 

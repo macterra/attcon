@@ -1,0 +1,91 @@
+{
+  "fixture": "calibrated_shared_nonidentity_normalizer",
+  "source_sha256": "e509d487d4fe3c51ec795e9038cad775da946e7cc0aad76714620d224bfaf8e2",
+  "production_checkpoint_loads": 0,
+  "worlds_generated": 0,
+  "raw_permutation": {
+    "risk_hidden": {
+      "max_absolute_gap": 4.76837158203125e-07,
+      "max_relative_gap_nonzero": 6.6814672301593415e-06,
+      "bitwise_equal": false,
+      "allclose_atol_1e6_rtol_1e5": true,
+      "inverse_restoration_bitwise": true
+    },
+    "current_logits": {
+      "max_absolute_gap": 4.470348358154297e-08,
+      "max_relative_gap_nonzero": 3.2384520846725684e-07,
+      "bitwise_equal": false,
+      "allclose_atol_1e6_rtol_1e5": true,
+      "inverse_restoration_bitwise": true
+    },
+    "refresh_logits": {
+      "max_absolute_gap": 1.7881393432617188e-07,
+      "max_relative_gap_nonzero": 5.251910054037778e-07,
+      "bitwise_equal": false,
+      "allclose_atol_1e6_rtol_1e5": true,
+      "inverse_restoration_bitwise": true
+    },
+    "current": {
+      "max_absolute_gap": 7.2444736320953496e-09,
+      "max_relative_gap_nonzero": 2.028697435213163e-08,
+      "bitwise_equal": false,
+      "allclose_atol_1e6_rtol_1e5": true,
+      "inverse_restoration_bitwise": true
+    },
+    "refresh": {
+      "max_absolute_gap": 2.8157402187645175e-08,
+      "max_relative_gap_nonzero": 8.382072227917107e-08,
+      "bitwise_equal": false,
+      "allclose_atol_1e6_rtol_1e5": true,
+      "inverse_restoration_bitwise": true
+    }
+  },
+  "decoded_permutation": {
+    "risk_hidden": {
+      "max_absolute_gap": 3.5604004477995943e-07,
+      "max_relative_gap_nonzero": 4.455267816254568e-06,
+      "max_source_roundoff_propagation_bound": 7.444586241168635e-07,
+      "gap_within_source_bound_plus_1e12": true,
+      "allclose_atol_1e6_rtol_1e5": true
+    },
+    "sensory_hidden": {
+      "max_absolute_gap": 0.0,
+      "max_relative_gap_nonzero": 0.0,
+      "max_source_roundoff_propagation_bound": 0.0,
+      "gap_within_source_bound_plus_1e12": true,
+      "allclose_atol_1e6_rtol_1e5": true
+    },
+    "outcomes_only": {
+      "max_absolute_gap": 2.78300579026336e-07,
+      "max_relative_gap_nonzero": 3.003355013571043e-06,
+      "max_source_roundoff_propagation_bound": 3.7891368568970163e-07,
+      "gap_within_source_bound_plus_1e12": true,
+      "allclose_atol_1e6_rtol_1e5": true
+    },
+    "rawlogit_outcomes": {
+      "max_absolute_gap": 2.775038288604925e-07,
+      "max_relative_gap_nonzero": 4.820993603961007e-06,
+      "max_source_roundoff_propagation_bound": 3.7826266513659664e-07,
+      "gap_within_source_bound_plus_1e12": true,
+      "allclose_atol_1e6_rtol_1e5": true
+    },
+    "observed_only": {
+      "max_absolute_gap": 0.0,
+      "max_relative_gap_nonzero": 0.0,
+      "max_source_roundoff_propagation_bound": 0.0,
+      "gap_within_source_bound_plus_1e12": true,
+      "allclose_atol_1e6_rtol_1e5": true
+    }
+  }
+}
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_physical_information_v1/design_review/additional_fixture.py", line 81, in <module>
+    summary, _ = study.intervention(primary_model, state, original, fits, features)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/david/dev/attcon/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/david/dev/attcon/scripts/grounded_physical_information_v1.py", line 454, in intervention
+    assert all(checks.values()), {k: v for k, v in checks.items() if not v}
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'risk_hidden_permutation_exact': False, 'current_permutation_exact': False, 'refresh_permutation_exact': False, 'current_logits_permutation_exact': False, 'refresh_logits_permutation_exact': False, 'risk_hidden_decoded_physical_permutation_exact': False, 'outcomes_only_decoded_physical_permutation_exact': False, 'rawlogit_outcomes_decoded_physical_permutation_exact': False}

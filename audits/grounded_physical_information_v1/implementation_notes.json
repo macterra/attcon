@@ -1,0 +1,104 @@
+{
+  "implementer": "/root/attention_content_source_review",
+  "created_utc": "2026-10-10T23:34:16.243041+00:00",
+  "status": "code_ready_for_independent_preoutput_review_not_registered_or_run",
+  "source_sha256": {
+    "scripts/grounded_physical_information_v1.py": "b994b52432ee8513108aa91245defe755c7a7870dcac398660218336db69b870",
+    "tests/test_grounded_physical_information.py": "f96d3be22d8ed76ae1d5dbd942fb6bc1f105f5d4557208a28574fb6caef6cd76",
+    "docs/GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md": "b1b91bd2e78b18172bd40afa549c3e6403b16be879555a7203a1dd1c83be4629"
+  },
+  "precode_design_clarification": {
+    "issue": "Separate location decoders need not equivary when sensory rows move because recipient-location coefficients differ.",
+    "parent_resolution": "Shared pooled-seen decoder/normalizer/target means/alpha for local risk_hidden/sensory_hidden/outcomes_only/rawlogit_outcomes/observed_only; per-location only global joint_hidden/route_hidden. Restrict exact permutation to primary structured/local decoders.",
+    "implemented": true,
+    "production_outputs_seen": false
+  },
+  "preoutput_protocol_semantics_corrections": [
+    {
+      "issue": "Initial target was per-channel spatial standard deviation, whereas parent protocol specifies population standard deviation over all 3x16x16 values.",
+      "resolution": "Pooled RGB/spatial image_value_std and explicit varying-RGB constant-plane fixture (nonzero SD, zero gradients). No output-driven target selection.",
+      "production_outputs_seen": false
+    },
+    {
+      "issue": "Initial summaries omitted promised risk bins/target moments, and auxiliary decode did not archive continuous score.",
+      "resolution": "Add five fixed current-success bins [.0,.2,.4,.6,.8,1], target mean/population variance, explicit empty groups and continuous uncalibrated 0/1 answer_score thresholded at .5. Physical targets alone select alpha.",
+      "production_outputs_seen": false
+    }
+  ],
+  "synthetic_fixture_runs": [
+    {
+      "command": "PYTHONPATH=src:scripts .venv/bin/python -m unittest discover -s tests -p 'test_grounded_physical_information.py' -v",
+      "tests": 8,
+      "exit_code": 0,
+      "elapsed_test_seconds": 1.582,
+      "status": "initial_eight_fixtures_passed_before_protocol_semantics_corrections",
+      "output_summary": "Ran 8 tests in 1.582s; OK",
+      "production_checkpoint_loads": 0
+    },
+    {
+      "command": "PYTHONPATH=src:scripts .venv/bin/python -m unittest discover -s tests -p 'test_grounded_physical_information.py' -v",
+      "tests": 11,
+      "exit_code": 0,
+      "elapsed_test_seconds": 2.628,
+      "status": "all_updated_generated_fixtures_passed",
+      "test_names": [
+        "calibration_chooses_physical_loss_not_answer_labels_or_eval",
+        "exclusive_archives_and_readonly_replay",
+        "failure_reservation_prevents_retry",
+        "fresh_deliveries_latest_pixel_targets_and_rng_replay",
+        "generated_end_to_end_collection_fit_assessment_and_archive_replay",
+        "global_location_decoders_preserve_location_specific_targets",
+        "native_readdress_and_output_patch_are_distinct_and_exact",
+        "physical_statistics_have_declared_spatial_channel_boundary",
+        "registration_requires_review_and_detects_source_tampering",
+        "training_and_calibration_exclude_unseen_even_if_poisoned",
+        "world_cluster_scores_baseline_unseen_poison_and_empty_strata"
+      ],
+      "output_summary": "Ran 11 tests in 2.628s; OK",
+      "production_checkpoint_loads": 0,
+      "integration_fixture_scope": "Toy image-only sensor, randomly initialized fixture networks, 24/12/24 worlds, 8 world bootstraps; full collection/probe/calibration-selection/assessment/intervention/archive replay in temporary directory."
+    },
+    {
+      "command": "PYTHONPATH=src:scripts .venv/bin/python -m unittest discover -s tests -p 'test_grounded_physical_information.py' -v",
+      "tests": 11,
+      "exit_code": 0,
+      "elapsed_test_seconds": 2.11,
+      "status": "updated_wrapper_freeze_and_synthetic_precedence_fixtures_passed",
+      "output_summary": "Ran 11 tests in 2.110s; OK",
+      "production_checkpoint_loads": 0
+    }
+  ],
+  "operations": {
+    "production_inference": false,
+    "production_probe_fit": false,
+    "production_registration": false,
+    "production_attempt_reserved": false,
+    "reports_collected_or_rated": false,
+    "old_reviews_modified": false,
+    "commits_created": false
+  },
+  "implementation_boundaries": [
+    "Only calibrated model weights/normalizers/calibration key consumed from existing compressed instruments; no old per-world forecasts/labels used.",
+    "World truth is separate archive/evaluator-only stratification; latest delivered images define objective physical targets.",
+    "Missing unseen physical targets use archive-only zero placeholders masked out of all fits/assessments.",
+    "Shared local and per-location global decoder budgets differ and are explicitly reported.",
+    "Physical targets and auxiliary raw-answer agreement cannot earn qualitative presentation or consciousness acceptance.",
+    "Single exclusive attempt/failure preservation and exact collection/refit/archive/result replay are implemented."
+  ],
+  "preoutput_followups": [
+    {
+      "completed_utc": "2026-10-10T23:34:48.505005+00:00",
+      "parent_requested_changes": [
+        "Include execution_wrapper.py in registered source hash/snapshots",
+        "Mark interventions synthetic_patched_source_not_natural_state, current_memory_precedence and history_retains_actual_past, with explicit source-precedence description"
+      ],
+      "production_outputs_seen": false
+    }
+  ],
+  "latest_source_sha256": {
+    "scripts/grounded_physical_information_v1.py": "e509d487d4fe3c51ec795e9038cad775da946e7cc0aad76714620d224bfaf8e2",
+    "tests/test_grounded_physical_information.py": "2a2ad443613ae0fab9f50d27b2af5c7663579367200f8fe4b69abb0a38816414",
+    "docs/GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md": "b1b91bd2e78b18172bd40afa549c3e6403b16be879555a7203a1dd1c83be4629",
+    "audits/grounded_physical_information_v1/execution_wrapper.py": "be74ce53852a7e297ef9877932f123266a6aeba31211059690e7527a7287aa32"
+  }
+}
