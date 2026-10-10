@@ -293,8 +293,8 @@ An [explicit forecast-evidence amendment v7](NEUTRAL_FUNCTIONAL_PILOT_V7_RESULTS
 passes 33/36 fixtures but misaddresses one explicit readout claim and adds unsupported
 unknown-selection assertions in two presence/omission fixtures. It also halts before
 reporting. Repeated instruction amendments have not yet established semantic audit
-reliability. Typed schemas alone do not resolve the problem. A blank independent
-rubric-definition review form is prepared; no completed human review exists.
+reliability. Typed schemas alone do not resolve the problem. Definition-review
+materials are prepared; no completed human review exists.
 
 A [frozen learned three-way engineering study](FUNCTIONAL_CONTROLS_RESULTS.md)
 trains three fresh forecast models with independent automatic schedules and no
@@ -329,8 +329,8 @@ review, 28 synthetic source-aware factual cases, and all 36 unchanged v5 develop
 reports. Proposed synthetic answers remain unverified author expectations. One
 model pair is reserved from reviewer calibration for a later whole-prose check;
 the reports were already inspected by the research team, so this is not fresh
-confirmation. Author review is coordinated but no substantive review or annotation
-has been received. All current functional conditions contain an attention-control
+confirmation. Human author review is coordinated, with no human review or factual
+annotations received. All current functional conditions contain an attention-control
 model: an own/external wiring contrast needs an independently justified theoretical
 prediction, rather than being taken as a direct test of substrate presence.
 
@@ -389,6 +389,19 @@ restoration. This completes source integration without generating prose or
 qualifying semantic auditing. The new task vocabulary, independently justified
 report features, factual-audit qualification and powered confirmation remain
 review/measurement dependencies; all conditions still contain attention models.
+
+An exposed [AI contributor review R-C1](FUNCTIONAL_RUBRIC_REVIEW_FORM.md), committed
+October 5, calls for substantive rubric revision. Its prior study-design involvement
+and results exposure are disclosed; it is not independent human validation. The
+[draft-2 response](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) separates recovery
+forecasts, category certainty, presentation manner and response confidence, adds
+explicit referent/cue records, and classifies intervention/revision/missing-information
+contrasts as fidelity/source controls. Neutral/remapped attribution remains a
+candidate causal-grounding measure; ordinary causal inference remains viable.
+Neither that endpoint nor proposed agreement/effect thresholds are frozen, and
+consciousness-report correspondence still requires independent justification.
+The original review and v1 bundles are preserved, with historical replay using
+the archived blank form. No new reports, human ratings or confirmation are supplied.
 
 ## 7. Reproducibility
 

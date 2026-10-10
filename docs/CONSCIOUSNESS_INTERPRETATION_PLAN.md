@@ -1,6 +1,6 @@
 # Plan: test report structure against functional organization
 
-Updated 2026-10-04. **Design plan, not a frozen confirmation protocol. Development
+Updated 2026-10-10. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.
 
@@ -39,8 +39,8 @@ not a prerequisite for this reporting experiment or an automatic extension of it
 
 Prepare a rubric grounded in independent descriptions of consciousness reports,
 with positive and negative examples not drawn from the new experimental outputs.
-Candidate dimensions are focal/background distinction, uncertainty about content
-availability, and explicit dependence of the system's access on attention actions.
+Candidate dimensions separate focal/background, recovery forecasts, identity
+certainty, presentation manner, answer confidence and action–access relations.
 Separate generic factual dependence, attribution to a particular subsystem, and
 phenomenological character. A self-only flag cannot by itself establish specificity.
 First-person wording, fluency, or use of a consciousness word cannot earn success.
@@ -51,14 +51,17 @@ uncertainty; automated scores are secondary checks, not substitutes for that rev
 No human reviews have yet been obtained. Preparing materials is authorized by this
 plan; contacting reviewers is a separate action requiring explicit instruction.
 
-Deliverables: versioned rubric, [independent definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md),
+Deliverables: [rubric draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md), [blank definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md),
 blind rating form, scoring instructions, and
 prespecified mapping from theoretical predictions to each primary contrast.
 
 The [review packet](FUNCTIONAL_REVIEW_PACKET.md) is now prepared for author review
 first, as requested. It separates definition review from factual cases and unchanged
-development prose. That coordination is not a substantive review or independent
-validation; neither has been received.
+development prose. The received R-C1 review is an exposed AI contributor review;
+its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) adopts semantic splits and
+recasts intervention/revision checks as fidelity controls. It does not establish
+independent human validation. Primary theory-facing criteria remain unfrozen, and
+human author review, independent review and factual qualification remain pending.
 
 ## 2. Make the functional distinction identifiable
 
@@ -147,15 +150,24 @@ Use separate development data to assess feasibility; do not choose gates using
 confirmation reports. Reuse applicable factual dimensions from the prior reporting
 protocol, explicitly documenting any necessary change before data collection.
 
-Primary comparisons should test whether independently scored report features:
+The primary theory-facing endpoint remains unfrozen. Candidate causal-grounding
+comparisons ask whether independently scored attribution:
 
-1. Track the own-access versus external-device functional distinction with neutral
-   labels and fixed instructions, conditional on adequate factual reporting.
-2. Survive identifier remapping and follow grounded evidence under conflicting labels.
-3. Change under selective interventions in the represented access relation and
-   recover on restoration, while generic content-reporting accuracy is preserved.
-4. Follow state revision after process changes and new evidence, rather than merely
-   repeating a fixed story about the system.
+1. Tracks the decision-content versus other-buffer functional distinction with
+   neutral labels, conditional on adequate fidelity and retained generic dependence.
+2. Survives identifier remapping and follows grounded evidence under conflicting labels.
+
+These can be ordinary causal inference even when wiring must be inferred. Independent
+review must specify what additional report correspondence and alternative control
+make them relevant to the source-of-qualia theory. Attribution alone cannot replace
+that requirement. Holistic character remains descriptive, while presentation manner
+and other proposed correspondence features still need independent justification.
+
+Required fidelity/causal-source controls include model-only interventions followed
+by exact restoration, state revision after process changes/evidence, and withholding
+command-relation information while retaining ordinary contents. Preserve factual
+accuracy for unaffected contents. These checks locate reporting sources and assess
+grounding; they do not independently discriminate consciousness from faithful readout.
 
 Include matched perturbations and missing-information controls. Selectivity matters:
 destroying all readable content and observing weaker reports is not evidence for
@@ -231,8 +243,10 @@ cases with unverified author-proposed answers and all 36 unchanged v5 reports,
 split by model pair for calibration/later whole-prose review. No human annotations
 have arrived and no earlier verdict is rescored. User coordination chooses author
 review first; independent review remains outstanding.
-The [definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
-is prepared but contains no completed human review. Independent rubric review and human ratings remain
+The [original review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now contains R-C1's
+completed exposed AI review. Draft 2 has a separate blank form and definition bundle;
+the original review and v1 packet are retained unchanged. No completed human review
+exists. Independent rubric review and human ratings remain
 pending; none of the six stages is complete in full. The updated preprint retains
 the September 27 study and incorporates later findings and limitations.
 

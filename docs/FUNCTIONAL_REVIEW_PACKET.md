@@ -1,18 +1,22 @@
-# Functional reporting review packet v1
+# Functional reporting review materials
 
-Prepared 2026-10-04 for **author review first**, as requested. No substantive review
-or annotation has been received yet. Author comments will be recorded as author
-review, separate from independent validation. This packet collects no new reporter
-outputs and does not change any existing experimental verdict.
+Updated 2026-10-10. The original v1 packet was prepared October 4 for author review
+first. R-C1 has since supplied an exposed AI contributor review, preserved with
+its provenance. No completed human author/independent review or factual annotations
+have arrived. The [review response](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md) records
+adopted/deferred recommendations. No existing experimental verdict is changed.
 
 ## Start with definitions
 
-Read the [draft rubric](FUNCTIONAL_REPORT_RUBRIC.md) and complete the
-[definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md). The
-[standalone definition bundle](assets/functional_review_v1/definition_review.zip)
-contains those documents, reviewer metadata and the blank later rating form,
-without experimental outputs or factual answer keys. External primary-study links
-are retained; local cross-references appear as plain labels in the standalone copy.
+Read [draft 2](FUNCTIONAL_REPORT_RUBRIC_V2.md) and complete its
+[blank definition-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md). The
+[draft-2 definition bundle](assets/functional_review_v2/definition_review.zip)
+contains those documents, reviewer metadata and a blank candidate rating form,
+without experimental outputs, completed review answers or factual gold. External
+primary-study links are retained; local cross-references appear as plain labels.
+The [original v1 definition bundle](assets/functional_review_v1/definition_review.zip)
+remains byte-identical; its originally blank live form now holds the received R-C1
+review. Use the new blank form for further reviews rather than overwrite R-C1.
 
 The central review question is which independently justified report features would
 make accurate attention-model reporting consciousness-related evidence, and which
@@ -79,7 +83,8 @@ as `["/predicted_current/0/selected_position"]`; `$report` refers to report meta
 Do not invent an unavailable source field as evidence of a negative statement.
 
 ```bash
-.venv/bin/python scripts/build_functional_review_packet.py --verify
+.venv/bin/python scripts/verify_functional_review_packet_v1.py
+.venv/bin/python scripts/build_functional_definition_review_v2.py --verify
 PYTHONPATH=scripts .venv/bin/python -m unittest tests.test_manual_fact_annotations
 .venv/bin/python scripts/check_manual_fact_annotations.py --claims /path/to/claims.csv --metadata /path/to/reviewer_metadata.csv
 ```
@@ -92,10 +97,13 @@ coverage/precision gates and adjudication rules still need review and registrati
 before new prose collection or confirmation.
 
 The [materials manifest](https://github.com/macterra/attcon/blob/main/audits/manual_factual_review_v1/manifest.json)
-records archive/content and dependency hashes. Replay verifies all three ZIPs
+records original archive/content and dependency hashes. Historical replay verifies all three v1 ZIPs
 byte-for-byte, original report/source preservation, zero-filled annotation forms,
 and exclusion of answer keys/linkage from distributed bundles. The public repository
 retains proposed gold and experiment linkage separately for reproducibility.
-No reviewer contact, independent review, human rating or new language experiment
+The live completed review differs from the original blank dependency; the historical
+verifier uses its archived original bytes in an isolated directory and preserves
+the completed review unchanged. Draft 2 has a separate manifest and source snapshots.
+No reviewer contact, independent human review, human rating or new language experiment
 has been performed. The [goal requirements](CONSCIOUSNESS_REQUIREMENTS_AUDIT.md)
 remain incomplete.

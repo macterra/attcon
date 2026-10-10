@@ -1,6 +1,6 @@
 # Current outcome and further research
 
-## Current plan (2026-10-04)
+## Current plan (2026-10-10)
 
 The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) completes
 36 reports and two sets of 36 source-blind audits. Four presentation/intervention
@@ -24,15 +24,22 @@ pass. A [source-aware manual factual-audit draft](FUNCTIONAL_MANUAL_FACTUAL_AUDI
 and blank claim/coverage forms propose a different measurement procedure. Independent
 qualification is still required before new prose collection. The completed
 adaptation diagnostic below preserves the original failure verdict. A blank
-[independent rubric-review form](FUNCTIONAL_RUBRIC_REVIEW_FORM.md) now distinguishes
+[blank draft-2 review form](FUNCTIONAL_RUBRIC_REVIEW_FORM_V2.md) now distinguishes
 definition/prediction review from later blind ratings. The
 [review packet](FUNCTIONAL_REVIEW_PACKET.md) separates definitions, 28 synthetic
 factual cases and unchanged v5 whole-prose material. The user will review it first
-as author review; no substantive comments or annotations have been received.
-Independent rubric review and factual qualification remain pending. Justify the
+as human author review. The received [R-C1 review](FUNCTIONAL_RUBRIC_REVIEW_FORM.md)
+is an exposed AI contributor review; its [disposition](FUNCTIONAL_RUBRIC_REVIEW_RESPONSE_V2.md)
+produces draft 2 without claiming independent validation. No human comments or
+factual annotations have arrived. Independent rubric review and factual qualification
+remain pending. Justify the
 proposed functional contrast before confirmation: all current conditions contain
 an attention-control model, so wiring separability alone does not establish the
-source-of-qualia interpretation.
+source-of-qualia interpretation. Draft 2 separates recovery, category certainty,
+presentation manner and answer confidence, and treats intervention/revision checks
+as fidelity controls. Attribution is a candidate grounding measure, not a frozen
+consciousness endpoint. Review the new [definition bundle](assets/functional_review_v2/definition_review.zip)
+before freezing endpoint, agreement/effect criteria and clustered power.
 
 The [retained-error diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md) is now
 completed with unchanged checkpoints and exact replay: after eight additional
