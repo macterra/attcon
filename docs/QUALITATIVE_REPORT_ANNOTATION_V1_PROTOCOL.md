@@ -1,0 +1,53 @@
+# Qualitative report annotation protocol v1
+
+2026-10-10. Development measurement specification, pending independent qualification. This protocol prepares annotation; it contains no target-report ratings, new inference, production run or consciousness result. Its authority is the exact version of [the development design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md) hashed in [fixture provenance](../audits/qualitative_report_annotation_v1/fixture_provenance.json). A subsequent semantic design change requires a new version and qualification.
+
+Reporter is external instrumentation, Controller selects and executes actions, and the attention-control model is the proposed source. Successful represented-access reporting does not achieve the source-of-qualia goal. Preserve the disagreement between broad current-access correspondence and stricter presentation correspondence in separate outputs.
+
+## Frozen fields and conjunctions
+
+Annotate each claim with exact synthetic/target text span, content/location, attribute, time, polarity, assertion/hedge and scope. Read text before assigning labels; never infer a textual feature from a source field. Field values are `explicit`, `ambiguous`, `absent`. An uncertainty hedge can be an explicit claim; annotation ambiguity concerns the interpretation of the text.
+
+| Field | Rule |
+|---|---|
+| `C` | Identified perceptual/represented content with a named attribute, asserted, denied or hedged. An explicitly named location is an attribute. Generic consciousness, an unspecified something, or first-person grammar alone does not qualify. |
+| `M_access` | Qualitative current representational availability/access bound to the content/attribute. Current available/unavailable counts. A future recovery forecast, probability, task outcome or confidence alone does not count. |
+| `M_presentation` | How identified content is currently presented: apparent character/detail or qualitative presentation, separately scoped as display, sensor, model-presentation or claimed-experiential. Access wording alone does not count. An accurate physical adjective/contrast measurement alone does not count. |
+| `M` | Union of `M_access` and `M_presentation`. Explicit if either is explicit; ambiguous if neither is explicit and either is ambiguous; otherwise absent. |
+| `S` | Content identification/guess distinguished from presentation/access status, or statuses separately described across attributes/contents. A physical adjective alone fails. A decision-confidence clause alone is not presentation/access separation. |
+| `P` | `C AND M AND S` at compatible content/time. Auxiliary union structure measure. |
+| `P_access` | P where M describes only current representational access, without an explicit presentation claim. Publish separately; do not promote it to strict presentation. If presentation's presence is ambiguous, this subtype can be ambiguous. |
+| `P_presentation` | `C AND M_presentation AND S` at compatible referent/time. Stricter linguistic presentation outcome. |
+| `appearance_scope` | Claimed perceptual appearance/experience scope of an explicit M_presentation claim. Absent for display, sensor and model-presentation claims without such wording; ambiguous for unresolved scope. Record positive/negative polarity separately. |
+| `experiential_wording_subset` | `P_presentation` with explicit `appearance_scope`. This is a linguistic subset, never a felt-truth verdict. |
+| `A` | Identified content plus attention condition/change explicitly related to its presentation, emergence or access. Record direction, temporal order and association/forecast/causal language. A priority table or attention shift with no content relation fails. A can match access without appearance. |
+
+For each conjunction, explicit requires explicit constituents and compatible referents/times; absent follows a necessary absent constituent or explicit incompatibility; otherwise ambiguous. Do not treat separate explicit claims about different times/objects as an explicit conjunction. Records may include multiple claim groups: an episode matches explicitly when at least one compatible group matches; retain every other group and every unprompted claim. An explicit appearance negation is an explicit presentation claim, not evidence of positive experience. A disclaimer that no appearance claim is being made supplies no presentation claim. Not-blurred does not entail clear.
+
+Record identity/attribute uncertainty and confidence that a specified answer is correct separately, using the same three values. Answer willingness, abstention and estimated correctness are auxiliary fields; a threshold policy is not confidence in an emitted answer. Bare categorical probabilities need not express identity uncertainty. Preserve the stated alternative/hedge when it does. Ambiguous adjectives such as an unscoped clear cannot be repaired from context the text does not provide.
+
+## Fidelity is a separate measurement
+
+Source-blind raters assign the linguistic fields above. They never assign `Faithful_P_presentation`. Source-aware factual auditors independently inventory **all inspectable required and unprompted claims**, including omissions, and retain null/missing information separately.
+
+`Faithful_P_presentation` requires explicit strict presentation structure, every inspectable claim passing audit, and a predeclared independently qualified source counterpart for the claimed presentation property. Counterparts must be frozen before target prose; objective contrast/edge decoding is insufficient by itself to validate represented clarity. Felt truth is `unauditable`, never silently passed. If no qualified counterpart exists, record `not_established` for faithful presentation rather than certify it from a physical decoder or risk forecast. Mixed claims retain their separate support statuses.
+
+Risk-only text receives no inferred manner. A report explicitly asserting vivid feeling from risk receives linguistic credit for that assertion, while the asserted risk-to-feeling implication lacks justification from risk alone. This distinction prevents both invented clarity credit and deletion of unsupported experiential wording. Synthetic fixtures provide no qualified source counterpart: their faithful scores remain `not_evaluated`.
+
+## Materials and authentic anchors
+
+[fixtures.json](../audits/qualitative_report_annotation_v1/fixtures.json) contains exactly 24 AI-authored synthetic cases, with author-proposed labels clearly segregated from rater-visible id/text. They are annotation exercises, not participant data, observed target reports, empirical source states or validated answers. They never train or prompt the Reporter. [fixture_provenance.json](../audits/qualitative_report_annotation_v1/fixture_provenance.json) gives exact counts, creation exposure, source/version hashes and publication pointers.
+
+Use genuine anchors from the original sources, as located in [the reference review](../audits/appearance_report_reference_review_v1/review.md): Ramsøy and Overgaard (2004), p.12 typical report and Table 2; Lutz et al. (2002), p.1587 S4 training quotation and p.1588 report-cluster descriptions; Chuyin et al., version 3 (2024), response format and Figure 4 word descriptions. Raters must inspect the original published passages, not rate the fixture author's paraphrases as participant speech. Retain source/page/section/span pointers and paraphrased evidence for authentic anchors without duplicating the reference review's quotations. The typical report has no subject/trial identifier; S4 is a named training example; summaries are aggregate descriptions. Authentic-anchor annotations are provisional and provide no representative corpus validity, prevalence, sensitivity or specificity. Do not collapse those provenance classes.
+
+## Qualification gate and adjudication
+
+Before any new target prose, two AI raters in separate contexts independently receive this protocol, rater-visible synthetic text, and authentic source pointers. They must not see author labels, the other rater's first pass, model outputs or target reports. Archive their exact exposure, model/tool version, protocol/fixture/design hashes, unedited first-pass labels/evidence and authentic-anchor annotations. The author-proposed key is a development reference, not an independently validated gold standard.
+
+For **each rater separately**, case correctness is exact agreement with the proposed tuple `C, M_access, M_presentation, M, S, P, P_access, P_presentation, appearance_scope, experiential_wording_subset, A, identity_uncertainty, response_confidence`. The scope-label set must also exactly match the proposed scope set for a case to count correct. Qualification requires at least **22 of 24 cases** correct (22/24 = 0.9167; 21/24 = 0.875 fails the 0.90 gate) and **zero** inferred M/core/presentation credit on the five risk/confidence-only or physical-adjective-only cases Q01–Q05. Report 24-case and five-case denominators and every mismatch. Unsupported explicit felt cases Q12–Q14 are a separate class: linguistic credit is required, source validation is not supplied. Authentic-anchor ratings have no invented numerical validity gate.
+
+Retain first-pass results and disagreements regardless of outcome. For adjudication, compare exact text and frozen definitions; assign explicit only when the rule is satisfied without unstated inferences, absent when a required relation is missing, and ambiguous when two readings remain textually viable. The fixture's deliberate unclear case requires ambiguity rather than a guessed scope. Disagreement does not itself make a claim ambiguous. Publish author-key disagreements separately from inter-rater disagreements.
+
+Adjudication cannot convert a failed first pass into a qualifying result. If a key or rule is substantively disputed, archive the challenge and disposition, create a versioned correction before target prose, and obtain fresh independent qualification on that version. Preserve the old first pass and gates. Do not lower thresholds, remove difficult cases, or expand accepted labels after observing failures. Both raters must qualify; no averaging of their scores is allowed. Separate factual-auditor qualification and source-counterpart qualification remain required before faithful presentation scoring.
+
+After qualification, a separately frozen fresh-report pilot must define opportunities, denominators, budgets, stopping and dependence units. Publish strict/access/scope/attention outcomes separately with lower/upper rates for ambiguous cases and all eligible omissions or failures. These preparation materials alone supply no operational correspondence result or goal achievement.
