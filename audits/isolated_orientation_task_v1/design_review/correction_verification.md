@@ -1,0 +1,12 @@
+# Pre-output correction verification
+
+Disposition: ready to freeze as the scoped synthetic development diagnostic. This does not approve or predict a positive result and does not establish an attention-model source of qualia.
+
+The original first-pass review and metadata are retained unchanged in `review.md` and `metadata.json`. Timing disclosure: the first source read found the two issues; the parent corrected them while the narrative was being written. Initial metadata hashes were captured at write time after those edits and therefore already identify the corrected source, not a preserved snapshot of the earlier uncorrected source. The earlier textual tool read supports the first-pass findings; only the final hashes pin the reread corrected implementation. Both required corrections were made before checkpoint inference or evaluation outputs and reread by this reviewer:
+
+1. `build` now creates an explicit duplicated zero-contrast image tensor, extracts its features separately, predicts both copies, asserts feature and score equality, and archives duplicate inputs/features/scores. Opposite labels yield the supplemental exactly-50% check. Primary null assessment still uses independently generated evaluation images and remains distinct.
+2. The calibrator now computes its final penalized-objective gradient after 100 Newton iterations, asserts maximum absolute gradient at most 1e-8 alongside finite coefficients, and archives gradient magnitude and penalized objective. Protocol wording and the preparation manifest record the failure threshold. There is no retuning or fallback.
+
+The five small fixture tests were rerun and pass. No frozen checkpoints were loaded or new study outputs inspected. The earlier 200 synthetic calibration fixture results remain a numerical guard assessment, not proof of universal Newton stability. Per-model compressed archival/replay code was also reread; it does not alter the design.
+
+All limitations in the original review remain applicable: task-correctness instrumentation only, pooled-mixture calibration with visible conditional diagnostics, fixed-fit bootstrap uncertainty, three previously developed checkpoints, no human appearance targets, and AI commissioning/shared-model context. Parent must still freeze the final source hashes and commit before reserving the single attempt. Outcome audit must examine source-specific reliability and limitations rather than treating a passed engineering gate as consciousness evidence.
