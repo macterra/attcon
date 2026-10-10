@@ -335,6 +335,41 @@ def qualified(metric):
     return metric['prediction_count'] > 0 and metric['ece'] <= .10 and abs(metric['signed_residual']) <= .075
 
 
+def truth_diagnostics(data, worlds, p):
+    """Diagnostic latent strata: never supply these values to model inference."""
+    curves = {}
+    observed_status = data['sensory'][..., 65].bool()
+    for head in ('current', 'refresh', 'after'):
+        target = data[head+'_labels'].double()
+        if head != 'current': target = target.mean(2)
+        curves[head] = {}
+        for field, levels in (('contrasts', 6), ('labels', 2)):
+            truth = worlds[field][:, None, :].expand_as(data['current_labels'])
+            seen = observed_status
+            if head == 'after':
+                truth = truth.unsqueeze(-2).expand_as(p[head])
+                seen = seen.unsqueeze(-2).expand_as(p[head])
+            cells = {}
+            for value in range(levels):
+                cells[str(value)] = {}
+                for name, status in (('seen', seen), ('unseen', ~seen)):
+                    mask = (truth == value) & status
+                    amount = int(mask.sum())
+                    if not amount:
+                        cells[str(value)][name] = {'prediction_count': 0}
+                        continue
+                    prediction, observed = p[head][mask], target[mask]
+                    bins = torch.bucketize(prediction.contiguous(), torch.arange(1, 10, dtype=torch.float64)/10, right=True)
+                    # Independent sums of bin residuals; true repeated Bernoulli Brier.
+                    ece = sum(float((prediction[bins == k]-observed[bins == k]).sum().abs())/amount for k in range(10))
+                    cells[str(value)][name] = dict(prediction_count=amount,
+                        mean_probability=float(prediction.mean()), accuracy=float(observed.mean()),
+                        signed_residual=float((prediction-observed).mean()), ece=ece,
+                        brier=float((prediction.square()-2*prediction*observed+observed).mean()))
+            curves[head][field] = cells
+    return dict(qualification_gates=False, future_latent_truth_is_not_available_to_inference=True, curves=curves)
+
+
 def assess(cal, data, p, seed, kind):
     base = dict(current=cal['current_labels'].double().mean(), refresh=cal['refresh_labels'].double().mean(),
         after=cal['after_labels'].double().mean(), delivery=F.one_hot(cal['delivery_labels'], 4).double().mean((0, 1, 2)))
@@ -482,8 +517,12 @@ def main():
     result = json.loads((ROOT/'results.json').read_text())
     assert completion['manifest_sha256'] == sha(ROOT/'manifest.json')
     assert completion['results_sha256'] == sha(ROOT/'results.json')
-    for path, digest in {**manifest['source_sha256'], **manifest['frozen_input_sha256']}.items():
+    for path, digest in {**manifest['source_sha256'], **manifest['frozen_input_sha256'], **manifest['design_review_sha256']}.items():
         assert sha(path) == digest, path
+    snapshots = json.loads((ROOT/'source_snapshots.json').read_text())
+    assert snapshots.keys() == manifest['source_sha256'].keys()
+    for path, source in snapshots.items():
+        assert hashlib.sha256(source.encode()).hexdigest() == manifest['source_sha256'][path], path
     for path, detail in completion['archive_files'].items():
         assert sha(path) == detail['sha256'] and Path(path).stat().st_size == detail['bytes'], path
     audited = {}
@@ -523,7 +562,8 @@ def main():
             if kind == 'structured': gates.update(remap_final_delivery=revision_result['final_delivery_top1_pass'], remap_restoration=exact)
             summary = dict(assessment=assessment, controller=control_result, remap=revision_result, gates=gates,
                 engineering_gates_pass=all(gates.values()) if kind == 'structured' else None,
-                parameter_count=fitted['parameter_count'], loss_trace=fitted['loss_trace'])
+                parameter_count=fitted['parameter_count'], loss_trace=fitted['loss_trace'],
+                truth_diagnostics=truth_diagnostics(datasets[2], splits[2][1], forecasts[2]))
             check(summary, result['models'][str(seed)][kind], f'{seed}/{kind}/results')
             outcomes[kind] = dict(gate_count=len(gates), failed_gates=[name for name, value in gates.items() if not value],
                 engineering_gates_pass=summary['engineering_gates_pass'], calibration_reconstructed=True,
