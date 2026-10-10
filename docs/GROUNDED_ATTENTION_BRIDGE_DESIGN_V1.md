@@ -1,6 +1,6 @@
 # Grounded attention/acquisition bridge: design v1
 
-**Unfrozen proposal, not an executed study or evidence of qualia.** A separate subagent reviewed the architecture and proposed an outcome-grounded bridge; its [full review](../audits/grounded_attention_bridge_design_v1/review.md) and [provenance](../audits/grounded_attention_bridge_design_v1/metadata.json) are preserved. The [new sensory adapter protocol](SENSORY_TASK_ADAPTER_V1_PROTOCOL.md) is a prerequisite under development, not yet a qualified attention model. Human review is optional; shared AI commissioning/model limitations remain.
+**Unfrozen proposal, not an executed study or evidence of qualia.** A separate subagent reviewed the architecture and proposed an outcome-grounded bridge; its [full review](../audits/grounded_attention_bridge_design_v1/review.md) and [provenance](../audits/grounded_attention_bridge_design_v1/metadata.json) are preserved. The [sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) is complete with an overall FAIL; it supplies explicitly partial raw decision evidence under the amendment below, not a qualified attention model. Human review is optional; shared AI commissioning/model limitations remain.
 
 The existing acquisition simulator assigns quality and decay. The proposed bridge instead predicts events and correctness from executed sensory observations:
 

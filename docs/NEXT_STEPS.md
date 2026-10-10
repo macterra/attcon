@@ -8,9 +8,9 @@ fails its registered overall gate: highest-contrast hidden accuracy is 89.84%,
 Pooled correctness calibration passes, but contrast-specific hidden ECE reaches
 .3841; these instruments are not promoted as an acquisition bridge. All outcomes
 are retained. The earlier paired-information success remains valid for its
-narrower estimand. Next design task development spanning intended sensory
-conditions, qualify conditional calibration on fresh data, and ground any
-acquisition model in observed outcomes. Obtain and qualify attention-manipulated
+narrower estimand. It motivated the all-condition development attempt below.
+Ground any new acquisition model in observed outcomes and qualify its forecasts
+on fresh data. Obtain and qualify attention-manipulated
 appearance reference files in parallel. Human review remains optional; the full
 source-of-qualia objective and report-correspondence requirements are unchanged.
 
@@ -20,12 +20,15 @@ Their advertised archives remain inaccessible here; no empirical target is
 qualified. Keep sign-reversal, null and bias alternatives, and qualify original
 analyses/corrections before freezing correspondence endpoints.
 
-A [new sensory adapter protocol](SENSORY_TASK_ADAPTER_V1_PROTOCOL.md) trains all
-intended contrast conditions and strengthens conditional calibration checks.
-Outputs are not yet collected. An [unfrozen bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md)
-then learns command/delivery/task-success forecasts from actual outcomes, without
-assigned quality decay or appearance targets. Qualification and selective causal
-controls must precede any appearance-source interpretation.
+The [all-condition sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) now
+fails overall in every model despite >99% highest-contrast classification.
+Conditional correctness calibration fails; no probabilities are promoted.
+The [amended bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) instead uses
+raw sensory evidence and learns delivery/realized-success forecasts on fresh
+executed outcomes. Two unblinded methodological reviews support excluding a
+failed instrument that no consumer uses; they do not rescore the old result.
+Four world/memory prototype tests pass. Freeze and qualify the learned bridge's
+own forecasts and source/intervention controls before appearance interpretation.
 
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base

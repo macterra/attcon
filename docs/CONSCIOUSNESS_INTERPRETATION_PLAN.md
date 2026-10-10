@@ -78,9 +78,9 @@ is complete with an overall engineering FAIL: one frozen hidden readout falls
 below the .90 accuracy gate, while every pooled hidden correctness calibration
 conceals substantial errors at individual contrasts. The failed attempt and
 verification erratum are retained; no fit is promoted to attention-model state.
-Next task development must cover the intended sensory operating conditions and
-qualify conditional calibration on fresh data before grounding an acquisition
-model in measured outcomes. Attention-manipulated appearance reference discovery
+This motivated the all-condition task development below; its failed calibration
+remains separate from any new action/outcome model. Qualify new acquisition
+forecasts on fresh measured outcomes before using them as probabilities. Attention-manipulated appearance reference discovery
 continues separately; neither task accuracy nor calibrated decision confidence
 substitutes for appearance correspondence or attention-source causation.
 
@@ -91,14 +91,20 @@ a valid appearance endpoint only after file/schema/stimulus/analysis qualificati
 do not assume a positive attention multiplier or substitute aggregate figures
 for trial rows. Include decision/uncertainty controls and published corrections.
 
-The [all-condition sensory adapter](SENSORY_TASK_ADAPTER_V1_PROTOCOL.md) is now
-specified as a new development attempt; its outcome is not yet collected. The
-[grounded bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) replaces assigned
-quality/decay with executed delivery and task-correctness targets. It remains
-unfrozen and unexecuted. Distinguish chance task correctness from image delivery,
-keep evaluator truth out of inference, and retain independent sensory, memory,
-attention-model, Controller and Reporter roles. Do not promote adapter confidence
-or a causally consumed binding into appearance by definition.
+The [all-condition sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) is complete
+with an overall FAIL in all three models. Highest-contrast hidden decisions reach
+99.80%, 99.80%, 99.41%, but conditional correctness calibration fails at zero/low
+contrast. The original verdict and categorical-control numerical limitations
+remain. Two unblinded reviews support a distinct prospective bridge using raw
+sensory evidence while excluding the failed probabilities entirely; this does
+not trigger the sensory protocol's pass permission or qualify a bridge.
+The [grounded bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) learns delivery
+and decision-success forecasts from executed outcomes on fresh data and must
+qualify its own conditional predictions. World/memory primitives and four tests
+are available; the learned bridge is unfrozen and unexecuted. Keep evaluator truth
+out of inference and preserve separate sensory, memory, attention-model,
+Controller and Reporter roles. Do not promote task confidence or a consumed
+binding into appearance by definition.
 
 ## 1. Specify the target features before observing new reports
 

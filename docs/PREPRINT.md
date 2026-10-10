@@ -526,6 +526,35 @@ qualify conditional calibration and ground acquisition in measured outcomes.
 Qualified attention-manipulated appearance targets and selective attention-model
 intervention/restoration are still required; the theory-facing goal is unachieved.
 
+### 6.0d All-condition task development and prospective bridge
+
+The [new sensory adapter](SENSORY_TASK_ADAPTER_V1_RESULTS.md) trains nonlinear
+readouts across all six conditions, retaining 1,536 evaluation bases and 9,216
+images. Highest-contrast hidden accuracy is 99.80%, 99.80%, 99.41%. Nevertheless,
+all three registered overall engineering gates fail: zero-contrast ECE is
+.1143/.1352/.1185, and low-positive signed calibration residual is
+−.0964/−.1075/−.1163. Improved discrimination and pooled Brier do not qualify the
+margin-only probabilities. The immutable predecessor is applied descriptively;
+architecture, sample budget and normalization differ, so gains cannot be
+attributed solely to contrast coverage.
+
+Categorical/confidence readouts score exactly chance under this fit; all their
+features fall below the declared RMS floor. Tiny variations persist, including
+float32 squared-RMS underflow in seed1321, so this is not absent-information
+evidence or attention-source specificity. Five adapter tests and exact full-
+budget replay pass. Independent reconstruction matches tensors exactly and
+metrics/gates within 2e-12; all predecessor files remain unchanged.
+
+The [prospective grounded bridge](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) may use
+raw frozen sensory evidence while excluding the failed probability map entirely,
+according to two subsequent unblinded boundary reviews. This is not a pass for
+the sensory protocol or a qualified bridge. Four tests implement world delivery,
+latest-glimpse memory, independent labels and separate evaluator targets. A new
+learned model must predict actions/delivery/realized correctness on fresh data,
+qualify its own conditional forecasts and preserve Controller/Reporter separation.
+No appearance target, new report or attention-model source result is collected;
+the full consciousness-related goal remains unachieved.
+
 A separate [attention-appearance reference search](ATTENTION_APPEARANCE_REFERENCE_V1.md)
 identifies attention-manipulated candidates and competing appearance/criterion
 interpretations. No trial files or native stimuli were acquired. Enhancement,

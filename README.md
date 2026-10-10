@@ -270,6 +270,13 @@ The [isolated orientation follow-up](docs/ISOLATED_ORIENTATION_TASK_V1_RESULTS.m
 fails its overall engineering gate (89.84%, 94.73%, 93.95% highest-contrast hidden
 accuracy; .90 required for every model). Pooled correctness calibration hides
 substantial contrast-specific errors. Failed fits are preserved and are not
-used as an attention/acquisition bridge or labeled clarity. The next task adapter
-needs development across intended sensory conditions and fresh conditional
-calibration; the consciousness-related goal remains unachieved.
+used as an attention/acquisition bridge or labeled clarity. This failure motivated the all-condition development attempt below; the
+consciousness-related goal remains unachieved.
+
+The [all-condition sensory adapter](docs/SENSORY_TASK_ADAPTER_V1_RESULTS.md)
+raises highest-contrast hidden accuracy above 99% but still fails overall in every
+model because conditional correctness calibration fails. Numerical scaling also
+limits categorical controls. The [amended grounded bridge design](docs/GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md)
+uses raw sensory evidence and excludes the failed probabilities; four world/memory
+tests pass. Its learned action/outcome forecasts and the full qualia-source goal
+remain unqualified. Independent audit and full replay preserve all failures.
