@@ -403,6 +403,19 @@ consciousness-report correspondence still requires independent justification.
 The original review and v1 bundles are preserved, with historical replay using
 the archived blank form. No new reports, human ratings or confirmation are supplied.
 
+An [analytical power sensitivity](FUNCTIONAL_POWER_FEASIBILITY_RESULTS.md) evaluates
+R-C1's proposed 25-point paired effect and 48 episodes without fitting new report
+data. Independent pairs have exact one-sided McNemar power 80.636–90.722% under the
+two assumed discordance rates. An explicit shared-outcome mixture within three
+models preserves pair marginals but, at assumed correlation 0.3, yields pooled
+null rejection up to 9.632% at nominal 0.05. This is a synthetic dependence
+sensitivity, not a measured report correlation or a reanalysis of past verdicts.
+An illustrative whole-model sign test has minimum p-value 0.125 with three models;
+it tests sign balance rather than automatically testing a population mean.
+All 64 numerical cases and probability arrays replay exactly. The analysis
+distinguishes fixed-checkpoint inference from generalization over training models;
+it selects neither a consciousness endpoint nor a final confirmation design.
+
 ## 7. Reproducibility
 
 All 185 tests pass. Offline replay verifies all seven visual-model runs, all

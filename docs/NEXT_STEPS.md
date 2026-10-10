@@ -39,7 +39,13 @@ source-of-qualia interpretation. Draft 2 separates recovery, category certainty,
 presentation manner and answer confidence, and treats intervention/revision checks
 as fidelity controls. Attribution is a candidate grounding measure, not a frozen
 consciousness endpoint. Review the new [definition bundle](assets/functional_review_v2/definition_review.zip)
-before freezing endpoint, agreement/effect criteria and clustered power.
+before freezing endpoint, agreement/effect criteria and clustered power. The
+[analytical feasibility result](FUNCTIONAL_POWER_FEASIBILITY_RESULTS.md) shows why
+48 pairs alone are insufficient design information: under its illustrative
+correlation=0.3 null, pooled rejection reaches 9.632% in one case, and a whole-model
+sign test with three independent models cannot reach 0.05. These are assumed-design
+calculations, not measured report correlations or a revised historical verdict.
+Specify the estimand and validate measurement before selecting the confirmation budget.
 
 The [retained-error diagnostic](CONTROL_DISCONNECTION_DIAGNOSTIC_RESULTS.md) is now
 completed with unchanged checkpoints and exact replay: after eight additional

@@ -59,3 +59,8 @@ Separately qualify source-aware auditing, including the task vocabulary. Substan
 human author review, independent human definition review, factual annotations,
 blind character ratings, powered confirmation and positive replication remain
 outstanding. R-C1 opens revision work; it does not complete those requirements.
+
+The subsequent [power-proposal analysis](FUNCTIONAL_POWER_FEASIBILITY_RESULTS.md)
+evaluates the numerical suggestion under explicit independent/correlated-pair
+assumptions. It retains all null/effect cases and does not fit actual human-report
+dependence, register thresholds or choose a consciousness-related endpoint.

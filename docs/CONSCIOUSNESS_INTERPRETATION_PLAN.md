@@ -150,6 +150,15 @@ Use separate development data to assess feasibility; do not choose gates using
 confirmation reports. Reuse applicable factual dimensions from the prior reporting
 protocol, explicitly documenting any necessary change before data collection.
 
+The [power-proposal feasibility analysis](FUNCTIONAL_POWER_FEASIBILITY_RESULTS.md)
+now evaluates R-C1's candidate 48-pair calculation under explicit independence and
+illustrative model-dependence assumptions. It supplies no fitted rates, human ratings
+or frozen endpoint. Distinguish inference conditional on fixed checkpoints from
+generalization over newly trained models; an illustrative whole-model sign test
+cannot reach 0.05 with only three models. Choose estimand, unit, test and budget
+together after review and measurement qualification, rather than treating episode
+count alone as adequate power.
+
 The primary theory-facing endpoint remains unfrozen. Candidate causal-grounding
 comparisons ask whether independently scored attribution:
 
