@@ -42,7 +42,8 @@ An exposed AI contributor review, R-C1, has now led to
 recovery, category certainty, presentation manner and answer confidence, while
 retaining ordinary causal description as an alternative. This is revision work;
 AI subagent review is authorized by the latest instruction; human validation is
-optional and factual-audit qualification remains necessary. See the
+optional; the later integrated-task pilot establishes bounded supportedness
+qualification, while general semantic reliability remains unproven. See the
 [review protocol](docs/AI_REVIEW_PROTOCOL_V1.md). A fresh-context definition review
 has produced [draft 3](docs/FUNCTIONAL_REPORT_RUBRIC_V3.md); factual inventories
 and source-blind development character ratings are [completed](docs/AI_REVIEW_RESULTS_V1.md).
@@ -245,3 +246,10 @@ Run the smoke and regression tests with:
 ```bash
 .venv/bin/python -m unittest discover -s tests -v
 ```
+
+The latest [integrated-task reporting pilot](docs/INTEGRATED_REPORT_PILOT_V2_RESULTS.md)
+collects 18 new reports after bounded AI-auditor qualification. Both auditors judge
+all 504 requested facts covered, with one retained unsupported forecast-scope
+assertion. Both blind raters find technical language and no presentation manner or
+experiential wording. Next test whether independently specified appearance-related
+information is present in the frozen model, before further prose or confirmation.

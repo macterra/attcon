@@ -416,6 +416,39 @@ All 64 numerical cases and probability arrays replay exactly. The analysis
 distinguishes fixed-checkpoint inference from generalization over training models;
 it selects neither a consciousness endpoint nor a final confirmation design.
 
+### 6.0 Integrated-task development reporting
+
+The [fixed integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) adds 18
+reports from one checkpoint and three episodes, with six correlated source variants
+per episode. Two fresh-context AI auditors pass all 48 supportedness challenges
+before reporting; the preceding all-labels gate fails 46/48 for both reviewers and
+is retained. Source-check errata precede qualification prose. A separate fresh
+subagent is the Reporter, receiving only neutral instructions/records, with all
+attempts reserved and no retries. This changes the instrumentation from earlier
+API models, without new Controller trials or training.
+
+Both source-first auditors judge all 504 requested facts covered. A2 inventories
+994 assertions (991 entailed, two ambiguous, one unsupported); B2 initially labels
+1,019 assertions entailed, then separately acknowledges the omitted unsupported
+presupposition that a command table supplies recovery predictions. Different
+inventory granularity and this retained scope error preclude treating counts as
+certified accuracy or agreement. Both blind raters classify every report as
+technical; presentation manner and experiential wording are absent in all 18.
+Content/presentation co-occurrence is zero. Eighteen selection-contrast judgments
+differ. Exact source restoration and selective current-state changes are retained,
+with history/prospective tables held fixed; these are fidelity/source controls.
+
+The study completes a bounded reporting step, with a negative candidate-appearance
+finding rather than theory-facing confirmation. A fresh output-unexposed methods
+review recommends an independently specified frozen-model source-sufficiency assay
+before additional prose: dissociate appearance-related stimulus variables from
+identity, recovery and decision uncertainty, qualify judgments, then test held-out
+signals and selective interventions. Source-verified felt experience is not a
+requirement this interface can meet. Lack of explicit appearance heads is an
+interface limitation and untested representational question, not architectural
+impossibility. Human review remains optional; independent reference validation,
+confirmation, power and replication remain incomplete.
+
 ### 6.1 Authorized AI review route
 The user has authorized separate-context AI reviewers instead of waiting for
 human participation. The [development review protocol](AI_REVIEW_PROTOCOL_V1.md)
@@ -449,8 +482,9 @@ identity-certainty ambiguities differ. These are repeated presentations of two
 episodes, not independent replication. A separate primary-reference review motivates
 a candidate content-specific appearance/clarity pattern while retaining recovery
 and attribution as structural measures. It does not empirically validate machine
-correspondence. Human review is optional; prospective task-auditor qualification,
-source-first coverage and fresh controlled reporting remain the next work.
+correspondence. Human review is optional; general semantic-auditor reliability,
+general semantic completeness and independent reference validation remain. The
+subsequent integrated-task reporting step is reported in §6.0.
 
 ## 7. Reproducibility
 

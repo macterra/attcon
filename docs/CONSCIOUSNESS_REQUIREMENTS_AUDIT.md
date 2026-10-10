@@ -17,6 +17,14 @@ a limitation. This supersedes human-only prospective gates in historical drafts.
 do not prove the remaining theory-facing requirements. A completed negative or
 uninterpretable experiment is valuable evidence but does not achieve the objective.
 
+The [integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) now supplies 18
+new reports and two source-first AI audits after bounded qualification. All 504
+requested facts are judged covered, with one unsupported command-forecast recovery
+presupposition retained. Both blind raters find technical reports and no candidate
+appearance pattern. This changes source-integration/reporting evidence, not the
+unachieved theory-facing conclusion. Next test frozen-state source sufficiency;
+no humans are required.
+
 ## Requirement-by-requirement evidence
 
 | Plan requirement / deliverable | Authoritative artifact inspected | Current finding | Status |
@@ -30,11 +38,11 @@ uninterpretable experiment is valuable evidence but does not achieve the objecti
 | Executed outcomes and model/world interventions | `audits/functional_decisions_v1/summary.json`; `audits/functional_task_interface_v1/summary.json` | New deterministic Controller executes commands and answer/abstention decisions, with actual feedback, model-only interventions and exact restoration. Traces now supply 5,184 neutral inputs. Raw identity remains stable and the cutoff is engineered; no new qualified prose. | Functional-use/source component available; theory-facing requirement partial |
 | Matched quantitative state revision after changed process | Three-way summary; `audits/control_disconnection_diagnostic_v1/summary.json` | Original 26/27 routes pass and overall gate fails. Post-hoc fixed-model probes correct all eight retained seed-2021 cases with eight contradictory observations; random corrects seven, agreement none. Exact ambiguous continuations and original failed verdict remain. | Matched assay and diagnosis completed; original limitation retained |
 | Identifiability and accessible causal histories | Three-way inputs and fixed-model probe archives | Static masks pass without condition labels. Agreeing probes produce byte-identical observations/model states in disconnected/restored worlds despite different counterfactual truth, establishing an explicit invariance limit. Three-way language/generalization evidence remains incomplete. | Engineering component available; reporting incomplete |
-| 3. Neutral factual interface and source inventory | Original 664 inputs; `src/attcon/functional_task_interface.py`; frozen task inventory; `audits/functional_task_interface_v1/summary.json` | Task export adds 5,184 views with queried/emitted actions, actual history and modeled forecasts. Response/history/readout correspondence, remapping and restoration replay exactly; evaluator labels/truth remain outside payloads. No new prose or task-vocabulary qualification. | Source-integration component available; reporting requirement incomplete |
-| Full factual reporting and reliable semantic assessment | Original v5/v6/v7 archives; A/B first passes, task reviews and correction addenda | Each AI reviewer inventories 28 original synthetic cases, 12 whole reports and 16 task cases. Different granularity, retrospective coverage and two corrected review errors are retained. Quotes/pointers/counts replay; semantic completeness and prospective qualification are not certified. | Substantive annotations received; qualification incomplete |
+| 3. Neutral factual interface and source inventory | Original 664 inputs; `src/attcon/functional_task_interface.py`; frozen task inventory; `audits/functional_task_interface_v1/summary.json` | Task export adds 5,184 views with queried/emitted actions, actual history and modeled forecasts. Response/history/readout correspondence, remapping and restoration replay exactly; evaluator labels/truth remain outside payloads. A later fixed pilot adds 18 reports and bounded task supportedness qualification; one unsupported scope statement remains. | Bounded reporting component available; general reliability incomplete |
+| Full factual reporting and reliable semantic assessment | Original v5/v6/v7 archives; A/B first passes, task reviews and correction addenda | Each AI reviewer inventories 28 original synthetic cases, 12 whole reports and 16 task cases. Different granularity, retrospective coverage and two corrected review errors are retained. Quotes/pointers/counts replay; semantic completeness is not certified. Later fresh-context qualification passes 48/48 supportedness challenges per auditor. | Bounded qualification/reporting complete; general semantics incomplete |
 | Typed process addresses and metadata distinctions | New process schemas/scorer; `tests/test_neutral_functional_v6.py`; raw qualification outputs | Structural field/scope defects are prevented in qualification; unsupported semantic assertions and incorrect node resolution remain. Tests cannot establish whole-prose accuracy. | Partial |
 | Identifier remapping / conflicting labels / missing relation | v5 protocol, inputs and assessment | Registered development controls exist; four full-information groups pass minima, restoration fails. No qualified full causal confirmation. | Partial |
-| Held-out seeds, content combinations and command mappings | Learned integration and neutral pilot archives | Language-development rows 0,1,2 used; row 3 prepared but unused after qualification halts. Models are previously trained; command labels remain k0–k3. Full planned generalization not performed. | Incomplete |
+| Held-out seeds, content combinations and command mappings | Learned integration and neutral pilot archives | Language-development rows 0,1,2 used; v6/v7 row-3 requests remain unused after qualification halts. New integrated pilot uses learned-control checkpoint 2011 row 3; neutral identifiers/remapping are retained. Full planned generalization not performed. | Incomplete |
 | 4. Powered frozen theory-facing protocol | Interpretation plan; pilot protocols; `audits/functional_power_feasibility_v1/summary.json` | An unfrozen candidate design has 64 exact sensitivity cases; no measured rating dependence or validated endpoint. No theory-facing protocol fixes independent rubric, raters, contrasts, multiplicity, model/episode budget and stopping rules. | Feasibility component available; protocol missing |
 | Confirmation reports and randomized source-blind ratings with reviewer provenance | Current blank form and development archives | Original object-content confirmation remains valid for its narrower registered study. New functional-interpretation reports are development; no new confirmation ratings; AI raters are authorized. | Missing evidence |
 | Candidate grounding comparisons and causal/fidelity controls in plan §4 | Current fixtures/pilots; draft-2 review response | Model interventions/revision/missing fields are fidelity/source controls. Neutral/remapped attribution remains a candidate grounding endpoint; reference review now specifies an appearance/clarity candidate separately. No qualified powered correspondence result exists. | Incomplete |
@@ -49,7 +57,7 @@ Twelve relevant evaluator/interface tests pass. v6/v7 prepared inputs replay exa
 against learned-state/code hashes. Raw fixture responses match their parsed claims,
 and qualification scores replay deterministically. The original forms remain blank templates; new AI response files are separate.
 The qualification archives are terminal completed failures, not live jobs awaiting
-success. v7's reporter inputs are byte-identical to v6, so row 3 remains unspent.
+success. v7's reporter inputs are byte-identical to v6, so those original row-3 inputs remain unspent; the new task pilot uses different learned-control inputs.
 
 The original learned integration's six model/ownership combinations pass its component
 minima; its unmatched before/after quantities remain historical. The new frozen
@@ -66,8 +74,8 @@ failure; the engineering invariants do not establish language fidelity or charac
 
 The retained control-disconnection diagnosis is completed, with all fixed-model
 probes and exact ambiguity controls archived. It preserves the failed parent study.
-Definitions have substantive AI review. Prospectively qualify the source-aware
-factual-audit procedure before collecting new integrated three-way prose. The
+Definitions have substantive AI review. Bounded supportedness qualification and integrated-task prose now complete;
+fine-label semantics, completeness and reference validity remain unproven. The
 functional readout boundary is an experimental definition; do not declare it a
 demonstrated phenomenal boundary.
 
@@ -81,7 +89,7 @@ changes. The cutoff is engineered and raw categories remain decodable. The new
 [task-source export](FUNCTIONAL_TASK_INTERFACE_RESULTS.md) now integrates these
 traces into neutral reporting inputs and a frozen field inventory. Twenty tests
 and exact replay validate its source correspondence, not prose accuracy or human
-characterization. Review the task vocabulary before new reporting; do not substitute
+characterization. Task-vocabulary review and a bounded new pilot now follow; do not substitute
 this component for independent review or introduce a task-necessity requirement.
 
 The quote-first manual procedure and claim/coverage forms are development drafts,

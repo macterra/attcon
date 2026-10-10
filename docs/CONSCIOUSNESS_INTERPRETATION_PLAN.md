@@ -42,6 +42,27 @@ and not evidence of consciousness by itself. The recurrent consistency diagnosti
 remain related mechanism evidence. Building an MSTC Modeler-schema comparator is
 not a prerequisite for this reporting experiment or an automatic extension of it.
 
+## Latest integrated reporting result
+
+The [fixed integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) now completes
+18 new reports after two fresh AI auditors pass a bounded 48-assertion supportedness
+qualification. Both judge all 504 requested facts covered. A command-table recovery
+presupposition remains unsupported; raw first passes and a corrective addendum are
+retained. Both source-blind raters classify all reports as technical, with zero
+content/presentation co-occurrences. Selection-contrast judgments differ on all
+18 reports. The failed all-labels qualification version remains unchanged.
+
+A fresh output-unexposed methods review distinguishes source-state fidelity,
+appearance wording, represented appearance and unverified experience. Source-verified
+felt experience is not an attainable requirement of this interface. Lack of explicit
+appearance heads is not proof of architectural impossibility. Next register a
+frozen-model source-sufficiency assay: independently qualify appearance-related
+judgments, dissociate stimulus properties from identity/recovery/decision uncertainty,
+and locate any signal with held-out probes and selective interventions. Preserve
+ordinary content/answer controls; a stimulus-property decoder is not itself a qualia
+report. Do this before further prose, rather than injecting desired terminology.
+Operational correspondence, powered confirmation and replication remain incomplete.
+
 ## 1. Specify the target features before observing new reports
 
 Prepare a rubric grounded in independent descriptions of consciousness reports,

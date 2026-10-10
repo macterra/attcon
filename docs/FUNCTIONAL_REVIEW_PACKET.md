@@ -10,8 +10,10 @@ The latest user instruction authorizes AI subagents instead of requiring humans.
 The [AI review protocol](AI_REVIEW_PROTOCOL_V1.md) governs this new review round;
 human review is optional. Historical packet sources remain intact, including their
 original wording. The [completed review results](AI_REVIEW_RESULTS_V1.md) retain substantive semantic
-judgments, source-blind ratings and corrections; prospective qualification and
-correspondence testing remain; separate contexts are not independent human validation.
+judgments, source-blind ratings and corrections. The later
+[integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) completes bounded
+supportedness qualification and 18 reports; general semantic reliability and
+reference validation remain. Separate contexts are not independent human validation.
 
 ## Start with definitions
 

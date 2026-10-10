@@ -2,6 +2,17 @@
 
 ## Current plan (2026-10-10)
 
+The [new integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) is complete:
+18 reports, all 504 required facts judged covered by both auditors, one retained
+unsupported scope assertion, and two blind raters finding only technical descriptions
+with no presentation manner or experiential wording. Bounded supportedness
+qualification passes; whole-prose completeness and fine-label reliability are not
+certified. Its failed predecessor is preserved. Next register a frozen-model
+source-sufficiency assay before more prose, distinguishing appearance-related signal
+from category identity, modeled recovery and decision uncertainty. Neither absence
+of an explicit appearance head nor these negative language findings proves an
+architectural impossibility or absent experience.
+
 The latest user instruction authorizes subagent reviews instead of a human-only
 dependency. Follow the [AI review protocol](AI_REVIEW_PROTOCOL_V1.md): one fresh
 context reviews definitions and two separately audit source-aware propositions in
@@ -21,8 +32,8 @@ a stronger specificity claim but is not a condition for every credible contribut
 The [completed AI review](AI_REVIEW_RESULTS_V1.md) preserves two factual review
 corrections and three character disagreements; all 12 texts are technical.
 Primary-literature reference review now motivates a candidate appearance/clarity
-component, which these texts lack. Next freeze integrated-task qualification and
-source-first coverage and a new reporting pilot, then register confirmation and replication.
+component, which these texts lack. The subsequent integrated-task qualification/pilot now completes that bounded
+step; source-sufficiency measurement, confirmation and replication remain.
 
 The [complete-interface pilot v5](NEUTRAL_FUNCTIONAL_PILOT_V5_RESULTS.md) completes
 36 reports and two sets of 36 source-blind audits. Four presentation/intervention
