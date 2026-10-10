@@ -1,0 +1,12 @@
+{
+  "stage": "run",
+  "saved_tip_before_execution": "7f80599dc42e4f672d096c1d01f28d6e697ec3c7",
+  "started_utc": "2026-10-10T22:27:53.428699+00:00",
+  "finished_utc": "2026-10-10T22:29:47.473173+00:00",
+  "exit_code": 0,
+  "status": "terminal_success",
+  "log_sha256": "41840d6e36cf1756f878c7dde1fa44895bb876ca4f200ddf3db27355438ac09d",
+  "execution_wrapper_source": "import datetime,hashlib,json,subprocess,sys\nfrom pathlib import Path\nfolder=Path('audits/sensory_task_adapter_v1')\nmode=sys.argv[1]\nreceipt=folder/f'{mode}_execution.json';log=folder/f'{mode}_execution.log'\nassert not receipt.exists() and not log.exists()\ncommit=subprocess.check_output(['git','rev-parse','HEAD'],cwd='/tmp/attcon-review-milestones-vvjs166i',text=True).strip()\nstarted=datetime.datetime.now(datetime.timezone.utc).isoformat()\nwith log.open('w') as stream:\n result=subprocess.run(['.venv/bin/python','scripts/sensory_task_adapter_v1.py','--stage',mode],stdout=stream,stderr=subprocess.STDOUT)\nvalue={'stage':mode,'saved_tip_before_execution':commit,'started_utc':started,'finished_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'exit_code':result.returncode,'status':'terminal_success' if result.returncode==0 else 'terminal_failure','log_sha256':hashlib.sha256(log.read_bytes()).hexdigest(),'execution_wrapper_source':Path(__file__).read_text(),'original_artifacts_preserved':True,'goal_achieved':False}\nreceipt.write_text(json.dumps(value,indent=2)+'\\n')\nprint(log.read_text());raise SystemExit(result.returncode)\n",
+  "original_artifacts_preserved": true,
+  "goal_achieved": false
+}
