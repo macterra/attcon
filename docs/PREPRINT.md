@@ -505,6 +505,27 @@ unvalidated. A new task adapter must be independently grounded without human
 appearance targets and must preserve Controller/Reporter separation. The full
 consciousness-related goal remains unachieved.
 
+### 6.0c Isolated sensory task and correctness calibration
+
+The [isolated follow-up](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) removes paired
+input centering and separates classifier fitting, correctness calibration and
+evaluation. All 1,536 evaluation bases (9,216 dependent images) remain. Hidden
+highest-contrast accuracy is 89.84%, 94.73%, 93.95%; the fixed requirement of ≥90%
+for every model therefore fails. Highest-contrast physical controls pass. Pooled
+hidden correctness ECE is .0074–.0260 and Brier beats the calibration-derived
+constant, but contrast-specific ECE reaches .3841. Pooled performance thus does
+not qualify this instrument across operating conditions. These probabilities
+estimate synthetic classifier correctness, not participant confidence, clarity
+or attention-model state; none is promoted as an acquisition bridge.
+
+Five tests pass. Exact reconstruction passes using a companion verifier that
+repairs tensor-list traversal; the frozen verifier failure and all original
+outputs remain archived. Separate AI audit and shared-model limitations are
+disclosed. Future task development must cover the intended sensory conditions,
+qualify conditional calibration and ground acquisition in measured outcomes.
+Qualified attention-manipulated appearance targets and selective attention-model
+intervention/restoration are still required; the theory-facing goal is unachieved.
+
 ### 6.1 Authorized AI review route
 
 The user has authorized separate-context AI reviewers instead of waiting for

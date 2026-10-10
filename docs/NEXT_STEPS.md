@@ -2,17 +2,17 @@
 
 ## Current plan (2026-10-10)
 
-The [synthetic orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
-now passes its ancillary paired-information gate in all three frozen visual
-encoders: 100% at highest contrast, 50% at identical zero-contrast pairs. This
-does not establish isolated-image task ability, empirical stimulus equivalence,
-appearance judgments or attention origin. A separate transfer review rejects
-using contrast-only human data as an attention-source counterfactual; native task
-and history mappings are also unresolved. Next validate isolated sensory decisions
-without paired test inputs and ground any acquisition bridge in independent
-synthetic outcomes. In parallel, obtain and qualify actual reference files and
-attention-manipulated appearance data. Human review remains optional; every
-theory-facing requirement and retained failure stays in scope.
+The [isolated orientation task](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) now
+fails its registered overall gate: highest-contrast hidden accuracy is 89.84%,
+94.73% and 93.95%, with a .90 requirement for every model. Physical controls pass.
+Pooled correctness calibration passes, but contrast-specific hidden ECE reaches
+.3841; these instruments are not promoted as an acquisition bridge. All outcomes
+are retained. The earlier paired-information success remains valid for its
+narrower estimand. Next design task development spanning intended sensory
+conditions, qualify conditional calibration on fresh data, and ground any
+acquisition model in observed outcomes. Obtain and qualify attention-manipulated
+appearance reference files in parallel. Human review remains optional; the full
+source-of-qualia objective and report-correspondence requirements are unchanged.
 
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base

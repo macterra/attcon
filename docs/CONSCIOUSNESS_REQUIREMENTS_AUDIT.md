@@ -39,6 +39,14 @@ origin evidence; the data can still ground a behavioral distinction. Actual file
 valid task transfer, an independently grounded sensory/acquisition bridge and
 source-identified report correspondence remain incomplete.
 
+The [isolated task follow-up](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) is complete
+with an overall engineering FAIL: one highest-contrast hidden readout is below
+the fixed .90 gate. Low pooled calibration error hides high conditional error;
+these correctness fits are not qualified as an acquisition bridge or appearance
+state. Five tests and companion exact reconstruction pass; original verifier
+failure remains. New task development and conditional calibration must precede
+sensory-outcome grounding of any acquisition model.
+
 ## Requirement-by-requirement evidence
 
 | Plan requirement / deliverable | Authoritative artifact inspected | Current finding | Status |
@@ -63,6 +71,7 @@ source-identified report correspondence remain incomplete.
 | Frozen source-sufficiency physical calibration | Physical-source protocol/results, frozen raw tensors and replay receipt | Three existing pairs; 384 held-out scenes. Physical transformation signal is strong in upstream visual hidden features and weak under category/bound/buffer probes. Attention hidden/forecast are exactly invariant at fixed history. Exact access/binding restoration and bridge reconstruction pass. This does not test participant appearance or all bound-model properties. | Physical component complete; appearance/reference component unachieved |
 | Archived participant appearance/task/confidence reference and stimulus conversion | Physical-source reference discovery review | Primary studies and author archives identified; no actual trial data or stimulus code downloaded/qualified. Clarity/confidence ratings do not supply a validated free-prose reference distribution. | Candidate discovery complete; file-level qualification and domain transfer incomplete |
 | Ancillary orientation information under a synthetic sensory conversion | Orientation-transfer protocol, three frozen checkpoints, raw tensors and exact replay | Paired hidden readouts achieve 100% at highest contrast and 50% at zero. Counterfactual partners are used; texture/mask classes can repeat. No isolated-image or native-stimulus task ability, human appearance judgments or attention-source effect is established. | Ancillary gate passes; full reference transfer incomplete |
+| Isolated sensory decisions and synthetic correctness instrument | Isolated-task protocol, held-out inputs/fits, exact companion replay and results | Overall engineering FAIL: 89.84%, 94.73%, 93.95% highest-contrast hidden accuracy; .90 required per model. Pooled ECE/Brier passes conceal high contrast-specific ECE. No fit promoted as acquisition/appearance model; original verifier traversal failure retained. | Failed prerequisite preserved; task development remains |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
 | 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |

@@ -265,3 +265,11 @@ finds paired orientation information in all three upstream visual encoders. Its
 positive engineering gate does not establish participant appearance or attention
 origin. Actual archived data, valid task conversion and source identification remain
 open; the next task bridge must work on isolated inputs without human-rating targets.
+
+The [isolated orientation follow-up](docs/ISOLATED_ORIENTATION_TASK_V1_RESULTS.md)
+fails its overall engineering gate (89.84%, 94.73%, 93.95% highest-contrast hidden
+accuracy; .90 required for every model). Pooled correctness calibration hides
+substantial contrast-specific errors. Failed fits are preserved and are not
+used as an attention/acquisition bridge or labeled clarity. The next task adapter
+needs development across intended sensory conditions and fresh conditional
+calibration; the consciousness-related goal remains unachieved.

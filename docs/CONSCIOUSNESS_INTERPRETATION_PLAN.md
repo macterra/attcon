@@ -73,6 +73,17 @@ AI data discovery identifies archived clarity/confidence studies, but raw trial
 files and stimuli have not been qualified. That reference/transfer step precedes
 the full appearance assay and further reporting. Human review remains optional.
 
+The [isolated sensory-task prerequisite](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md)
+is complete with an overall engineering FAIL: one frozen hidden readout falls
+below the .90 accuracy gate, while every pooled hidden correctness calibration
+conceals substantial errors at individual contrasts. The failed attempt and
+verification erratum are retained; no fit is promoted to attention-model state.
+Next task development must cover the intended sensory operating conditions and
+qualify conditional calibration on fresh data before grounding an acquisition
+model in measured outcomes. Attention-manipulated appearance reference discovery
+continues separately; neither task accuracy nor calibrated decision confidence
+substitutes for appearance correspondence or attention-source causation.
+
 ## 1. Specify the target features before observing new reports
 
 The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
