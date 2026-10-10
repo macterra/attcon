@@ -91,6 +91,15 @@ a valid appearance endpoint only after file/schema/stimulus/analysis qualificati
 do not assume a positive attention multiplier or substitute aggregate figures
 for trial rows. Include decision/uncertainty controls and published corrections.
 
+The [all-condition sensory adapter](SENSORY_TASK_ADAPTER_V1_PROTOCOL.md) is now
+specified as a new development attempt; its outcome is not yet collected. The
+[grounded bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md) replaces assigned
+quality/decay with executed delivery and task-correctness targets. It remains
+unfrozen and unexecuted. Distinguish chance task correctness from image delivery,
+keep evaluator truth out of inference, and retain independent sensory, memory,
+attention-model, Controller and Reporter roles. Do not promote adapter confidence
+or a causally consumed binding into appearance by definition.
+
 ## 1. Specify the target features before observing new reports
 
 The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)

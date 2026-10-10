@@ -20,6 +20,13 @@ Their advertised archives remain inaccessible here; no empirical target is
 qualified. Keep sign-reversal, null and bias alternatives, and qualify original
 analyses/corrections before freezing correspondence endpoints.
 
+A [new sensory adapter protocol](SENSORY_TASK_ADAPTER_V1_PROTOCOL.md) trains all
+intended contrast conditions and strengthens conditional calibration checks.
+Outputs are not yet collected. An [unfrozen bridge design](GROUNDED_ATTENTION_BRIDGE_DESIGN_V1.md)
+then learns command/delivery/task-success forecasts from actual outcomes, without
+assigned quality decay or appearance targets. Qualification and selective causal
+controls must precede any appearance-source interpretation.
+
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base
 scenes, strong objective-image prediction from upstream visual hidden features,
