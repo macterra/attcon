@@ -603,6 +603,26 @@ appearance endpoint and matched source/intervention dissociation before a
 consciousness-related interpretation; neutral factual integration can proceed
 separately. The ultimate qualia-source goal remains unachieved.
 
+### 6.0f Qualitative correspondence route: design revision
+
+Three separately contextualized AI reviews examine endpoint, primary-reference
+and source sufficiency. They support using published reports to specify a qualitative
+content/presentation/decision pattern without raw participant trial files. The
+original PAS study publishes an author-presented typical property-specific report;
+Lutz and colleagues publish a named subject's training description of attention and
+image emergence. These anchors are not a systematic transcript corpus or human
+pattern-prevalence estimate. Selection and interpretation remain project-framed.
+
+The [revised design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md) separates broad
+representation-access structure, stricter presentation/appearance scope and attention
+relations. Review disagreement about the breadth of access credit is retained;
+access structure alone cannot complete the qualia-source goal. Native participant
+trials/stimuli and valid conversion remain required for numerical psychophysical
+transfer. They no longer gate all qualitative development. A planned fresh external
+physical-information diagnostic of frozen grounded-model hidden states supplies no
+appearance verdict. No new Reporter outputs or consciousness-related confirmation
+are reported in this revision.
+
 ### 6.1 Authorized AI review route
 
 The user has authorized separate-context AI reviewers instead of waiting for

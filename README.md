@@ -257,8 +257,12 @@ finds strong stimulus information in visual hidden features, weak prediction fro
 category/bound/buffer probes, and exact recurrent attention-state invariance at
 fixed history. It tests objective pixels, not appearance judgments. Archived
 clarity/confidence data candidates still need file-level qualification and valid
-stimulus conversion before the full appearance assay or further prose. Human
-review is optional; the research goal remains unachieved.
+stimulus conversion before numerical psychophysical/native-task claims. The
+[revised qualitative reporting route](docs/QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
+uses published report examples without that blanket dependency. Its next
+[frozen-source diagnostic](docs/GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md) tests
+objective information retention, not appearance. Human review is optional; the
+research goal remains unachieved.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its

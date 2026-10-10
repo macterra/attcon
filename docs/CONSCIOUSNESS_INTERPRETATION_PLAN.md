@@ -70,8 +70,9 @@ and recurrent attention hidden/forecast states are exactly invariant to image
 changes at fixed history. This is an input-path and physical calibration result,
 not an appearance judgment or falsification of the broader bound-model theory.
 AI data discovery identifies archived clarity/confidence studies, but raw trial
-files and stimuli have not been qualified. That reference/transfer step precedes
-the full appearance assay and further reporting. Human review remains optional.
+files and stimuli have not been qualified. That reference/transfer step remains required for numerical psychophysical/native-task
+claims. The qualitative reporting route below does not require participant trial
+bytes. Human review remains optional.
 
 The [isolated sensory-task prerequisite](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md)
 is complete with an overall engineering FAIL: one frozen hidden readout falls
@@ -87,7 +88,7 @@ substitutes for appearance correspondence or attention-source causation.
 [Attention-manipulated appearance discovery](ATTENTION_APPEARANCE_REFERENCE_V1.md)
 now supplies candidate external designs with enhancement, attenuation, criterion-
 change and null alternatives. No trial archive is acquired or qualified. Freeze
-a valid appearance endpoint only after file/schema/stimulus/analysis qualification;
+a numerical psychophysical endpoint only after file/schema/stimulus/analysis qualification;
 do not assume a positive attention multiplier or substitute aggregate figures
 for trial rows. Include decision/uncertainty controls and published corrections.
 
@@ -113,6 +114,34 @@ dissociation on naturally reached seen content. Neutral factual reporting of the
 new model is separately useful, but does not supply appearance correspondence.
 Do not promote task confidence or a consumed binding into appearance by definition.
 
+## Revised executable route: publication-grounded qualitative correspondence
+
+Three new separate-context AI reviews challenge the blanket raw-trial dependency:
+[endpoint](../audits/report_correspondence_gap_review_v1/review.md),
+[references](../audits/appearance_report_reference_review_v1/review.md), and
+[source](../audits/attention_content_source_review_v1/review.md). Published examples
+support a bounded qualitative development endpoint without participant trial files.
+Their provenance does not support human prevalence/distribution or psychophysical
+transfer claims. Shared AI training, selection and disagreement remain explicit.
+
+The [revised design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md) separates a
+content/manner/separability conjunction, its representation-access versus appearance
+scope, and a separate attention relation. A broad access match alone does not achieve
+the source-of-qualia goal. Current success forecasts cannot become clarity by definition.
+
+Next execute the [frozen-source physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md)
+on fresh naturally sampled contents: external held-out probes of risk/joint hidden
+versus sensory and logit/outcome controls. This tests retained objective image
+qualities; it supplies no appearance or consciousness verdict. Then qualify the
+neutral reporting interface and source-blind annotation before fresh reporting,
+using native-memory/represented-route interventions, restoration and same-information
+ordinary narrators. Preserve stricter presentation results separately from access
+structure. Freeze powered confirmation only after this development measurement works,
+and replicate actual positive correspondence/source effects. Numerical human
+transfer remains a separate qualified route; missing archive bytes no longer block
+this qualitative work. This revision supersedes broader prospective archive gates
+in earlier status prose, without changing any registered study or historical verdict.
+
 ## 1. Specify the target features before observing new reports
 
 The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
@@ -124,8 +153,9 @@ distinction; it cannot alone identify attention as the source. Before reference
 testing, validate sensory-task conversion and an independently grounded acquisition
 bridge, then add an attention manipulation with selective model intervention and
 restoration. Never feed human visibility/confidence into the proposed source.
-These are prerequisites for the full report-correspondence goal, not substitute
-acceptance criteria. Human review remains optional.
+These are prerequisites for the proposed numerical/native-task transfer route, not
+a blanket gate on qualitative report correspondence or substitute acceptance criteria.
+Human review remains optional.
 
 Prepare a rubric grounded in independent descriptions of consciousness reports,
 with positive and negative examples not drawn from the new experimental outputs.

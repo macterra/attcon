@@ -1,5 +1,16 @@
 # Requirements audit: source-of-qualia evidence remains incomplete
 
+The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
+now separates publication-grounded report structure from numerical human transfer.
+Three new separate-context reviews remove the blanket raw-trial prerequisite for
+qualitative work. Participant rows/stimuli remain required for numerical/native-task
+claims. Next run the [frozen grounded-state physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md),
+then qualify neutral source reporting and blind content/presentation/decision
+annotation with selective source controls. Physical decoding is not appearance;
+broad access structure alone cannot complete the qualia-source goal. This update
+supersedes earlier blanket prospective archive gates. No new target prose or
+consciousness-related result is claimed.
+
 2026-10-10. This audits the full [interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md)
 against current artifacts. The objective remains **credible evidence for the theory
 that the attention-control model is the source of qualia**. It requires accurate
@@ -29,7 +40,8 @@ prediction, weak category/bound/buffer probes and exact recurrent attention-stat
 invariance at fixed history. No participant appearance judgments are tested. AI
 reference discovery identifies candidate archives, but their raw trials/stimuli
 remain unverified. Complete reference qualification and valid stimulus transfer
-before the full appearance assay; no humans are required.
+before numerical psychophysical comparison; qualitative report correspondence can
+proceed through the revised design. No humans are required.
 
 The [synthetic orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 now passes a separate ancillary paired-information gate in three frozen encoders.
@@ -159,8 +171,9 @@ target reports or qualified participant data.
 
 Human review is optional. Bounded task-auditor qualification, integrated-task prose,
 physical-source calibration and the declared direct-outcome functional bridge
-now complete. Next qualify actual archived appearance judgments and stimuli,
-establish a valid input conversion, and register a matched source/intervention
+now complete. Actual archived appearance judgments/stimuli and valid conversion
+remain prerequisites for numerical human transfer. The qualitative route instead
+uses independently published report examples and a matched source/intervention
 assay on naturally reached seen content before appearance-facing prose. Neutral
 factual integration of the new bridge can proceed separately; it is not an
 appearance endpoint or a test of whether consciousness is needed for performance.
