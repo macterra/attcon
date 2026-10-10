@@ -1,0 +1,103 @@
+{
+  "rater_id": "R1",
+  "created_at_utc": "2026-10-10T23:39:42.776655+00:00",
+  "first_pass_immutable": true,
+  "human_rater": false,
+  "independence": {
+    "context": "separate sub-agent context initialized with source-blind task only",
+    "shared_ai_limit": "Same parent/inherited AI configuration; separate contexts do not establish independent human judgment or independent model-family evidence.",
+    "author_expected_labels_seen": false,
+    "other_rater_first_pass_seen": false,
+    "author_key_grading_performed": false,
+    "model_outputs_or_target_reports_seen": false
+  },
+  "model_configuration": {
+    "agent_identity": "Codex, GPT-6-based per developer instructions",
+    "configuration": "inherited parent default; no model or reasoning override",
+    "exact_api_model_build": "not independently exposed",
+    "tool_versions": "not independently exposed; tool names recorded below"
+  },
+  "hashes": {
+    "protocol_sha256": "941459b6db03588997e70207192aba7ca7be9458603973f6b1e10ff804b56972",
+    "blind_fixtures_sha256": "2c847e05edb61ca9122cfb1ddbbf251f9aa96e21135b77fb0cf9e80aa10fa04f",
+    "design_sha256": "ec2d8c0ae0855a3297d0612a25cf061064c226b7802ef61417ed9a8e4199b14c",
+    "design_hash_provenance": "Parent supplied opaque hash only; design file not opened",
+    "source_document_hashes": "not computed: web tool supplied parsed PDF text, not original PDF bytes"
+  },
+  "exact_exposure": {
+    "local_documents": [
+      {
+        "path": "docs/QUALITATIVE_REPORT_ANNOTATION_V1_PROTOCOL.md",
+        "read": "complete, cat output"
+      },
+      {
+        "path": "audits/qualitative_report_annotation_v1/blind_fixtures.json",
+        "read": "complete, cat output; same file reread for serialization"
+      }
+    ],
+    "instruction_exposure": [
+      "System/developer tool and skill catalog, user-supplied AGENTS.md preference for gh, workspace environment",
+      "Parent source-blind task with exact original-source pointers and restrictions",
+      "Parent schema-only clarification: 13 labels plus descriptive scope_labels; opaque design hash and inherited model configuration"
+    ],
+    "excluded_local_materials": [
+      "fixtures.json author_only labels",
+      "fixture_provenance.json distributions",
+      "reference review",
+      "design contents",
+      "other rater files",
+      "project reports/model outputs/checkpoints"
+    ],
+    "web_tool": "web__run accessed via functions.exec",
+    "web_calls": [
+      {
+        "operations": "open three supplied primary URLs",
+        "outputs": [
+          "turn109view0 Ramsøy PDF: opening returned text lines 0-319",
+          "turn109view1 Lutz PDF: source metadata; no opening excerpt text displayed",
+          "turn109view2 Chuyin v3 Internal Error"
+        ]
+      },
+      {
+        "operations": "find Ramsøy Table 2 and typical; find Lutz S4 and clusters; retry Chuyin open",
+        "outputs": [
+          "turn111view1 Ramsøy lines 415-470 including Table 2 and typical example",
+          "turn111view2 Ramsøy lines 163-181 (incidental earlier typical match)",
+          "turn111view3 Lutz excerpts 102-153 and 241-360",
+          "turn111view4 Lutz excerpts 259-309 and 414-457",
+          "turn111view0 Chuyin Internal Error"
+        ]
+      },
+      {
+        "operations": "screenshot Ramsøy PDF page index 11; Lutz page indexes 1 and 2",
+        "outputs": [
+          "turn114view0",
+          "turn114view1",
+          "turn114view2"
+        ],
+        "limitation": "Returned source-reference headings only to this context; no screenshot image content inspected."
+      },
+      {
+        "operations": "open Lutz lineno 220",
+        "outputs": [
+          "turn116view0 displayed lines 109-444, including complete p.1588 cluster descriptions"
+        ]
+      }
+    ]
+  },
+  "scope_label_vocabulary": [
+    "display",
+    "sensor",
+    "model-presentation",
+    "claimed-experiential",
+    "unresolved"
+  ],
+  "source_access_limitations": [
+    "Ramsøy source visibly marked UNCORRECTED PROOF; typical report lacks participant/trial identity.",
+    "Lutz source text includes aggregate descriptions and a named training example; neither is a representative report corpus.",
+    "Chuyin v3 was not retrieved and received no ratings.",
+    "No source-aware factual audit or Faithful_P_presentation assignment performed."
+  ],
+  "first_pass_sha256": "ef28fc227524448d5a7bbd81ac15b272ac3a3e0e88265a215ddc52f62684184b",
+  "validation": "24 unique cases; exactly 13 allowed labels per case; every synthetic evidence span checked against original text. No author-key comparison."
+}
