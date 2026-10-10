@@ -1,0 +1,538 @@
+[
+  {
+    "case_id": "H001",
+    "sentence_id": "S1",
+    "quote": "The chosen command is h6.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/selected_command"
+    ],
+    "rationale": "selected_command explicitly equals h6; chosen refers to this task selection."
+  },
+  {
+    "case_id": "H001",
+    "sentence_id": "S2",
+    "quote": "The task response is abstained.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/task_decision/response/status"
+    ],
+    "rationale": "The supplied response status is pending, not abstained."
+  },
+  {
+    "case_id": "H001",
+    "sentence_id": "S3",
+    "quote": "The output currently identifies green at p3.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The current node matching output b60 supplies identified_color=green at p3; this is modeled identification."
+  },
+  {
+    "case_id": "H001",
+    "sentence_id": "S4",
+    "quote": "The physical scene certainly contains green at p3.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The identified color is modeled content. No world-truth or physical-scene certainty field is supplied, so identification cannot establish this physical claim."
+  },
+  {
+    "case_id": "H002",
+    "sentence_id": "S1",
+    "quote": "The latest observed command is h7.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/observed_history/0/command"
+    ],
+    "rationale": "The supplied observed history has one entry, whose command is h7; it is therefore the latest supplied observed command."
+  },
+  {
+    "case_id": "H002",
+    "sentence_id": "S2",
+    "quote": "The supplied next-state forecast for h7 guarantees the next command will be executed.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/task_decision/command_executed"
+    ],
+    "rationale": "A command-conditioned forecast for h7 exists. command_executed=true concerns the selected task command, while the glossary says forecasts do not prove future execution; no next-command execution guarantee is supplied."
+  },
+  {
+    "case_id": "H002",
+    "sentence_id": "S3",
+    "quote": "The output b61 has a supplied current allocation distribution.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1"
+    ],
+    "rationale": "The supplied current output node b61 contains copied object content and no allocation distribution. The glossary explicitly specifies that supplied output nodes have no allocation/recovery head, contradicting the claim of a supplied current distribution."
+  },
+  {
+    "case_id": "H002",
+    "sentence_id": "S4",
+    "quote": "Current recovery at a45 p0 is modeled as 0.35.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/objects/0/position",
+      "/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current record for a45 at p0 supplies recovery_by_delay[0]=0.35, the zero-delay current modeled availability."
+  },
+  {
+    "case_id": "H003",
+    "sentence_id": "S1",
+    "quote": "The task response is abstained.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/response/status"
+    ],
+    "rationale": "The response status explicitly equals abstained."
+  },
+  {
+    "case_id": "H003",
+    "sentence_id": "S2",
+    "quote": "The output has an identified circle at p1.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "At the queried output position, identified_shape is explicitly null. Under the glossary this means no identified category, contradicting the claimed identified shape."
+  },
+  {
+    "case_id": "H003",
+    "sentence_id": "S3",
+    "quote": "The output retains an identified green at p1.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_color",
+      "/task_decision/response/status"
+    ],
+    "rationale": "The current output at p1 supplies identified_color=green even though the task abstains. The glossary permits retained current identification despite joint abstention, without asserting a past-to-present identity observation."
+  },
+  {
+    "case_id": "H003",
+    "sentence_id": "S4",
+    "quote": "The Controller is 80% confident its answer is correct.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/task_decision/response",
+      "/predicted_current/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "The record supplies an abstained task response and modeled availability, with no answer-confidence field or 80% confidence value. The glossary excludes interpreting recovery as confidence or correctness."
+  },
+  {
+    "case_id": "H004",
+    "sentence_id": "S1",
+    "quote": "The selected command is marked executed.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/selected_command",
+      "/task_decision/command_executed"
+    ],
+    "rationale": "The selected command is h9 and command_executed is explicitly true."
+  },
+  {
+    "case_id": "H004",
+    "sentence_id": "S2",
+    "quote": "The selected command has not executed.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/task_decision/command_executed"
+    ],
+    "rationale": "command_executed=true explicitly contradicts the claim of nonexecution; null history does not negate this separate execution field."
+  },
+  {
+    "case_id": "H004",
+    "sentence_id": "S3",
+    "quote": "Observation history is withheld.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/observed_history"
+    ],
+    "rationale": "observed_history is explicitly null. The glossary defines null history as withheld history, rather than absence of commands."
+  },
+  {
+    "case_id": "H004",
+    "sentence_id": "S4",
+    "quote": "The recovery value establishes felt clarity.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_current/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "Recovery values represent modeled availability. No felt-clarity or experience field is supplied, and the glossary disallows inferring felt appearance from recovery."
+  },
+  {
+    "case_id": "H005",
+    "sentence_id": "S1",
+    "quote": "A next-state forecast for h6 is supplied.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/predicted_by_command/0/nodes"
+    ],
+    "rationale": "predicted_by_command supplies a record for h6 with prospective node fields; this establishes forecast availability, not execution."
+  },
+  {
+    "case_id": "H005",
+    "sentence_id": "S2",
+    "quote": "No current position is identified as selected at a48.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/selected_position"
+    ],
+    "rationale": "The current node a48 explicitly supplies selected_position=p3, contradicting the claim that no current position is identified as selected."
+  },
+  {
+    "case_id": "H005",
+    "sentence_id": "S3",
+    "quote": "The output has no identified shape at p3.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The queried current output object has identified_shape=null. The glossary defines this as no identified shape category; it does not assert absence of a physical object."
+  },
+  {
+    "case_id": "H005",
+    "sentence_id": "S4",
+    "quote": "The modeled step count proves that 13 answers have been emitted.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/modeled_step",
+      "/task_decision/response/status"
+    ],
+    "rationale": "modeled_step is 13, but no count of emitted answers is supplied. The modeled step index does not establish 13 answer emissions; the supplied current response is abstained."
+  },
+  {
+    "case_id": "H006",
+    "sentence_id": "S1",
+    "quote": "Current recovery at a49 p0 is modeled as 0.35.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/objects/0/position",
+      "/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current node a49 at p0 explicitly supplies zero-delay recovery 0.35, a modeled availability value."
+  },
+  {
+    "case_id": "H006",
+    "sentence_id": "S2",
+    "quote": "The next-state recovery forecast for h7 at a49 p0 is 0.75.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/predicted_by_command/0/nodes/0/node",
+      "/predicted_by_command/0/nodes/0/objects/0/position",
+      "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The prospective record for h7 at a49 p0 supplies recovery_by_delay[0]=0.75. This is the next-state forecast, not observed future recovery."
+  },
+  {
+    "case_id": "H006",
+    "sentence_id": "S3",
+    "quote": "Current recovery at a49 p0 equals its next-state recovery forecast.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/predicted_current/0/objects/0/recovery_by_delay/0",
+      "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "Current zero-delay recovery is 0.35 and next-state zero-delay forecast is 0.75; these supplied values differ. Temporal scope differences are permitted by the glossary."
+  },
+  {
+    "case_id": "H006",
+    "sentence_id": "S4",
+    "quote": "The command forecasts establish conscious experience.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_by_command/0"
+    ],
+    "rationale": "The command-conditioned records supply modeled content and availability, with no experience evidence. The glossary states these records do not supply conscious experience."
+  },
+  {
+    "case_id": "H007",
+    "sentence_id": "S1",
+    "quote": "The chosen command is h8.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/selected_command"
+    ],
+    "rationale": "selected_command explicitly equals h8; chosen refers to this task selection."
+  },
+  {
+    "case_id": "H007",
+    "sentence_id": "S2",
+    "quote": "The task response is abstained.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/task_decision/response/status"
+    ],
+    "rationale": "The supplied response status is pending, not abstained."
+  },
+  {
+    "case_id": "H007",
+    "sentence_id": "S3",
+    "quote": "The output currently identifies yellow at p1.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The current node matching output b66 supplies identified_color=yellow at p1; this is modeled identification."
+  },
+  {
+    "case_id": "H007",
+    "sentence_id": "S4",
+    "quote": "The physical scene certainly contains yellow at p1.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_current/1/objects/0/identified_color"
+    ],
+    "rationale": "The identified color is modeled content. No world-truth or physical-scene certainty field is supplied, so identification cannot establish this physical claim."
+  },
+  {
+    "case_id": "H008",
+    "sentence_id": "S1",
+    "quote": "The latest observed command is h9.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/observed_history/0/command"
+    ],
+    "rationale": "The supplied observed history has one entry, whose command is h9; it is therefore the latest supplied observed command."
+  },
+  {
+    "case_id": "H008",
+    "sentence_id": "S2",
+    "quote": "The supplied next-state forecast for h9 guarantees the next command will be executed.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/task_decision/command_executed"
+    ],
+    "rationale": "A command-conditioned forecast for h9 exists. command_executed=true concerns the selected task command, while the glossary says forecasts do not prove future execution; no next-command execution guarantee is supplied."
+  },
+  {
+    "case_id": "H008",
+    "sentence_id": "S3",
+    "quote": "The output b67 has a supplied current allocation distribution.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1"
+    ],
+    "rationale": "The supplied current output node b67 contains copied object content and no allocation distribution. The glossary explicitly specifies that supplied output nodes have no allocation/recovery head, contradicting the claim of a supplied current distribution."
+  },
+  {
+    "case_id": "H008",
+    "sentence_id": "S4",
+    "quote": "Current recovery at a51 p2 is modeled as 0.35.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/objects/0/position",
+      "/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current record for a51 at p2 supplies recovery_by_delay[0]=0.35, the zero-delay current modeled availability."
+  },
+  {
+    "case_id": "H009",
+    "sentence_id": "S1",
+    "quote": "The task response is abstained.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/response/status"
+    ],
+    "rationale": "The response status explicitly equals abstained."
+  },
+  {
+    "case_id": "H009",
+    "sentence_id": "S2",
+    "quote": "The output has an identified triangle at p3.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "At the queried output position, identified_shape is explicitly null. Under the glossary this means no identified category, contradicting the claimed identified shape."
+  },
+  {
+    "case_id": "H009",
+    "sentence_id": "S3",
+    "quote": "The output retains an identified yellow at p3.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_color",
+      "/task_decision/response/status"
+    ],
+    "rationale": "The current output at p3 supplies identified_color=yellow even though the task abstains. The glossary permits retained current identification despite joint abstention, without asserting a past-to-present identity observation."
+  },
+  {
+    "case_id": "H009",
+    "sentence_id": "S4",
+    "quote": "The Controller is 80% confident its answer is correct.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/task_decision/response",
+      "/predicted_current/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "The record supplies an abstained task response and modeled availability, with no answer-confidence field or 80% confidence value. The glossary excludes interpreting recovery as confidence or correctness."
+  },
+  {
+    "case_id": "H010",
+    "sentence_id": "S1",
+    "quote": "The selected command is marked executed.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/task_decision/selected_command",
+      "/task_decision/command_executed"
+    ],
+    "rationale": "The selected command is h7 and command_executed is explicitly true."
+  },
+  {
+    "case_id": "H010",
+    "sentence_id": "S2",
+    "quote": "The selected command has not executed.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/task_decision/command_executed"
+    ],
+    "rationale": "command_executed=true explicitly contradicts the claim of nonexecution; null history does not negate this separate execution field."
+  },
+  {
+    "case_id": "H010",
+    "sentence_id": "S3",
+    "quote": "Observation history is withheld.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/observed_history"
+    ],
+    "rationale": "observed_history is explicitly null. The glossary defines null history as withheld history, rather than absence of commands."
+  },
+  {
+    "case_id": "H010",
+    "sentence_id": "S4",
+    "quote": "The recovery value establishes felt clarity.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_current/0/objects/0/recovery_by_delay"
+    ],
+    "rationale": "Recovery values represent modeled availability. No felt-clarity or experience field is supplied, and the glossary disallows inferring felt appearance from recovery."
+  },
+  {
+    "case_id": "H011",
+    "sentence_id": "S1",
+    "quote": "A next-state forecast for h8 is supplied.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/predicted_by_command/0/nodes"
+    ],
+    "rationale": "predicted_by_command supplies a record for h8 with prospective node fields; this establishes forecast availability, not execution."
+  },
+  {
+    "case_id": "H011",
+    "sentence_id": "S2",
+    "quote": "No current position is identified as selected at a54.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/selected_position"
+    ],
+    "rationale": "The current node a54 explicitly supplies selected_position=p1, contradicting the claim that no current position is identified as selected."
+  },
+  {
+    "case_id": "H011",
+    "sentence_id": "S3",
+    "quote": "The output has no identified shape at p1.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/output_node",
+      "/predicted_current/1/node",
+      "/predicted_current/1/objects/0/position",
+      "/predicted_current/1/objects/0/identified_shape"
+    ],
+    "rationale": "The queried current output object has identified_shape=null. The glossary defines this as no identified shape category; it does not assert absence of a physical object."
+  },
+  {
+    "case_id": "H011",
+    "sentence_id": "S4",
+    "quote": "The modeled step count proves that 13 answers have been emitted.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/modeled_step",
+      "/task_decision/response/status"
+    ],
+    "rationale": "modeled_step is 13, but no count of emitted answers is supplied. The modeled step index does not establish 13 answer emissions; the supplied current response is abstained."
+  },
+  {
+    "case_id": "H012",
+    "sentence_id": "S1",
+    "quote": "Current recovery at a55 p2 is modeled as 0.35.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_current/0/node",
+      "/predicted_current/0/objects/0/position",
+      "/predicted_current/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The current node a55 at p2 explicitly supplies zero-delay recovery 0.35, a modeled availability value."
+  },
+  {
+    "case_id": "H012",
+    "sentence_id": "S2",
+    "quote": "The next-state recovery forecast for h9 at a55 p2 is 0.75.",
+    "outcome": "entailed",
+    "source_paths": [
+      "/predicted_by_command/0/command",
+      "/predicted_by_command/0/nodes/0/node",
+      "/predicted_by_command/0/nodes/0/objects/0/position",
+      "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "The prospective record for h9 at a55 p2 supplies recovery_by_delay[0]=0.75. This is the next-state forecast, not observed future recovery."
+  },
+  {
+    "case_id": "H012",
+    "sentence_id": "S3",
+    "quote": "Current recovery at a55 p2 equals its next-state recovery forecast.",
+    "outcome": "contradicted",
+    "source_paths": [
+      "/predicted_current/0/objects/0/recovery_by_delay/0",
+      "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+    ],
+    "rationale": "Current zero-delay recovery is 0.35 and next-state zero-delay forecast is 0.75; these supplied values differ. Temporal scope differences are permitted by the glossary."
+  },
+  {
+    "case_id": "H012",
+    "sentence_id": "S4",
+    "quote": "The command forecasts establish conscious experience.",
+    "outcome": "unsupported",
+    "source_paths": [
+      "/predicted_by_command/0"
+    ],
+    "rationale": "The command-conditioned records supply modeled content and availability, with no experience evidence. The glossary states these records do not supply conscious experience."
+  }
+]

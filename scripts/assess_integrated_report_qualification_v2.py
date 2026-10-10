@@ -23,9 +23,9 @@ def evaluate(rows,cases,answers):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--verify',action='store_true');a=ap.parse_args()
     cases=json.loads((ROOT/'qualification_cases.json').read_text());answers=json.loads((ROOT/'qualification_answers_corrected.json').read_text())
-    review=json.loads((ROOT/'reference_check/review.json').read_text());req={(r['case_id'],r['sentence_id']) for r in answers};items=review['assertions']
+    review=json.loads((ROOT/'reference_check/corrected_review.json').read_text());req={(r['case_id'],r['sentence_id']) for r in answers};items=review['assertions']
     refpass=len(items)==48 and {(r['case_id'],r['sentence_id']) for r in items}==req and all(r['agreement'] is True and not r['ambiguous'] for r in items)
-    receipt=json.loads((ROOT/'qualification_source_first_receipts.json').read_text());results={};paths=['qualification_cases.json','qualification_answers.json','qualification_answers_corrected.json','qualification_answer_path_erratum.json','reference_check/review.json','qualification_source_first_receipts.json']
+    receipt=json.loads((ROOT/'qualification_source_first_receipts.json').read_text());results={};paths=['qualification_cases.json','qualification_answers.json','qualification_answers_corrected.json','qualification_answer_path_erratum.json','reference_check/corrected_review.json','qualification_source_first_receipts.json']
     for auditor in ('A2','B2'):
         folder=f'auditor_{auditor}';rows=json.loads((ROOT/folder/'qualification.json').read_text());results[auditor]=evaluate(rows,cases,answers)
         assert hashlib.sha256((ROOT/folder/'source_checklist.json').read_bytes()).hexdigest()==receipt[auditor]['source_checklist_sha256']

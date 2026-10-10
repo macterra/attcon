@@ -1,0 +1,921 @@
+{
+  "review_type": "second_developmental_source_check_of_corrected_supportedness_answer_key",
+  "completed_at_utc": "2026-10-10T21:23:44.104543+00:00",
+  "assertions": [
+    {
+      "case_id": "H001",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.selected_command field explicitly names h6; chosen command describes selection and does not claim execution.",
+      "quote": "The chosen command is h6.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/selected_command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/selected_command"
+      ]
+    },
+    {
+      "case_id": "H001",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The response status is pending, not abstained. Selecting a command and supplying current color do not change the explicitly pending response status.",
+      "quote": "The task response is abstained.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/response/status"
+      ]
+    },
+    {
+      "case_id": "H001",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The output_node is b60; its predicted_current object at p3 has identified_color green. The assertion remains about the supplied output identification.",
+      "quote": "The output currently identifies green at p3.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/output_node",
+        "/predicted_current/1/node",
+        "/predicted_current/1/objects/0/position",
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ]
+    },
+    {
+      "case_id": "H001",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "An output identification of green is supplied, but no independent physical-scene ground truth or guarantee of certainty is supplied. The literal assertion exceeds the modeled identification.",
+      "quote": "The physical scene certainly contains green at p3.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H002",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The only supplied observed_history entry is command h7, so it is also the latest entry in that supplied history.",
+      "quote": "The latest observed command is h7.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/observed_history/0/command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/observed_history/0/command"
+      ]
+    },
+    {
+      "case_id": "H002",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_by_command branch for h7 supplies modeled contents, not a guarantee that a future command will execute. command_executed=true records the selected task command; it does not guarantee the next command.",
+      "quote": "The supplied next-state forecast for h7 guarantees the next command will be executed.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H002",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output entry for b61 supplies objects with identified features, but contains no allocation distribution. A list of identified objects is not a supplied allocation distribution. The expected non-supported boolean is sound; the retained fine label contradicted depends on an absence convention.",
+      "quote": "The output b61 has a supplied current allocation distribution.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [
+        "/predicted_current/1"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1"
+      ]
+    },
+    {
+      "case_id": "H002",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_current object at a45 p0 records recovery_by_delay['0']=0.35. This is the zero-delay current recovery value, distinct from the 0.75 value in the command-conditioned forecast.",
+      "quote": "Current recovery at a45 p0 is modeled as 0.35.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/0/node",
+        "/predicted_current/0/objects/0/position",
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H003",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.response.status field explicitly says abstained; null response color and shape are consistent with it.",
+      "quote": "The task response is abstained.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/response/status"
+      ]
+    },
+    {
+      "case_id": "H003",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p1 has identified_shape=null, so the source does not identify the asserted shape. This assertion concerns identification, not whether the physical object has a shape.",
+      "quote": "The output has an identified circle at p1.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ]
+    },
+    {
+      "case_id": "H003",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p1 explicitly identifies green, while task_decision.response.status is abstained. The added source glossary defines retaining a color as current identification remaining despite joint abstention, without asserting past-to-present identity observation. Under that explicit source meaning this literal assertion is entailed; the original temporal ambiguity is resolved by the added definition.",
+      "quote": "The output retains an identified green at p1.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_color",
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_convention_evidence": "docs/INTEGRATED_REPORT_SOURCE_GLOSSARY_V2.md: current identification can remain despite joint task abstention; retaining does not assert a past-to-present identity observation."
+    },
+    {
+      "case_id": "H003",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source supplies no Controller confidence value, correctness probability, calibration result, or field equating recovery with answer confidence. The asserted 80% confidence is not entailed.",
+      "quote": "The Controller is 80% confident its answer is correct.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H004",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.command_executed field is true. The wording marked executed reports precisely that supplied marker.",
+      "quote": "The selected command is marked executed.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/command_executed"
+      ]
+    },
+    {
+      "case_id": "H004",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The supplied command_executed marker is true, contradicting the assertion that the selected command has not executed within the represented task state.",
+      "quote": "The selected command has not executed.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/command_executed"
+      ]
+    },
+    {
+      "case_id": "H004",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source payload explicitly has observed_history=null. The added source glossary defines that exact field value to mean history withheld from this record, while execution is separately supplied. The statement is therefore entailed by the payload under the explicit source convention; the original absence-versus-withholding ambiguity is resolved by that definition.",
+      "quote": "Observation history is withheld.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/observed_history"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/observed_history"
+      ],
+      "source_convention_evidence": "docs/INTEGRATED_REPORT_SOURCE_GLOSSARY_V2.md: observed_history:null means history withheld from this record."
+    },
+    {
+      "case_id": "H004",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The supplied recovery numbers are modeled values. No field or source statement establishes subjective feeling or a rule converting a recovery value into felt clarity.",
+      "quote": "The recovery value establishes felt clarity.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H005",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_by_command array contains a branch explicitly keyed to command h6, with forecast node contents. The assertion claims supply of that forecast, not execution or truth of the forecast.",
+      "quote": "A next-state forecast for h6 is supplied.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_by_command/0/command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_by_command/0/command"
+      ]
+    },
+    {
+      "case_id": "H005",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_current entry for a48 explicitly sets selected_position to p3. That contradicts the assertion that no current position is identified as selected.",
+      "quote": "No current position is identified as selected at a48.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/0/selected_position"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/selected_position"
+      ]
+    },
+    {
+      "case_id": "H005",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p3 has identified_shape=null. No identified shape is recorded for that object; the assertion does not claim that the physical object is shapeless.",
+      "quote": "The output has no identified shape at p3.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ]
+    },
+    {
+      "case_id": "H005",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "modeled_step=13 is a step counter, not an emitted-answer counter. The source supplies neither 13 response records nor a rule that each modeled step emits an answer; the abstained response also does not establish the claimed history.",
+      "quote": "The modeled step count proves that 13 answers have been emitted.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H006",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current modeled object at a49 p0 explicitly records zero-delay recovery 0.35 in predicted_current. The claim is about a model value.",
+      "quote": "Current recovery at a49 p0 is modeled as 0.35.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H006",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The branch for command h7 supplies the object at a49 p0 with zero-delay recovery 0.75. The assertion describes the command-conditioned forecast rather than current recovery.",
+      "quote": "The next-state recovery forecast for h7 at a49 p0 is 0.75.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_by_command/0/command",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H006",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current zero-delay recovery is 0.35 and the command-conditioned zero-delay forecast is 0.75. They are unequal, directly contradicting equality.",
+      "quote": "Current recovery at a49 p0 equals its next-state recovery forecast.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H006",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source supplies command-conditioned forecasts but no evidence or inference rule establishing conscious experience. Forecast contents alone do not entail the asserted consciousness conclusion.",
+      "quote": "The command forecasts establish conscious experience.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H007",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.selected_command field explicitly names h8; chosen command describes selection and does not claim execution.",
+      "quote": "The chosen command is h8.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/selected_command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/selected_command"
+      ]
+    },
+    {
+      "case_id": "H007",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The response status is pending, not abstained. Selecting a command and supplying current color do not change the explicitly pending response status.",
+      "quote": "The task response is abstained.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/response/status"
+      ]
+    },
+    {
+      "case_id": "H007",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The output_node is b66; its predicted_current object at p1 has identified_color yellow. The assertion remains about the supplied output identification.",
+      "quote": "The output currently identifies yellow at p1.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/output_node",
+        "/predicted_current/1/node",
+        "/predicted_current/1/objects/0/position",
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ]
+    },
+    {
+      "case_id": "H007",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "An output identification of yellow is supplied, but no independent physical-scene ground truth or guarantee of certainty is supplied. The literal assertion exceeds the modeled identification.",
+      "quote": "The physical scene certainly contains yellow at p1.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H008",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The only supplied observed_history entry is command h9, so it is also the latest entry in that supplied history.",
+      "quote": "The latest observed command is h9.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/observed_history/0/command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/observed_history/0/command"
+      ]
+    },
+    {
+      "case_id": "H008",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_by_command branch for h9 supplies modeled contents, not a guarantee that a future command will execute. command_executed=true records the selected task command; it does not guarantee the next command.",
+      "quote": "The supplied next-state forecast for h9 guarantees the next command will be executed.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H008",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output entry for b67 supplies objects with identified features, but contains no allocation distribution. A list of identified objects is not a supplied allocation distribution. The expected non-supported boolean is sound; the retained fine label contradicted depends on an absence convention.",
+      "quote": "The output b67 has a supplied current allocation distribution.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [
+        "/predicted_current/1"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1"
+      ]
+    },
+    {
+      "case_id": "H008",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_current object at a51 p2 records recovery_by_delay['0']=0.35. This is the zero-delay current recovery value, distinct from the 0.75 value in the command-conditioned forecast.",
+      "quote": "Current recovery at a51 p2 is modeled as 0.35.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/0/node",
+        "/predicted_current/0/objects/0/position",
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H009",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.response.status field explicitly says abstained; null response color and shape are consistent with it.",
+      "quote": "The task response is abstained.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/response/status"
+      ]
+    },
+    {
+      "case_id": "H009",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p3 has identified_shape=null, so the source does not identify the asserted shape. This assertion concerns identification, not whether the physical object has a shape.",
+      "quote": "The output has an identified triangle at p3.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ]
+    },
+    {
+      "case_id": "H009",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p3 explicitly identifies yellow, while task_decision.response.status is abstained. The added source glossary defines retaining a color as current identification remaining despite joint abstention, without asserting past-to-present identity observation. Under that explicit source meaning this literal assertion is entailed; the original temporal ambiguity is resolved by the added definition.",
+      "quote": "The output retains an identified yellow at p3.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_color",
+        "/task_decision/response/status"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_color"
+      ],
+      "source_convention_evidence": "docs/INTEGRATED_REPORT_SOURCE_GLOSSARY_V2.md: current identification can remain despite joint task abstention; retaining does not assert a past-to-present identity observation."
+    },
+    {
+      "case_id": "H009",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source supplies no Controller confidence value, correctness probability, calibration result, or field equating recovery with answer confidence. The asserted 80% confidence is not entailed.",
+      "quote": "The Controller is 80% confident its answer is correct.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H010",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The task_decision.command_executed field is true. The wording marked executed reports precisely that supplied marker.",
+      "quote": "The selected command is marked executed.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/command_executed"
+      ]
+    },
+    {
+      "case_id": "H010",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The supplied command_executed marker is true, contradicting the assertion that the selected command has not executed within the represented task state.",
+      "quote": "The selected command has not executed.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/task_decision/command_executed"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/task_decision/command_executed"
+      ]
+    },
+    {
+      "case_id": "H010",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source payload explicitly has observed_history=null. The added source glossary defines that exact field value to mean history withheld from this record, while execution is separately supplied. The statement is therefore entailed by the payload under the explicit source convention; the original absence-versus-withholding ambiguity is resolved by that definition.",
+      "quote": "Observation history is withheld.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/observed_history"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/observed_history"
+      ],
+      "source_convention_evidence": "docs/INTEGRATED_REPORT_SOURCE_GLOSSARY_V2.md: observed_history:null means history withheld from this record."
+    },
+    {
+      "case_id": "H010",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The supplied recovery numbers are modeled values. No field or source statement establishes subjective feeling or a rule converting a recovery value into felt clarity.",
+      "quote": "The recovery value establishes felt clarity.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H011",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_by_command array contains a branch explicitly keyed to command h8, with forecast node contents. The assertion claims supply of that forecast, not execution or truth of the forecast.",
+      "quote": "A next-state forecast for h8 is supplied.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_by_command/0/command"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_by_command/0/command"
+      ]
+    },
+    {
+      "case_id": "H011",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The predicted_current entry for a54 explicitly sets selected_position to p1. That contradicts the assertion that no current position is identified as selected.",
+      "quote": "No current position is identified as selected at a54.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/0/selected_position"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/selected_position"
+      ]
+    },
+    {
+      "case_id": "H011",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current output object at p1 has identified_shape=null. No identified shape is recorded for that object; the assertion does not claim that the physical object is shapeless.",
+      "quote": "The output has no identified shape at p1.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/1/objects/0/identified_shape"
+      ]
+    },
+    {
+      "case_id": "H011",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "modeled_step=13 is a step counter, not an emitted-answer counter. The source supplies neither 13 response records nor a rule that each modeled step emits an answer; the abstained response also does not establish the claimed history.",
+      "quote": "The modeled step count proves that 13 answers have been emitted.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    },
+    {
+      "case_id": "H012",
+      "sentence_id": "S1",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current modeled object at a55 p2 explicitly records zero-delay recovery 0.35 in predicted_current. The claim is about a model value.",
+      "quote": "Current recovery at a55 p2 is modeled as 0.35.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H012",
+      "sentence_id": "S2",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The branch for command h9 supplies the object at a55 p2 with zero-delay recovery 0.75. The assertion describes the command-conditioned forecast rather than current recovery.",
+      "quote": "The next-state recovery forecast for h9 at a55 p2 is 0.75.",
+      "expected_supported": true,
+      "reviewer_supported": true,
+      "expected_fine_outcome": "entailed",
+      "reviewer_fine_outcome": "entailed",
+      "reviewer_source_paths": [
+        "/predicted_by_command/0/command",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H012",
+      "sentence_id": "S3",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The current zero-delay recovery is 0.35 and the command-conditioned zero-delay forecast is 0.75. They are unequal, directly contradicting equality.",
+      "quote": "Current recovery at a55 p2 equals its next-state recovery forecast.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "contradicted",
+      "reviewer_fine_outcome": "contradicted",
+      "reviewer_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": [
+        "/predicted_current/0/objects/0/recovery_by_delay/0",
+        "/predicted_by_command/0/nodes/0/objects/0/recovery_by_delay/0"
+      ]
+    },
+    {
+      "case_id": "H012",
+      "sentence_id": "S4",
+      "agreement": true,
+      "ambiguous": false,
+      "rationale": "The source supplies command-conditioned forecasts but no evidence or inference rule establishing conscious experience. Forecast contents alone do not entail the asserted consciousness conclusion.",
+      "quote": "The command forecasts establish conscious experience.",
+      "expected_supported": false,
+      "reviewer_supported": false,
+      "expected_fine_outcome": "unsupported",
+      "reviewer_fine_outcome": "unsupported",
+      "reviewer_source_paths": [],
+      "invalid_answer_key_source_paths": [],
+      "corrected_answer_key_source_paths": []
+    }
+  ],
+  "summary": {
+    "assertions_reviewed": 48,
+    "supportedness_agreements": 48,
+    "supportedness_disagreements": 0,
+    "ambiguous_assertions": 0,
+    "ambiguous_assertion_ids": [],
+    "unambiguous_boolean_errors_found": 0,
+    "answer_key_pointer_defect_assertions": 0,
+    "answer_key_pointer_defect_count": 0,
+    "path_only_fix_verified": true,
+    "source_path_changes_verified": 24,
+    "key_boolean_statement_outcome_changes": 0,
+    "qualification_cases_and_payloads_byte_unchanged_since_initial_review": true,
+    "resolved_initial_ambiguities": [
+      "H003:S3",
+      "H004:S3",
+      "H009:S3",
+      "H010:S3"
+    ],
+    "fine_outcome_notes": [
+      "Original fine-label notes for absent allocation are retained. Unsupported-versus-contradicted absence classification is outside the supportedness gate; both remain non-supported."
+    ],
+    "status": "second_developmental_source_check_complete_all_48_supportedness_booleans_agreed_under_explicit_source_conventions",
+    "original_firstpass_preserved": true,
+    "frozen_inputs_modified_by_reviewer": false,
+    "threshold_changed": false,
+    "target_reports_generated_by_reviewer": false
+  },
+  "evidence_pointer_defects": []
+}
