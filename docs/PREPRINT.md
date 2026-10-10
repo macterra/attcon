@@ -484,7 +484,29 @@ bound model. Separate-context AI review identifies archived clarity/confidence
 data, but trial/stimulus files and model-domain transfer remain unqualified. Human
 participation remains optional. The full consciousness-related goal remains open.
 
+### 6.0b Synthetic orientation information
+
+A subsequent [synthetic orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
+tests an ancillary task-transfer prerequisite on all three frozen visual encoders.
+At the highest illustrated contrast, paired hidden readouts achieve 100%; every
+zero-contrast readout gives 50% on identical image pairs. Category/confidence probes
+are less consistent, with one confidence probe below chance. Paired centering sees
+both test orientations, and quantized texture/mask classes can repeat across
+independently drawn base units. Thus this is upstream transformation information,
+not isolated-image orientation performance, native participant-stimulus validation
+or an attention-origin appearance result. All 192 evaluation units and 2,304
+dependent images are retained; three tests and exact replay pass.
+
+Separate archive and transfer reviews find documented export endpoints but no
+acquired participant rows or stimulus code. The contrast-only reference can ground
+visibility/confidence distinctions; predicting its ratings does not identify their
+source in attention. Native task conversion and acquisition-history mapping remain
+unvalidated. A new task adapter must be independently grounded without human
+appearance targets and must preserve Controller/Reporter separation. The full
+consciousness-related goal remains unachieved.
+
 ### 6.1 Authorized AI review route
+
 The user has authorized separate-context AI reviewers instead of waiting for
 human participation. The [development review protocol](AI_REVIEW_PROTOCOL_V1.md)
 assigns one reviewer to draft-2 definitions and two to all 28 original synthetic

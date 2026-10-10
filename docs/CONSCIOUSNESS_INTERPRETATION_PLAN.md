@@ -75,6 +75,18 @@ the full appearance assay and further reporting. Human review remains optional.
 
 ## 1. Specify the target features before observing new reports
 
+The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
+shows paired orientation information in upstream frozen visual hidden features
+under a synthetic conversion. It does not qualify actual participant stimuli or
+single-image decisions. Archive retrieval now has documented export endpoints but
+no acquired rows. Contrast-only visibility/confidence data can ground a reference
+distinction; it cannot alone identify attention as the source. Before reference
+testing, validate sensory-task conversion and an independently grounded acquisition
+bridge, then add an attention manipulation with selective model intervention and
+restoration. Never feed human visibility/confidence into the proposed source.
+These are prerequisites for the full report-correspondence goal, not substitute
+acceptance criteria. Human review remains optional.
+
 Prepare a rubric grounded in independent descriptions of consciousness reports,
 with positive and negative examples not drawn from the new experimental outputs.
 Candidate dimensions separate focal/background, recovery forecasts, identity

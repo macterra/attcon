@@ -1,0 +1,174 @@
+{
+  "kind": "independent_post_output_code_and_raw_tensor_audit",
+  "reviewer": "orientation_results_audit subagent",
+  "reviewer_type": "AI subagent",
+  "created_utc": "2026-10-10T22:04:58.320035+00:00",
+  "first_pass": true,
+  "output_exposure": true,
+  "no_human_review_claim": true,
+  "source_hashes": {
+    "docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_PROTOCOL.md": "4e0f56b8b8b4ac4ea06575e51a21d3842e29009a49663fdb918f4f73374450e2",
+    "scripts/orientation_transfer_diagnostic_v1.py": "0c0e755d2f8936a60d30baa0e6a6daec82e3cfc8828b96bfea2cd890acb2e916",
+    "tests/test_orientation_transfer_diagnostic.py": "43a0fcf607670f2b74e11b9aecacd641d9f88085be9a144c0d3dad3b593c1360",
+    "src/attcon/bound_content.py": "699567550d8e22947789794add5176c9d8887c9876b6e79373fd8463bd2a0f92",
+    "audits/orientation_transfer_diagnostic_v1/manifest.json": "a953d3204e72cbf03653a8b4dd7132dd82f978b8c5f686a49a72c6ee60ef97b5",
+    "audits/orientation_transfer_diagnostic_v1/completion.json": "d8634ec8a6de73d469e039c478ce5aa93fb5d346f558f94b9dbfcf0b7055d5ce",
+    "audits/orientation_transfer_diagnostic_v1/results.json": "c1a21a66279e648ca025613bd3a8f4394ac7d518a54a239f7e99aa2b9a6d3171",
+    "audits/orientation_transfer_diagnostic_v1/states.pt.gz": "7ab88e7a66d6069cbf1a98065c68f839ea09796d692f0581913cb0a9d2919ef1",
+    "audits/bound_content/confirmation_v2/seed1301.pt": "8350d832b6f82be23d897de66ce3fd27260973c5818ec546facafb444256d291",
+    "audits/bound_content/confirmation_v2/seed1311.pt": "4b1d59f577ef1c9bd6142dcdce4570d3889f48f59038fa545788029bd6fb0942",
+    "audits/bound_content/confirmation_v2/seed1321.pt": "8ea72689c82536a390acc971c2ca6399cd3bd4b22b068f4753cff25b167d338f"
+  },
+  "review_sha256": "e91326b4e70edb45ce317bcf09108dc7e0f347748dbd19fa40bd743c5d1c60c0",
+  "diagnostic_build_or_verify_called": false,
+  "frozen_files_modified": false,
+  "audit_script_sha256": "3972831d9cae1419782636515f3bf45df242b0ff583dbd12b1b90340c3f92b2f",
+  "audit_script_source": "import gzip,json,hashlib,io\nfrom pathlib import Path\nimport torch\nfrom attcon.bound_content import VisualEncoder\nT=Path('audits/orientation_transfer_diagnostic_v1'); torch.set_num_threads(2)\nmanifest=json.loads((T/'manifest.json').read_text()); results=json.loads((T/'results.json').read_text()); completion=json.loads((T/'completion.json').read_text())\ndef sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\nfor p,h in {**manifest['source_sha256'],**manifest['checkpoint_sha256']}.items():assert sha(p)==h\nassert sha(T/'states.pt.gz')==completion['states_sha256'];assert sha(T/'results.json')==completion['results_sha256']\nwith gzip.open(T/'states.pt.gz','rb') as f: raw=torch.load(f,weights_only=True)\nchecks={}; max_errors={}; texture_sets={}; mask_sets={}\nfor seed,s in raw.items():\n model=VisualEncoder().eval();model.load_state_dict(torch.load(f'audits/bound_content/confirmation_v2/seed{seed}.pt',weights_only=True)['state_dict'])\n texture_sets[seed]={}; mask_sets[seed]={}\n for si,split in enumerate(('development','evaluation')):\n  p=s[split+'_patches'];assert p.shape==(64,6,2,3,16,16)\n  assert torch.equal(p[:,0,0],p[:,0,1])\n  # Independently reproduce the documented RNG draw ordering and renderer.\n  gen=torch.Generator().manual_seed(890000000+int(seed)+10000*si)\n  xpos=6.5+2*torch.rand((64,1,1),generator=gen); ypos=6.5+2*torch.rand((64,1,1),generator=gen)\n  radius=3.7+1.5*torch.rand((64,1,1),generator=gen)\n  row=torch.arange(16)[None,:,None];col=torch.arange(16)[None,None,:]\n  # Match floating-point parenthesization from frozen implementation, not merely mathematical equivalence.\n  gen=torch.Generator().manual_seed(890000000+int(seed)+10000*si)\n  xpos=7.5+2*torch.rand((64,1,1),generator=gen)-1; ypos=7.5+2*torch.rand((64,1,1),generator=gen)-1;radius=3.7+1.5*torch.rand((64,1,1),generator=gen)\n  circle=(col-xpos).square()+(row-ypos).square()<=radius.square()\n  square=((col-xpos).abs()<=radius)&((row-ypos).abs()<=radius)\n  aperture=torch.where((torch.arange(64)%2==0)[:,None,None],circle,square)\n  phase=2*torch.pi*torch.rand((64,1,1),generator=gen)\n  stripe_h=(torch.sin(row*torch.pi/2+phase)>=0).expand(-1,16,16)\n  stripe_v=(torch.sin(col*torch.pi/2+phase)>=0).expand(-1,16,16)\n  stripe=torch.stack([stripe_h,stripe_v],dim=1)\n  sensor=.015*torch.randn((64,1,1,3,16,16),generator=gen)\n  lum=torch.tensor(manifest['luminance_pairs'])/50\n  light=lum[None,:,None,0,None,None];dark=lum[None,:,None,1,None,None]\n  stimulus=torch.where(stripe[:,None],light,dark)\n  stimulus=torch.where(aperture[:,None,None],stimulus,torch.tensor(.71))\n  regenerated=(stimulus[:,:,:,None].expand(-1,-1,-1,3,-1,-1)+sensor).clamp(0,1)\n  assert torch.equal(regenerated,p)\n  texture_sets[seed][split]=set(bytes(t[:,0].to(torch.uint8).flatten().tolist()) for t in stripe_h)\n  mask_sets[seed][split]=set(bytes(t.to(torch.uint8).flatten().tolist()) for t in aperture)\n  with torch.no_grad():\n   z=model.net[:-1](p.reshape(-1,3,16,16)).reshape(64,6,2,64)\n   log=model.net[-1](z)\n   prob=torch.cat([log[...,:4].softmax(-1),log[...,4:].softmax(-1)],dim=-1)\n   cp,sp=prob[...,:4],prob[...,4:]\n   conf=torch.stack([cp.max(-1).values,sp.max(-1).values,-(cp*cp.clamp_min(1e-30).log()).sum(-1),-(sp*sp.clamp_min(1e-30).log()).sum(-1)],dim=-1)\n   edge=((p[...,1:]-p[...,:-1]).square().mean((-3,-2,-1))-(p[...,1:,:]-p[...,:-1,:]).square().mean((-3,-2,-1)))[...,None]\n  feats={'visual_hidden':z,'visual_logits':log,'category_probabilities':prob,'category_confidence':conf,'physical_directional_edge':edge}\n  for k,v in feats.items():\n   assert torch.equal(v,s[split+'_features'][k]),(seed,split,k)\n   assert torch.equal(v[:,0,0],v[:,0,1])\n idx=torch.randint(64,(256,64),generator=torch.Generator().manual_seed(900000000+int(seed)))\n assert torch.equal(idx,s['bootstrap_indices']); assert torch.equal(s['generated_orientation_labels'],torch.arange(2).expand(64,6,2))\n checks[seed]={'features_exact':True,'zero_images_and_all_features_identical_both_splits':True,'renderer_exact':True,'sources':{}}\n for k,d in s['development_features'].items():\n  d=d.double();dev=(d-d.mean(dim=2,keepdim=True))[:,-1].reshape(128,-1)\n  rms=dev.square().mean(0).sqrt();rms[rms==0]=1\n  x=dev/rms;y=torch.tensor([-1.,1.],dtype=torch.double).repeat(64).unsqueeze(1)\n  A=x.T@x/128+.01*torch.eye(x.shape[1],dtype=torch.double);b=x.T@y/128\n  weights=torch.linalg.solve(A,b)\n  assert torch.equal(rms,s['readouts'][k]['scale']);assert torch.equal(weights,s['readouts'][k]['weights'])\n  ev=s['evaluation_features'][k].double();center=ev-ev.mean(dim=2,keepdim=True)\n  score=(center/rms@weights).squeeze(-1);assert torch.equal(score,s['scores'][k])\n  truth=s['generated_orientation_labels'];success=((score>0).long()==truth).double().mean(dim=2)\n  means=success.mean(0).tolist();intervals=torch.quantile(success[idx].mean(1),torch.tensor([.025,.975],dtype=torch.double),dim=0).T.tolist()\n  assert means==results['models'][seed]['scores'][k]['accuracy_by_contrast'];assert intervals==results['models'][seed]['scores'][k]['conditional_base_bootstrap_95']\n  assert means[0]==.5\n  checks[seed]['sources'][k]={'high_contrast_accuracy':means[-1],'coefficient_and_prediction_exact':True,'accuracy_and_bootstrap_exact':True,'linear_system_max_residual':float((A@weights-b).abs().max())}\n color=s['evaluation_features']['category_probabilities'][...,:4].argmax(-1)\n assert torch.bincount(color.flatten(),minlength=4).tolist()==results['models'][seed]['native_color_argmax_counts']\n assert color.numel()==768\n assert all(results['models'][seed]['gates'].values())\n assert checks[seed]['sources']['visual_hidden']['high_contrast_accuracy']>=.9\n assert checks[seed]['sources']['physical_directional_edge']['high_contrast_accuracy']>=.9\n checks[seed]['texture_classes_dev_eval_overlap']=[len(texture_sets[seed]['development']),len(texture_sets[seed]['evaluation']),len(texture_sets[seed]['development']&texture_sets[seed]['evaluation'])]\n checks[seed]['aperture_masks_dev_eval_overlap']=[len(mask_sets[seed]['development']),len(mask_sets[seed]['evaluation']),len(mask_sets[seed]['development']&mask_sets[seed]['evaluation'])]\n print(seed,checks[seed])\nPath('/tmp/orientation_independent_audit_checks.json').write_text(json.dumps(checks,indent=2)+'\\n')\n",
+  "independent_checks": {
+    "1301": {
+      "features_exact": true,
+      "zero_images_and_all_features_identical_both_splits": true,
+      "renderer_exact": true,
+      "sources": {
+        "visual_hidden": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 3.3306690738754696e-16
+        },
+        "visual_logits": {
+          "high_contrast_accuracy": 0.875,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 5.551115123125783e-17
+        },
+        "category_probabilities": {
+          "high_contrast_accuracy": 0.796875,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 5.551115123125783e-17
+        },
+        "category_confidence": {
+          "high_contrast_accuracy": 0.796875,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        },
+        "physical_directional_edge": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        }
+      },
+      "texture_classes_dev_eval_overlap": [
+        4,
+        4,
+        4
+      ],
+      "aperture_masks_dev_eval_overlap": [
+        51,
+        57,
+        9
+      ]
+    },
+    "1311": {
+      "features_exact": true,
+      "zero_images_and_all_features_identical_both_splits": true,
+      "renderer_exact": true,
+      "sources": {
+        "visual_hidden": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 5.551115123125783e-16
+        },
+        "visual_logits": {
+          "high_contrast_accuracy": 0.96875,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 3.3306690738754696e-16
+        },
+        "category_probabilities": {
+          "high_contrast_accuracy": 0.953125,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 1.1102230246251565e-16
+        },
+        "category_confidence": {
+          "high_contrast_accuracy": 0.8125,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        },
+        "physical_directional_edge": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        }
+      },
+      "texture_classes_dev_eval_overlap": [
+        4,
+        4,
+        4
+      ],
+      "aperture_masks_dev_eval_overlap": [
+        57,
+        51,
+        7
+      ]
+    },
+    "1321": {
+      "features_exact": true,
+      "zero_images_and_all_features_identical_both_splits": true,
+      "renderer_exact": true,
+      "sources": {
+        "visual_hidden": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 5.065392549852277e-16
+        },
+        "visual_logits": {
+          "high_contrast_accuracy": 0.828125,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 1.1102230246251565e-16
+        },
+        "category_probabilities": {
+          "high_contrast_accuracy": 0.75,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 1.1102230246251565e-16
+        },
+        "category_confidence": {
+          "high_contrast_accuracy": 0.453125,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        },
+        "physical_directional_edge": {
+          "high_contrast_accuracy": 1.0,
+          "coefficient_and_prediction_exact": true,
+          "accuracy_and_bootstrap_exact": true,
+          "linear_system_max_residual": 0.0
+        }
+      },
+      "texture_classes_dev_eval_overlap": [
+        4,
+        4,
+        4
+      ],
+      "aperture_masks_dev_eval_overlap": [
+        55,
+        54,
+        10
+      ]
+    }
+  },
+  "gate_verdict": "pass_synthetic_sensory_feasibility_only",
+  "empirical_stimulus_transfer_ready": false,
+  "attention_source_tested": false,
+  "goal_achieved": false
+}

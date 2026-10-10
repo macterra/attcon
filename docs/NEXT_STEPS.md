@@ -2,6 +2,18 @@
 
 ## Current plan (2026-10-10)
 
+The [synthetic orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
+now passes its ancillary paired-information gate in all three frozen visual
+encoders: 100% at highest contrast, 50% at identical zero-contrast pairs. This
+does not establish isolated-image task ability, empirical stimulus equivalence,
+appearance judgments or attention origin. A separate transfer review rejects
+using contrast-only human data as an attention-source counterfactual; native task
+and history mappings are also unresolved. Next validate isolated sensory decisions
+without paired test inputs and ground any acquisition bridge in independent
+synthetic outcomes. In parallel, obtain and qualify actual reference files and
+attention-manipulated appearance data. Human review remains optional; every
+theory-facing requirement and retained failure stays in scope.
+
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base
 scenes, strong objective-image prediction from upstream visual hidden features,

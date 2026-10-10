@@ -259,3 +259,9 @@ fixed history. It tests objective pixels, not appearance judgments. Archived
 clarity/confidence data candidates still need file-level qualification and valid
 stimulus conversion before the full appearance assay or further prose. Human
 review is optional; the research goal remains unachieved.
+
+The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
+finds paired orientation information in all three upstream visual encoders. Its
+positive engineering gate does not establish participant appearance or attention
+origin. Actual archived data, valid task conversion and source identification remain
+open; the next task bridge must work on isolated inputs without human-rating targets.
