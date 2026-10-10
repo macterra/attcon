@@ -14,6 +14,12 @@ acquisition model in observed outcomes. Obtain and qualify attention-manipulated
 appearance reference files in parallel. Human review remains optional; the full
 source-of-qualia objective and report-correspondence requirements are unchanged.
 
+[Attention-manipulated appearance references](ATTENTION_APPEARANCE_REFERENCE_V1.md)
+now include contrast-dependent effects and competing criterion-change accounts.
+Their advertised archives remain inaccessible here; no empirical target is
+qualified. Keep sign-reversal, null and bias alternatives, and qualify original
+analyses/corrections before freezing correspondence endpoints.
+
 The [frozen physical-source diagnostic](PHYSICAL_SOURCE_LOCALIZATION_V1_RESULTS.md)
 now completes the calibration component: three existing pairs, 384 held-out base
 scenes, strong objective-image prediction from upstream visual hidden features,

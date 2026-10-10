@@ -526,6 +526,13 @@ qualify conditional calibration and ground acquisition in measured outcomes.
 Qualified attention-manipulated appearance targets and selective attention-model
 intervention/restoration are still required; the theory-facing goal is unachieved.
 
+A separate [attention-appearance reference search](ATTENTION_APPEARANCE_REFERENCE_V1.md)
+identifies attention-manipulated candidates and competing appearance/criterion
+interpretations. No trial files or native stimuli were acquired. Enhancement,
+attenuation, null and decision-bias alternatives remain open; published corrections
+must accompany any adopted analysis. Candidate discovery is not empirical
+correspondence or qualification of an external endpoint.
+
 ### 6.1 Authorized AI review route
 
 The user has authorized separate-context AI reviewers instead of waiting for

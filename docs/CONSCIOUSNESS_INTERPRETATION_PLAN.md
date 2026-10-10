@@ -84,6 +84,13 @@ model in measured outcomes. Attention-manipulated appearance reference discovery
 continues separately; neither task accuracy nor calibrated decision confidence
 substitutes for appearance correspondence or attention-source causation.
 
+[Attention-manipulated appearance discovery](ATTENTION_APPEARANCE_REFERENCE_V1.md)
+now supplies candidate external designs with enhancement, attenuation, criterion-
+change and null alternatives. No trial archive is acquired or qualified. Freeze
+a valid appearance endpoint only after file/schema/stimulus/analysis qualification;
+do not assume a positive attention multiplier or substitute aggregate figures
+for trial rows. Include decision/uncertainty controls and published corrections.
+
 ## 1. Specify the target features before observing new reports
 
 The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)

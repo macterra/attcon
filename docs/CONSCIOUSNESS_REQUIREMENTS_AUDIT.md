@@ -47,6 +47,11 @@ state. Five tests and companion exact reconstruction pass; original verifier
 failure remains. New task development and conditional calibration must precede
 sensory-outcome grounding of any acquisition model.
 
+[Attention-manipulated reference discovery](ATTENTION_APPEARANCE_REFERENCE_V1.md)
+adds candidates with appearance/bias separation and sign-reversal alternatives.
+No trial archive is qualified. Existing raw-file, transfer, source-identification
+and consciousness-interpretation requirements remain unsatisfied.
+
 ## Requirement-by-requirement evidence
 
 | Plan requirement / deliverable | Authoritative artifact inspected | Current finding | Status |
