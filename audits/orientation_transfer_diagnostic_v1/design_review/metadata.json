@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-10T22:02:35.252363+00:00",
+  "reviewer": "/root/appearance_transfer_review",
+  "review_kind": "pre-output static ancillary diagnostic design review",
+  "disposition": "approve narrow paired-information scope after phase/geometry holdout wording correction",
+  "source_sha256": {
+    "docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_PROTOCOL.md": "4e0f56b8b8b4ac4ea06575e51a21d3842e29009a49663fdb918f4f73374450e2",
+    "scripts/orientation_transfer_diagnostic_v1.py": "0c0e755d2f8936a60d30baa0e6a6daec82e3cfc8828b96bfea2cd890acb2e916",
+    "tests/test_orientation_transfer_diagnostic.py": "43a0fcf607670f2b74e11b9aecacd641d9f88085be9a144c0d3dad3b593c1360"
+  },
+  "review_sha256": "bedb59292959a384d7ce7f0cd088c6894072f2231ad37e521c2b25b15d14e7ec",
+  "executed_collection": false,
+  "executed_tests": false,
+  "exposures": [
+    "Current protocol, implementation and tests",
+    "Earlier primary article and architecture transfer review",
+    "Parent hypothesis and planned gates"
+  ],
+  "unexposed": [
+    "Checkpoint bytes",
+    "Diagnostic model outputs",
+    "Human archive",
+    "Participant ratings",
+    "Reporter outputs"
+  ],
+  "critical_scope_correction": "Independent evaluation draws do not imply held-out discrete phase patterns, geometry masks or frequencies",
+  "remaining_scientific_limits": [
+    "Paired-counterfactual test input",
+    "Synthetic uncalibrated rendering",
+    "No human reference transfer",
+    "No attention-source estimand"
+  ],
+  "goal_achieved": false,
+  "source_hash_timing": "source_sha256 records bytes at first-pass artifact write, after initial inspection; protocol may already include the parent correction at that moment",
+  "pre_freeze_correction_review": {
+    "reread_at_utc": "2026-10-10T22:02:47.516167+00:00",
+    "protocol_sha256": "4e0f56b8b8b4ac4ea06575e51a21d3842e29009a49663fdb918f4f73374450e2",
+    "protocol_text_as_reread": "# Orientation-preserving sensory transfer diagnostic\n\n2026-10-10. Prospective ancillary engineering diagnostic; no participant data or\nconsciousness endpoint. The appearance-reference transfer review recommends\ntesting sensory information before importing human judgments into this apparatus.\nOriginal archives remain inaccessible. This uses an explicitly **synthetic\nillustration**, not reconstructed participant trials or verified native stimuli.\n\n## Fixed question\n\nCan frozen visual hidden features distinguish horizontal from vertical grating\ntexture under a documented grayscale conversion? Native color/shape outputs do\nnot supply the human orientation task. Hidden decoding may still be possible.\nEither result leaves the attention-origin appearance estimand untested. The\nController and Reporter are not run; no appearance/qualia labels enter fitting.\n\n## Synthetic inputs and unknowns\n\nUse the three existing frozen visual checkpoints 1301, 1311 and 1321. For each,\ngenerate 64 development and 64 evaluation base units using seeds\n`890000000 + visual_seed + 10000 * split`, split 0/1. Each unit has a paired\nhorizontal/vertical texture at six contrast conditions, common geometry, phase\nand sensor noise. Circle/square apertures alternate. Centers and radii vary within\nthe original renderer's approximate range. All variants of a base unit stay in\none split. Evaluation has 192 base units and 2,304 dependent images.\n\nThe [source article](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.00591/full)\nreports grayscale targets with six light/dark luminance pairs:\n38.2/38.2, 39.0/37.3, 39.5/36.5, 40.0/36.2, 40.2/36.0 and 41.1/35.8 cd/m\u00b2,\nagainst a 35.5 cd/m\u00b2 background. Use these numerical levels divided by 50 in all\nRGB channels. This division is an unvalidated illustration conversion, not monitor\ncalibration. Use four binary texture cycles across a 16-pixel field and Gaussian\nnoise SD 0.015. These frequency, resolution and noise choices are synthetic; the\nnative grating frequency, gamma calibration, trial-level aperture and rendering\nare unverified. The source's visual angle and temporal exposure are not modeled.\nThese limitations prohibit enrolling the result as same-stimulus human transfer.\n\n## Readout and gates\n\nExtract upstream visual hidden (64), logits (8), category probabilities (8),\ncategory max probabilities/entropies (4), and a physical directional-edge control\n(1). Hidden features and logits are extra instrumentation discarded by production\nbinding. Center each feature across the two orientations within unit and contrast.\nFit one fixed ridge classifier, lambda 0.01 with development RMS scaling, only on\nthe highest-contrast development pairs. Targets are generated orientation -1/+1.\nEvaluate every contrast on all evaluation units. Positive scores predict vertical;\nties predict horizontal. This is a paired transformation diagnostic, not isolated\nimage classification. No fitting, tuning or selection uses human ratings.\n\nReport per-source accuracy at every contrast and 95% percentile intervals from\n256 base-unit bootstrap draws, seed `900000000 + visual_seed`. These condition on\ncheckpoint/readout. The five lower contrasts are held out from fitting, and all\nevaluation base units are independently drawn with different seeds. Discrete\ntexture patterns and quantized aperture masks can repeat across splits; this is\nnot held-out texture-class or spatial-frequency generalization. Do not select\nsuccessful models. Paired centering has both counterfactual test orientations;\nsuccess does not establish isolated-image or human-task orientation ability.\n\nRequire exact image/feature equality across the zero-contrast orientation pair\nand exactly 50% accuracy there. Require the physical edge control and hidden\nprobe each to achieve at least 90% on the highest-contrast evaluation condition,\nin all three checkpoints, for **synthetic sensory feasibility**. Preserve failed\ngates. These engineering minima cannot qualify empirical stimulus equivalence,\nappearance correspondence or consciousness; full reference transfer remains false\nregardless of their outcome. Category/logit/confidence scores are descriptive.\n\nPin code/protocol/tests/checkpoint hashes before the single reserved attempt.\nRetain all base images, orientation features, coefficients, predictions, generated\nlabels, bootstrap indices and scores. Exact replay and zero-information controls\nmust pass. No retry, replacement, encoder retraining or report generation.\n\n## Consequences\n\nIf successful, this permits planning a synthetic orientation task without\npresuming that a missing output head implies missing information. It does not\nrepair unverified archive acquisition, photometric/temporal transfer, the absent\nhuman attention manipulation, or the ungrounded attention-history mapping. Those\nremain separate scientific requirements. A failure restricts this conversion and\nprobe, not all possible representations or the theory.\n\nThe broader goal remains credible source-of-qualia evidence through accurate\nattention-model reports with independently grounded consciousness-related\ncorrespondence. Orientation accuracy is an ancillary prerequisite, not that goal.\n",
+    "disposition": "Required holdout and paired-inference wording correction accepted; narrow diagnostic may be frozen",
+    "finding_preserved_in_original_review": true,
+    "model_outputs_seen": false,
+    "checkpoint_collection_performed": false
+  }
+}
