@@ -40,6 +40,16 @@ checks, all fitted bytes and numerical tolerances. It needs a separately named,
 reviewed reference and explicit phase-acceptance provenance; neither diagnosis
 authorizes an unseen program or makes the first failed report pass.
 
+The separate [reference-amendment contract](../audits/attention_content_model_v1/reference_amendment/design.md)
+now specifies the correction and exact provenance for later phase release.
+The original registered sources and all fitted artifacts remain unchanged.
+The corrected reference must reproduce the complete numeric and hash evidence
+of the original 27,616-check prefix, as well as complete the remaining checks.
+Nine bounded fixtures cover the coherent initial probe, later snapshot identity,
+full evidence equality and rejection of unapproved or incomplete phase evidence.
+Source preparation and fixture review do not establish a corrected fit pass;
+development and heldout remain sealed until that first full result is preserved.
+
 ## Fitting-world diagnostics, pending complete reconstruction
 
 The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
