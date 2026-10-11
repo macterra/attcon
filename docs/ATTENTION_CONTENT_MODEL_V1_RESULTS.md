@@ -3,7 +3,8 @@
 2026-10-11. The first fixed **fit phase completed** and its separately reviewed
 corrected reconstruction **passes all 143,599 checks**. The original failed
 reconstruction remains preserved. The first fixed development phase has completed;
-its independent reconstruction is next and heldout remains sealed. No Reporter
+its independent reconstruction passes all 134,367 checks. Semantic assessment
+is next and heldout remains sealed. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -138,7 +139,7 @@ development execution: 96 fresh worlds for each of the three frozen encoders,
 using the original fitted weights and normalizer without optimization or adaptation.
 The exact amended boundary validated the committed full corrected fit pass before
 creating its exclusive claim. All fixed execution inventories passed. The phase
-has not yet received its independent numerical or semantic assessment.
+has not yet received its separate semantic assessment.
 
 The [first read-only development ledger](../audits/attention_content_model_v1/dev_summary/first_summary_manifest.json)
 is preserved losslessly. It retains every encoder/source, original bootstrap
@@ -146,6 +147,33 @@ interval, time curve, support distance, field discrepancy, ambiguity and donor
 opportunity. Its single execution used no model forward pass, fitting or new
 worlds; the full raw ledger is bound by its published compressed transport.
 Descriptive summaries do not qualify semantics or replace numerical reconstruction.
+
+The [first complete development reconstruction](../audits/attention_content_model_v1/dev_reconstruction/first_report.json)
+passes **134,367 checks with zero errors and no exception**, at the exact reviewed
+corrected verifier identity. Its full raw JSON, command log and execution record
+are preserved directly for the heldout acceptance boundary. No new worlds,
+optimization, retry or Reporter were used by reconstruction.
+
+| Frozen encoder | Source | Current selected normalized MSE | Next selected normalized MSE | Actual targeting under selected policy |
+|---|---|---:|---:|---:|
+| 1301 | A | .20594 | .26874 | 43.1% |
+| 1301 | Ordinary | .21246 | .26890 | 44.1% |
+| 1301 | Analytic | .10347 | .08288 | 100% |
+| 1311 | A | .22350 | .29071 | 44.8% |
+| 1311 | Ordinary | .22459 | .29246 | 42.7% |
+| 1311 | Analytic | .11085 | .08808 | 98.6% |
+| 1321 | A | .21073 | .27366 | 39.9% |
+| 1321 | Ordinary | .20999 | .27246 | 43.8% |
+| 1321 | Analytic | .10257 | .08358 | 100% |
+
+These rows use all 96 fresh development worlds per encoder, current decisions
+1..14, next decisions 0..14 and all 288 final query opportunities. A and ordinary
+have similar retained errors; their normalized MSE rises and targeting decreases
+relative to fitting worlds. Analytic prospective error and targeting are better
+in this ledger. These comparisons bound predictive generalization and specificity;
+they do not establish task necessity, literal H(A) semantics or a qualia verdict.
+Complete role-indexed errors, field discrepancies, ambiguity and donor ledgers
+remain available for the separate assessment without a new performance cutoff.
 
 Next preserve its independent reconstruction and separate literal-content/manner
 assessment, then release fixed heldout only through those committed receipts.

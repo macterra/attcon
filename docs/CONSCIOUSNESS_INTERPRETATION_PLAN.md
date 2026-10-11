@@ -81,8 +81,10 @@ complete fitting-world diagnostics and inspectable current-state/donor fields.
 Its first independent reconstruction stopped at an inconsistent initial-input
 probe after 27,616 passing checks and remains preserved. A separately reviewed,
 explicitly versioned correction now passes all 143,599 checks on unchanged fitted
-bytes, including exact full evidence equality for that original prefix. Next run
-the fixed development split once; heldout awaits its reconstruction and assessment.
+bytes, including exact full evidence equality for that original prefix. The fixed
+development split now completes and passes all 134,367 reconstruction checks.
+Fresh-world prediction errors rise; source semantics remain a separate assessment.
+Heldout awaits that explicit assessment, with no refitting or adapted schedule.
 No new Reporter or consciousness-report correspondence result exists for this
 version; source-content, bookkeeping and manner assessments remain separate.
 

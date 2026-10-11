@@ -62,8 +62,9 @@ approved and its complete source closure reviewed before registration. Its
 [first fixed fit](ATTENTION_CONTENT_MODEL_V1_RESULTS.md) completes all six 300-update
 models. The separately reviewed corrected reconstruction passes all 143,599
 checks on unchanged fitted bytes and exactly reproduces the original 27,616-row
-prefix; the original failed run remains preserved. Next run the fixed development
-split once, reconstruct it and assess literal content/manner before heldout.
+prefix; the original failed run remains preserved. Fixed development now completes
+and passes all 134,367 reconstruction checks, with fresh-world errors retained.
+Next assess literal content/manner before the fixed heldout run.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
