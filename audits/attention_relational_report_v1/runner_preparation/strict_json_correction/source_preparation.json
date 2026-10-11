@@ -1,0 +1,16 @@
+{
+  "schema": "attention_relational_report_v1_runner_strict_json_preparation",
+  "date": "2026-10-11",
+  "source_sha256": {
+    "scripts/run_attention_relational_reports_v1.py": "e89291d567365c42ee36f35ae5904100ed6072221fb2a6b1164d11212dc97bb5",
+    "tests/test_attention_relational_runner_v1.py": "89c492bb4c7a1d9cf56fc5f1efdf0b10b7aec25c441f2d1bdebf8a260b39e7ee",
+    "tests/test_attention_relational_runner_binding_v1.py": "6f4f16b2de0108584d6dc7b2f08b98210383d9d5802e8010c633c818a9c8f740"
+  },
+  "finding": "json.loads accepted NaN/Infinity; parsed nonfinite values could defeat all raw-result envelope writes.",
+  "correction": "Reject nonfinite constants and duplicate keys while retaining original raw output/response with parse_error. Bind exact lineage_path to reviewed runtime inventory.",
+  "first_eight_runner_fixture_result_unchanged": true,
+  "updated_fixture_count": 9,
+  "updated_first_fixture_execution_permitted": true,
+  "actual_archives_or_api_used": false,
+  "actual_runtime_approved": false
+}

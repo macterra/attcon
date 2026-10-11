@@ -12,12 +12,12 @@ class ReviewBindingTests(unittest.TestCase):
     def test_changed_model_schema_or_opportunity_inventory_requires_new_review(self):
         manifest = {'settings': {'model': 'fixed-fixture', 'output_schema': None},
                     'requests_path': 'fixture.json', 'request_count': 1, 'request_ids': ['x'],
-                    'output_root': 'fixed-output'}
+                    'output_root': 'fixed-output', 'lineage_path': 'fixed-lineage.json'}
         review = {'reviewed_'+k: copy.deepcopy(v) for k, v in manifest.items()}
         validate_review_inventory(manifest, review)
         variants = []
         for key, value in [('requests_path', 'other.json'), ('request_count', 2), ('request_ids', ['y']),
-                           ('output_root', 'second-output')]:
+                           ('output_root', 'second-output'), ('lineage_path', 'other-lineage.json')]:
             changed = copy.deepcopy(manifest); changed[key] = value; variants.append(changed)
         for key, value in [('model', 'different-fixture'), ('output_schema', {'type': 'string'})]:
             changed = copy.deepcopy(manifest); changed['settings'][key] = value; variants.append(changed)

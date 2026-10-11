@@ -30,6 +30,19 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def strict_json_loads(raw):
+    def reject_constant(value):
+        raise ValueError('nonfinite JSON constant')
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('duplicate JSON key')
+            result[key] = value
+        return result
+    return json.loads(raw, parse_constant=reject_constant, object_pairs_hook=unique_object)
+
+
 def relative_path(value):
     path = Path(value)
     if path.is_absolute() or '..' in path.parts or not path.parts:
@@ -42,7 +55,8 @@ def git_bytes(commit, path):
 
 
 def validate_review_inventory(manifest, review):
-    for key in ('settings', 'requests_path', 'request_count', 'request_ids', 'output_root'):
+    for key in ('settings', 'requests_path', 'request_count', 'request_ids', 'output_root',
+                'lineage_path'):
         if review.get('reviewed_'+key) != manifest[key]:
             raise ValueError('runtime review does not bind exact '+key)
 
@@ -61,7 +75,7 @@ def validate(manifest_path, commit):
         raise ValueError('wrong manifest schema or stage')
     sources = manifest['source_sha256']
     own = str(Path(__file__).resolve().relative_to(Path.cwd().resolve()))
-    for required in (own, manifest['requests_path'], manifest['review_path']):
+    for required in (own, manifest['requests_path'], manifest['review_path'], manifest['lineage_path']):
         if required not in sources:
             raise ValueError('missing committed required source: '+required)
     for name, sha in sources.items():
@@ -145,7 +159,7 @@ async def execute(manifest, requests, manifest_sha256, commit, output_root, clie
                               api_response_status=response.status)
                 if settings['output_schema'] is not None:
                     try:
-                        result['parsed'] = json.loads(response.output_text)
+                        result['parsed'] = strict_json_loads(response.output_text)
                     except (ValueError, TypeError):
                         result['parse_error'] = True
             except Exception as exc:

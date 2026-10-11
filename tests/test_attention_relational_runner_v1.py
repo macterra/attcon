@@ -59,6 +59,18 @@ class FirstAttemptTests(unittest.TestCase):
             self.assertNotIn('previous_response_id', responses.calls[0])
             self.assertNotIn('conversation', responses.calls[0])
 
+    def test_nonfinite_and_duplicate_json_retain_raw_first_response_without_storage_failure(self):
+        for raw in ('{"value":NaN}', '{"value":Infinity}', '{"value":-Infinity}', '{"x":1,"x":2}'):
+            with self.subTest(raw=raw), tempfile.TemporaryDirectory() as tmp:
+                responses = FakeResponses(result=raw)
+                outcomes = self.run_batch(tmp, SimpleNamespace(responses=responses), schema={'type': 'object'})
+                saved = json.loads((Path(tmp)/'p001.json').read_text())
+                self.assertEqual(saved['output_text'], raw)
+                self.assertTrue(saved['parse_error'])
+                self.assertNotIn('parsed', saved)
+                self.assertEqual(outcomes[0]['status'], 'received')
+                self.assertEqual(len(responses.calls), 1)
+
     def test_failed_attempt_is_retained_without_retry_or_exception_text(self):
         with tempfile.TemporaryDirectory() as tmp:
             responses = FakeResponses(failure=RuntimeError('secret fixture string'))
