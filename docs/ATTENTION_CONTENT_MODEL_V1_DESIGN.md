@@ -3,8 +3,16 @@
 2026-10-11. Architecture/mechanism development proposal. This document authorizes
 no generation, checkpoint load, fitting, inference, Reporter call or reserved
 evaluation. Independent design and executable review, a committed registration,
-and explicit execution authorization remain required. No source semantics or
+and satisfaction of the native reconstruction dependency remain required. The
+user's broader authorization is retained; this clarification does not introduce
+a new user-approval step. No source semantics or
 presentation counterpart is claimed qualified here. No result is asserted.
+
+Amendment v1 resolves C1–C4 of the preserved
+[independent design review](../audits/attention_content_model_v1/design_review/review.md)
+before A implementation or outputs. The original design record and review remain
+preserved. Architecture, world envelope, optimizer budget and native gates are
+unchanged; no post-fit performance or manner threshold is added.
 
 This is the next implementable bridge in the
 [content-form development plan](ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md),
@@ -31,6 +39,10 @@ their frozen artifacts only after the native development's existing gates have
 actually passed and its retained outputs have been independently reconstructed.
 This proposal has not inspected those outputs. A failed native stage terminates
 this version; no fallback layer, replacement H or changed gate is permitted.
+The reported diagnosis of all 106 original reconstruction failures as source/
+reference-kernel arithmetic is an explanation, not corrected full revalidation.
+That full revalidation and independent reconstruction must complete before actual
+A execution. This amendment has not loaded checkpoints or numerical results.
 
 Native utility establishes task/content semantics. The potential manner claim
 concerns the within-item representation of the red/blue location relation;
@@ -169,13 +181,50 @@ human ratings or invented clarity bins. Report each term independently. The
 assembled full-state errors, H-derived fields and task outcomes are independent
 diagnostics, not replacement losses.
 
-The dev split permits one diagnostic inspection after the fixed fit and software
-checks. No adaptation is authorized by this version. A failure, additional fit or
-architectural change requires preserved first outputs, a new version, fresh split
-namespaces and independent review. Heldout sources stay sealed until the exact
-reviewed executable, checkpoint hashes, contract, manifests and failure policy
-are committed in registration. Do not inspect heldout outcomes to choose report
-queries, semantic subsets, donors, stopping rules or tolerances.
+The one exclusive execution has the following strict release sequence. A sealed
+split means no generation, feature extraction, map/target construction, source
+forward calls or output inspection from that split, even if its seeds are public.
+
+1. Before any generation or fit, commit the reviewed input registration. Bind
+   SHA-256 hashes of the exact frozen encoder and H weight files, H's native
+   normalizer and orientation-control inputs, extraction `net[:6]`, source/module
+   dependency closure, primitives, renderer, collector, runner, verifier, this
+   contract and permission schema. Specify which files are model inputs, evaluator
+   truth, audit-only metadata and allowed feedback. Record source shapes/dtypes,
+   native correction/reconstruction acceptance and all split namespaces. These
+   **input hashes** are existing frozen artifacts, not nonexistent fitted A.
+2. Release fit only. Generate its 96 worlds per encoder, fit its normalizer and
+   train A/ordinary exactly once for 300 updates each. Dev and heldout stay sealed.
+   Record first outputs and all update counts. Seal an immutable fit receipt
+   containing hashes of each fitted A/ordinary checkpoint, fit-only normalizer,
+   optimizer terminal state, training log, fit manifest and input registration;
+   include initialization seeds and evidence that no dev/heldout forward occurred.
+   Append/commit that receipt to the registration before releasing dev. These are
+   **fitted hashes**, distinct from the input hashes and never retrospectively
+   substituted for them.
+3. With fitted bytes immutable, release dev for its single fixed diagnostic pass
+   and inspection. No optimization or recurrent-history transfer from dev to
+   another world/split is allowed. Run the predeclared literal-content diagnostics
+   below and source/observation invariants; preserve failures and the independent
+   assessment without selecting a checkpoint, query, donor or threshold. Seal
+   an immutable dev receipt linking the same fitted/input hashes, dev outputs,
+   reconstruction checks and semantic disposition. Append/commit it before
+   heldout release. Low predictive or semantic utility does not authorize refitting.
+4. Release heldout only after the registered input and fitted receipts exist and
+   the software/observation checks pass. Use those exact fitted bytes for one
+   heldout pass; no further fit, new initialization or dev-selected analysis.
+   Archive a heldout receipt and independent reconstruction. If manner is absent
+   but technical bookkeeping is valid, retain the predetermined technical run
+   and its negative semantic endpoint. Reporting remains separately gated.
+
+These receipts implement a predeclared sealing procedure within one authorized
+execution, not new performance-dependent permission loops. A hard software/input
+failure stops the run with its first outputs retained; correction requires a new
+reviewed version. Any additional fit or architectural change requires preserved
+first outputs, fresh split namespaces and independent review. Do not inspect
+heldout outcomes to choose report queries, semantic subsets, donors, stopping
+rules or tolerances. All heldout calls must be reconstructable from permission
+manifests, including exact per-call histories rather than inferred nonleakage.
 
 ## Native Controller use and fair alternatives
 
@@ -215,6 +264,12 @@ failure. Before a reveal, predict each map by the posterior mean of the respecti
 T(V). Assemble current/next states with the same visibility contract as A, and
 apply H to that predicted mean for the primary policy comparison. Record posterior
 entropy and predictions integrating H over mappings as secondary alternatives.
+At every decision record revealed-symbol count and posterior survivor count/
+entropy per address. When T(V) outputs are distinct, two revealed symbols can
+identify the permutation; the final policy queries can therefore be fully
+calibrated. Do not call those choices online resolution of an unknown mapping.
+Publish early versus calibrated errors descriptively, retaining ambiguous cases
+and the complete primary denominators.
 This mapping estimator is not an oracle and does not receive bandwidth truth.
 It has analytic numerical knowledge rather than matched trainable capacity;
 publish that difference. An evaluator-known-mapping ceiling, if implemented,
@@ -248,19 +303,41 @@ and a prospective-control patch at the queried address. Run both even when their
 addresses coincide; retain their duplicate status. The donor for each is fixed
 before execution. Keep that world's V and all other address mappings unchanged;
 replace the selected address's mapping by the next
-lexicographic permutation modulo six. Replay the same fixed common command
-prefix using the donor executor and delayed feedback. The resulting h[address]
+lexicographic permutation modulo six. At decision t∈{12,13,14}, execute donor
+common commands with indices 0..t−1 to construct donor Wₜ, but recurrently update
+only from donor completions W₁..Wₜ₋₁, paired with command indices 0..t−2. Thus a
+prefix has t executor transitions and t−1 permitted feedback updates. Donor Wₜ
+and all donor forks remain concealed from the pre-reveal h and prediction call.
+Save the exact update list (command index, address, symbol, completion timestamp,
+map hash) and per-call pre/post-reveal visibility masks. A's and ordinary's donor
+states use their own immutable fitted weights and the same donor observations;
+the analytic source replays posterior updates from those same permitted reveals.
+The resulting h[address]
 is an actually reached state, not an invented vector or arbitrary output override.
-Patch only that h into the recipient before its current/next decoding, retaining
+Patch only that h (or the analytic source's addressed posterior) into the
+recipient before its current/next decoding, retaining
 recipient V, actual W, last revealed snapshot, commands, time and native H.
 Do not refresh recipient feedback in response to the patch. Because recurrence
-is per-address, other h and decoder contents are unchanged; verify this exactly.
+is per-address, other h and address-local decoder contents are unchanged; verify
+this exactly. A current patch can change that addressed estimate inherited by a
+full A_next assembled for another queried address. This is intended inheritance,
+not leakage; compare nonpatched address-local decoder outputs, then separately
+verify the declared current/next assembly dependency. Do not incorrectly require
+the inherited patched address in A_next to stay fixed.
 Archive the complete donor-prefix provenance, donor/recipient times and mappings
 in evaluator-only records, plus both decoded states and actual fields.
 
+For each source and patch, save its recipient pre-reveal state and unpatched
+estimates/policy outputs first. Restore the original recipient h (or analytic
+posterior) before any feedback update, decode and select again, and require exact
+equality to those baseline states, estimates and policy outputs. Retain the saved
+last-revealed snapshot, commands, time and normalization throughout. A restoration
+pair is this source patch→restoration comparison; it is not the separate actual-W
+saved-restoration control and does not replay a new recipient observation.
+
 The donor state is reachable under a different recorded history; it is not
 claimed normally reachable from the recipient's unchanged observation history.
-Its substitution is a selective internal intervention. Every predetermined donor
+Its substitution is a selective synthetic internal intervention. Every predetermined donor
 counts even if h/maps/actions are equal, wrong, or uninformative. Donor h alone
 does not guarantee a valid completed whole-world state; decoding retains the
 recipient's explicit assembly contract. Report current/next addressed content
@@ -273,20 +350,56 @@ retained with explicitly synthetic provenance, outside this reachable ledger.
 
 ## Named denominators and endpoints
 
-For the heldout split the all-encoder denominator is 288 complete worlds (96 per
-encoder), 1,152 items and 4,320 common transitions. The primary ledgers are:
+For each split the all-encoder denominator is 288 complete worlds (96 per encoder)
+and 1,152 items. The table below gives heldout counts; fit/dev have the same fixed
+opportunity schedule. A and the ordinary source fit on fit only; analytic outputs
+have no trainable fit. Use explicit source index s∈{A, ordinary, analytic}; the
+analytic source means its posterior-mean-map primary prediction. A ledger marked
+per-source repeats for each s, sharing the same worlds and actual targets. The
+three sources never multiply the independent sampling denominator. The primary
+ledgers are:
 
-| Ledger | Per world | Heldout all encoders |
-|---|---:|---:|
-| Learned-current selected-map estimates, t=1..14 | 14 | 4,032 |
-| Prospective selected-map alternatives, 15 decisions × 3 symbols | 45 | 12,960 |
-| Full addressed prospective item records, including inherited estimates | 180 | 51,840 |
-| Queried actual operator/role actions, 3 decisions × 3 symbols | 9 | 2,592 |
-| Prediction-selected executed policy branch, separate duplicate ledger | 3 | 864 |
-| Reachable current-estimate donor patches/restoration pairs | 3 | 864 |
-| Reachable prospective-control donor patches/restoration pairs | 3 | 864 |
-| Sham, driver-parity or saved-restoration branches, each | 3 | 864 |
-| Consistent address-remapping snapshots | 3 | 864 |
+| Ledger | Scope | Per world | Heldout all encoders |
+|---|---|---:|---:|
+| Common-spine actual transitions | Shared actual history | 15 | 4,320 |
+| Actual prospective alternative targets | Shared forks | 45 | 12,960 |
+| Current selected-map estimates, t=1..14 | Per source | 14 | 4,032 |
+| Prospective selected-map estimates | Per source | 45 | 12,960 |
+| Full prospective item records, including inherited estimates | Per source | 180 | 51,840 |
+| Queried actual operator/role actions | Shared subset of actual forks | 9 | 2,592 |
+| Prediction-selected executed policy branches | Per source, duplicate actual fork | 3 | 864 |
+| Reachable current donor patch/restoration pairs | Per source | 3 | 864 |
+| Reachable prospective donor patch/restoration pairs | Per source | 3 | 864 |
+| Actual-W sham, driver-parity or saved-restoration snapshots, each | Shared actual controls | 3 | 864 |
+| Address-remapping source comparisons | Per source | 3 | 864 |
+| Address-remapping actual snapshots | Shared actual control | 3 | 864 |
+
+Across three primary sources these produce 12,096 current selected-map records,
+38,880 next selected-map records, 155,520 full-next item records, 2,592
+prediction-selected policy branch records, and 5,184 donor patch/restoration
+pairs. Each donor schedule contributes 2,592 of the last total. Restored outputs
+are paired duplicate baseline records, not additional source opportunities.
+Confidence-only policies are derived from each primary source's three maxima:
+864 duplicate choice/action records per source, with no extra execution or
+independent evidence. The same-weight alias is an exact duplicate of A's ledgers,
+not a fourth independently fitted source. Analytic expectations of H over mapping
+hypotheses are derived secondary records with the same 12,960 alternatives and
+864 query decisions, not another actual/world denominator.
+
+Do not deduplicate the two donor schedules, including coincident addresses. Each
+world entails 2×(12+13+14)=78 donor executor transitions and
+2×(11+12+13)=72 permitted donor feedback updates. Across heldout these are
+**22,464 shared donor-prefix transitions** and **20,736 feedback events**.
+Execute those donor prefixes once, share their actual observations across the
+three sources, and replay 20,736 recurrent/posterior updates per source (62,208
+source update operations total). These workload/provenance counts are not the
+1,728 donor pairs per source or added independent worlds. Serialize the common
+and donor prefixes once with references from per-source outputs. The common
+spine's 4,320 transitions and shared 12,960 actual alternatives remain separately
+labelled, including their matching-command duplicates. Prediction-selected
+baseline branches execute again and retain their duplicate fork references.
+Donor policy outputs instead select/reference an already executed shared query
+fork, so their 1,728 records per source add no actual executor transitions.
 
 Publish analogous fit/dev ledgers, all failures, retained ambiguous mappings,
 uninformative transitions and all opportunities with unchanged fields or ties.
@@ -313,9 +426,57 @@ the run pending a preserved new-version repair. No new performance threshold
 qualifies manner or consciousness. Loss improvements and task changes are bounded
 mechanism measurements, including null/negative outcomes.
 
+## Independent literal-content and export qualification
+
+H was validated on actual native maps, not arbitrary decoder outputs. H(A), H(W)
+and evaluator stimulus truth are three separately attributed quantities; an
+analytic posterior-mean map can also be outside the executed T-state family.
+Before any future reporting-source gate, an independent evaluator examines the
+fixed dev split's 4,032 current and 12,960 next selected-map records per source,
+without fitting H/readouts again, changing A, selecting report queries or using
+heldout outcomes. This is the declared independent-world diagnostic split, not
+independent model-family replication. Preserve its entire ledger, including all
+wrong/ambiguous estimates and uniform/tied fields.
+
+Freeze these diagnostics now: normalized map MSE; full role-indexed H(A)/H(W)
+fields and their L1 discrepancy; red/blue cell and coarse-order disagreement;
+separate agreement of H(A) and H(W) with evaluator truth; entropy/max/margin and
+expected columns; W-derived category/orientation/access alternatives; the existing
+consistent address crossing and source-local content dependence checks; and each
+predicted selected map's distance to every actual T1/T2/T4(V) alternative using
+the same normalized 384-element mean-square metric. Report nearest-family distance
+continuously with the three distances, not as a newly chosen support cutoff.
+Analytic posterior means retain their hypothesis/weight provenance, even when
+they do not equal any executed map. Map distance or low loss alone cannot qualify
+literal constituent meaning or manner.
+
+The independent literal-content assessment asks whether the frozen coordinates
+and H(A) fields retain a defensible addressed red/blue location interpretation
+under those errors and crossings, rather than merely producing arbitrary logits
+read by a head trained on another distribution. Erroneous but identifiable model
+contents may qualify as estimates; they are not replaced by H(W) or renderer truth.
+No new numeric threshold is introduced. Preserve a documented qualified, limited,
+unresolved or failed disposition for each source/quantity, with its evidence and
+permitted wording. Insufficient evidence leaves literal content unqualified; it
+does not license post-fit training or a favorable subset. The subsequent heldout
+technical run remains fixed and can test that disposition without retuning it.
+
+Two export gates remain distinct from the manner gate: (1) literal-source-content
+qualification from these independent diagnostics, and (2) exact bookkeeping/
+fidelity of maps, fields, source identity, addresses and current/future timestamps
+to the saved forward calls. A technical export can truthfully expose an
+unqualified tensor or erroneous estimate with that status explicit. It cannot
+promote H(A) to qualified constituent content by accurate wording alone. The
+separate presentation-manner assessment still must distinguish form from extra
+content, confidence and access. Passing either export gate does not pass manner;
+passing native H(W) utility does not pass the H(A) literal-content gate. Until the
+required source-content, bookkeeping and manner dependencies qualify, retain the
+technical-only endpoint and do not release phenomenal-correspondence claims.
+
 ## Subsequent neutral reporting, only under a new registration
 
-If source semantics and this source's bookkeeping qualify, separately register a
+If estimated literal source content, bookkeeping and presentation manner qualify
+under the separate gates above, separately register a
 reporting version and an output-independent world/query schedule. It must export
 native A_current maps/fields as estimates and A_next as forecasts with explicit
 timestamps, not silently turn estimates into actual internal events. Matched
@@ -373,8 +534,11 @@ parameter/loss arithmetic, equal-information comparators, Controller use, source
 qualification dependency and reporting parity. Then implement and review the
 trained module, collector, runner and reconstruction verifier against this exact
 contract. Tiny toy fixtures can check software without loading development
-artifacts. Freeze hashes, seeds, denominators, optimizer, controls and failure
-policy in a committed registration before the one new development run.
+artifacts. Freeze input hashes, seeds, source-indexed denominators, optimizer,
+controls, split release/receipt procedure and failure policy in a committed
+registration before the one new development run; append fitted/dev hashes only
+at their predeclared immutable phase boundaries. Corrected full native numerical
+revalidation and independent reconstruction remain necessary execution inputs.
 
 Archive actual V/W, permitted observation histories, evaluator targets/mappings,
 fitted weights/normalizers, source estimates, native fields/actions, all alternatives,
