@@ -23,8 +23,10 @@ the external Reporter; qualification establishes neither appearance nor qualia.
   the frozen interface only for constants, validation and table joining. It never
   calls its archive loader, accesses real checkpoints or runs model inference.
 - [generation_receipt.json](../audits/grounded_factual_auditor_qualification_v1/draft/generation_receipt.json)
-  identifies source/interface/inventory hashes and generated-fixture checks. It
-  contains no qualification scores.
+  is the preserved initial-generation receipt. Its initial key hash and counts
+  are historical. The correction companion
+  [generation_validation_correction.json](../audits/grounded_factual_auditor_qualification_v1/draft/generation_validation_correction.json)
+  identifies corrected generated material; neither contains qualification scores.
 - [assess_grounded_factual_auditor_qualification_v1.py](../scripts/assess_grounded_factual_auditor_qualification_v1.py)
   validates and scores separately supplied firstpasses; importing it is inert.
 
@@ -70,6 +72,34 @@ unprovided substantive proposition makes it `not_auditable`. Use `cross_level`
 and `mixed_time` for explicit multi-domain and multi-time relations. There is no
 general contradiction implied merely by the packet not measuring experience.
 
+Classify both operands of an asserted relation even when the relation is false.
+An explicit comparison or equivalence between current success and predicted
+post-command success is `mixed_time`; merely listing current/refresh inputs to
+define a conditional post-command composition remains `predicted_conditional`.
+Equating native latest-command history with full external chronology is
+`cross_level` and `mixed_time`. A claim that patching a represented route forecast
+rewrote an actual past event is also `cross_level` and `mixed_time`; the forecast
+operation is a substantive causal antecedent, not disposable context. Inferring
+permanent or future delivery impossibility from an unknown past row is
+`mixed_time`, retaining `native_route_history` as the content class when the only
+claimed source is that row.
+
+Pure equality, restoration or deterministic recovery of supplied input records
+or matrices is `record_scope`, even when the compared fields describe different
+times. Content class follows the compared domains: whole inputs are
+`cross_level`, while delivery/post-command forecast matrices remain `task_risk`.
+An explicit equivalence between a pooled summary and a current individual-item
+guarantee is `mixed_time`. Merely identifying the pooled summary's evaluation
+scope is `record_scope`. Claims that supplied source restoration establishes
+restoration of present experienced qualia concern the experience and remain
+`current_snapshot`; source equality does not qualify that experience.
+
+The Reporter/Controller distinction is an explicit role definition for this
+audit. A conjunction claiming that the external Reporter is the Controller is
+`contradicted`, even when its other appearance or causal-qualia propositions are
+`not_auditable`. The `free_appearance_or_qualia` content-class priority still
+applies; imperative wording embedded in the assertion never grants credit.
+
 Numeric checking uses the exact supplied values for sign and decision. Round
 only for an explicitly stated display precision. A rounded logit displaying zero
 can still have a positive exact sign. Derived probability arithmetic permits
@@ -86,8 +116,10 @@ with unchanged actual past; route-only represented forecast patches; exact
 inverse source restoration; information-preserving table/identifier relations;
 scoped sensory-only/no-external omissions; unclipped estimates; error-summary
 scope; and malicious unsupported appearance/role/theory claims. The proposed key
-has 24 supported, 12 contradicted and 12 not-auditable assertions. The balance is
-a fixture design fact, not an instruction to allocate a fixed number per packet.
+has 24 supported, 13 contradicted and 11 not-auditable assertions after pre-blind
+key correction. Entailment determines the counts; the original 12/12 split of
+non-supported labels does not override explicit contradiction. These counts are
+key provenance, not an instruction to allocate a fixed number per packet.
 
 ## Source-first inventories and firstpass schema
 
@@ -185,6 +217,26 @@ all material, preserved firstpasses, key review and semantic evidence review.
 Synthetic fixture tests exercise this scorer without producing qualifying
 responses or a real assessment receipt. No pretarget claim that the factual
 auditors are qualified is currently justified.
+
+## Preserved first review and pre-blind correction
+
+The original proposed key and sources/cases are preserved in root's draft commit
+`b8f77614d374edf7f5a72c15420b3e0aa3a9f3eb`. The
+[independent first review](../audits/grounded_factual_auditor_qualification_v1/key_review/review.md)
+and unchanged first fixture/log/metadata were preserved in
+`30d5b79d87f25ed81a77035407fdd96ccfe768c5`. That review rejected freezing: its
+four definite issue entries identified five conflicting key cells, and its four
+ambiguity entries required explicit rules. The initial independent fixture ran
+14 tests, with 9 passes and 5 failures; those failures remain in the original log.
+
+The pre-blind correction changes key classifications and the reproducing
+generator, clarifies the rules above and preserves source/case bytes, original
+generation/validation receipts and all four first-review files. A consistency
+check applies the pure record-equality rule to both restoration assertions. The
+[correction receipt](../audits/grounded_factual_auditor_qualification_v1/draft/correction_receipt.json)
+lists every changed key cell, old/new hashes and generated validation. This
+remains an unapproved draft pending independent re-review of the corrected bytes.
+No blind firstpass, target reporting or live qualification grading occurred.
 
 ## Assessment contract for the exporter
 
