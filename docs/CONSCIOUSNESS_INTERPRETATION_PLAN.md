@@ -177,9 +177,10 @@ The [factual-auditor challenge](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
 has an independently reviewed key and two fresh first passes preserved before
 comparison or grading. Its [registered assessment fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
 both score 48/48 supportedness and 12/12 inventories, and evidence review passes,
-but three label differences fail the all-label gate. Preserve v1 and diagnose rule
-clarity independently before a prospective revised qualification. No v1 prose is
-released. Full reporting still requires reviewed methods, registration, a frozen
+but three label differences fail the all-label gate. Independent diagnosis finds
+reasonable ambiguity in the two disputed rules. Preserve v1 and implement the
+[prospective v2 clarification plan](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md)
+with fresh responses and unchanged exact requirements. No v1 prose is released. Full reporting still requires reviewed methods, registration, a frozen
 Reporter configuration and a release verifier. Humans are optional.
 
 Strict source-faithful presentation remains `not_established` until an independent

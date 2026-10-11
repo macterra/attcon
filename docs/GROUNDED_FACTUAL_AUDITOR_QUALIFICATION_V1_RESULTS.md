@@ -52,8 +52,12 @@ raters, but this and shared AI training limit independence.
 
 The assessment and its execution receipt were saved at milestone `3f66079`.
 No feedback, replacement answer, resubmission, changed denominator or retrospective
-gate relaxation changes the failed v1 verdict. An independent failure diagnosis
-will assess rule clarity before any prospective revised qualification.
+gate relaxation changes the failed v1 verdict. A separately committed
+[independent diagnosis](../audits/grounded_factual_auditor_qualification_v1/failure_diagnosis/review.md)
+finds reasonable ambiguity in both disputed rules, while source-truth reasoning
+remains sound. It does not replace the key or qualify either auditor. The
+[prospective v2 plan](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md) specifies
+clearer case wording and fresh responses under unchanged exact requirements.
 
 ## What this establishes
 

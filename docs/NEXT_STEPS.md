@@ -25,8 +25,9 @@ Reporter calls, model inference or decoder fits occurred.
 The [factual-auditor challenge](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
 now has [retained failed results](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md).
 Both auditors get 48/48 supportedness and 12/12 inventories, but three label
-differences fail the all-label gate. Independently diagnose rule clarity before a
-prospective revised qualification with fresh responses. No v1 prose is released.
+differences fail the all-label gate. Independent diagnosis finds reasonable rule
+ambiguity; implement the [v2 clarification plan](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md)
+with fresh responses and unchanged exact requirements. No v1 prose is released.
 Qualification remains separate from reporting authorization: review and freeze
 reporting methods, configuration, adapter and release verifier before any later
 reporting run. Keep all registered opportunities and attempt rules.

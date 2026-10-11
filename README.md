@@ -280,9 +280,10 @@ The [factual-auditor challenge](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.m
 has an independently reviewed key and two fresh first passes committed before
 grading. [Qualification fails](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
 both auditors score 48/48 supportedness and 12/12 inventories, but three retained
-label differences fail the all-label gate. No v1 prose is released. Independently
-diagnose those rules before a prospective revised qualification; full reporting
-registration remains separate. Auxiliary reporting cannot complete the theory goal.
+label differences fail the all-label gate. No v1 prose is released. Independent
+review finds rule ambiguity; the [v2 plan](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md)
+clarifies wording before fresh qualification. Full reporting registration remains
+separate. Auxiliary reporting cannot complete the theory goal.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its
