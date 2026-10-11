@@ -70,6 +70,22 @@ recorded errors; the analytic alternative has lower prospective error and higher
 targeting accuracy. No performance necessity or unique qualia interpretation is
 inferred from these comparisons.
 
+## Inspectable source-state example
+
+This [standalone fixed-sample figure](../audits/attention_content_model_v1/fit_visualization/fixed_sample.pdf)
+shows fitting world0 at decision12 for every encoder and both role fields.
+The columns keep baseline A_current, actual H(W12), and donor-patched A_current
+distinct. The donor changes the addressed recurrent state while actual W stays
+fixed. The example index was fixed before inspecting its values, and both small
+and large changes remain visible. It illustrates archived numerical source
+contents; it is not a report, semantic qualification or fresh-world result.
+The [full-precision sample](../audits/attention_content_model_v1/fit_visualization/fixed_sample.json)
+and [manifest](../audits/attention_content_model_v1/fit_visualization/manifest.json)
+bind it to the original fit archives. The first rendering passed, and visual
+inspection found all eighteen labelled panels legible.
+
+![Fixed fitting-state role fields: baseline model estimate, actual internal state, and donor-patched estimate](../audits/attention_content_model_v1/fit_visualization/fixed_sample.png)
+
 After a valid preserved reconstruction, use the immutable fitted bytes for the one development pass,
 preserve its independent reconstruction and separate literal-content/manner
 assessment, and release fixed heldout only through those committed receipts.

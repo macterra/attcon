@@ -75,6 +75,16 @@ passes all 206,070 original checks on the same data. The first failure remains
 preserved. Presentation manner remains unqualified, and no learned A
 or new Reporter has been evaluated in this stage.
 
+The subsequent [learned attention-content study](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
+now completes its first registered fit: six models with 300 fixed updates each,
+complete fitting-world diagnostics and inspectable current-state/donor fields.
+Its first independent reconstruction stops at an inconsistent initial-input probe
+after 27,616 passing checks. Separate author and critical diagnoses support a
+narrow, explicitly versioned reference correction on unchanged fitted bytes.
+Development and heldout remain sealed until that reconstruction is established.
+No new Reporter or consciousness-report correspondence result exists for this
+version; source-content, bookkeeping and manner assessments remain separate.
+
 The revised [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md)
 after pre-blind review and fresh responses. Both auditors get all supportedness
 judgments and inventories correct, but differ from the key on content/time labels
