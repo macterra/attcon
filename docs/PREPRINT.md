@@ -49,7 +49,14 @@ verification agrees on utility and summaries but retains 106 failed comparisons.
 A separately reviewed correction to reference arithmetic passes all 206,070
 original checks on the same archived data, preserving the first failure.
 This establishes task/content semantics, with no executed learned attention model or new
-reports in that stage. The broader theory-facing interpretation remains unresolved.
+reports in that stage. A subsequent registered learned attention-content model
+completes six fixed 300-update fits and evaluation on 288 fresh development worlds.
+Separately reviewed fit/development reconstruction passes 143,599/134,367 checks,
+preserving the original failed fit reference. Fresh-world A targeting is
+39.9–44.8%, compared with 98.6–100% for the analytic source; prediction errors
+increase relative to fitting worlds. Semantic assessment and consciousness-report
+correspondence remain separate and unfinished. The broader theory-facing
+interpretation remains unresolved.
 
 ## 1. Question
 
@@ -725,6 +732,41 @@ tolerances and no new data or fitting. The first failed outcome remains unchange
 Native task/content support cannot qualify presentation manner.
 This stage contains no learned A or external Reporter, so selective attention-model
 source and consciousness-like reporting remain to be tested.
+
+The subsequent [learned attention-content v1 study](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
+implements addressed recurrent estimates of current completed contents and
+command-conditioned future contents. A frozen native head H reads those estimated
+maps; Controller symbol selection uses H(A_next), while actual targeting reads
+H(W). A, an equally informed ordinary recurrent predictor, and a uniform-posterior
+analytic alternative receive the same permitted observations. Current estimates,
+forecasts, completed actual state and evaluator truth remain separately attributed.
+Predetermined donor-state patches test changes in estimated fields at fixed actual
+W, with complete null outcomes and exact restoration retained.
+
+The fixed fit uses three frozen encoders, 96 worlds per encoder, two 197,328-parameter
+learned models per encoder and exactly 300 updates per model. All 1,800 update
+records and final checkpoints are preserved. The first fit reconstruction retains
+27,616 passing checks followed by a verification exception: its locality probe
+changes V at t0 without maintaining the required initially observed W0=V.
+A separate exact source/acceptance amendment repairs only that invalid probe;
+the original model, registration, fitted artifacts and failed reference stay
+unchanged. Nine corrected bounded fixtures pass after preservation of a first
+fixture-mock failure. The corrected fit reconstruction passes all 143,599 checks
+and reproduces every field of the original 27,616 evidence rows exactly.
+It reconstructs retained outputs, not the full optimizer trajectory.
+
+The first development phase uses 288 fresh worlds, the same fitted weights and
+normalizer, no adaptation and no Reporter. Its complete numerical reconstruction
+passes 134,367 checks. A's selected current normalized MSE is .20594–.22350,
+next MSE .26874–.29071 and targeting accuracy 39.9–44.8%, compared with fitting
+MSE .07989–.08565/.19750–.20539 and targeting 58.0–59.7%. Ordinary prediction is
+similar; analytic next MSE is .08288–.08808 and targeting 98.6–100%. These are
+complete per-encoder descriptors, not selected examples or pooled significance.
+The full field, support-distance, ambiguity, intervention and interval ledgers
+remain available for the predeclared independent semantic assessment. Predictive
+generalization, literal estimated-content semantics, presentation manner and later
+neutral report correspondence are distinct. Heldout remains sealed pending the
+explicit development assessment; no new consciousness-report result is claimed.
 
 ### 6.1 Authorized AI review route
 
