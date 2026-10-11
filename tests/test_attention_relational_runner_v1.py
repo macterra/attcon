@@ -81,6 +81,20 @@ class FirstAttemptTests(unittest.TestCase):
             self.assertEqual(len(responses.calls), 1)
             self.assertTrue((Path(tmp)/'first_completion.json').exists())
 
+    def test_overflow_exponents_retain_raw_response_and_finite_numbers_still_parse(self):
+        for raw in ('{"value":1e309}', '{"value":-1e309}'):
+            with self.subTest(raw=raw), tempfile.TemporaryDirectory() as tmp:
+                responses = FakeResponses(result=raw)
+                outcomes = self.run_batch(tmp, SimpleNamespace(responses=responses), schema={'type': 'object'})
+                saved = json.loads((Path(tmp)/'p001.json').read_text())
+                self.assertEqual(saved['output_text'], raw)
+                self.assertEqual(saved['response']['raw'], raw)
+                self.assertTrue(saved['parse_error'])
+                self.assertNotIn('parsed', saved)
+                self.assertEqual(outcomes[0]['status'], 'received')
+                self.assertEqual(len(responses.calls), 1)
+        self.assertEqual(runner.strict_json_loads('{"value":1e308}'), {'value': 1e308})
+
     def test_existing_first_batch_rejects_before_any_api_call(self):
         with tempfile.TemporaryDirectory() as tmp:
             responses = FakeResponses(result='first')

@@ -9,6 +9,7 @@ import asyncio
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import subprocess
@@ -31,6 +32,11 @@ def now():
 
 
 def strict_json_loads(raw):
+    def finite_float(value):
+        number = float(value)
+        if not math.isfinite(number):
+            raise ValueError('nonfinite JSON numeric exponent')
+        return number
     def reject_constant(value):
         raise ValueError('nonfinite JSON constant')
     def unique_object(pairs):
@@ -40,7 +46,8 @@ def strict_json_loads(raw):
                 raise ValueError('duplicate JSON key')
             result[key] = value
         return result
-    return json.loads(raw, parse_constant=reject_constant, object_pairs_hook=unique_object)
+    return json.loads(raw, parse_constant=reject_constant, parse_float=finite_float,
+                      object_pairs_hook=unique_object)
 
 
 def relative_path(value):
