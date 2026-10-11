@@ -4,12 +4,17 @@ The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
 Three new separate-context reviews remove the blanket raw-trial prerequisite for
 qualitative work. Participant rows/stimuli remain required for numerical/native-task
-claims. Next run the [frozen grounded-state physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md),
-then qualify neutral source reporting and blind content/presentation/decision
-annotation with selective source controls. Physical decoding is not appearance;
-broad access structure alone cannot complete the qualia-source goal. This update
-supersedes earlier blanket prospective archive gates. No new target prose or
-consciousness-related result is claimed.
+claims. The [fresh grounded-state physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md)
+is complete: attention-risk hidden retains image-property information, sensory
+features perform better, exact replay passes and independent numerical differences
+are resolved. Neither physical decoder is a qualified appearance counterpart.
+[Annotation v1 fails](QUALITATIVE_REPORT_ANNOTATION_V1_RESULTS.md); the clarified
+[v2 qualification passes](QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md) at22/24 and23/24,
+with all disagreements preserved. Next qualify and freeze the neutral factual
+reporting interface and selective source controls. Strict presentation-counterpart
+qualification gates strict appearance claims, not all auxiliary factual reporting.
+Broad access structure alone cannot complete the qualia-source goal. No new target
+prose or consciousness-related confirmation is claimed.
 
 2026-10-10. This audits the full [interpretation plan](CONSCIOUSNESS_INTERPRETATION_PLAN.md)
 against current artifacts. The objective remains **credible evidence for the theory
@@ -102,6 +107,8 @@ correspondence and the qualia-source interpretation remain unqualified.
 | Ancillary orientation information under a synthetic sensory conversion | Orientation-transfer protocol, three frozen checkpoints, raw tensors and exact replay | Paired hidden readouts achieve 100% at highest contrast and 50% at zero. Counterfactual partners are used; texture/mask classes can repeat. No isolated-image or native-stimulus task ability, human appearance judgments or attention-source effect is established. | Ancillary gate passes; full reference transfer incomplete |
 | Isolated sensory decisions and synthetic correctness instrument | Isolated-task protocol, held-out inputs/fits, exact companion replay and results | Overall engineering FAIL: 89.84%, 94.73%, 93.95% highest-contrast hidden accuracy; .90 required per model. Pooled ECE/Brier passes conceal high contrast-specific ECE. No fit promoted as acquisition/appearance model; original verifier traversal failure retained. | Failed prerequisite preserved; task development remains |
 | All-condition task adapter and fresh direct-outcome bridge | Frozen sensory failure; boundary/design reviews; grounded outcome protocol/results/raw archives/replay/independent audit | Old calibration FAIL retained. Fresh bridge excludes those probabilities and passes 56/56 declared functional gates in each model. Seen zero-contrast overprediction remains. Controller gains/corruption effects primarily test routing; history-only parity and constant unseen-query risk inputs do not identify appearance integration. No Reporter run. | Bounded functional bridge complete; appearance/source interpretation incomplete |
+| Fresh grounded-state objective information | [Physical-information results](GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md), frozen sources,75 archives, exact replay and independent numerical review | Risk hidden retains objective image statistics beyond a fixed forecast projection; sensory features are stronger. All contrast exceptions and audit corrections remain. No represented-appearance counterpart is qualified. | Objective-information component complete; strict interpretation absent |
+| Qualitative annotation interface | [V2 results](QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md), frozen key/protocol and two fresh first passes | R1=22/24,R2=23/24 complete-case qualification. All seven guard fields independently checked; one scorer omission retained. V1=11/24 FAIL remains. Reused synthetic key is not human validity. | Bounded rule application qualified; new reports/source fidelity still pending |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
 | 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |

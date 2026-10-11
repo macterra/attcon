@@ -259,10 +259,15 @@ fixed history. It tests objective pixels, not appearance judgments. Archived
 clarity/confidence data candidates still need file-level qualification and valid
 stimulus conversion before numerical psychophysical/native-task claims. The
 [revised qualitative reporting route](docs/QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
-uses published report examples without that blanket dependency. Its next
-[frozen-source diagnostic](docs/GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md) tests
-objective information retention, not appearance. Human review is optional; the
-research goal remains unachieved.
+uses published report examples without that blanket dependency. The
+[fresh grounded-state diagnostic](docs/GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md)
+finds decodable image properties in attention-risk hidden, with sensory features
+stronger; exact replay and independent arithmetic agree. This is objective information
+retention, not qualified appearance. [Annotation v1 fails](docs/QUALITATIVE_REPORT_ANNOTATION_V1_RESULTS.md);
+[clarified v2 passes](docs/QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md) at22/24 and23/24.
+Next qualify neutral factual reporting; strict appearance claims still require a
+qualified source counterpart. Human review is optional; the research goal remains
+unachieved.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its

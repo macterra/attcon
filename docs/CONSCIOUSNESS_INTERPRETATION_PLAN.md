@@ -129,18 +129,35 @@ content/manner/separability conjunction, its representation-access versus appear
 scope, and a separate attention relation. A broad access match alone does not achieve
 the source-of-qualia goal. Current success forecasts cannot become clarity by definition.
 
-Next execute the [frozen-source physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md)
-on fresh naturally sampled contents: external held-out probes of risk/joint hidden
-versus sensory and logit/outcome controls. This tests retained objective image
-qualities; it supplies no appearance or consciousness verdict. Then qualify the
-neutral reporting interface and source-blind annotation before fresh reporting,
+The [fresh physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md)
+now completes this source component. Risk hidden retains objective image information
+beyond a fixed forecast projection; sensory features perform better. Exact75-archive
+replay and independent12,672-check arithmetic review pass after preserved empty-CI
+checker adjudication. This establishes neither represented appearance nor an
+attention-specific origin. [Annotation v1 fails](QUALITATIVE_REPORT_ANNOTATION_V1_RESULTS.md);
+[clarified v2 passes](QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md) at22/24 and23/24,
+without rescoring earlier first passes or validating the author key.
+
+Next qualify and freeze an auxiliary neutral factual interface before fresh reports,
 using native-memory/represented-route interventions, restoration and same-information
-ordinary narrators. Preserve stricter presentation results separately from access
-structure. Freeze powered confirmation only after this development measurement works,
+ordinary narrators. Explicitly distinguish stored sensory decisions, attention-model
+forecasts and external physical decoders. A strict independently justified source
+counterpart remains required for strict appearance claims; its absence does not
+block auxiliary factual/access reporting. Preserve presentation results separately
+from access structure. This prospective auxiliary-route clarification leaves every
+registered protocol and the original qualitative design bytes unchanged. Freeze powered confirmation only after this development measurement works,
 and replicate actual positive correspondence/source effects. Numerical human
 transfer remains a separate qualified route; missing archive bytes no longer block
 this qualitative work. This revision supersedes broader prospective archive gates
 in earlier status prose, without changing any registered study or historical verdict.
+
+The [separate source-counterpart review](../audits/qualitative_source_counterpart_review_v1/review.md)
+finds no currently qualified strict presentation counterpart in the frozen source.
+It supports an auxiliary factual pilot with native representation, forecasts and
+external physical estimates separately attributed. Do not turn missing strict
+qualification into a blanket block on neutral reports or declare that auxiliary
+success completes the theory-facing goal. Source qualification and a frozen
+fresh-report protocol still precede target generation.
 
 ## 1. Specify the target features before observing new reports
 

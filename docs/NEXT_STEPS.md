@@ -4,12 +4,17 @@ The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
 Three new separate-context reviews remove the blanket raw-trial prerequisite for
 qualitative work. Participant rows/stimuli remain required for numerical/native-task
-claims. Next run the [frozen grounded-state physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_PROTOCOL.md),
-then qualify neutral source reporting and blind content/presentation/decision
-annotation with selective source controls. Physical decoding is not appearance;
-broad access structure alone cannot complete the qualia-source goal. This update
-supersedes earlier blanket prospective archive gates. No new target prose or
-consciousness-related result is claimed.
+claims. The [fresh grounded-state physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md)
+is complete: attention-risk hidden retains image-property information, sensory
+features perform better, exact replay passes and independent numerical differences
+are resolved. Neither physical decoder is a qualified appearance counterpart.
+[Annotation v1 fails](QUALITATIVE_REPORT_ANNOTATION_V1_RESULTS.md); the clarified
+[v2 qualification passes](QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md) at22/24 and23/24,
+with all disagreements preserved. Next qualify and freeze the neutral factual
+reporting interface and selective source controls. Strict presentation-counterpart
+qualification gates strict appearance claims, not all auxiliary factual reporting.
+Broad access structure alone cannot complete the qualia-source goal. No new target
+prose or consciousness-related confirmation is claimed.
 
 ## Current plan (2026-10-10)
 

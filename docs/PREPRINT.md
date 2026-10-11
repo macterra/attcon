@@ -618,10 +618,48 @@ representation-access structure, stricter presentation/appearance scope and atte
 relations. Review disagreement about the breadth of access credit is retained;
 access structure alone cannot complete the qualia-source goal. Native participant
 trials/stimuli and valid conversion remain required for numerical psychophysical
-transfer. They no longer gate all qualitative development. A planned fresh external
-physical-information diagnostic of frozen grounded-model hidden states supplies no
-appearance verdict. No new Reporter outputs or consciousness-related confirmation
-are reported in this revision.
+transfer. They no longer gate all qualitative development. The completed fresh
+physical-information diagnostic below supplies no appearance verdict. No new
+Reporter outputs or consciousness-related confirmation are reported in this revision.
+
+### 6.0g Fresh grounded-model physical information and annotation qualification
+
+The [frozen physical-information diagnostic](GROUNDED_PHYSICAL_INFORMATION_V1_RESULTS.md)
+uses three unchanged source checkpoints, fresh512/256/512-world train/calibration/
+evaluation splits and natural snapshot8 memory. Held-out attention-risk-hidden
+linear readouts recover objective image-value SD and adjacent-pixel RMS with
+training-mean-baseline R² of .615/.608, .840/.760 and .867/.783. Current/refresh-only
+readouts reach .291/.383, .330/.414 and .336/.419; sensory readouts are stronger at
+.946/.888, .948/.879 and .937/.876. All zero/low-contrast data remain, including
+neighbor-RMS reversals favoring forecasts at1301 contrasts3/4 and1311 contrast0.
+Unequal readout dimensions and visual inheritance limit architecture/source claims.
+These statistics are objective image properties, not qualified model presentation
+or human clarity. Auxiliary stored-logit-sign fidelity is not orientation correctness.
+
+Native memory-row permutation moves local features/readouts with content, within
+registered floating-point propagation bounds, with exact inverse restoration.
+Unchanged actual history can conflict with patched memory. Separate represented-route
+patching recomposes forecasts while local readouts remain fixed; it is an export
+composition test, not joint-neural inference or a pure binding-only perturbation.
+Eleven fixtures, exact75-archive production replay and independent12,672-check
+arithmetic audit support the recorded outputs. The independent checker's504 initial
+empty-null-CI shape flags are preserved and explicitly resolved. It does not
+independently reconstruct neural inference or the renderer.
+
+The [first annotation qualification](QUALITATIVE_REPORT_ANNOTATION_V1_RESULTS.md)
+fails at11/24 complete cases for both raters; an initial parent scorer incorrectly
+omitted scope agreement. Every original first pass and erroneous result remains.
+[Version2](QUALITATIVE_REPORT_ANNOTATION_V2_RESULTS.md) freezes canonical scopes and
+full-case grading before two fresh raters, reusing the same24 texts,13-field key
+and thresholds. R1 reaches22/24 and R2 reaches23/24, with no protected-case false
+credit in independent checking of all35 registered guard cells per rater. The
+frozen scorer omits one guard field; this omission is retained, with the actual
+verdict unchanged by the complete independent check. Both disagree with the author
+key on Q08; R1 additionally differs on Q24.
+This is bounded synthetic rule application, not a validated consciousness classifier
+or human-reference distribution. Source fidelity and strict presentation counterparts
+remain separate. Auxiliary neutral factual reporting can proceed after interface
+qualification; unqualified appearance claims cannot complete the qualia-source goal.
 
 ### 6.1 Authorized AI review route
 
