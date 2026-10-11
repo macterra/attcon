@@ -669,8 +669,18 @@ implements neutral native-memory/forecast exports and separately attributed exte
 physical readouts. Independent review catches five initial edge failures; their
 sources and logs remain saved. Corrected bounds, field/address whitelists, opportunity
 enforcement and task-only legend pass13 fixtures, nine original independent checks
-and four additional edges. No selected target view or new report is generated.
-These interface checks do not qualify presentation or complete the theory goal.
+and four additional edges. The [registered source-only stage](GROUNDED_NEUTRAL_REPORT_PILOT_V1_SOURCE_RESULTS.md)
+subsequently exports 624 packets across thirteen arms and three frozen models.
+Exact disk replay passes. Independent JSON review passes 100,349 comparisons after
+preserving and separately correcting its own 48 table-history lookup exceptions;
+no source packet is repaired or regenerated. No new Reporter output, model inference
+or decoder fit is performed. Two fresh factual-auditor first passes are preserved
+before grading. Their [registered qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
+both achieve 48/48 supportedness and 12/12 source inventories, and independent
+semantic evidence review passes, but three content/time-label differences fail the
+all-label gate. The key, answers and failed verdict remain unchanged; no v1 prose
+is released. These source and qualification checks neither qualify presentation
+nor complete the theory goal.
 
 ### 6.1 Authorized AI review route
 

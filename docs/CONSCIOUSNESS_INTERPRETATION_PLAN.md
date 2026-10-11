@@ -164,27 +164,28 @@ success completes the theory-facing goal. Source qualification and a frozen
 fresh-report protocol still precede target generation.
 
 The [grounded reporting source inventory](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
-now has an implemented auxiliary draft and independently reviewed corrections.
-Thirteen generated fixtures, nine preserved independent checks and four additional
-edges pass. The original five edge failures remain saved. No selected target views
-or new Reporter outputs have been generated. Next freeze the exporter and factual
-qualification/report protocol; the completed annotation exercise does not replace
-source-aware factual auditing or strict presentation-counterpart qualification.
+separates native stored evidence, forecasts, latest-command history and external
+objective readouts. The [source-only pilot stage](GROUNDED_NEUTRAL_REPORT_PILOT_V1_SOURCE_RESULTS.md)
+is now executed: a registration committed before selected archive loading binds
+624 packets across thirteen arms and 48 model/world opportunities. Internal and
+disk replay pass. Independent JSON review passes 100,349 comparisons after its
+original 48 table-history checker exceptions were preserved and corrected in
+separate artifacts. No source was repaired or regenerated, and no new reports
+were produced. Source-only registration is distinct from reporting release.
 
-The [auxiliary grounded reporting pilot draft](GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
-now specifies thirteen arms and 624 fixed report opportunities, with all sixteen
-worlds per model retained. It separates source-only export registration from
-reporting release, bounded factual coverage from volunteered claims, and native
-evidence/forecasts from external objective estimates. The draft is saved for
-independent implementation review; targets and reports remain ungenerated.
+The [factual-auditor challenge](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+has an independently reviewed key and two fresh first passes preserved before
+comparison or grading. Its [registered assessment fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
+both score 48/48 supportedness and 12/12 inventories, and evidence review passes,
+but three label differences fail the all-label gate. Preserve v1 and diagnose rule
+clarity independently before a prospective revised qualification. No v1 prose is
+released. Full reporting still requires reviewed methods, registration, a frozen
+Reporter configuration and a release verifier. Humans are optional.
+
 Strict source-faithful presentation remains `not_established` until an independent
-presentation counterpart is qualified. No human-only prerequisite is introduced.
-
-The [new factual-auditor qualification draft](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
-contains twelve generated source packets, 48 assertions and separately preserved
-author-proposed answers. Its nine scorer fixtures pass; independent source/key
-review and two fresh auditor responses remain required. Passing generated code
-fixtures is not auditor qualification or permission to generate target reports.
+presentation counterpart is qualified. Faithful auxiliary reports would qualify
+an instrument, not complete the source-of-qualia goal. Continue the source audit
+and theory-facing measurement work separately from this factual pilot.
 
 ## 1. Specify the target features before observing new reports
 

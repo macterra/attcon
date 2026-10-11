@@ -269,21 +269,20 @@ Next qualify neutral factual reporting; strict appearance claims still require a
 qualified source counterpart. Human review is optional; the research goal remains
 unachieved.
 
-The [grounded reporting interface draft](docs/GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
-now passes13 generated fixtures and13 independent edge checks after preserved
-failures. It separates native stored evidence, forecasts and external diagnostic
-readouts. Target export and fresh reporting still need a frozen protocol and
-source-aware factual qualification.
+The [grounded source export](docs/GROUNDED_NEUTRAL_REPORT_PILOT_V1_SOURCE_RESULTS.md)
+now contains 624 packets across thirteen arms and three frozen models. Exact disk
+replay passes. Independent JSON review passes 100,349 comparisons after preserving
+and correcting its own table-history lookup error. No source packet was regenerated,
+and no new Reporter output was produced. Native stored evidence, forecasts and
+external diagnostic readouts remain separately attributed.
 
-The [auxiliary reporting pilot draft](docs/GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
-now fixes thirteen arms and 624 report opportunities. Source-only export and
-reporting have separate review/registration gates. No targets or reports have
-been generated, and accurate factual reporting alone cannot complete the
-source-of-qualia goal.
-
-Its [factual-auditor qualification draft](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
-contains twelve generated packets and 48 assertions. Nine scorer fixtures pass;
-independent key review and fresh auditor qualification remain outstanding.
+The [factual-auditor challenge](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+has an independently reviewed key and two fresh first passes committed before
+grading. [Qualification fails](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
+both auditors score 48/48 supportedness and 12/12 inventories, but three retained
+label differences fail the all-label gate. No v1 prose is released. Independently
+diagnose those rules before a prospective revised qualification; full reporting
+registration remains separate. Auxiliary reporting cannot complete the theory goal.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its

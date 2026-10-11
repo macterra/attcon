@@ -16,26 +16,26 @@ qualification gates strict appearance claims, not all auxiliary factual reportin
 Broad access structure alone cannot complete the qualia-source goal. No new target
 prose or consciousness-related confirmation is claimed.
 
-The [new grounded reporting interface](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
-is an implemented auxiliary draft with13 passing fixtures and13 independent edge
-checks after preserved first-pass failures. It distinguishes native stored evidence,
-attention-model forecasts and external physical readouts; full chronology stays
-audit-only. Next freeze its target exporter and supportedness qualification before
-neutral reports. No target views or new reports have yet been generated.
+The [grounded source-only stage](GROUNDED_NEUTRAL_REPORT_PILOT_V1_SOURCE_RESULTS.md)
+now exports all 624 registered packets across thirteen arms. Exact internal and
+disk replay pass; independent JSON review passes 100,349 comparisons after an
+archived reviewer-checker correction. No source export was retried, and no new
+Reporter calls, model inference or decoder fits occurred.
 
-The [auxiliary grounded pilot draft](GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
-fixes thirteen arms and 624 report opportunities, including the crossed
-memory/route intervention, restorations, same-information controls and three
-unmatched ablations. Complete independent exporter review and a source-only
-registration before target export; independently qualify the factual auditors
-and freeze reporting components before prose. This is a prospective measurement
-milestone. The source-of-qualia goal remains open.
+The [factual-auditor challenge](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+now has [retained failed results](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md).
+Both auditors get 48/48 supportedness and 12/12 inventories, but three label
+differences fail the all-label gate. Independently diagnose rule clarity before a
+prospective revised qualification with fresh responses. No v1 prose is released.
+Qualification remains separate from reporting authorization: review and freeze
+reporting methods, configuration, adapter and release verifier before any later
+reporting run. Keep all registered opportunities and attempt rules.
 
-The [factual-auditor challenge draft](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
-now supplies twelve generated packets, 48 assertions, source-first inventories
-and a hash-bound scorer with nine passing fixtures. Independently review the
-proposed key and scorer before freezing materials or obtaining fresh responses.
-No factual auditor has yet qualified for this pilot.
+Strict presentation-counterpart qualification is still absent. Auxiliary reporting
+can test faithful state description and linguistic access/presentation separately,
+but cannot by itself achieve the theory goal. Continue toward a defensible native
+appearance counterpart, selective source controls, powered confirmation and
+replication. Save and attempt GitHub publication at each milestone.
 
 ## Current plan (2026-10-10)
 
