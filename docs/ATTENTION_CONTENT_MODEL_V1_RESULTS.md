@@ -236,6 +236,9 @@ preserves every source, interval, error, time curve and intervention opportunity
 These use all 288 reserved worlds and all registered opportunities, with no
 selection or adaptation. A and the matched ordinary predictor show similar
 prediction errors and substantially lower targeting than the analytic source.
+Selected-current H(A) cell disagreements with H(W) are 58.2%, 58.4% and
+57.8% by encoder. Thus high agreement with physical object location does not
+establish accurate tracking of the attention-transformed representation.
 These descriptive results complete the fixed technical experiment; they do not
 supply a new semantic endorsement or consciousness-report result. V1's frozen
 manner negative remains unchanged, and Controller remains distinct from Reporter.

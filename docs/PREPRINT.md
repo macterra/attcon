@@ -53,7 +53,7 @@ reports in that stage. A subsequent registered learned attention-content model
 completes six fixed 300-update fits and evaluation on 288 fresh development and
 288 reserved heldout worlds. Separately reviewed fit/development/heldout
 reconstruction passes 143,599/134,367/134,390 checks,
-preserving the original failed fit reference. Fresh-world A targeting is
+preserving the original failed fit reference. Development A targeting is
 39.9–44.8%, compared with 98.6–100% for the analytic source; prediction errors
 increase relative to fitting worlds. Separate dev assessment qualifies bounded
 estimated location content/bookkeeping, but leaves manner unqualified. Consciousness-report
@@ -776,7 +776,9 @@ permits fixed technical heldout, without refitting or releasing Reporter.
 Heldout now completes once, with all 134,390 numerical reconstruction checks
 passing. A current MSE is .20475–.23388, next MSE .27072–.30132 and targeting
 41.3–47.9%; ordinary errors are similar and targeting is 38.2–45.1%. Analytic
-next MSE is .08275–.08986 and targeting 97.9–100%. The complete first ledgers
+next MSE is .08275–.08986 and targeting 97.9–100%. Selected-current H(A)
+cell disagreements with H(W) remain 57.8–58.4%, consistent with the development
+tracking limitation. The complete first ledgers
 and all errors are retained; v1 manner remains unqualified. A separate
 prospective relational-content reporting protocol is being prepared under its
 [critical review](../audits/attention_content_model_v1/next_mechanism_review/critical_review/review.md),

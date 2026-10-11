@@ -40,6 +40,12 @@ def git_bytes(commit, path):
     return subprocess.check_output(['git', 'show', f'{commit}:{path}'])
 
 
+def validate_review_inventory(manifest, review):
+    for key in ('settings', 'requests_path', 'request_count', 'request_ids'):
+        if review.get('reviewed_'+key) != manifest[key]:
+            raise ValueError('runtime review does not bind exact '+key)
+
+
 def validate(manifest_path, commit):
     """Validate committed exact sources and inventory before reserving attempts."""
     if not re.fullmatch(r'[0-9a-f]{40}', commit):
@@ -64,6 +70,7 @@ def validate(manifest_path, commit):
     review = json.loads(Path(manifest['review_path']).read_bytes())
     if review.get('runtime_approved') is not True or review.get('stage') != manifest['stage']:
         raise ValueError('exact stage runtime review required')
+    validate_review_inventory(manifest, review)
     for name, sha in sources.items():
         if name != manifest['review_path'] and review.get('reviewed_sha256', {}).get(name) != sha:
             raise ValueError('review does not bind executable/request source: '+name)

@@ -5,8 +5,8 @@ Their bounded software fixtures pass. The [first registered fit](ATTENTION_CONTE
 has now completed; its separately reviewed corrected reconstruction passes all
 143,599 checks. Fixed development has completed and its reconstruction passes
 134,367 checks; bounded location estimates/bookkeeping qualify, manner does not,
-and fixed technical heldout passes all 134,390 reconstruction checks,
-and no new reports were generated. The preparation history
+and fixed technical heldout passes all 134,390 reconstruction checks.
+No new reports were generated. The preparation history
 below records what was established before that execution.
 
 The [design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) fixes a shared GRUCell(771,48)
