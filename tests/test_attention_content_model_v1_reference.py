@@ -157,7 +157,8 @@ class ExactProvenanceFixtures(unittest.TestCase):
 
     def test_exact_creation_validation_and_exclusive_immutable_amendment(self):
         with TemporaryDirectory() as directory:
-            root=Path(directory);immutable={'handcrafted_context_only':True}
+            root=Path(directory);immutable={'handcrafted_context_only':True,
+                'original_source_hashes':{}}
             for name in reference.NEW_CLOSURE:
                 p=root/name;p.parent.mkdir(parents=True,exist_ok=True)
                 p.write_bytes(Path(reference.__file__).read_bytes() if name.endswith('/attention_content_model_v1_reference.py')
