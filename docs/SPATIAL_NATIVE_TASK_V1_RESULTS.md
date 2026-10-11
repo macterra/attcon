@@ -41,6 +41,16 @@ fine-target ceiling. T4 yields sixteen ties, .0625 fine accuracy and unknown
 coarse order in every item. These consequences of averaging do not establish
 experienced blur or another phenomenal property.
 
+![Fixed first-world native role-location readouts](assets/spatial_native_task_v1_fields.png)
+
+This illustration uses encoder 1301, the first diagnostic world and address l0,
+chosen by index rather than outcome. The fields are archived **H(actual W)**,
+not learned attention-model contents. White circles show evaluator locations;
+orange crosses show emitted actions. T2 repeats location evidence within blocks;
+T4 makes every site equally probable. The [provenance record](assets/spatial_native_task_v1_fields.json)
+binds the archive and figure bytes. Plotting generated no worlds, model inference
+or fits.
+
 ## Independent first numerical verification
 
 The [first review](../audits/spatial_native_task_v1/numerical_review/review.md)
@@ -56,7 +66,13 @@ checks and 1,599 summary comparisons pass. The engineering gates agree for every
 model. Exact recorded T4 uniformity, T2 repeated ties and zero T2 margins pass.
 Reference logits differ by small amounts that can change exact tie comparisons;
 subtracted orientation controls can amplify arithmetic differences. The precise
-cause needs a separate diagnosis. This is not permission to relax tolerances,
+cause is now accounted for by the [separately preserved arithmetic diagnosis](../audits/spatial_native_task_v1/numeric_diagnosis/review.md):
+the reference used batched head arithmetic where the native consumer used an
+individual item, and separate matrix multiplication/bias addition where the
+control consumer used a linear operation. Matching those execution paths exactly
+reproduces the archived values underlying all 106 failures. The [independent static adjudication](../audits/spatial_native_task_v1/numeric_diagnosis/independent_review.md)
+supports a narrow reference correction. Full corrected revalidation remains
+pending; diagnosis alone does not pass the original audit. This is not permission to relax tolerances,
 replace first results or call the failed full verification successful.
 
 The [unchanged first log](../audits/spatial_native_task_v1/numerical_review/first_run.log),
