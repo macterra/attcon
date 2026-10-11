@@ -61,7 +61,11 @@ content/access as the endpoint; presentation manner is still unqualified. The
 approved for bounded implementation. Implement and review its module, collector
 and phase runner before the separately registered run. That run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
-Reporting requires its separate qualification and registration.
+The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
+now pass 13 and seven fixtures respectively. Complete the experiment engine,
+phase runner and independent reconstruction, review their exact source closure,
+then register the one fit/dev/heldout execution. Reporting requires its separate
+qualification and registration.
 
 Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
 correction does not demonstrate Modeler refinement. Success at modeled internal
