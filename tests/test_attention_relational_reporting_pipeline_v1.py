@@ -12,6 +12,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import attention_relational_reporting_pipeline_v1 as pipeline
+from attention_relational_report_v1 import PACK_SCHEMA
 
 
 def packet():
@@ -253,14 +254,14 @@ def test_exclusive_output_never_replaces_first_artifact(tmp_path):
 def test_raw_reference_match_is_not_positive_when_prose_fidelity_fails(monkeypatch):
     # One tiny row, with the full-production inventory validator deliberately
     # mocked. This tests the joining logic, not552-case validation or references.
-    content = {'schema': 'attention_relational_report_v1_neutral_pack', 'panels': [{
+    content = {'schema': PACK_SCHEMA, 'panels': [{
         'panel': 'p0', 'current': [{'node': 'n' + str(i),
             'derived': {'red': {'peaks': [[0, 0]]}, 'blue': {'peaks': [[0, 1]]}}}
             for i in range(4)], 'candidates': None}]}
     text = 'Red pattern.'
     report = {'schema': pipeline.REPORT_SCHEMA, 'text': text,
               'propositions': pipeline.required_propositions(content)}
-    case = {'encoder_seed': 1301, 'world_index': 0, 'source': 'sensor',
+    case = {'encoder_seed': 1301, 'world_index': 0, 'decision_time': 12, 'source': 'sensor',
             'view': 'sensor_only', 'variant': 'baseline'}
     inventory = {'request_ids': ['r'], 'packets': {'r': {'content': content}},
         'provenance': {'r': {'case': case}}, 'templates': {'r': {'report': deepcopy(report)}}}
@@ -276,7 +277,12 @@ def test_raw_reference_match_is_not_positive_when_prose_fidelity_fails(monkeypat
     audits = {'records': [{'id': 'r', 'transport_complete': True, 'parsed': bad_prose}]}
     ratings = {'records': [{'id': pipeline.blind_id(identifier), 'transport_complete': True,
         'parsed': annotation(text, pipeline.blind_id(identifier))} for identifier in ('r', 'r_template')]}
-    fixture_exports = {'provenance': [{'id': 'r', 'case': case}]}
+    fixture_exports = {
+        'requests': [{'id': 'r', 'input': 'Fixture public request.'}],
+        'packets': [{'id': 'r', 'content': content}],
+        'templates': [{'id': 'r', 'report': deepcopy(report)}],
+        'provenance': [{'id': 'r', 'case': case}],
+    }
     summary = pipeline.summarize_reporting_results(reports, None, audits, ratings, [], fixture_exports)
     narrator = summary['all_text_results'][0]
     assert narrator['machine_audit']['listed_machine_facts_pass']
