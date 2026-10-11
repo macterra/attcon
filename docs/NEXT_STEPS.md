@@ -60,10 +60,11 @@ content/access as the endpoint; presentation manner is still unqualified. The
 [learned A_current/A_next design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) is independently
 approved and its complete source closure reviewed before registration. Its
 [first fixed fit](ATTENTION_CONTENT_MODEL_V1_RESULTS.md) completes all six 300-update
-models; the first independent reconstruction stops at an inconsistent t0 input
-probe after 27,616 passing checks. Preserve that failure and independently review
-a narrow reference correction on the unchanged fitted bytes; development/heldout
-remain sealed. The registered run must demonstrate
+models. The separately reviewed corrected reconstruction passes all 143,599
+checks on unchanged fitted bytes and exactly reproduces the original 27,616-row
+prefix; the original failed run remains preserved. Next run the fixed development
+split once, reconstruct it and assess literal content/manner before heldout.
+The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
 now provide 53 first passing bounded fixtures across six suites. Complete actual

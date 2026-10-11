@@ -78,10 +78,11 @@ or new Reporter has been evaluated in this stage.
 The subsequent [learned attention-content study](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
 now completes its first registered fit: six models with 300 fixed updates each,
 complete fitting-world diagnostics and inspectable current-state/donor fields.
-Its first independent reconstruction stops at an inconsistent initial-input probe
-after 27,616 passing checks. Separate author and critical diagnoses support a
-narrow, explicitly versioned reference correction on unchanged fitted bytes.
-Development and heldout remain sealed until that reconstruction is established.
+Its first independent reconstruction stopped at an inconsistent initial-input
+probe after 27,616 passing checks and remains preserved. A separately reviewed,
+explicitly versioned correction now passes all 143,599 checks on unchanged fitted
+bytes, including exact full evidence equality for that original prefix. Next run
+the fixed development split once; heldout awaits its reconstruction and assessment.
 No new Reporter or consciousness-report correspondence result exists for this
 version; source-content, bookkeeping and manner assessments remain separate.
 

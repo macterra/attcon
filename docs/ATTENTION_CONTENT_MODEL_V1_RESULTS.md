@@ -1,7 +1,8 @@
 # Learned attention-content model v1: first registered results
 
-2026-10-11. The first fixed **fit phase completed**, but its first independent
-reconstruction stops at an exception; development and heldout remain sealed. No Reporter
+2026-10-11. The first fixed **fit phase completed** and its separately reviewed
+corrected reconstruction **passes all 143,599 checks**. The original failed
+reconstruction remains preserved. Development has not run and heldout remains sealed. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -63,14 +64,32 @@ passes all nine tests. The sole correction adds the missing container to the moc
 the actual helper and numerical programs are unchanged. This bounded software pass
 does not substitute for a complete reconstruction of the real retained fit.
 
-## Fitting-world diagnostics, pending complete reconstruction
+## Complete corrected fit reconstruction
+
+The [exact amendment](../audits/attention_content_model_v1/reference_amendment/amendment.json)
+and [complete preexecution review](../audits/attention_content_model_v1/reference_amendment/preexecution_review/review.md)
+were published before the first corrected reconstruction of the original fit.
+Its [full lossless report](../audits/attention_content_model_v1/fit_corrected_reconstruction/first_report_manifest.json)
+records **143,599 passing checks, zero errors and no exception** across all three
+encoders and sources. Every field of the original 27,616-check prefix matches
+exactly. Actual corrected and registered original verifier identities are recorded
+separately. No fitting, world generation, threshold change or Reporter was performed.
+
+The [root acceptance](../audits/attention_content_model_v1/fit_corrected_reconstruction/root_acceptance.json)
+permits the one fixed development phase after this full result is published.
+It does not qualify source semantics, presentation manner or consciousness-report
+correspondence. The original failed reference and first failed fixture remain failed.
+Recorded optimizer artifacts do not establish the complete training trajectory
+without replay; this pass reconstructs the retained numerical outputs.
+
+## Fitting-world diagnostics
 
 The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
 binds the retained archives and preserves all three sources, registered metrics,
 bootstrap intervals, time curves, errors, ambiguity and donor opportunities.
 Its first execution completed without model inference, optimization or new worlds.
 The full descriptive ledger is published losslessly; it does not replace the
-failed independent reconstruction or qualify source semantics.
+complete independent reconstruction or qualify source semantics.
 
 | Frozen encoder | Source | Current selected normalized MSE | Next selected normalized MSE | Actual targeting under selected policy |
 |---|---|---:|---:|---:|
