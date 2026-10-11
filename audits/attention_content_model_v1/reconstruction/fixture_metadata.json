@@ -1,0 +1,77 @@
+{
+  "schema": "attention_content_model_v1_reconstruction_fixture_source_preparation",
+  "version": 1,
+  "status": "source_only_draft_with_known_static_fixture_defect",
+  "fixture_count": 10,
+  "fixture_source": "tests/test_verify_attention_content_model_v1.py",
+  "fixture_sha256": "e610269349758b19352ba010fd3b0bf7dc6fe48103f08c5ff9cd7381a6cd0c3a",
+  "verifier_source": "scripts/verify_attention_content_model_v1.py",
+  "verifier_sha256": "0332633eaef01755b458ec6c7b21b9373f1e949f79b295a3d2471c4141737902",
+  "verifier_source_only_preservation_commit_prefix": "31d57ef",
+  "verifier_design_sha256": "d9125a40fb23b05f94d356e0886b178937cf345f7e6d813b41cbb294e51c0b26",
+  "engine_source_sha256": "4f537c112c3660f0dbd60d72f751a806f83f00b05224d42e6e62699452db8b45",
+  "static_compilation_pass": true,
+  "module_imported": false,
+  "tests_executed": false,
+  "execution_approved": false,
+  "runtime_pass_claimed": false,
+  "declared_configuration": {
+    "cpu_threads": 4,
+    "deterministic_algorithms": true,
+    "fresh_fixture_seeds": [71, 72, 73],
+    "numerical_sample_count": 2,
+    "channels": 24,
+    "map_grid": [4, 4],
+    "bootstrap_draws": 256,
+    "bootstrap_fixture_rows": 4
+  },
+  "no_native_archive_or_checkpoint": true,
+  "no_reserved_worlds_or_renderer": true,
+  "no_registered_fit": true,
+  "no_optimizer_or_backward": true,
+  "no_reporter": true,
+  "no_actual_git_calls_in_fixtures": true,
+  "separate_task_allocation": true,
+  "shared_model_and_inherited_hypothesis_context": true,
+  "independent_model_family": false,
+  "human_endorsement": false,
+  "known_static_fixture_defects": [
+    {
+      "id": "fixture_role_fields_tensor_api",
+      "line": 121,
+      "identified_by": "coordinator static source review",
+      "confirmed_by_author_source_inspection": true,
+      "problem": "role_fields returns Tensor; calling .tensor() would raise AttributeError",
+      "executed_failure": false,
+      "correction_performed": false,
+      "required_order": "preserve original fixture and first static review before narrow source correction and separate release"
+    }
+  ],
+  "pending_main_review_concerns": [
+    {
+      "id": "nonfinite_primitive_report_serialization",
+      "problem": "json.dump allow_nan=False outside guarded runtime block may fail after nonfinite primitive audit evidence",
+      "critical_review_pending": true,
+      "main_source_unchanged": true,
+      "actual_failure_or_audit_execution": false
+    }
+  ],
+  "reference_assumptions": [
+    "Separately written equations within the same Python/PyTorch environment and model team",
+    "Fresh GRU, decoder and local-head comparisons share CPU primitive library",
+    "Literal block/point/tie expectations supplement module comparisons",
+    "Mocked committed-byte streams exercise control flow rather than real Git",
+    "Fixture normalizer moment calculation is not a registered study fit",
+    "No production archive, phase sealing, complete fit trajectory or semantic claim is validated"
+  ],
+  "first_execution_policy": {
+    "requires_published_exact_corrected_sources_and_independent_static_approval": true,
+    "requires_explicit_authorization": true,
+    "first_log_and_result_exclusive": true,
+    "first_failure_preserved_before_repair": true,
+    "automatic_retry_allowed": false
+  },
+  "presentation_qualified": false,
+  "qualia_established": false,
+  "goal_achieved": false
+}
