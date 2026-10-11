@@ -489,7 +489,9 @@ def validate_prose_audit(packet, text, value):
               and value['unparsed_or_ambiguous'] is False)
     return {'valid': not errors, 'errors': errors, 'fidelity_pass': passed,
             'claim_count': len(value['claims']), 'verdict_counts': dict(Counter(
-                c.get('verdict', 'invalid') for c in value['claims'] if type(c) is dict)),
+                c['verdict'] if type(c) is dict and type(c.get('verdict')) is str
+                    and c['verdict'] in ('supported', 'contradicted', 'not_auditable') else 'invalid'
+                for c in value['claims'])),
             'semantic_extraction_is_fallible': True}
 
 

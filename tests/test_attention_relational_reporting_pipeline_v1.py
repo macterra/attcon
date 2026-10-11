@@ -298,3 +298,14 @@ def test_raw_reference_match_is_not_positive_when_prose_fidelity_fails(monkeypat
     assert missing['reported_composite_labels_before_validation']['COD'] == 'ambiguous'
     assert missing['endpoints']['COD']['status'] == 'unestablished'
     assert not missing['endpoints']['COD']['upper']
+
+
+def test_list_and_dictionary_prose_verdicts_retain_invalidity_without_crashing():
+    for malformed in (['supported'], {'verdict': 'supported'}):
+        audit = prose_audit()
+        audit['claims'][0]['verdict'] = deepcopy(malformed)
+        result = pipeline.validate_prose_audit(packet(), 'Red peaks here.', audit)
+        assert not result['valid'] and not result['fidelity_pass']
+        assert result['verdict_counts'] == {'invalid': 1}
+        assert 'invalid claim verdict or rationale' in result['errors']
+        assert audit['claims'][0]['verdict'] == malformed
