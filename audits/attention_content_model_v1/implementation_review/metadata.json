@@ -1,0 +1,119 @@
+{
+  "schema": "attention_content_model_v1_static_core_implementation_review",
+  "date": "2026-10-11",
+  "reviewer": "/root/spatial_native_numerical_execution_review",
+  "separate_task_allocation": true,
+  "shared_model_and_inherited_hypothesis_context": true,
+  "independent_model_family": false,
+  "human_endorsement": false,
+  "status": "approved_for_bounded_toy_tests_only",
+  "scope": "static learned-core source/tests/implementation design against amended contract; collector/runner separate",
+  "reviewed_paths": {
+    "source": "scripts/attention_content_model_v1.py",
+    "tests": "tests/test_attention_content_model_v1.py",
+    "amended_design": "docs/ATTENTION_CONTENT_MODEL_V1_DESIGN.md",
+    "implementation_design": "audits/attention_content_model_v1/implementation/design.md"
+  },
+  "reviewed_sha256": {
+    "source": "a950a4228e5358a6896c73b729ac0e85e630cec8ae05b3944e03a6019221c0b8",
+    "tests": "5a22e976865791028a04640203cd0d6ddd48727d79caf23bdb7da96c12543045",
+    "amended_design": "b64062f3c07aa1e29b8fd5d3f50bcc04b2188edfe2a8d6b26cafb4a9d04ff2af",
+    "implementation_design": "172003e4108d68676fb77af4c452972f4db8064797baebdda4ba43d74d09fa0b"
+  },
+  "expected_sha256": {
+    "source": "a950a4228e5358a6896c73b729ac0e85e630cec8ae05b3944e03a6019221c0b8",
+    "tests": "5a22e976865791028a04640203cd0d6ddd48727d79caf23bdb7da96c12543045",
+    "amended_design": "b64062f3c07aa1e29b8fd5d3f50bcc04b2188edfe2a8d6b26cafb4a9d04ff2af"
+  },
+  "parameter_count_by_static_arithmetic": {
+    "gru": 118224,
+    "decoder": 79104,
+    "total": 197328
+  },
+  "checks": [
+    {
+      "area": "parameter/equation arithmetic",
+      "disposition": "conforms_statically",
+      "evidence": "GRUCell(771,48) = 118224; residual decoder435->96->384 =79104; total197328. Inputs concatenate384V+384W+3symbol or384V+48h+3symbol."
+    },
+    {
+      "area": "permitted input boundary and audit labels",
+      "disposition": "conforms_statically",
+      "evidence": "Learned predict/decode/update take no pixels, task cells, bandwidth/mapping truth, driver, world seed or evaluation metadata. source_key controls provenance validation/export only; it is not a numeric network feature."
+    },
+    {
+      "area": "delayed current/next timing",
+      "disposition": "conforms_statically",
+      "evidence": "At decisiont, state feedback and last snapshot through max(0,t-1); current replaces previous-command address; next replaces only candidate address while inheriting uncertain current elsewhere. Postscore feedback advances one completion/command index exactly."
+    },
+    {
+      "area": "gradient and addressed locality",
+      "disposition": "conforms_statically_runtime_pending",
+      "evidence": "Only selected-address GRU features/state are indexed. Clone and indexed assignment preserve recurrent graph; no hidden detach. Single proposed fixture calls backward only, no optimizer or parameter update."
+    },
+    {
+      "area": "ordinary predictor and alias",
+      "disposition": "conforms_statically",
+      "evidence": "Separate seeds320000000+encoder_seed and+1000000, same class/normalizer/API/parameter count. ExactAlias delegates to the same A object."
+    },
+    {
+      "area": "analytic posterior",
+      "disposition": "conforms_statically",
+      "evidence": "Six lexicographic permutations, consistency with observed completed map at1e-6/1e-5 only; survivors intersect locally; ambiguous mappings remain; zero survivors rejected; uniform surviving posterior mean computed in float64."
+    },
+    {
+      "area": "snapshot/patch/restoration",
+      "disposition": "conforms_statically_runtime_pending",
+      "evidence": "Clone storage without detach, matching source/time/update indices, only addressed latent/posterior patch, selected estimate inheritance retained. Exact restored predictions asserted in proposed toys; actual donor provenance/policy restoration belong to runner/verifier."
+    },
+    {
+      "area": "native H(A) and maxima parity",
+      "disposition": "conforms_statically_runtime_pending",
+      "evidence": "Frozen copied native head gets raw estimated maps with native standardizer itemwise. Three role maxima determine first-symbol argmax; choose_from_maxima is the exact confidence-only duplicate. Actual-W action consumer stays separate."
+    },
+    {
+      "area": "bounded proposed toy suite",
+      "disposition": "approved_not_executed",
+      "evidence": "13 handcrafted fixture tests; freshly initialized toy modules; one backward; no renderer, archive/checkpoint loader, optimizer, fit loop or Reporter call."
+    }
+  ],
+  "blocking_defects_found": false,
+  "issues": [],
+  "proposed_test_names": [
+    "test_exact_architecture_initialization_and_ordinary_alias",
+    "test_normalizer_population_statistics_and_fit_only_guard",
+    "test_current_and_next_assembly_preserve_delayed_uncertainty",
+    "test_update_is_address_local_nonmutating_and_differentiable",
+    "test_reveal_and_pre_reveal_timestamp_guards",
+    "test_nonfinite_unseen_bad_shapes_and_unknown_commands_rejected",
+    "test_outer_address_equivariance",
+    "test_donor_patch_isolation_inheritance_and_exact_restoration",
+    "test_analytic_preserves_uninformative_ambiguity",
+    "test_analytic_learns_mapping_from_reveals_without_oracle",
+    "test_analytic_addressed_patch_restore_and_timing",
+    "test_native_predicted_readout_itemwise_matches_frozen_reference",
+    "test_native_symbol_policy_and_confidence_duplicate_ties"
+  ],
+  "proposed_backward_call_count": 1,
+  "first_toy_tests_executed_by_reviewer": false,
+  "source_or_production_calls_performed": false,
+  "archive_checkpoint_loads_performed": false,
+  "renderer_calls_performed": false,
+  "optimizer_or_fits_performed": false,
+  "reporter_calls_performed": false,
+  "git_or_github_calls_performed": false,
+  "authorized_next_scope": "Coordinator may preserve this exact first source/review then authorize the first unchanged handcrafted core test suite only; no study release.",
+  "integration_obligations": [
+    "Collector/runner receipts establish actual immutable V, whole-world fit statistics and truthful postscore/per-call feedback masks; tags alone do not certify provenance.",
+    "Donor replay must reach state throughW(t-1)/commands0..t-2 at decisiont while concealingW(t); core patch helper does not certify donor reachability.",
+    "Terminalt=15 reveal is archived without an invented scored decision or unrequested recurrent update.",
+    "Ordinary training/data/history/feedback/budget parity and alias/policy/runtime restoration must be verified in the later registered runner.",
+    "Analytic secondary H-integrated-over-mappings alternative and full unconditional ledgers are later collector/runner requirements."
+  ],
+  "native_corrected_revalidation_preservation_commit_supplied_by_parent": "c84d3da",
+  "actual_study_execution_released": false,
+  "source_literal_content_qualified": false,
+  "presentation_manner_qualified": false,
+  "qualia_established": false,
+  "goal_achieved": false
+}
