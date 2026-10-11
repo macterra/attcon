@@ -65,10 +65,16 @@ prose. A positive native represented-form result would be a substantive bridge;
 ordinary parity and an absent counterpart remain valid outcomes. Phenomenal-source
 identification is still open. Action correction and Modeler refinement are distinct.
 
-The revised factual qualification proceeds separately. Its draft code tests and
-independent software checks pass, but pre-blind rule precedence needs correction
-before any fresh responses. That auxiliary gate cannot substitute for the source
-experiment or complete the theory goal.
+The [toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+passes 12 author and nine independent checks after preserving and correcting an
+exact-restoration defect. Native content/form semantics remain unqualified.
+
+The revised [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md)
+after pre-blind review and fresh responses. Both auditors get all supportedness
+judgments and inventories correct, but differ from the key on content/time labels
+for the same omitted-field assertion. Preserve the failed gate and continue native
+source development rather than repeating label challenges. Auxiliary reliability
+cannot substitute for the source experiment or complete the theory goal.
 
 ## Latest integrated reporting result
 

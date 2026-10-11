@@ -281,8 +281,9 @@ has an independently reviewed key and two fresh first passes committed before
 grading. [Qualification fails](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md):
 both auditors score 48/48 supportedness and 12/12 inventories, but three retained
 label differences fail the all-label gate. No v1 prose is released. Independent
-review finds rule ambiguity; the [v2 plan](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md)
-clarifies wording before fresh qualification. Full reporting registration remains
+review finds rule ambiguity. The clarified [v2 qualification also fails](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md):
+both get all supportedness judgments and inventories correct, with matching content/time
+label disagreements on one omitted-field assertion. Full reporting registration remains
 separate. Auxiliary reporting cannot complete the theory goal.
 
 The next [source experiment](docs/ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
@@ -290,7 +291,9 @@ tests attention-dependent internal content form at fixed sensory evidence. Separ
 source and critical reviews retain the current negative strict-counterpart finding.
 The new plan requires current/future separation, independent semantics and matched
 ordinary/non-attentional controls; no new trained source or positive qualia result
-is claimed. [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
+is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+passes 12 author and nine independent checks after a preserved restoration correction.
+[MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)

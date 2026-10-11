@@ -26,8 +26,11 @@ The [factual-auditor challenge](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
 now has [retained failed results](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md).
 Both auditors get 48/48 supportedness and 12/12 inventories, but three label
 differences fail the all-label gate. Independent diagnosis finds reasonable rule
-ambiguity; implement the [v2 clarification plan](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md)
-with fresh responses and unchanged exact requirements. No v1 prose is released.
+ambiguity. The clarified [v2 qualification also fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md):
+both get all supportedness judgments and inventories correct, with matching
+content/time-label disagreements on one omitted-field assertion. No v1 or v2
+qualification releases target prose. Retain both failures and prioritize native
+content-form development over further label challenges.
 Qualification remains separate from reporting authorization: review and freeze
 reporting methods, configuration, adapter and release verifier before any later
 reporting run. Keep all registered opportunities and attempt rules.
@@ -46,8 +49,10 @@ retain no qualified strict counterpart in the present architecture. Their concre
 next mechanism is an executed internal allocation transform at fixed retained
 sensory evidence, with current/future state separation, independent content-form
 semantics, information-matched ordinary/analytic predictors, matched non-attentional
-transforms and actual-state/model-estimate conflicts. Begin with toy mechanical
-primitives; production evaluation and reports require their separate registration.
+transforms and actual-state/model-estimate conflicts. The [toy primitives](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+now pass 12 author and nine independent checks after a preserved exact-restoration
+correction. Next qualify native content/form semantics; production evaluation and
+reports require their separate registration.
 
 Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
 correction does not demonstrate Modeler refinement. Success at modeled internal

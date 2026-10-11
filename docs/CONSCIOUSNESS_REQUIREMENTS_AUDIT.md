@@ -29,6 +29,14 @@ requiring humans. Human review is optional. The [AI review protocol](AI_REVIEW_P
 preserves original data and reviewer provenance; shared-model dependence remains
 a limitation. This supersedes human-only prospective gates in historical drafts.
 
+The clarified [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md):
+both fresh auditors have exact supportedness and inventories, but matching
+content/time-label disagreements fail the unchanged all-label gate. The
+[toy content-form primitives](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+pass after a preserved restoration correction. Neither milestone qualifies a
+native presentation counterpart. The [next source plan](ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
+requires independently justified native content/form semantics and matched controls.
+
 **Completion is not established.** Green component tests and archived demonstrations
 do not prove the remaining theory-facing requirements. A completed negative or
 uninterpretable experiment is valuable evidence but does not achieve the objective.

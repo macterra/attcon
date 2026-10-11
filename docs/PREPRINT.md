@@ -680,7 +680,13 @@ both achieve 48/48 supportedness and 12/12 source inventories, and independent
 semantic evidence review passes, but three content/time-label differences fail the
 all-label gate. The key, answers and failed verdict remain unchanged; no v1 prose
 is released. These source and qualification checks neither qualify presentation
-nor complete the theory goal.
+nor complete the theory goal. A clarified, independently reviewed
+[v2 qualification also fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md).
+Both new auditors get 48/48 supportedness and 12/12 inventories, but both differ
+from the key on content/time labels for the same omitted-field assertion. All 96
+evidence bases pass separate semantic review. Raw responses and the review were
+committed before the single assessment; no retrospective correction changes the
+failed gate or releases target prose.
 
 A subsequent [role audit](MSTC_REPORTING_ROLE_AUDIT_V1.md) distinguishes attention
 forecasting and Controller correction from Modeler refinement in the referenced
@@ -693,7 +699,11 @@ current estimates/future predictions/actual events, qualify content-specific for
 semantics independently, and compare equally informed ordinary/analytic models and
 matched non-attentional transformations. No new trained source, production result
 or positive phenomenal-source inference is claimed. Ordinary state-estimation
-parity remains a viable explanation even if the proposed mechanism succeeds.
+parity remains a viable explanation even if the proposed mechanism succeeds. The
+[toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md) passes
+12 author and nine independent checks after a preserved exact-restoration correction.
+It executes no trained source, production inference, semantic qualification or
+Reporter output. Native content/form meaning remains the next source requirement.
 
 ### 6.1 Authorized AI review route
 
