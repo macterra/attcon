@@ -228,8 +228,10 @@ def restore_saved(saved_state):
     """Restore a saved snapshot including W, event times and history; no T inverse."""
     if not isinstance(saved_state, AddressedState):
         raise ValueError('saved state required')
-    items = tuple(replace(x, source_v=SpatialBuffer.from_tensor(x.source_v.tensor()),
-                          actual_w=SpatialBuffer.from_tensor(x.actual_w.tensor()))
+    # Preserve accepted tuple values exactly; a dtype round-trip can round a
+    # directly constructed buffer even when its tensor/export is unchanged.
+    items = tuple(replace(x, source_v=replace(x.source_v),
+                          actual_w=replace(x.actual_w))
                   for x in saved_state.items)
     return AddressedState(items, saved_state.time, tuple(replace(e) for e in saved_state.history))
 
