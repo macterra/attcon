@@ -2,9 +2,9 @@
 
 2026-10-11. Same model team, separate review allocation and inherited hypothesis
 context; no independent family/human endorsement. Source-only corrections, never
-imported or executed. AST/syntax compilation passed for verifier and13 fixtures.
-Original records remain unchanged: verifier/design milestone31d57ef, original
-fixture e6102693 preserved16aa6a4, and first V1/V2/F1 rejection preserved/pushed
+imported or executed. AST/syntax compilation passed for verifier and 13 fixtures.
+Original records remain unchanged: verifier/design milestone 31d57ef, original
+fixture e6102693 preserved 16aa6a4, and first V1/V2/F1 rejection preserved/pushed
 `91038f07036d228b1b65faf2ca008ad7ddb5c764` before main corrections were authorized.
 
 Corrected verifier SHA-256:
@@ -35,9 +35,9 @@ recorded failure, never a passing audit. An existing primary path is rejected be
 execution exactly as before.
 
 V2: The existing named Adam step checks use optimizer_step_is_exact_300. Numeric
-count must equal300 exactly; a fractional deviation that falls inside ordinary
+count must equal 300 exactly; a fractional deviation that falls inside ordinary
 float tolerance is rejected. No new float dtype, threshold or scientific gate is
-introduced. All other ATOL1e-6/RTOL1e-5 comparisons are unchanged. Existing step-check
+introduced. All other ATOL 1e-6 / RTOL 1e-5 comparisons are unchanged. Existing step-check
 names/counts remain; evidence now marks zero-tolerance exact numeric count.
 
 F1: Remove the invalid .tensor() call from role_fields(item), whose return is already
@@ -46,7 +46,7 @@ now cover typed nonfinite evidence with original failure/all checks retained,
 fractional Adam-step rejection while generic numerical tolerance stays unchanged,
 and partial writer-fault retention with complete exclusive sidecar evidence.
 
-All13 fixtures remain handcrafted tensors/fresh weights or mocked CLI/Git streams.
+All 13 fixtures remain handcrafted tensors/fresh weights or mocked CLI/Git streams.
 Declared configuration: four CPU threads, deterministic algorithms. No native
 archive/checkpoint, reserved world, renderer, optimizer/backward, registered fit,
 actual Git subprocess or Reporter occurs in their planned execution. Fixture
