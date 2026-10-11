@@ -43,7 +43,12 @@ For every item and both role queries the Controller selects the maximum-evidence
 grid cell, choosing the first row-major cell on exact ties. The coarse relation
 uses each role's expected column: red-left-of-blue if red's is lower, the reverse
 if higher, and unknown within absolute difference 1e-6. Unknown counts as an
-incorrect coarse answer. Record ties, including T4's uniform field. The Controller
+incorrect coarse answer. This deliberately replaces the earlier design's half-mass
+comparison: it tests order of role centroids, not proof of occupancy in an intended
+half. Preserve the possibly wrong native relation separately from physical truth.
+The spatial softmax is conditional forced localization under the task's one-token-
+per-role assumption, not presence detection or calibrated confidence. Keep full
+occupancy logits alongside location fields. Record ties, including T4's uniform field. The Controller
 uses only H's spatial evidence and the address/role query, with no pixel, retained
 identity, raw-logit or renderer-truth bypass. No claim of attentional prediction
 or conscious control is made for this targeting Controller.
@@ -53,7 +58,10 @@ or conscious control is made for this targeting Controller.
 For each encoder use 128 fit worlds and 64 diagnostic worlds, four items each.
 World generation namespaces are `210000000 + encoder_seed*1000 + split*100000`,
 where fit split=0 and diagnostic split=1. Initialization seed is
-`220000000 + encoder_seed`. Whole worlds define splitting and uncertainty.
+`220000000 + encoder_seed`; the raw head uses that seed plus 1000000. Whole worlds
+define splitting and uncertainty. Deterministic position layouts overlap across
+splits; fresh nuisance realizations do not establish generalization to unseen
+layout combinations. This task does not claim such generalization.
 There are 576 worlds total, 768 diagnostic items and 1,536 native role queries.
 This is development only, with no reserved confirmation split.
 
@@ -80,6 +88,7 @@ all within-map variation; loss of coarse order is a valid outcome.
 
 Record full role-indexed fields, selected cells, coarse relation and truth,
 occupancy loss, role targeting accuracy, entropy/max/margin and expected columns.
+Expose red and blue targeting accuracy separately as well as their pooled mean.
 Also record per-channel V/W means, norms and standard deviations, category logits,
 orientation logits, and changes from preserved originals. Report per-model and
 per-world aggregates, with conditional world-bootstrap intervals (256 draws,
@@ -95,6 +104,37 @@ Keep its synthetic provenance explicit; it is not a naturally reached attention
 state. These controls establish sensitivity or invariance under stated inputs,
 not phenomenal-source specificity. Neither scalar omission nor pixel omission
 is an equally informed ordinary-estimator comparison.
+
+The fixed duplicate-control ledger, over all three encoders, is:
+
+| Control | Schedule | Item opportunities | Role queries |
+|---|---|---:|---:|
+| Sham | T1 compared with the saved initial state | 768 | 1,536 |
+| Driver parity | Exogenous T2 compared with endogenous T2 | 768 | 1,536 |
+| Restoration | Restore the saved initial state after T2 | 768 | 1,536 |
+| Outer-address permutation | Roll all four items +1 at every primary operator | 2,304 | 4,608 |
+| Synthetic site permutation | Roll flattened spatial sites +1 before H at every primary operator | 2,304 | 4,608 |
+
+Consistent address remapping must carry native evidence and actions with the item.
+Site permutation must carry native logits/fields within declared tolerance and
+preserve their entropy/max/margin. First-row-major action tie breaking is not
+permutation equivariant; test action equivariance only for unique maxima, retaining
+all tied and ineffective cases. Same-W drivers compare actual emitted actions as
+well as fields. Preserve full control outputs or deterministic reconstruction
+inputs and per-opportunity checks, rather than only aggregate passing booleans.
+
+T2 repeats each site's vector across a 2×2 block, so every maximum ties at least
+four ways. Its targeting policy selects only block top-left cells and is capped
+at .25 accuracy under balanced fine placement. T4 is uniform with sixteen ties,
+.0625 targeting accuracy and unknown coarse order. These imposed effects are not
+evidence of experienced blur. A top-two-site margin is zero under T2 regardless
+of separation between blocks.
+
+Define a changed role field by maximum absolute T1/T2 difference greater than
+1e-6. Correctly retained coarse order requires both T1 and T2 native answers to
+match evaluator order. Report the conjunction over all 768 diagnostic items;
+T1-wrong/T2-correct cases do not count as retention. Bootstrap per-world means
+using 256 resamples of all 64 worlds with replacement and .025/.975 quantiles.
 
 ## Engineering endpoint and interpretation
 
