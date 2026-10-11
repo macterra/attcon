@@ -16,6 +16,54 @@ REPLACEMENTS = {
 }
 
 
+# Author/reviewer-only provenance; no case-specific answers enter the protocol.
+PRE_BLIND_RULE_CLARIFICATION = {'revision': 'pre_blind_rule_precedence_clarification_1',
+ 'status': 'awaiting_independent_rereview_before_registration_or_fresh_responses',
+ 'review_preservation_commit_prefix': 'c44b309',
+ 'independent_first_review_sha256': {'audits/grounded_factual_auditor_qualification_v2/key_review/review.md': '064616b57e216996fbe3f095d9b87bae030b6f6f0fd4e87ad1d19b19e7ef29f1',
+                                     'audits/grounded_factual_auditor_qualification_v2/key_review/metadata.json': '7a780d4bde16e40ec2ffb39e02e6b01ea29fb9eae5baedda0a25880eb6f64d35',
+                                     'audits/grounded_factual_auditor_qualification_v2/key_review/fixture.py': 'd48d9703611f08f5a20c8df7107a0d72ab56922eb3ca9953e06648bc9070d02f',
+                                     'audits/grounded_factual_auditor_qualification_v2/key_review/run.log': '1ea8f1a9e70c532e50f05c4852d744793a9be6cd536080c7b397543675a1f2f5'},
+ 'resolved_prospectively_issue_ids': ['V2-A01', 'V2-A02'],
+ 'affected_claim_ids': ['Q02-C1', 'Q07-C2'],
+ 'general_rules': ['Pure field, address-key and recorded-association structure presence or '
+                   'omission\n'
+                   'is `absence_scope`. Distinguish that structure from the substantive values '
+                   'and\n'
+                   'statuses supplied within it. An explicit null, unknown-zero or represented\n'
+                   'no-sample status is supplied content, not an omitted field. Classify '
+                   'assertions\n'
+                   'about those values/statuses by their source domains. A substantive comparison '
+                   'or\n'
+                   'relation across native and external values/statuses is `cross_level`, '
+                   'including\n'
+                   'when a compound assertion also states a retained-address count or other\n'
+                   'structural fact. The substantive inter-domain relation takes precedence over\n'
+                   'its subsidiary structural clause. Merely consulting several domains to find a\n'
+                   'counterexample does not itself make a proposition `cross_level`; pure '
+                   'structural\n'
+                   'presence/omission remains `absence_scope`. The explicit whole-input\n'
+                   'equality/recovery exception below remains in force.',
+                   'For temporal classification, pure structural presence/omission and pure '
+                   'record\n'
+                   'equality/recovery are `record_scope`. Assertions about present stored sensory\n'
+                   'contents or current external/risk values and statuses remain '
+                   '`current_snapshot`\n'
+                   'when accompanied by incidental address counts or retained-structure '
+                   'statements. Such structural context is not a second time\n'
+                   'or event and does not itself introduce `mixed_time`. Retain `mixed_time` for\n'
+                   'relations that substantively link distinct temporal scopes, and retain the\n'
+                   'explicit all-seen aggregate-summary and pure record-equality rules below.'],
+ 'labels_bases_source_and_case_texts_unchanged': True,
+ 'key_retention_justification': 'The affected assertions make substantive current native/external '
+                                'value or status comparisons; their structural/address clauses are '
+                                'subsidiary. Explicit null/no-sample states are supplied content, '
+                                'so the retained cross_level and current_snapshot classifications '
+                                'follow the general precedence rules.',
+ 'scorer_tests_and_exact_gate_unchanged': True,
+ 'fresh_auditor_responses_obtained': False}
+
+
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -78,6 +126,7 @@ def main():
         'label_changes': 'Only Q10-C3 content_class changes from cross_level to absence_scope; Q07-C4 already had the proposed v2 labels.',
         'key_independently_reviewed': False, 'auditors_qualified': False, 'reporter_run': False,
         'plan': 'docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_PLAN.md',
+        'pre_blind_rule_clarification': PRE_BLIND_RULE_CLARIFICATION,
     })
 
 

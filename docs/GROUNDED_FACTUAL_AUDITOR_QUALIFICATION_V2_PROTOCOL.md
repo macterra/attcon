@@ -57,8 +57,8 @@ For every assertion assign all three substantive cells independently:
 | Cell | Allowed labels and interpretation |
 |---|---|
 | `supportedness` | `supported`: every substantive proposition follows from the supplied source plus its declared semantics and permitted arithmetic. `contradicted`: the source or declared semantics explicitly conflict with at least one substantive proposition. `not_auditable`: the source cannot decide the claim and does not explicitly refute it; includes world truth, experienced appearance and theory conclusions outside the supplied instrumentation. Only `supported` earns positive factual credit. |
-| `content_class` | `native_stored_sensory`: stored sample/logit/sign/decision, including incorrect native probability re-description. `task_risk`: learned current/fresh/post-command success or delivery estimates and claims about their future outcomes. `external_objective_estimate`: externally decoded image statistics or their aggregate errors. `native_route_history`: latest-per-command/unknown rows. `external_actual_history`: audit-only full past events. `cross_level`: substantively links or compares two of these source domains, or crosses represented contents into world truth/object identity. `absence_scope`: supplied-field presence/omission, including claims extrapolating omissions to the architecture. `free_appearance_or_qualia`: experienced appearance, felt confidence or qualia claims; use this when such a claim asserts a link to another domain. |
-| `temporal_scope` | `current_snapshot`: present stored contents/current risk or current external estimates. `predicted_conditional`: command/fresh-glimpse consequences or predicted delivery. `past_latest_per_command`: native latest/unknown route history. `past_actual_chronology`: audit-only past sequence. `record_scope`: supplied-view structure, omissions or all-seen aggregate summary scope. `not_temporal`: enduring identity or architecture-wide assertion without a snapshot/event scope. `mixed_time`: explicitly links two substantive temporal scopes, such as current memory and past history or a delivery forecast and its retained actual past. |
+| `content_class` | `native_stored_sensory`: stored sample/logit/sign/decision, including incorrect native probability re-description. `task_risk`: learned current/fresh/post-command success or delivery estimates and claims about their future outcomes. `external_objective_estimate`: externally decoded image statistics or their aggregate errors. `native_route_history`: latest-per-command/unknown rows. `external_actual_history`: audit-only full past events. `cross_level`: substantively links or compares two of these source domains, or crosses represented contents into world truth/object identity. `absence_scope`: supplied field/address/association structure presence or omission, including claims extrapolating structural omissions to the architecture; supplied substantive values/statuses follow their content domains. `free_appearance_or_qualia`: experienced appearance, felt confidence or qualia claims; use this when such a claim asserts a link to another domain. |
+| `temporal_scope` | `current_snapshot`: present stored contents/current risk or current external estimates. `predicted_conditional`: command/fresh-glimpse consequences or predicted delivery. `past_latest_per_command`: native latest/unknown route history. `past_actual_chronology`: audit-only past sequence. `record_scope`: pure supplied-view structure/omissions, record equality/recovery or all-seen aggregate summary scope; incidental structure does not displace the time of a substantive value/status assertion. `not_temporal`: enduring identity or architecture-wide assertion without a snapshot/event scope. `mixed_time`: explicitly links two substantive temporal scopes, such as current memory and past history or a delivery forecast and its retained actual past. |
 
 A false presupposition contradicted by an explicit null, default, stored value or
 declared source definition is `contradicted`. No value in a field is evidence of
@@ -74,11 +74,26 @@ An enduring-object noun does not erase an assertion's explicit current time or
 its event predicate. Pure enduring-identity and architecture-wide assertions
 lacking snapshot/event scope remain `not_temporal`.
 
-Field, address-key and recorded-association presence or omission is
-`absence_scope`. Consulting several domains to find a counterexample does not
-itself make the proposition `cross_level`. Reserve `cross_level` for asserted
-inter-domain relations and the explicit whole-input equality/recovery exception
-below.
+Pure field, address-key and recorded-association structure presence or omission
+is `absence_scope`. Distinguish that structure from the substantive values and
+statuses supplied within it. An explicit null, unknown-zero or represented
+no-sample status is supplied content, not an omitted field. Classify assertions
+about those values/statuses by their source domains. A substantive comparison or
+relation across native and external values/statuses is `cross_level`, including
+when a compound assertion also states a retained-address count or other
+structural fact. The substantive inter-domain relation takes precedence over
+its subsidiary structural clause. Merely consulting several domains to find a
+counterexample does not itself make a proposition `cross_level`; pure structural
+presence/omission remains `absence_scope`. The explicit whole-input
+equality/recovery exception below remains in force.
+
+For temporal classification, pure structural presence/omission and pure record
+equality/recovery are `record_scope`. Assertions about present stored sensory
+contents or current external/risk values and statuses remain `current_snapshot`
+when accompanied by incidental address counts or retained-structure statements. Such structural context is not a second time
+or event and does not itself introduce `mixed_time`. Retain `mixed_time` for
+relations that substantively link distinct temporal scopes, and retain the
+explicit all-seen aggregate-summary and pure record-equality rules below.
 
 Classify the complete exact assertion text. For a conjunction, one explicit
 source conflict makes the overall supportedness `contradicted`; otherwise an
