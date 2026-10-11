@@ -57,6 +57,12 @@ helper requires for collision checks. The complete first outcome is retained;
 this failed suite does not authorize amendment creation or corrected reconstruction.
 No actual archives, registered worlds, fitting or Reporter were used by the suite.
 
+After preserving that failure and the [fixture-only correction review](../audits/attention_content_model_v1/reference_amendment/fixture_correction/critical_review/review.md),
+the [first corrected nine-fixture suite](../audits/attention_content_model_v1/reference_amendment/corrected_fixtures/first_run.log)
+passes all nine tests. The sole correction adds the missing container to the mock;
+the actual helper and numerical programs are unchanged. This bounded software pass
+does not substitute for a complete reconstruction of the real retained fit.
+
 ## Fitting-world diagnostics, pending complete reconstruction
 
 The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
