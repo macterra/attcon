@@ -1,0 +1,37 @@
+................F..                                                      [100%]
+=================================== FAILURES ===================================
+______ test_raw_reference_match_is_not_positive_when_prose_fidelity_fails ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x703b071efaa0>
+
+    def test_raw_reference_match_is_not_positive_when_prose_fidelity_fails(monkeypatch):
+        # One tiny row, with the full-production inventory validator deliberately
+        # mocked. This tests the joining logic, not552-case validation or references.
+        content = {'schema': 'attention_relational_report_v1_neutral_pack', 'panels': [{
+            'panel': 'p0', 'current': [{'node': 'n' + str(i),
+                'derived': {'red': {'peaks': [[0, 0]]}, 'blue': {'peaks': [[0, 1]]}}}
+                for i in range(4)], 'candidates': None}]}
+        text = 'Red pattern.'
+        report = {'schema': pipeline.REPORT_SCHEMA, 'text': text,
+>                 'propositions': pipeline.required_propositions(content)}
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_attention_relational_reporting_pipeline_v1.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/attention_relational_report_v1.py:277: in required_propositions
+    return [dict(kind='peaks',panel=panel,view=view,command=command,node=node['node'],role=role,
+scripts/attention_relational_report_v1.py:266: in _contexts
+    require(content['schema']==PACK_SCHEMA,'unknown neutral pack schema')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False, message = 'unknown neutral pack schema'
+
+    def require(condition,message):
+        if not condition:
+>           raise ValueError(message)
+E           ValueError: unknown neutral pack schema
+
+scripts/attention_relational_report_v1.py:77: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_attention_relational_reporting_pipeline_v1.py::test_raw_reference_match_is_not_positive_when_prose_fidelity_fails
+1 failed, 18 passed in 0.20s
