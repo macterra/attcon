@@ -14,7 +14,7 @@ OUTPUT_ROOT = Path('audits/attention_relational_report_v1/run/export')
 
 
 def encoded(value):
-    return (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + '\n').encode()
+    return (json.dumps(value, separators=(',', ':'), sort_keys=True, allow_nan=False) + '\n').encode()
 
 
 def exclusive(path, value):
