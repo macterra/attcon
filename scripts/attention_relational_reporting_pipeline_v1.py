@@ -9,6 +9,7 @@ from collections import Counter, defaultdict
 from copy import deepcopy
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 
@@ -103,7 +104,11 @@ def decoded(raw):
         return result
     def constant(value):
         raise ValueError('nonfinite JSON constant')
-    return json.loads(raw, object_pairs_hook=pairs, parse_constant=constant)
+    def finite_float(value):
+        number = float(value)
+        require(math.isfinite(number), 'nonfinite JSON exponent')
+        return number
+    return json.loads(raw, object_pairs_hook=pairs, parse_constant=constant, parse_float=finite_float)
 
 
 def bound_json(path, expected_sha256):

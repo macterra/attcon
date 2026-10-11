@@ -309,3 +309,17 @@ def test_list_and_dictionary_prose_verdicts_retain_invalidity_without_crashing()
         assert result['verdict_counts'] == {'invalid': 1}
         assert 'invalid claim verdict or rationale' in result['errors']
         assert audit['claims'][0]['verdict'] == malformed
+
+
+def test_overflowing_json_exponents_rejected_and_finite_values_accepted():
+    for exponent in ('1e309', '-1e309'):
+        malformed = '{"value":' + exponent + '}'
+        with pytest.raises(ValueError, match='nonfinite JSON exponent'):
+            pipeline.decoded(malformed)
+        raw = outcome('r')
+        raw['output_text'] = malformed
+        raw.pop('parsed')
+        result = pipeline._response_record('r', raw, {})
+        assert result['parsed'] is None and result['parse_error']
+        assert result['raw_outcome']['output_text'] == malformed
+    assert pipeline.decoded('{"values":[1e2,-2.5e-2,0.0]}') == {'values': [100.0, -0.025, 0.0]}
