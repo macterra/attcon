@@ -1,0 +1,59 @@
+test_chronology_remains_audit_only_despite_memory_conflict (__main__.IndependentEdges.test_chronology_remains_audit_only_despite_memory_conflict) ... ok
+test_duplicate_table_address_must_be_rejected (__main__.IndependentEdges.test_duplicate_table_address_must_be_rejected) ... FAIL
+test_extra_table_field_must_be_rejected (__main__.IndependentEdges.test_extra_table_field_must_be_rejected) ... FAIL
+test_inconsistent_latest_command_history_is_rejected (__main__.IndependentEdges.test_inconsistent_latest_command_history_is_rejected) ... ok
+test_memory_readout_donor_mismatch_must_be_rejected (__main__.IndependentEdges.test_memory_readout_donor_mismatch_must_be_rejected) ... FAIL
+test_neutral_task_source_legend_excludes_theory_vocabulary (__main__.IndependentEdges.test_neutral_task_source_legend_excludes_theory_vocabulary) ... FAIL
+test_record_requires_entire_fixed_opportunity_set (__main__.IndependentEdges.test_record_requires_entire_fixed_opportunity_set) ... FAIL
+test_restores_and_patch_origin_match_factual_sources (__main__.IndependentEdges.test_restores_and_patch_origin_match_factual_sources) ... ok
+test_unseen_hidden_and_logit_nonzero_are_rejected (__main__.IndependentEdges.test_unseen_hidden_and_logit_nonzero_are_rejected) ... ok
+
+======================================================================
+FAIL: test_duplicate_table_address_must_be_rejected (__main__.IndependentEdges.test_duplicate_table_address_must_be_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_report_interface_v1/design_review/independent_fixture.py", line 28, in test_duplicate_table_address_must_be_rejected
+    with self.assertRaises(ValueError): interface.join_address_aware_tables(tables)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_extra_table_field_must_be_rejected (__main__.IndependentEdges.test_extra_table_field_must_be_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_report_interface_v1/design_review/independent_fixture.py", line 33, in test_extra_table_field_must_be_rejected
+    with self.assertRaises(ValueError): interface.join_address_aware_tables(tables)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_memory_readout_donor_mismatch_must_be_rejected (__main__.IndependentEdges.test_memory_readout_donor_mismatch_must_be_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_report_interface_v1/design_review/independent_fixture.py", line 20, in test_memory_readout_donor_mismatch_must_be_rejected
+    with self.assertRaises(ValueError): interface.record(source,0,'memory_readdressed')
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_neutral_task_source_legend_excludes_theory_vocabulary (__main__.IndependentEdges.test_neutral_task_source_legend_excludes_theory_vocabulary)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_report_interface_v1/design_review/independent_fixture.py", line 40, in test_neutral_task_source_legend_excludes_theory_vocabulary
+    self.assertFalse(any(phrase in p.lower() for p in pieces),phrase)
+AssertionError: True is not false : felt confidence
+
+======================================================================
+FAIL: test_record_requires_entire_fixed_opportunity_set (__main__.IndependentEdges.test_record_requires_entire_fixed_opportunity_set)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/audits/grounded_report_interface_v1/design_review/independent_fixture.py", line 23, in test_record_requires_entire_fixed_opportunity_set
+    with self.assertRaises(ValueError): interface.record(fixture(n=15),0)
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.268s
+
+FAILED (failures=5)
+
+SUPPLEMENTARY EXACT GENERATED-TOY EVIDENCE (no production data):
+Observed recipient l1 donor l0: True expected external SD estimate -0.8 accepted external SD estimate 9.2
+Injected excluded table field forwarded into joined l0: FORBIDDEN_TOY_MARKER
+First-pass edge mutated an unseen recipient; supplementary observed-recipient mutation demonstrates the same missing validation can directly alter visible estimates. Initial fixture/log retained unchanged.
