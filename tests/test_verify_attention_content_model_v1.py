@@ -118,7 +118,7 @@ class IndependentReconstructionFixtures(unittest.TestCase):
             actual=verifier.head_reference(maps,native)
             torch.testing.assert_close(actual,expected,atol=1e-6,rtol=1e-5)
             fields=verifier.fields_reference(actual)
-            expected_fields=torch.stack([role_fields(item).tensor() for item in actual.reshape(-1,3,4,4)]).reshape(2,3,2,4,4)
+            expected_fields=torch.stack([role_fields(item) for item in actual.reshape(-1,3,4,4)]).reshape(2,3,2,4,4)
             torch.testing.assert_close(fields,expected_fields,atol=1e-6,rtol=1e-5)
             uniform=verifier.fields_reference(torch.tensor([0.,3.,-2.])[:,None,None].expand(3,4,4))
             self.assertTrue(torch.equal(uniform,torch.full((2,4,4),1/16)))
@@ -194,6 +194,77 @@ class IndependentReconstructionFixtures(unittest.TestCase):
                 with self.assertRaises(FileExistsError):
                     verifier.main()
             self.assertEqual(report.read_bytes(),first)
+
+    def test_nonfinite_primitive_evidence_retains_original_failure_and_all_checks(self):
+        # Synthetic CLI failure only: no registration, artifacts or numerical run.
+        def fail_with_nonfinite(args,audit):
+            audit.check('fixture_bad_count',False,actual=float('nan'),expected=300)
+            audit.check('fixture_bad_bound',False,actual=float('inf'),expected=1)
+            audit.check('fixture_finite_record',True,actual=7,expected=7)
+            raise ValueError('fixture original verification failure')
+        with TemporaryDirectory() as directory:
+            root=Path(directory);report=root/'fixture-nonfinite.json'
+            argv=['fixture_verifier','--phase','fit','--registration',str(root/'unused.json'),'--registration-commit','a'*40,
+                '--phase-commit','b'*40,'--preservation-checkout',str(root),'--report',str(report),'--ack-first-phase-preserved']
+            with patch.object(sys,'argv',argv),patch.object(verifier,'run',side_effect=fail_with_nonfinite),patch.object(torch,'load') as loader,redirect_stdout(io.StringIO()):
+                with self.assertRaises(SystemExit) as stopped:
+                    verifier.main()
+                self.assertEqual(stopped.exception.code,1);loader.assert_not_called()
+            raw=report.read_bytes();value=json.loads(raw)
+            self.assertEqual(value['status'],'failed_first_phase_reconstruction');self.assertFalse(value['hard_invariants_pass'])
+            self.assertEqual(value['check_count'],3);self.assertEqual(len(value['checks']),3)
+            self.assertEqual([row['name'] for row in value['checks']],['fixture_bad_count','fixture_bad_bound','fixture_finite_record'])
+            self.assertEqual([row['passed'] for row in value['checks']],[False,False,True])
+            self.assertEqual(value['checks'][0]['actual'],{'type':'float','value':'nan','finite':False})
+            self.assertEqual(value['checks'][1]['actual'],{'type':'float','value':'inf','finite':False})
+            self.assertIn('fixture original verification failure',value['exception'])
+            self.assertIn('ValueError',value['serialization_error'])
+            self.assertIn('report_serialization_failure',value['errors'])
+            json.dumps(value,allow_nan=False)
+            with patch.object(sys,'argv',argv),redirect_stdout(io.StringIO()):
+                with self.assertRaises(FileExistsError):
+                    verifier.main()
+            self.assertEqual(report.read_bytes(),raw)
+
+    def test_optimizer_step_fractional_deviation_rejected_without_relaxing_numerical_tolerance(self):
+        self.assertTrue(verifier.optimizer_step_is_exact_300(torch.tensor(300.)))
+        self.assertTrue(verifier.optimizer_step_is_exact_300(300))
+        fractional=torch.tensor(300.0001)
+        ordinary_numeric=verifier.Audit();ordinary_numeric.compare('fixture_continuous_numeric',fractional,300.)
+        self.assertTrue(ordinary_numeric.checks[0]['passed'])
+        self.assertFalse(verifier.optimizer_step_is_exact_300(fractional))
+        for value in (299,301,float('nan'),float('inf'),'300',torch.tensor([300.,300.])):
+            self.assertFalse(verifier.optimizer_step_is_exact_300(value))
+        self.assertEqual((verifier.ATOL,verifier.RTOL),(1e-6,1e-5))
+
+    def test_writer_fault_preserves_partial_first_path_and_separate_full_evidence(self):
+        class FaultingStream:
+            def __init__(self,raw):
+                self.raw=raw
+            def write(self,text):
+                self.raw.write(text[:20]);self.raw.flush()
+                raise OSError('fixture first writer fault')
+            def flush(self):
+                self.raw.flush()
+            def close(self):
+                self.raw.close()
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/'fixture-partial.json';audit=verifier.Audit()
+            audit.check('fixture_original_failed_gate',False,actual=2,expected=1)
+            report=dict(status='failed_first_phase_reconstruction',phase='fit',hard_invariants_pass=False,
+                check_count=1,error_count=1,checks=audit.checks,errors=audit.errors,exception='fixture original exception')
+            with path.open('x') as raw:
+                result,written=verifier.write_first_report(FaultingStream(raw),path,report,audit)
+            self.assertFalse(written);self.assertFalse(result['hard_invariants_pass'])
+            partial=path.read_bytes();self.assertEqual(len(partial),20)
+            sidecar=path.with_name(path.name+'.writer_failure.json');value=json.loads(sidecar.read_text())
+            self.assertEqual(value['status'],'failed_first_report_retention')
+            self.assertIn('fixture first writer fault',value['original_writer_error'])
+            self.assertEqual(value['original_verification_exception'],'fixture original exception')
+            self.assertEqual(value['first_report']['checks'][0]['name'],'fixture_original_failed_gate')
+            self.assertIn('report_writer_failure',value['first_report']['errors'])
+            self.assertFalse(value['retry_or_primary_overwrite_performed'])
+            self.assertEqual(path.read_bytes(),partial)
 
 
 if __name__=='__main__':

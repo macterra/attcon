@@ -53,6 +53,95 @@ def tensor_hash(value):
     return h.hexdigest()
 
 
+def optimizer_step_is_exact_300(value):
+    """Discrete numeric count; deliberately independent of ATOL/RTOL."""
+    tensor_module=globals().get('torch')
+    if type(value) not in (int,float) and not (tensor_module is not None and isinstance(value,tensor_module.Tensor)):
+        return False
+    try:
+        number=float(value)
+        return math.isfinite(number) and number==300
+    except (TypeError,ValueError,OverflowError,RuntimeError):
+        return False
+
+
+def tagged_evidence(value,ancestors=None):
+    """Lossless primitive tags for strict JSON; never changes retained archives."""
+    if type(value) is float and not math.isfinite(value):
+        return dict(type='float',value=repr(value),finite=False)
+    if type(value) is int:
+        try:
+            json.dumps(value,allow_nan=False)
+            return value
+        except ValueError:
+            return dict(type='int',value=hex(value),encoding='hex')
+    if value is None or type(value) in (str,bool,float):
+        return value
+    ancestors=set() if ancestors is None else ancestors
+    identity=id(value)
+    if identity in ancestors:
+        return dict(type='cyclic_reference',value=type(value).__qualname__)
+    nested=ancestors|{identity}
+    if isinstance(value,dict):
+        if all(type(key) is str for key in value):
+            return {key:tagged_evidence(child,nested) for key,child in value.items()}
+        return dict(type='dict',value=[dict(key=tagged_evidence(key,nested),value=tagged_evidence(child,nested))
+            for key,child in value.items()])
+    if isinstance(value,(tuple,list)):
+        return [tagged_evidence(child,nested) for child in value]
+    if isinstance(value,bytes):
+        return dict(type='bytes',value=value.hex(),encoding='hex')
+    tensor_module=globals().get('torch')
+    if tensor_module is not None and isinstance(value,tensor_module.Tensor):
+        return dict(type='torch.Tensor',dtype=str(value.dtype),shape=list(value.shape),
+            value=tagged_evidence(value.detach().cpu().tolist(),nested))
+    return dict(type=type(value).__module__+'.'+type(value).__qualname__,value=repr(value),encoding='repr')
+
+
+def mark_report_failed(report,audit,name):
+    audit.errors.append(name)
+    report.update(status='failed_first_phase_reconstruction',hard_invariants_pass=False,
+        check_count=len(audit.checks),error_count=len(audit.errors),checks=audit.checks,errors=audit.errors)
+
+
+def serialize_first_report(report,audit):
+    try:
+        return report,json.dumps(report,indent=2,allow_nan=False)+'\n'
+    except BaseException:
+        failure=traceback.format_exc()
+        mark_report_failed(report,audit,'report_serialization_failure')
+        report['serialization_error']=failure
+        report['evidence_encoding']='Original nonfinite/unsupported primitive evidence retained with explicit type/value tags.'
+        safe=tagged_evidence(report)
+        return safe,json.dumps(safe,indent=2,allow_nan=False)+'\n'
+
+
+def write_first_report(stream,path,report,audit):
+    safe,serialized=serialize_first_report(report,audit)
+    try:
+        stream.write(serialized)
+        stream.flush()
+        stream.close()
+    except BaseException:
+        original_writer_error=traceback.format_exc()
+        mark_report_failed(report,audit,'report_writer_failure')
+        record=tagged_evidence(dict(schema='attention_content_model_v1_first_report_writer_failure',
+            status='failed_first_report_retention',hard_invariants_pass=False,first_report_path=str(path),
+            original_writer_error=original_writer_error,original_verification_exception=report.get('exception'),
+            original_serialization_error=report.get('serialization_error'),first_report=report,
+            retry_or_primary_overwrite_performed=False))
+        secondary=path.with_name(path.name+'.writer_failure.json')
+        try:
+            with secondary.open('x',encoding='utf-8') as retention:
+                retention.write(json.dumps(record,indent=2,allow_nan=False)+'\n');retention.flush()
+        except BaseException:
+            record['secondary_writer_error']=traceback.format_exc()
+            # Last available transport is the unchanged external stderr capture.
+            print(json.dumps(record,allow_nan=False),file=sys.stderr,flush=True)
+        return record['first_report'],False
+    return safe,True
+
+
 class Audit:
     def __init__(self):
         self.checks, self.errors = [], []
@@ -474,7 +563,12 @@ def verify_fit(audit,seed,episode,fit,completed):
             audit.check(name+'/'+source+'/adam/'+key,group[key]==value)
         audit.check(name+'/'+source+'/optimizer_state_count',len(optimizer['state'])==len(weights)==8)
         for parameter,state in optimizer['state'].items():
-            audit.compare(name+f'/{source}/optimizer/{parameter}/step',state['step'],300.)
+            try:
+                actual_count=float(state['step'])
+            except (TypeError,ValueError,OverflowError,RuntimeError):
+                actual_count=tagged_evidence(state['step'])
+            audit.check(name+f'/{source}/optimizer/{parameter}/step',optimizer_step_is_exact_300(state['step']),
+                actual_count=actual_count,expected_count=300,exact_numeric_count=True,atol=0.,rtol=0.)
             audit.check(name+f'/{source}/optimizer/{parameter}/keys',set(state)=={'step','exp_avg','exp_avg_sq'})
             expected_shape=list(weights.values())[group['params'].index(parameter)].shape
             for moment in ('exp_avg','exp_avg_sq'):
@@ -1488,9 +1582,9 @@ def main():
         report.update(status='passed_phase_reconstruction' if not audit.errors else 'failed_first_phase_reconstruction',
             hard_invariants_pass=not audit.errors,check_count=len(audit.checks),error_count=len(audit.errors),
             checks=audit.checks,errors=audit.errors,retry_or_repair_performed=False)
-        json.dump(report,stream,indent=2,allow_nan=False);stream.write('\n');stream.flush()
+        report,write_succeeded=write_first_report(stream,args.report,report,audit)
         print(json.dumps({key:report[key] for key in ('status','phase','hard_invariants_pass','check_count','error_count')}),flush=True)
-    if audit.errors:
+    if audit.errors or not write_succeeded:
         sys.exit(1)
 
 
