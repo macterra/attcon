@@ -140,6 +140,13 @@ The exact amended boundary validated the committed full corrected fit pass befor
 creating its exclusive claim. All fixed execution inventories passed. The phase
 has not yet received its independent numerical or semantic assessment.
 
+The [first read-only development ledger](../audits/attention_content_model_v1/dev_summary/first_summary_manifest.json)
+is preserved losslessly. It retains every encoder/source, original bootstrap
+interval, time curve, support distance, field discrepancy, ambiguity and donor
+opportunity. Its single execution used no model forward pass, fitting or new
+worlds; the full raw ledger is bound by its published compressed transport.
+Descriptive summaries do not qualify semantics or replace numerical reconstruction.
+
 Next preserve its independent reconstruction and separate literal-content/manner
 assessment, then release fixed heldout only through those committed receipts.
 Errors, null interventions and ordinary/analytic parity remain results. Controller
