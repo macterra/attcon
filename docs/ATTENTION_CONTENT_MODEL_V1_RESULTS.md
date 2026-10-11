@@ -5,7 +5,7 @@ corrected reconstruction **passes all 143,599 checks**. The original failed
 reconstruction remains preserved. The first fixed development phase has completed;
 its independent reconstruction passes all 134,367 checks. Estimated location
 content and bookkeeping qualify; presentation manner remains unqualified.
-Fixed technical heldout is next. No Reporter
+The first fixed technical heldout phase has completed; reconstruction is next. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -196,7 +196,15 @@ preserves that negative and permits the fixed technical heldout phase after
 publication, without refitting or releasing Reporter. Review uses a separate task
 within the same AI family; it is not human or independent-family validation.
 
-Next release fixed heldout only through these committed receipts and assessment.
+## First fixed heldout execution
+
+The [first heldout execution record](../audits/attention_content_model_v1/run/first_heldout_cli_execution.json)
+records exit0 and its [receipt](../audits/attention_content_model_v1/run/heldout/receipt.json)
+binds all three archives and the complete first log. All 288 reserved worlds ran
+once through the reviewed boundary after the committed dev assessment. Original
+fitted weights and normalizer remained unchanged; no adaptation or Reporter was used.
+The complete first outputs are preserved before independent reconstruction.
+This execution does not change the frozen negative manner disposition.
 Errors, null interventions and ordinary/analytic parity remain results. Controller
 and Reporter are distinct; accurate prediction alone does not achieve the
 qualia-source goal.
