@@ -67,6 +67,18 @@ and a no-op optimizer; it performs no registered-model optimization. A manual fa
 scalar mutation checks that the preserved snapshot is independent. These passing
 fixtures provide no learned predictive-performance or presentation evidence.
 Independent reconstruction and the registered study remain pending. The
+independent verifier's first
+[reconstruction suite](../audits/attention_content_model_v1/reconstruction/first_reconstruction_test_run.log)
+passes **13/13**, after exact source and scoped review were published at `7ca388e`.
+Handcrafted inputs and fresh modules check explicit GRU/decoder equations,
+normalizer moments, native head fields, content metrics and paired quantiles.
+Mocked failures check commit binding, exact optimizer counts, preservation of
+nonfinite evidence and a separate full record when primary report writing fails.
+The original static rejections remain preserved. No scientific archive or fitted
+checkpoint was loaded by these fixtures; actual phase reconstruction remains
+pending. Complete source approval and immutable registration still precede fitting.
+
+The
 heldout boundary must also bind an actual passing independent dev reconstruction
 and source semantic assessment before release. The first
 [dev-release boundary suite](../audits/attention_content_model_v1/runner_software/first_dev_release_test_run.log)
