@@ -39,8 +39,22 @@ presentation manner or consciousness-like reporting.
 
 The native prerequisite is now satisfied numerically: the separately labelled
 [revalidation](SPATIAL_NATIVE_TASK_V1_RESULTS.md) passes all 206,070 checks of the
-retained experiment. The experiment engine and phase runner still need complete
-integration review, independent reconstruction and committed input registration.
+retained experiment. The corrected phase runner's first
+[boundary suite](../audits/attention_content_model_v1/runner_software/first_boundary_test_run.log)
+passes **7/7** after exact source and scoped static approval were published at
+`d1e3d36`. These fixtures use temporary files and mocked bindings/import failures;
+they check phase inventory rejection, commit pinning and preservation of an
+original error when partial-output retention also fails. They do not import torch,
+load scientific inputs or certify the engine's tensor checks.
+
+The experiment engine and phase runner still need complete integration review,
+independent reconstruction and committed input registration. The engine's first
+review identified E1–E5 provenance, state-isolation and diagnostic omissions;
+prospective corrections retain complete analytic masks, actual prediction/update
+manifests, named assembly gates, completed-source failure snapshots and full paired
+diagnostics. Their runtime and independent reconstruction remain pending. The
+heldout boundary must also bind an actual passing independent dev reconstruction
+and source semantic assessment before release.
 Fit, dev and heldout releases must follow the design's immutable receipt sequence.
 Their first outputs, errors, ordinary/analytic parity and negative semantic
 endpoints will be retained. Literal source contents and later neutral report

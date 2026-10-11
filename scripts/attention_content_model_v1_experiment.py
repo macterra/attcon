@@ -101,11 +101,20 @@ def _feedback(episode, completion):
                             _command(episode, completion-1), completion, completion-1, completion)
 
 
-def _visibility(observation, state, kind='primary'):
+def _state_hashes(state):
+    if isinstance(state,SourceState):
+        return {'hidden':tensor_hash(state.hidden)}
+    return {'survivors':tensor_hash(state.survivors),
+            'revealed_symbols':tensor_hash(state.revealed_symbols)}
+
+
+def _visibility(observation, state, candidate_address, kind='primary'):
     return {'kind': kind, 'decision_time': observation.decision_time,
             'last_revealed_at': observation.last_revealed_at,
             'source_revealed_through': state.revealed_through,
             'update_command_indices': list(state.update_command_indices),
+            'source_key':state.source_key,'state_hashes':_state_hashes(state),
+            'candidate_address_hash':tensor_hash(candidate_address),
             'V_hash': tensor_hash(observation.v),
             'last_revealed_W_hash': tensor_hash(observation.last_revealed_w),
             'observed_mask_hash': tensor_hash(observation.observed),
@@ -113,6 +122,43 @@ def _visibility(observation, state, kind='primary'):
             'previous_symbol_hash': tensor_hash(observation.previous_command.symbol) if observation.previous_command else None,
             'current_completion_visible': observation.decision_time == 0,
             'fork_outcomes_visible': False}
+
+
+def _predict_logged(source,observation,state,candidate_address,calls,kind='primary'):
+    record = _visibility(observation,state,candidate_address,kind)
+    record['call_index'] = len(calls)
+    calls.append(record)
+    prediction = source.predict(observation,state,candidate_address)
+    record.update({'completed':True,'post_call_state_hashes':_state_hashes(state),
+                   'current_output_hash':tensor_hash(prediction.current),
+                   'next_output_hash':tensor_hash(prediction.next),
+                   'post_call_input_hashes':{key:value for key,value in
+                       _visibility(observation,state,candidate_address,kind).items()
+                       if key in ('V_hash','last_revealed_W_hash','observed_mask_hash',
+                                  'candidate_address_hash','previous_address_hash','previous_symbol_hash')}})
+    return prediction
+
+
+def _update_logged(source,state,v,feedback,calls,kind,donor_schedule=None,donor_decision=None):
+    record = {'kind':kind,'source_key':state.source_key,'call_index':len(calls),
+        'pre_revealed_through':state.revealed_through,
+        'pre_update_command_indices':list(state.update_command_indices),
+        'pre_state_hashes':_state_hashes(state),'V_hash':tensor_hash(v),
+        'completed_W_hash':tensor_hash(feedback.completed_w),
+        'completed_at':feedback.completed_at,'command_index':feedback.command_index,
+        'scored_decision_at':feedback.scored_decision_at,
+        'command_address_hash':tensor_hash(feedback.command.address),
+        'command_symbol_hash':tensor_hash(feedback.command.symbol),
+        'observed_mask_hash':tensor_hash(torch.ones(v.shape[0],4,dtype=torch.bool)),
+        'pre_reveal_mask':[index<=state.revealed_through for index in range(feedback.completed_at+1)],
+        'post_reveal_mask':[True]*(feedback.completed_at+1),
+        'donor_schedule':donor_schedule,'donor_decision_time':donor_decision}
+    calls.append(record)
+    updated = source.update(state,v,feedback)
+    record.update({'completed':True,'post_state_hashes':_state_hashes(updated),
+        'post_revealed_through':updated.revealed_through,
+        'post_update_command_indices':list(updated.update_command_indices)})
+    return updated
 
 
 def fit_sources(encoder_seed, evaluator_episode, log=None, partial=None):
@@ -127,7 +173,9 @@ def fit_sources(encoder_seed, evaluator_episode, log=None, partial=None):
     initial = {name:deepcopy(model.state_dict()) for name,model in models.items()}
     terminal, training_log, visibility = {}, [], {}
     progress = {'stage':'initialized','normalizer':normalizer,'initial_checkpoints':initial,
-                'training_log':training_log,'fit_visibility':visibility,'completed_updates':{}}
+                'training_log':training_log,'fit_visibility':visibility,'completed_updates':{},
+                'source_states':{name:{'checkpoint':model.state_dict(),'optimizer':None,
+                    'completed_updates':0,'status':'not_started'} for name,model in models.items()}}
     if partial is not None:
         partial['engine_fit'] = progress
     rows = torch.arange(WORLDS)
@@ -135,6 +183,9 @@ def fit_sources(encoder_seed, evaluator_episode, log=None, partial=None):
         model.train()
         optimizer = torch.optim.Adam(model.parameters(), lr=.003, betas=(.9, .999),
                                      eps=1e-8, weight_decay=0, amsgrad=False, foreach=False)
+        source_progress = progress['source_states'][name]
+        source_progress.update({'status':'active','checkpoint':model.state_dict(),
+                                'optimizer':optimizer.state_dict()})
         source_visibility = []
         visibility[name] = source_visibility
         for update in range(300):
@@ -147,10 +198,10 @@ def fit_sources(encoder_seed, evaluator_episode, log=None, partial=None):
                 obs = _observation(evaluator_episode, time)
                 address = evaluator_episode['command_addresses'][:, time]
                 progress.update({'stage':'before_prediction','decision_time':time,
-                                 'current_observation':_visibility(obs,state)})
+                                 'current_observation':_visibility(obs,state,address)})
                 prediction = model.predict(obs, state, address)
                 if update == 0:
-                    source_visibility.append(_visibility(obs, state))
+                    source_visibility.append(_visibility(obs, state,address))
                 if time:
                     previous = obs.previous_command.address
                     predicted = prediction.current[rows, previous]
@@ -175,17 +226,23 @@ def fit_sources(encoder_seed, evaluator_episode, log=None, partial=None):
                 progress['stage'] = 'before_optimizer_step'
                 optimizer.step()
             except BaseException:
+                source_progress.update({'status':'failed','checkpoint':model.state_dict(),
+                    'optimizer':optimizer.state_dict(),'gradients':{key:p.grad for key,p in model.named_parameters()}})
                 progress.update({'stage':'failed_optimizer_or_backward',
                     'live_checkpoint':model.state_dict(),'live_optimizer':optimizer.state_dict(),
                     'live_gradients':{key:parameter.grad for key,parameter in model.named_parameters()}})
                 raise
             progress['completed_updates'][name] = update+1
+            source_progress.update({'checkpoint':model.state_dict(),'optimizer':optimizer.state_dict(),
+                                    'completed_updates':update+1})
             record = {'source': name, 'update_index': update, 'completed_updates': update+1,
                       'loss': float(loss.detach()), 'current_loss': float(current_loss.detach()),
                       'next_loss': float(next_loss.detach()), 'preclip_gradient_norm': float(gradient_norm)}
             training_log.append(record); _emit(log, record)
         model.eval()
         terminal[name] = deepcopy(optimizer.state_dict())
+        source_progress.update({'status':'completed','checkpoint':deepcopy(model.state_dict()),
+                                'optimizer':terminal[name],'completed_updates':300})
     return {'models': models, 'normalizer': normalizer,
             'initial_checkpoints':initial,
             'checkpoints': {name: deepcopy(model.state_dict()) for name, model in models.items()},
@@ -234,6 +291,105 @@ def _field_metrics(estimated, actual, truth_cells):
             'max_tie_count': (flat == top[..., :1]).sum(-1)}
 
 
+def _field_scalars(fields):
+    flat = fields.flatten(-2)
+    top = flat.topk(2,dim=-1).values
+    _order,columns = _coarse(fields)
+    return {'entropy':-(flat.double()*flat.double().clamp_min(1e-300).log()).sum(-1),
+            'maxima':top[...,0],'top_two_margin':top[...,0]-top[...,1],
+            'expected_columns':columns}
+
+
+def _donor_field_diagnostics(ledger,patched_prediction,prediction,current_fields,assembled_next_fields,
+                             previous,address,readout,actual_evidence,actual_next_fields,episode,time,normalizer):
+    rows = torch.arange(WORLDS)
+    patched_current_evidence = readout.consume(patched_prediction.current[rows,previous])
+    patched_next_evidence = readout.consume(patched_prediction.next[rows[:,None],torch.arange(3)[None,:],address[:,None]])
+    patched_current_fields = current_fields.clone()
+    patched_current_fields[rows,previous] = patched_current_evidence.role_fields
+    patched_next_fields = patched_current_fields[:,None].expand(-1,3,-1,-1,-1,-1).clone()
+    patched_next_fields[rows[:,None],torch.arange(3)[None,:],address[:,None]] = patched_next_evidence.role_fields
+    actual_current_fields = actual_evidence.role_fields[:,time]
+    actual_full_next = actual_current_fields[:,None].expand(-1,3,-1,-1,-1,-1).clone()
+    actual_full_next[rows[:,None],torch.arange(3)[None,:],address[:,None]] = actual_next_fields
+    _append(ledger,'selected_current_fields',patched_current_evidence.role_fields)
+    _append(ledger,'current_full_field_changed',~_per_world_equal(patched_current_fields,current_fields))
+    _append(ledger,'next_full_field_changed',~_per_world_equal(patched_next_fields,assembled_next_fields))
+    for label,patched,baseline,actual in (
+            ('current',patched_current_fields,current_fields,actual_current_fields),
+            ('next',patched_next_fields,assembled_next_fields,actual_full_next)):
+        _append(ledger,label+'_full_field_l1_change_by_address',(patched-baseline).abs().mean((-3,-2,-1)))
+        _append(ledger,label+'_full_field_l1_to_fixed_W_by_address',(patched-actual).abs().mean((-3,-2,-1)))
+        before,after = _field_scalars(baseline),_field_scalars(patched)
+        for key in before:
+            _append(ledger,label+'_full_'+key+'_change',after[key]-before[key])
+        _append(ledger,label+'_full_cell_disagreement_with_fixed_W',patched.flatten(-2).argmax(-1) != actual.flatten(-2).argmax(-1))
+        _append(ledger,label+'_full_coarse_disagreement_with_fixed_W',_coarse(patched)[0] != _coarse(actual)[0])
+    for label,estimated,actual,cells in (
+            ('current',patched_current_evidence.role_fields,actual_current_fields[rows,previous],episode['evaluator_cells'][rows,previous]),
+            ('next',patched_next_evidence.role_fields,actual_next_fields,episode['evaluator_cells'][rows,address][:,None].expand(-1,3,-1,-1))):
+        for key,value in _field_metrics(estimated,actual,cells).items():
+            _append(ledger,label+'_factual_'+key,value)
+    _append(ledger,'current_full_normalized_mse_to_fixed_W_by_address',
+            (normalizer.normalize(patched_prediction.current)-normalizer.normalize(episode['actual_completed_w'][:,time])).square().mean((-3,-2,-1)))
+    _append(ledger,'next_full_normalized_mse_to_fixed_W_by_address',
+            (normalizer.normalize(patched_prediction.next)-normalizer.normalize(episode['actual_forks'][:,time])).square().mean((-3,-2,-1)))
+
+
+def _donor_summaries(ledgers):
+    result = {}
+    for schedule,ledger in ledgers.items():
+        summary = {'all_predetermined_pairs':WORLDS*3,'changed_only_subset_used':False,
+                   'coincident_address_pairs':int(ledger['coincident_schedule_addresses'].sum())}
+        for key,value in ledger.items():
+            if key.endswith('_changed') or key.endswith('_disagreement_with_fixed_W'):
+                summary[key+'_fraction_all_pairs'] = float(value.double().mean())
+            elif '_l1_' in key or key.endswith('_mse_to_fixed_W_by_address'):
+                summary[key+'_mean_all_pairs'] = float(value.double().mean())
+            elif '_full_' in key and key.endswith('_change'):
+                summary[key+'_mean_abs_all_pairs'] = float(value.double().abs().mean())
+            if key.endswith('_disagreement_with_fixed_W') and 'cell_' in key:
+                summary[key+'_red_fraction'] = float(value[...,0].double().mean())
+                summary[key+'_blue_fraction'] = float(value[...,1].double().mean())
+        result[schedule] = summary
+    return result
+
+
+def _world_primary_metrics(tensors,episode):
+    metrics = {'current_mse':tensors['current_selected_normalized_mse'].mean(1),
+        'next_mse':tensors['next_selected_normalized_mse'].mean((1,2)),
+        'current_full_mse':tensors['current_full_normalized_mse_by_address'][:,1:].mean((1,2)),
+        'next_full_mse':tensors['next_full_normalized_mse_by_address'].mean((1,2,3)),
+        'current_field_l1':tensors['current_field_l1'].mean(1),
+        'next_field_l1':tensors['next_field_l1'].mean((1,2)),
+        'current_full_field_l1':tensors['current_full_field_l1_by_address'][:,1:].mean((1,2)),
+        'next_full_field_l1':tensors['next_full_field_l1_by_address'].mean((1,2,3)),
+        'current_coarse_disagreement':tensors['current_coarse_disagreement'].double().mean(1),
+        'next_coarse_disagreement':tensors['next_coarse_disagreement'].double().mean((1,2)),
+        'current_full_coarse_disagreement':tensors['current_full_coarse_disagreement_by_address'][:,1:].double().mean((1,2)),
+        'next_full_coarse_disagreement':tensors['next_full_coarse_disagreement_by_address'].double().mean((1,2,3)),
+        'current_full_cell_disagreement':tensors['current_full_cell_disagreement_by_address'][:,1:].double().mean((1,2,3)),
+        'next_full_cell_disagreement':tensors['next_full_cell_disagreement_by_address'].double().mean((1,2,3,4)),
+        'policy_targeting_accuracy':tensors['policy_action_correct'].float().mean(1)}
+    inherited = tensors['next_full_normalized_mse_by_address'].clone()
+    row = torch.arange(WORLDS)[:,None,None]
+    time = torch.arange(15)[None,:,None]
+    symbol = torch.arange(3)[None,None,:]
+    inherited[row,time,symbol,episode['command_addresses'][:,:,None]] = 0
+    metrics['next_inherited_mse'] = inherited.sum((1,2,3))/(15*3*3)
+    for role,role_name in enumerate(('red','blue')):
+        for quantity in ('cell_disagreement','estimated_cell_correct','actual_cell_correct'):
+            metrics['current_'+role_name+'_'+quantity] = tensors['current_'+quantity][...,role].double().mean(1)
+            metrics['next_'+role_name+'_'+quantity] = tensors['next_'+quantity][...,role].double().mean((1,2))
+        metrics['current_full_'+role_name+'_cell_disagreement'] = tensors['current_full_cell_disagreement_by_address'][:,1:,...,role].double().mean((1,2))
+        metrics['next_full_'+role_name+'_cell_disagreement'] = tensors['next_full_cell_disagreement_by_address'][...,role].double().mean((1,2,3))
+        mask = episode['query_roles'][:,12:] == role
+        metrics['policy_'+role_name+'_accuracy'] = (tensors['policy_action_correct'].double()*mask).sum(1)/mask.sum(1)
+    metrics['current_cell_disagreement'] = tensors['current_cell_disagreement'].double().mean((1,2))
+    metrics['next_cell_disagreement'] = tensors['next_cell_disagreement'].double().mean((1,2,3))
+    return metrics
+
+
 def _append(records, key, value):
     records.setdefault(key, []).append(value.detach().clone())
 
@@ -263,11 +419,17 @@ def _native_action(controller, v, w, addresses, roles, time):
             'tie_count': torch.tensor(ties), 'coarse_order': orders}
 
 
-def _controls(controller, episode):
+def _controls(controller, episode, partial=None):
     checks, provenance, outputs = {}, [], {}
+    if partial is not None:
+        partial.update({'actual_control_checks_in_progress':checks,
+                        'actual_control_provenance':provenance,'actual_control_outputs_in_progress':outputs})
     v = episode['V']
     for time in (12, 13, 14):
         rows, emitted = [], {}
+        if partial is not None:
+            partial.update({'actual_control_time_in_progress':time,
+                'actual_control_world_checks':rows,'actual_control_world_outputs':emitted})
         for world in range(WORLDS):
             address = ADDRESSES[int(episode['command_addresses'][world, time])]
             role = ('red', 'blue')[int(episode['query_roles'][world, time])]
@@ -316,8 +478,10 @@ def _controls(controller, episode):
     return _stack(checks), provenance, _stack(outputs)
 
 
-def _donors(episode):
+def _donors(episode, partial=None):
     result, provenance = {}, []
+    if partial is not None:
+        partial.update({'shared_donor_prefixes':result,'donor_provenance':provenance})
     for time in (12, 13, 14):
         for schedule, address in (('current', episode['command_addresses'][:, time-1]),
                                   ('prospective', episode['command_addresses'][:, time])):
@@ -339,14 +503,34 @@ def _donors(episode):
     return result, provenance
 
 
-def _replay_donor(source, episode, prefix):
+def _replay_donor(source, episode, prefix, calls, schedule):
     state = source.initial_state(WORLDS)
     for index in prefix['permitted_feedback_command_indices']:
         completion = index+1
         fb = RevealedFeedback(prefix['actual_completed_w'][:, completion], _command(episode, index),
                               completion, index, completion)
-        state = source.update(state, episode['V'], fb)
+        state = _update_logged(source,state,episode['V'],fb,calls,'donor_replay',
+                               schedule,prefix['decision_time'])
     return state
+
+
+def _decoder_probes(source,v,state,records,time,schedule):
+    batch = v.shape[0]
+    selected = v.reshape(batch*4,24,4,4)
+    latent = (state.hidden.reshape(batch*4,48) if isinstance(state,SourceState)
+              else state.survivors.reshape(batch*4,6))
+    outputs = []
+    for symbol in range(3):
+        record = {'kind':'address_local_decoder_probe','source_key':state.source_key,
+            'decision_time':time,'donor_schedule':schedule,'symbol':symbol,
+            'state_hashes':_state_hashes(state),'V_hash':tensor_hash(v),
+            'addresses':'all four, flattened within each world','completed':False}
+        records.append(record)
+        output = source.decode(selected,latent,torch.full((batch*4,),symbol,dtype=torch.long))
+        record.update({'completed':True,'output_hash':tensor_hash(output),
+                       'output_shape':list(output.shape)})
+        outputs.append(output.reshape(batch,4,24,4,4))
+    return torch.stack(outputs,2)
 
 
 def _remap_state(state):
@@ -406,11 +590,12 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
     progress['actual_operator_family'] = family
     family_evidence = readout.consume(family)
     actual_evidence = readout.consume(episode['actual_completed_w'])
-    source_tensors, source_checks, visibility, per_world_metrics = {}, {}, {}, {}
+    source_tensors, source_checks, visibility, update_visibility, decoder_visibility, per_world_metrics = {}, {}, {}, {}, {}, {}
     progress.update({'source_tensors':source_tensors,'source_checks':source_checks,'visibility':visibility,
                      'actual_evidence':actual_evidence})
-    shared_checks, actual_provenance, actual_control_outputs = _controls(controller, episode)
-    donors, donor_provenance = _donors(episode)
+    shared_checks, actual_provenance, actual_control_outputs = _controls(controller, episode,progress)
+    progress.update({'shared_checks':shared_checks,'actual_control_outputs':actual_control_outputs})
+    donors, donor_provenance = _donors(episode,progress)
     actual_actions = {}
     for time in (12, 13, 14):
         addresses, roles = episode['command_addresses'][:, time], episode['query_roles'][:, time]
@@ -420,18 +605,40 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
     analytic_secondary = {}
     for name, source in sources.items():
         state = source.initial_state(WORLDS)
-        records, checks, calls = {}, {}, []
+        records, checks, calls, updates, decoder_calls = {}, {}, [], [], []
         donor_records = {}
         progress.update({'source':name,'in_progress_records':records,'in_progress_checks':checks,
                          'in_progress_calls':calls,'in_progress_donor_records':donor_records})
+        progress.update({'in_progress_update_calls':updates,'in_progress_decoder_calls':decoder_calls})
         for time in range(15):
             obs = _observation(episode, time)
             address = episode['command_addresses'][:, time]
             progress.update({'stage':'before_primary_prediction','decision_time':time,
-                             'current_state':snapshot_state(state),'current_observation':_visibility(obs,state)})
-            prediction = source.predict(obs, state, address)
+                             'current_state':snapshot_state(state),'current_observation':_visibility(obs,state,address)})
+            prediction = _predict_logged(source,obs,state,address,calls)
             progress.update({'stage':'before_predicted_readout','latest_prediction':prediction})
-            calls.append(_visibility(obs, state))
+            call = calls[-1]
+            _append(checks,'observation_history_exact',torch.full((WORLDS,),
+                obs.decision_time == time and obs.last_revealed_at == max(0,time-1)
+                and state.revealed_through == max(0,time-1)
+                and state.update_command_indices == tuple(range(max(0,time-1)))
+                and bool(obs.observed.all()) and torch.equal(obs.v,v)
+                and (obs.previous_command is None if time == 0 else
+                     torch.equal(obs.previous_command.address,_command(episode,time-1).address)
+                     and torch.equal(obs.previous_command.symbol,_command(episode,time-1).symbol)),dtype=torch.bool))
+            _append(checks,'last_revealed_snapshot_exact',_per_world_equal(obs.last_revealed_w,episode['actual_completed_w'][:,max(0,time-1)]))
+            _append(checks,'prediction_inputs_unchanged_exact',torch.full((WORLDS,),
+                all(call[key] == value for key,value in call['post_call_input_hashes'].items()),dtype=torch.bool))
+            _append(checks,'prediction_state_unchanged_exact',torch.full((WORLDS,),call['state_hashes'] == call['post_call_state_hashes'],dtype=torch.bool))
+            if time == 0:
+                _append(checks,'initial_current_exact_v',_per_world_equal(prediction.current,v))
+            else:
+                copies = (prediction.current == obs.last_revealed_w).flatten(2).all(-1)
+                copies[rows,obs.previous_command.address] = True
+                _append(checks,'current_nonselected_copy_exact',copies.all(-1))
+            inheritance = (prediction.next == prediction.current[:,None]).flatten(3).all(-1)
+            inheritance[rows[:,None],torch.arange(3)[None,:],address[:,None]] = True
+            _append(checks,'next_noncandidate_inheritance_exact',inheritance.flatten(1).all(-1))
             selected_next = prediction.next[rows[:, None], torch.arange(3)[None, :], address[:, None]]
             next_evidence = readout.consume(selected_next)
             target_next = episode['actual_forks'][rows[:, None], time, torch.arange(3)[None, :], address[:, None]]
@@ -469,6 +676,10 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
             actual_fork_fields[rows[:,None],torch.arange(3)[None,:],address[:,None]] = actual_next_fields
             _append(records, 'next_full_field_l1_by_address', (assembled_next_fields-actual_fork_fields).abs().mean((-3,-2,-1)))
             _append(records, 'current_full_field_l1_by_address', (current_fields-actual_evidence.role_fields[:,time]).abs().mean((-3,-2,-1)))
+            _append(records,'current_full_cell_disagreement_by_address',current_fields.flatten(-2).argmax(-1) != actual_evidence.role_fields[:,time].flatten(-2).argmax(-1))
+            _append(records,'next_full_cell_disagreement_by_address',assembled_next_fields.flatten(-2).argmax(-1) != actual_fork_fields.flatten(-2).argmax(-1))
+            _append(records,'current_full_coarse_disagreement_by_address',_coarse(current_fields)[0] != _coarse(actual_evidence.role_fields[:,time])[0])
+            _append(records,'next_full_coarse_disagreement_by_address',_coarse(assembled_next_fields)[0] != _coarse(actual_fork_fields)[0])
             for label,value in (('next',selected_next),('current',prediction.current)):
                 _append(records,label+'_channel_mean',value.mean((-2,-1)))
                 _append(records,label+'_channel_std',value.std((-2,-1),correction=0))
@@ -489,8 +700,7 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                     weighted_fields.append((hypotheses.double()*weights[:,:,None,None,None]).sum(1).float())
                 _append(analytic_secondary, 'expectation_of_H_fields', torch.stack(weighted_fields,1))
             if name == 'A':
-                duplicate = ExactAlias(source).predict(obs,state,address)
-                calls.append(_visibility(obs,state,'same_weight_alias_duplicate'))
+                duplicate = _predict_logged(ExactAlias(source),obs,state,address,calls,'same_weight_alias_duplicate')
                 _append(checks,'alias_current_exact',_per_world_equal(duplicate.current,prediction.current))
                 _append(checks,'alias_next_exact',_per_world_equal(duplicate.next,prediction.next))
             if time >= 12:
@@ -516,24 +726,29 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                     _append(analytic_secondary,'expectation_of_H_policy_symbol',choose_from_maxima(role_fields.flatten(-2).max(-1).values))
                 moved_command = CommandBatch((obs.previous_command.address+1)%4,obs.previous_command.symbol)
                 moved_obs = replace(obs,v=v.roll(1,1),last_revealed_w=obs.last_revealed_w.roll(1,1),previous_command=moved_command,observed=obs.observed.roll(1,1))
-                moved_prediction = source.predict(moved_obs,_remap_state(state),(address+1)%4)
-                calls.append(_visibility(moved_obs,_remap_state(state),'address_remapping'))
+                moved_prediction = _predict_logged(source,moved_obs,_remap_state(state),(address+1)%4,calls,'address_remapping')
                 _append(checks,'address_current_equivariance',_per_world_close(moved_prediction.current,prediction.current.roll(1,1)))
                 _append(checks,'address_next_equivariance',_per_world_close(moved_prediction.next,prediction.next.roll(1,2)))
+                baseline_probes = _decoder_probes(source,v,state,decoder_calls,time,'baseline')
                 for schedule in ('current','prospective'):
                     prefix = donors[(time,schedule)]
-                    donor_state = _replay_donor(source,episode,prefix)
+                    donor_state = _replay_donor(source,episode,prefix,updates,schedule)
                     saved = snapshot_state(state)
                     progress.update({'stage':'before_donor_patch','donor_schedule':schedule,
                                      'donor_state':snapshot_state(donor_state),'recipient_state':saved})
                     patched = patch_addressed_state(state,donor_state,prefix['patched_addresses'])
-                    patched_prediction = source.predict(obs,patched,address)
-                    calls.append(_visibility(obs,patched,'donor_'+schedule))
+                    patched_prediction = _predict_logged(source,obs,patched,address,calls,'donor_'+schedule)
+                    patched_probes = _decoder_probes(source,v,patched,decoder_calls,time,schedule)
+                    probe_equal = (patched_probes == baseline_probes).flatten(3).all(-1).all(-1)
+                    probe_equal[rows,prefix['patched_addresses']] = True
+                    _append(checks,'patch_'+schedule+'_nonselected_decoder_exact',probe_equal.all(-1))
+                    patched_inheritance = (patched_prediction.next == patched_prediction.current[:,None]).flatten(3).all(-1)
+                    patched_inheritance[rows[:,None],torch.arange(3)[None,:],address[:,None]] = True
+                    _append(checks,'patch_'+schedule+'_next_inheritance_exact',patched_inheritance.flatten(1).all(-1))
                     patched_choice = readout.choose(patched_prediction,address,roles)
                     restored = restore_state(saved)
-                    restored_prediction = source.predict(obs,restored,address)
+                    restored_prediction = _predict_logged(source,obs,restored,address,calls,'restored_'+schedule)
                     restored_choice = readout.choose(restored_prediction,address,roles)
-                    calls.append(_visibility(obs,restored,'restored_'+schedule))
                     for key,value in (('current',_per_world_equal(restored_prediction.current,prediction.current)),
                                       ('next',_per_world_equal(restored_prediction.next,prediction.next)),
                                       ('policy',restored_choice.symbol == choice.symbol),
@@ -544,13 +759,19 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                         donor_h = patched.hidden == state.hidden
                         donor_h[rows,prefix['patched_addresses']] = True
                         isolation = donor_h.flatten(1).all(-1)
+                        selected_transfer = _per_world_equal(patched.hidden[rows,prefix['patched_addresses']],donor_state.hidden[rows,prefix['patched_addresses']])
                     else:
                         state_equal = _per_world_equal(restored.survivors,state.survivors) & _per_world_equal(restored.revealed_symbols,state.revealed_symbols)
                         masks = patched.survivors == state.survivors
                         masks[rows,prefix['patched_addresses']] = True
-                        isolation = masks.flatten(1).all(-1)
+                        seen_masks = patched.revealed_symbols == state.revealed_symbols
+                        seen_masks[rows,prefix['patched_addresses']] = True
+                        isolation = masks.flatten(1).all(-1) & seen_masks.flatten(1).all(-1)
+                        selected_transfer = (_per_world_equal(patched.survivors[rows,prefix['patched_addresses']],donor_state.survivors[rows,prefix['patched_addresses']])
+                            & _per_world_equal(patched.revealed_symbols[rows,prefix['patched_addresses']],donor_state.revealed_symbols[rows,prefix['patched_addresses']]))
                     _append(checks,'restore_'+schedule+'_state_exact',state_equal)
                     _append(checks,'patch_'+schedule+'_nonselected_state_exact',isolation)
+                    _append(checks,'patch_'+schedule+'_selected_state_transfer_exact',selected_transfer)
                     patch_address = prefix['patched_addresses']
                     unchanged_current = (patched_prediction.current == prediction.current).flatten(2).all(-1)
                     unchanged_next = (patched_prediction.next == prediction.next).flatten(3).all(-1).all(1)
@@ -560,6 +781,7 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                     _append(checks,'patch_'+schedule+'_nonselected_next_exact',unchanged_next.all(-1))
                     previous = obs.previous_command.address
                     donor_ledger = donor_records.setdefault(schedule,{})
+                    _append(donor_ledger,'coincident_schedule_addresses',previous == address)
                     _append(donor_ledger,'selected_current_maps',patched_prediction.current[rows,previous])
                     _append(donor_ledger,'selected_next_maps',patched_prediction.next[rows[:,None],torch.arange(3)[None,:],address[:,None]])
                     _append(donor_ledger,'policy_symbol',patched_choice.symbol)
@@ -575,28 +797,29 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                     _append(donor_ledger,'next_changed',~_per_world_equal(patched_prediction.next,prediction.next))
                     _append(donor_ledger,'policy_changed',patched_choice.symbol != choice.symbol)
                     _append(donor_ledger,'action_changed',selected_action != action['cell'])
+                    _donor_field_diagnostics(donor_ledger,patched_prediction,prediction,current_fields,
+                        assembled_next_fields,previous,address,readout,actual_evidence,actual_next_fields,
+                        episode,time,normalizer)
                     if isinstance(donor_state,SourceState):
                         _append(donor_ledger,'donor_hidden_at_patched_address',donor_state.hidden[rows,patch_address])
                     else:
                         _append(donor_ledger,'donor_survivors_at_patched_address',donor_state.survivors[rows,patch_address])
+                        _append(donor_ledger,'donor_revealed_symbols_at_patched_address',donor_state.revealed_symbols[rows,patch_address])
             if time:
-                state = source.update(state,v,_feedback(episode,time))
+                state = _update_logged(source,state,v,_feedback(episode,time),updates,'primary_feedback')
         # W15 is archived by the evaluator. There is no scored decision15 and
         # no fictitious post-scoring feedback tag or source update at that time.
         tensors = _stack(records)
         tensors['donors'] = {schedule:_stack(values) for schedule,values in donor_records.items()}
         tensors['terminal_state'] = (state.hidden.detach().clone() if isinstance(state,SourceState)
                                      else state.survivors.detach().clone())
+        if isinstance(state,AnalyticState):
+            tensors['terminal_revealed_symbols'] = state.revealed_symbols.detach().clone()
+        tensors['terminal_revealed_through'] = state.revealed_through
+        tensors['terminal_update_command_indices'] = state.update_command_indices
         source_tensors[name],source_checks[name],visibility[name] = tensors,_stack(checks),calls
-        per_world_metrics[name] = {'current_mse':tensors['current_selected_normalized_mse'].mean(1),
-                                  'next_mse':tensors['next_selected_normalized_mse'].mean((1,2)),
-                                  'current_field_l1':tensors['current_field_l1'].mean(1),
-                                  'next_field_l1':tensors['next_field_l1'].mean((1,2)),
-                                  'policy_targeting_accuracy':tensors['policy_action_correct'].float().mean(1)}
-        for role_index,role_name in enumerate(('red','blue')):
-            role_mask = episode['query_roles'][:,12:] == role_index
-            per_world_metrics[name]['policy_'+role_name+'_accuracy'] = (
-                tensors['policy_action_correct'].double()*role_mask).sum(1)/role_mask.sum(1)
+        update_visibility[name],decoder_visibility[name] = updates,decoder_calls
+        per_world_metrics[name] = _world_primary_metrics(tensors,episode)
         _emit(log,{'split':split,'source':name,'worlds':WORLDS,'completed_decisions':15})
     # Input/actual arrays are compacted only after exact reconstruction checks.
     family_matches = []
@@ -611,6 +834,8 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
         actual_next = episode['actual_forks'][rows,time,episode['command_symbols'][:,time]]
         family_matches.append(_per_world_equal(actual_next,episode['actual_completed_w'][:,time+1]))
     shared_checks['actual_family_reconstruction_exact'] = torch.stack(family_matches,1)
+    compact = compact_episode(episode)
+    shared_checks['actual_compaction_reconstruction_exact'] = compact['actual_reconstruction_exact']
     for name,model in models.items():
         source_checks[name]['fitted_weights_unchanged'] = torch.tensor([
             all(tensor_hash(value) == weights_before[name][key] for key,value in model.state_dict().items())])
@@ -639,7 +864,12 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                 'fit_diagnostics_are_independent_evidence':False if split == 'fit' else None,
                 'worlds':WORLDS,'world_namespace':episode.get('world_namespace'),
                 'render_nuisance':episode.get('render_nuisance'),
-                'source_call_visibility':visibility,'donor_provenance':donor_provenance,
+                'source_call_visibility':visibility,'source_update_visibility':update_visibility,
+                'source_decoder_visibility':decoder_visibility,'donor_provenance':donor_provenance,
+                'source_call_inventory':{name:{'prediction_calls':len(visibility[name]),
+                    'primary_update_calls':sum(call['kind']=='primary_feedback' for call in update_visibility[name]),
+                    'donor_update_calls':sum(call['kind']=='donor_replay' for call in update_visibility[name]),
+                    'address_local_decoder_probe_calls':len(decoder_visibility[name])} for name in SOURCES},
                 'actual_control_provenance':actual_provenance,'software_invariants_pass':hard_pass,
                 'reconstruction':{'actual_W':'start V; replace previous issued address using actual_operator_family and evaluator mapping',
                                   'current_source':'last revealed actual W; replace previous address with selected_current_maps[t-1]',
@@ -652,6 +882,8 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
                     'donor_pairs_per_source_per_schedule':WORLDS*3,'donor_transitions_shared':WORLDS*78,
                     'donor_feedback_events_per_source':WORLDS*72,'donor_policy_fork_references_per_source':WORLDS*6},
                 'bootstrap':bootstrap,
+                'bootstrap_primary_metric_names':list(per_world_metrics['A']),
+                'donor_summaries':{name:_donor_summaries(source_tensors[name]['donors']) for name in SOURCES},
                 'literal_content_disposition':'pending independent fixed-dev evidence assessment',
                 'presentation_manner_qualified':False,'reports_generated':False}
     return {'tensors':{'shared':shared,'sources':source_tensors,'analytic_secondary':_stack(analytic_secondary)},

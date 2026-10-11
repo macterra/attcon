@@ -5,9 +5,9 @@ project context; no human or independent-family endorsement. Static source/text
 inspection only. No import, compilation, fixture execution, torch/model call,
 world generation, archive/checkpoint load, fit, Reporter or Git operation.
 
-Reviewed [runner](../../../../scripts/run_attention_content_model_v1.py) SHA-256
+Reviewed [runner](../../../scripts/run_attention_content_model_v1.py) SHA-256
 `b7ac221b6a31a19072d0fc9bd9c9cb9c4834c832f68ae83f4c9bf70625f52ae9`
-and [seven boundary fixtures](../../../../tests/test_run_attention_content_model_v1.py)
+and [seven boundary fixtures](../../../tests/test_run_attention_content_model_v1.py)
 SHA-256 `ce8df3aa11be393919638f0bef96cadeb00d8dfc666bac3f8ddbca6f48be1240`.
 
 **Approve only one first execution of these seven software fixtures after the
