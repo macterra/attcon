@@ -67,7 +67,11 @@ identification is still open. Action correction and Modeler refinement are disti
 
 The [toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after preserving and correcting an
-exact-restoration defect. Native content/form semantics remain unqualified.
+exact-restoration defect. The [native spatial development](SPATIAL_NATIVE_TASK_V1_RESULTS.md)
+now supports targeting/content semantics in retained outputs. First numerical
+verification agrees on utility and summaries but fails 106 comparisons; arithmetic
+diagnosis remains open. Presentation manner remains unqualified, and no learned A
+or new Reporter has been evaluated in this stage.
 
 The revised [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md)
 after pre-blind review and fresh responses. Both auditors get all supportedness

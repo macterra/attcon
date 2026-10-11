@@ -18,8 +18,14 @@ Prediction of a filter output alone cannot complete that goal.
 ## Current development status
 
 The [toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
-passes after a preserved exact-restoration correction. No learned source or
-native semantic endpoint has been executed. The separate
+passes after a preserved exact-restoration correction. The subsequent
+[native spatial development](SPATIAL_NATIVE_TASK_V1_RESULTS.md) now completes its
+single registered run: all three task-feasibility gates pass, with 96.875–99.805%
+fine targeting and 100% coarse order before transformation. First independent
+verification agrees on utility and summaries but fails 106 numerical comparisons;
+that failure is retained for separate diagnosis. Native task semantics are
+supported provisionally; no presentation counterpart, learned A or new report is
+qualified. The separate
 [semantic development review](../audits/attention_content_form_semantics_design_v1/review.md)
 finds that the existing category/orientation consumer cannot establish a
 within-item content relation or its manner from spatial maps alone.
@@ -28,9 +34,11 @@ Its smallest proposed extension is a new native spatial targeting task: local
 red/blue constituent evidence guides actual grid-targeting actions, while coarse
 order, fine arrangement, identity, confidence and access remain separately tested.
 The primary extraction candidate is the existing frozen encoder's 24×4×4 map
-after its second pool. All budget numbers remain development proposals. Write and
-independently review the exact new task/consumer contract before generation or
-fitting. This is a source extension, not discovery of an existing counterpart.
+after its second pool. The [native contract](SPATIAL_NATIVE_TASK_V1_PROTOCOL.md)
+subsequently fixed that task budget and was reviewed before execution. This is
+a source extension, not discovery of an existing counterpart. The next
+[learned A design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) is prospective and must
+receive its own independent review and registration before execution.
 
 Fine location information may be additional content or task access rather than
 representational manner. Native utility therefore supports task semantics only;

@@ -290,11 +290,19 @@ The next [source experiment](docs/ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
 tests attention-dependent internal content form at fixed sensory evidence. Separate
 source and critical reviews retain the current negative strict-counterpart finding.
 The new plan requires current/future separation, independent semantics and matched
-ordinary/non-attentional controls; no new trained source or positive qualia result
-is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+ordinary/non-attentional controls; no new learned attention model or positive
+qualia result is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.
+
+The [native spatial development](docs/SPATIAL_NATIVE_TASK_V1_RESULTS.md) now
+completes its registered run. All three frozen encoders support actual targeting
+(96.875–99.805% fine accuracy, 100% coarse order); transformed fields retain correct
+coarse order in 766/768 items. First numerical reconstruction agrees on utility
+and summaries but fails 106 comparisons; that failure remains preserved. Native
+content/access semantics are supported provisionally, with no learned A, new
+Reporter output or qualified presentation counterpart.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its

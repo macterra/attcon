@@ -1,6 +1,6 @@
 # Reporting Bound Contents of an Attention-Control Model
 
-Working preprint, updated 2026-10-10. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
+Working preprint, updated 2026-10-11. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
 and [inspection-model manuscript](INSPECTION_MODEL_PREPRINT.md) remain archived.
 
 ## Abstract
@@ -42,7 +42,12 @@ and the absence of an appearance endpoint limit this to functional qualification
 Fresh external readouts of these models' risk hidden states retain objective
 image-property information, with stronger upstream sensory readouts. Exact replay
 and independent arithmetic support that physical result, not represented appearance.
-The broader theory-facing interpretation remains unresolved.
+A subsequent registered native spatial development supports fine targeting at
+96.875–99.805% across three frozen encoders and coarse order at 100%; transformed
+fields retain correct coarse order in 766/768 items. First independent numerical
+verification agrees on utility and summaries but retains 106 failed comparisons.
+This is provisional task/content semantics, with no learned attention model or new
+reports in that stage. The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
 
@@ -697,13 +702,24 @@ reviews retain the current negative strict-counterpart verdict. They motivate a
 execute internal allocation changes at fixed retained sensory evidence, separate
 current estimates/future predictions/actual events, qualify content-specific form
 semantics independently, and compare equally informed ordinary/analytic models and
-matched non-attentional transformations. No new trained source, production result
-or positive phenomenal-source inference is claimed. Ordinary state-estimation
+matched non-attentional transformations. At proposal time no new trained source
+or production result existed; the subsequent native task is described below. No
+positive phenomenal-source inference is claimed. Ordinary state-estimation
 parity remains a viable explanation even if the proposed mechanism succeeds. The
 [toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md) passes
 12 author and nine independent checks after a preserved exact-restoration correction.
 It executes no trained source, production inference, semantic qualification or
-Reporter output. Native content/form meaning remains the next source requirement.
+Reporter output. A [subsequent registered spatial development](SPATIAL_NATIVE_TASK_V1_RESULTS.md)
+fits native constituent-location heads and executes actual targeting from completed
+W. All three utility gates pass, with 96.875–99.805% fine targeting and 100% coarse
+order at T1. T2 changes fields with correctly retained order in 766/768 items;
+its fine-target ceiling and T4 erasure follow the specified averaging mechanics.
+The first numerical reconstruction retains 106 failed comparisons out of 206,070,
+while all emitted-field policy, Controller replay and summary checks pass.
+Arithmetic differences remain unresolved; no tolerance or first outcome is changed.
+Native task/content support is provisional and cannot qualify presentation manner.
+This stage contains no learned A or external Reporter, so selective attention-model
+source and consciousness-like reporting remain to be tested.
 
 ### 6.1 Authorized AI review route
 
