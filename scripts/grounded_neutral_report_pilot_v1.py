@@ -573,6 +573,8 @@ def verify_export(registration_path, output_dir, *, repo_root, freeze_checkout, 
     registration, registration_hash = check_frozen_registration(
         registration_path, repo_root=repo_root, freeze_checkout=freeze_checkout, freeze_commit=freeze_commit)
     output = Path(output_dir)
+    require(output.resolve() == (Path(repo_root)/registration['output_root']).resolve(),
+            'output directory differs from sole registered attempt location')
     require(not (output/'failure.json').exists(), 'failed attempt cannot be released')
     completion = json.loads((output/'completion.json').read_bytes())
     require(completion['status'] == 'single_registered_export_completed'

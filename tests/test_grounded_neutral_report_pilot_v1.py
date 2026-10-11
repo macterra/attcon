@@ -2,6 +2,7 @@
 import copy
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -213,6 +214,29 @@ class GroundedNeutralPilotTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'registered source hash changed'):
                     pilot._load_registered_bundles(self.registration, root)
                 loader.assert_not_called()
+
+    def test_verification_rejects_byte_identical_export_copy_outside_registered_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            registration_path = root/'registration.json'
+            registration_path.write_bytes(pilot.encoded(self.registration))
+            options = {'repo_root': root, 'freeze_checkout': root, 'freeze_commit': '1'*40}
+            output = root/'targets'
+            copied_output = root/'unregistered_copy'
+            with patch.object(pilot, 'check_frozen_registration',
+                              return_value=(self.registration, pilot.digest(registration_path))):
+                with patch.object(pilot, '_load_registered_bundles', return_value=self.bundles):
+                    pilot.export_once(registration_path, output, **options)
+                    self.assertEqual(pilot.verify_export(registration_path, output, **options)['packet_count'], 624)
+                shutil.copytree(output, copied_output)
+                for path in output.rglob('*'):
+                    if path.is_file():
+                        self.assertEqual(path.read_bytes(), (copied_output/path.relative_to(output)).read_bytes())
+                with patch.object(pilot, '_load_registered_bundles',
+                                  side_effect=AssertionError('unregistered copies must fail before source loading')) as loader:
+                    with self.assertRaisesRegex(ValueError, 'sole registered attempt location'):
+                        pilot.verify_export(registration_path, copied_output, **options)
+                    loader.assert_not_called()
 
     def test_registration_checks_budget_receipts_and_input_hashes(self):
         for field, value in (('max_target_packets', 625), ('arms', ['natural']),
