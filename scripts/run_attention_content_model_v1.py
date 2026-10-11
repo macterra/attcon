@@ -24,12 +24,14 @@ REQUIRED_SOURCES = (
     'scripts/attention_content_model_v1.py',
     'scripts/attention_content_model_v1_data.py',
     'scripts/attention_content_model_v1_experiment.py',
+    'scripts/verify_attention_content_model_v1.py',
     'scripts/attention_content_form_primitives_v1.py',
     'scripts/spatial_native_task_v1.py',
     'src/attcon/__init__.py', 'src/attcon/bound_content.py',
     'src/attcon/data.py', 'src/attcon/models.py',
     'src/attcon/predictive_attention.py',
     'docs/ATTENTION_CONTENT_MODEL_V1_DESIGN.md',
+    'docs/ATTENTION_CONTENT_MODEL_V1_PERMISSION_SCHEMA.md',
 )
 NATIVE_DIR = 'audits/spatial_native_task_v1/run'
 NATIVE_REVIEW_DIR = 'audits/spatial_native_task_v1/numerical_corrected_review'
@@ -67,11 +69,20 @@ def bound_files(commit, hashes):
     require(len(commit) == 40 and all(c in '0123456789abcdef' for c in commit),
             'preservation commit must be full lowercase hexadecimal')
     for path, expected in hashes.items():
+        require(relative(path) == path, 'noncanonical bound file path')
         require(digest(ROOT / path) == expected, f'current binding failed: {path}')
         process = subprocess.run(['git', '-C', str(ROOT), 'show', f'{commit}:{path}'],
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
         require(hashlib.sha256(process.stdout).hexdigest() == expected,
                 f'committed binding failed: {path}')
+
+
+def ancestor(older, newer):
+    require(all(len(value) == 40 and all(c in '0123456789abcdef' for c in value)
+                for value in (older, newer)), 'ancestry needs full commit IDs')
+    result = subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', older, newer],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    require(result.returncode == 0, 'phase commit ancestry failed')
 
 
 def native_acceptance():
@@ -86,10 +97,28 @@ def native_acceptance():
     require(review['status'] == 'passed_corrected_reference_revalidation'
             and review['check_count'] == 206070 and review['error_count'] == 0
             and review['core_check_inventory_matches_first_review'], 'native prerequisite failed')
+    require(review['reconstructed_engineering_feasibility_pass'] is True
+            and len(review['checks']) == 206070 and all(row['passed'] for row in review['checks']),
+            'native check inventory or reconstructed feasibility failed')
+    actual_bindings = {row['name'].removeprefix('actual_results_bytes/'): row
+                      for row in review['checks'] if row['name'].startswith('actual_results_bytes/')}
+    required_actual = tuple(f'{NATIVE_DIR}/states-{seed}.pt.gz' for seed in SEEDS) + (
+        f'{NATIVE_DIR}/results.json', f'{NATIVE_DIR}/completion.json')
+    for path in required_actual:
+        row = actual_bindings.get(path)
+        require(row is not None and row['expected_sha256'] == row['actual_sha256'] == digest(ROOT / path),
+                f'native passing evidence belongs to different bytes: {path}')
+    provenance = review['corrected_reference_provenance']
+    for row in provenance['bindings']:
+        bound_files(row['commit'], {row['path']: row['expected_sha256']})
+    require(digest(ROOT / 'scripts/verify_spatial_native_task_v1_corrected.py') == review['verifier_sha256'],
+            'accepted native verifier changed')
     results = json.loads((ROOT / NATIVE_DIR / 'results.json').read_text())
     require(results['all_engineering_feasibility_gates_pass'], 'native feasibility gate failed')
     completion = json.loads((ROOT / NATIVE_DIR / 'completion.json').read_text())
     require(completion['status'] == 'completed', 'native run incomplete')
+    require(completion['results_sha256'] == digest(ROOT / NATIVE_DIR / 'results.json'),
+            'native completion result binding failed')
     hashes = {path: digest(ROOT / path) for path in (
         f'{NATIVE_REVIEW_DIR}/metadata_manifest.json', str(packed.relative_to(ROOT)),
         f'{NATIVE_DIR}/results.json', f'{NATIVE_DIR}/completion.json')}
@@ -132,6 +161,9 @@ def receipt(base, phase, commit, registration_sha256):
     require(value['status'] == 'completed' and value['phase'] == phase, f'{phase} phase incomplete')
     require(value['registration_sha256'] == registration_sha256,
             f'{phase} receipt belongs to a different input registration')
+    required = {relative(base / phase / f'states-{seed}.pt.gz') for seed in SEEDS}
+    required.add(relative(base / phase / 'first_run.log'))
+    require(set(value['artifact_sha256']) == required, 'incomplete phase artifact inventory')
     hashes = {relative(path): digest(path), **value['artifact_sha256']}
     bound_files(commit, hashes)
     return value
@@ -202,14 +234,19 @@ def execute_phase(args):
     fit_receipt = None
     if args.phase in ('dev', 'heldout'):
         require(args.fit_commit, 'dev/heldout requires preserved immutable fit receipt')
+        ancestor(args.registration_commit, args.fit_commit)
         fit_receipt = receipt(base, 'fit', args.fit_commit, digest(ROOT / registration_path))
     if args.phase == 'heldout':
         require(args.dev_commit and args.assessment, 'heldout requires preserved dev receipt and assessment')
+        ancestor(args.fit_commit, args.dev_commit)
         dev_receipt = receipt(base, 'dev', args.dev_commit, digest(ROOT / registration_path))
+        require(dev_receipt['fit_receipt_sha256'] == digest(base / 'fit' / 'receipt.json'),
+                'dev used a different immutable fit receipt')
         assessment_path = relative(args.assessment)
         bound_files(args.dev_commit, {assessment_path: digest(ROOT / assessment_path)})
         assessment = json.loads((ROOT / assessment_path).read_text())
-        require(assessment['hard_invariants_pass'] is True
+        require(assessment['schema'] == 'attention_content_model_v1_dev_acceptance'
+            and assessment['hard_invariants_pass'] is True
             and assessment['dev_receipt_sha256'] == digest(base / 'dev' / 'receipt.json')
             and assessment['fitted_artifact_sha256'] == fit_receipt['artifact_sha256'], 'dev acceptance mismatch')
     phase_dir = base / args.phase
@@ -217,13 +254,17 @@ def execute_phase(args):
     # The exclusive claim precedes torch/model imports or any released generation.
     write_exclusive(phase_dir / 'claim.json', {'phase': args.phase,
         'registration_sha256': digest(ROOT / registration_path), 'registration_commit': args.registration_commit,
+        'fit_commit': args.fit_commit, 'dev_commit': args.dev_commit,
+        'fit_receipt_sha256': digest(base / 'fit' / 'receipt.json') if fit_receipt else None,
+        'dev_receipt_sha256': digest(base / 'dev' / 'receipt.json') if args.phase == 'heldout' else None,
+        'dev_assessment_sha256': digest(args.assessment) if args.phase == 'heldout' else None,
         'started_at_utc': datetime.now(timezone.utc).isoformat(), 'retry_allowed': False})
     partial = {'phase': args.phase, 'seed': None}
     try:
         import torch
         from attention_content_model_v1 import FitNormalizer, build_learned_sources
         from attention_content_model_v1_data import collect_worlds
-        from attention_content_model_v1_experiment import fit_sources, evaluate_sources
+        from attention_content_model_v1_experiment import fit_sources, evaluate_sources, compact_episode
         torch.set_num_threads(4)
         torch.use_deterministic_algorithms(True)
         outputs = {}
@@ -237,10 +278,13 @@ def execute_phase(args):
                 episode = collect_worlds(seed, args.phase, extractor, released_split=args.phase)
                 partial['episode'] = episode
                 if args.phase == 'fit':
-                    fitted = fit_sources(seed, episode, log=emit)
+                    fitted = fit_sources(seed, episode, log=emit, partial=partial)
+                    with torch.no_grad():
+                        evaluation = evaluate_sources(fitted['models'], episode, head, coordinates,
+                                                      extractor, 'fit', log=emit, partial=partial)
                     fitted = {key: value for key, value in fitted.items() if key != 'models'}
                     fitted['normalizer'] = asdict(fitted['normalizer'])
-                    bundle = {'episode': episode, 'fit': fitted}
+                    bundle = {'episode': compact_episode(episode), 'fit': fitted, 'evaluation': evaluation}
                 else:
                     with gzip.open(base / 'fit' / f'states-{seed}.pt.gz', 'rb') as stream:
                         fitted = torch.load(stream, map_location='cpu', weights_only=False)['fit']
@@ -251,26 +295,35 @@ def execute_phase(args):
                         model.load_state_dict(fitted['checkpoints'][source])
                         model.eval()
                     with torch.no_grad():
-                        evaluation = evaluate_sources(models, episode, head, coordinates, extractor, args.phase, log=emit)
-                    bundle = {'episode': episode, 'evaluation': evaluation,
+                        evaluation = evaluate_sources(models, episode, head, coordinates, extractor, args.phase,
+                                                      log=emit, partial=partial)
+                    bundle = {'episode': compact_episode(episode), 'evaluation': evaluation,
                         'fitted_artifact_sha256': fit_receipt['artifact_sha256']}
                 partial = bundle
                 output = phase_dir / f'states-{seed}.pt.gz'
                 save_tensor_archive(output, bundle)
-                if args.phase != 'fit':
-                    enforce_software_checks(evaluation['software_checks'])
+                enforce_software_checks(evaluation['software_checks'])
                 outputs[relative(output)] = digest(output)
                 emit({'seed': seed, 'phase': args.phase, 'archive_sha256': digest(output)})
         outputs[relative(phase_dir / 'first_run.log')] = digest(phase_dir / 'first_run.log')
         write_exclusive(phase_dir / 'receipt.json', {'status': 'completed', 'phase': args.phase,
             'registration_sha256': digest(ROOT / registration_path), 'artifact_sha256': outputs,
             'fit_receipt_sha256': digest(base / 'fit' / 'receipt.json') if fit_receipt else None,
+            'registration_commit': args.registration_commit, 'fit_commit': args.fit_commit,
+            'dev_commit': args.dev_commit,
+            'dev_assessment_sha256': digest(args.assessment) if args.phase == 'heldout' else None,
             'completed_at_utc': datetime.now(timezone.utc).isoformat(), 'retry_performed': False,
             'no_reporter_calls': True, 'semantic_qualification_asserted': False})
     except BaseException:
-        save_tensor_archive(phase_dir / 'first_failure.pt.gz', partial)
+        original_traceback = traceback.format_exc()
         write_exclusive(phase_dir / 'failure.json', {'status': 'failed_first_phase_execution',
-            'phase': args.phase, 'traceback': traceback.format_exc(), 'retry_allowed': False})
+            'phase': args.phase, 'seed': partial.get('seed'), 'traceback': original_traceback,
+            'registration_sha256': digest(ROOT / registration_path), 'retry_allowed': False})
+        try:
+            save_tensor_archive(phase_dir / 'first_failure.pt.gz', partial)
+        except BaseException:
+            write_exclusive(phase_dir / 'retention_failure.json', {'status': 'secondary_retention_failure',
+                'original_failure_preserved': True, 'traceback': traceback.format_exc(), 'retry_allowed': False})
         raise
 
 
