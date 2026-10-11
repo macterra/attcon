@@ -419,6 +419,50 @@ def validate_compaction(compact, evaluation):
             'compacted actual state does not match exact engine reconstruction')
 
 
+def validate_dev_assessment(assessment_path, args, registration, base, fit_receipt):
+    """Bind a reconstructed dev result; semantic negatives allow fixed heldout."""
+    assessment_path = relative(assessment_path)
+    assessment_sha256 = digest(ROOT / assessment_path)
+    bound_files(args.dev_commit, {assessment_path: assessment_sha256})
+    assessment = json.loads((ROOT / assessment_path).read_text())
+    dev_sha256 = digest(base / 'dev' / 'receipt.json')
+    require(assessment['schema'] == 'attention_content_model_v1_dev_acceptance'
+            and assessment['hard_invariants_pass'] is True
+            and assessment['dev_receipt_sha256'] == dev_sha256
+            and assessment['fitted_artifact_sha256'] == fit_receipt['artifact_sha256'],
+            'dev acceptance mismatch')
+    report_path = assessment['reconstruction_report_path']
+    require(relative(report_path) == report_path, 'noncanonical independent-dev report path')
+    bound_files(args.dev_commit, {report_path: assessment['reconstruction_report_sha256']})
+    report = json.loads((ROOT / report_path).read_text())
+    require(report['schema'] == 'attention_content_model_v1_independent_phase_reconstruction'
+            and report['phase'] == 'dev' and report['status'] == 'passed_phase_reconstruction'
+            and report['hard_invariants_pass'] is True and report['error_count'] == 0
+            and report['errors'] == [] and 'exception' not in report
+            and report['check_count'] == len(report['checks']) > 0
+            and all(row['passed'] is True for row in report['checks'])
+            and report['dev_receipt_sha256'] == dev_sha256
+            and report['fitted_artifact_sha256'] == fit_receipt['artifact_sha256']
+            and report['verifier_sha256'] == registration['source_hashes']['scripts/verify_attention_content_model_v1.py'],
+            'dev acceptance is not backed by the registered independent reconstruction')
+    commands = report['command_bindings']
+    require(commands['registration_commit'] == args.registration_commit
+            and relative(commands['registration']) == relative(args.registration)
+            and commands['fit_commit'] == args.fit_commit,
+            'independent dev report used different registration or fitted artifacts')
+    ancestor(args.fit_commit, commands['phase_commit'])
+    ancestor(commands['phase_commit'], args.dev_commit)
+    dispositions = assessment['source_semantic_dispositions']
+    require(set(dispositions) == {'A', 'ordinary', 'analytic'}
+            and all(set(row) == {'literal_content_disposition', 'presentation_manner_qualified'}
+                    and row['literal_content_disposition'] in ('qualified', 'unqualified')
+                    and type(row['presentation_manner_qualified']) is bool
+                    for row in dispositions.values())
+            and assessment['reporting_released'] is False,
+            'dev assessment needs explicit source dispositions without releasing reporting')
+    return assessment
+
+
 def execute_phase(args):
     require(args.registration_commit, 'phase requires preserved input registration')
     registration_path = relative(args.registration)
@@ -441,13 +485,7 @@ def execute_phase(args):
         dev_receipt = receipt(base, 'dev', args.dev_commit, digest(ROOT / registration_path))
         require(dev_receipt['fit_receipt_sha256'] == digest(base / 'fit' / 'receipt.json'),
                 'dev used a different immutable fit receipt')
-        assessment_path = relative(args.assessment)
-        bound_files(args.dev_commit, {assessment_path: digest(ROOT / assessment_path)})
-        assessment = json.loads((ROOT / assessment_path).read_text())
-        require(assessment['schema'] == 'attention_content_model_v1_dev_acceptance'
-            and assessment['hard_invariants_pass'] is True
-            and assessment['dev_receipt_sha256'] == digest(base / 'dev' / 'receipt.json')
-            and assessment['fitted_artifact_sha256'] == fit_receipt['artifact_sha256'], 'dev acceptance mismatch')
+        validate_dev_assessment(args.assessment, args, registration, base, fit_receipt)
     phase_dir = base / args.phase
     phase_dir.mkdir(parents=True, exist_ok=True)
     # The exclusive claim precedes torch/model imports or any released generation.

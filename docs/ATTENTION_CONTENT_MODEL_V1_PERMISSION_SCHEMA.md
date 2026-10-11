@@ -56,6 +56,29 @@ source closure and input archives. Dev/heldout use the fit checkpoint bytes and
 normalizer without optimization. A semantic negative permits the fixed technical
 heldout run when hard invariants pass; it cannot release phenomenal reporting.
 
+The dev acceptance JSON uses schema `attention_content_model_v1_dev_acceptance`
+and binds `dev_receipt_sha256`, `fitted_artifact_sha256`,
+`reconstruction_report_path` and `reconstruction_report_sha256`. That independent
+report must be committed with the acceptance, identify the registered verifier
+bytes, pass its complete dev check inventory, and use the accepted registration
+and fit commits. Its dev artifact commit precedes the final acceptance commit.
+An assertion of `hard_invariants_pass` without that report cannot release heldout.
+The assessment additionally records `source_semantic_dispositions` for A,
+ordinary and analytic: each has `literal_content_disposition` equal to
+`qualified` or `unqualified` and Boolean `presentation_manner_qualified`.
+`reporting_released` remains false. Negative semantic dispositions are retained
+and permit the fixed technical heldout phase when hard invariants pass.
+
+The exact engine gate inventory and opportunity shapes are recorded in
+`audits/attention_content_model_v1/experiment_software/metadata.json`, with
+the same names/shapes enforced by the phase runner and independently reconstructed
+by the verifier. Per encoder, each source has fourteen primary feedback updates,
+seventy-two donor replay updates and twenty-seven separately labelled decoder
+probes. Prediction-call counts are forty-five for A (including fifteen same-weight
+alias duplicates) and thirty for each rival; they do not multiply world counts.
+Actual compaction retains sixty-one per-world reconstruction checks, including
+initial W0. Failed reconstruction retains the original actual arrays.
+
 The complete source review must freeze named hard invariants, exact source-indexed
 shapes/counts and reconstruction-verifier inputs. Generic Boolean success flags,
 caller-supplied timestamps or a split-name argument alone cannot satisfy this
