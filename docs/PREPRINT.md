@@ -46,7 +46,9 @@ A subsequent registered native spatial development supports fine targeting at
 96.875–99.805% across three frozen encoders and coarse order at 100%; transformed
 fields retain correct coarse order in 766/768 items. First independent numerical
 verification agrees on utility and summaries but retains 106 failed comparisons.
-This is provisional task/content semantics, with no learned attention model or new
+A separately reviewed correction to reference arithmetic passes all 206,070
+original checks on the same archived data, preserving the first failure.
+This establishes task/content semantics, with no executed learned attention model or new
 reports in that stage. The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
@@ -716,8 +718,11 @@ order at T1. T2 changes fields with correctly retained order in 766/768 items;
 its fine-target ceiling and T4 erasure follow the specified averaging mechanics.
 The first numerical reconstruction retains 106 failed comparisons out of 206,070,
 while all emitted-field policy, Controller replay and summary checks pass.
-Arithmetic differences remain unresolved; no tolerance or first outcome is changed.
-Native task/content support is provisional and cannot qualify presentation manner.
+The preserved diagnosis explains those differences through itemwise versus batch
+head execution and linear/bias arithmetic. A [separately reviewed corrected reference](../audits/spatial_native_task_v1/numerical_corrected_review/review.md)
+passes all 206,070 original checks with identical ordered inventory, unchanged
+tolerances and no new data or fitting. The first failed outcome remains unchanged.
+Native task/content support cannot qualify presentation manner.
 This stage contains no learned A or external Reporter, so selective attention-model
 source and consciousness-like reporting remain to be tested.
 

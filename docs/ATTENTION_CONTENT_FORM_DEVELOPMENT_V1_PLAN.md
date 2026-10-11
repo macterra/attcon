@@ -23,8 +23,10 @@ passes after a preserved exact-restoration correction. The subsequent
 single registered run: all three task-feasibility gates pass, with 96.875–99.805%
 fine targeting and 100% coarse order before transformation. First independent
 verification agrees on utility and summaries but fails 106 numerical comparisons;
-that failure is retained for separate diagnosis. Native task semantics are
-supported provisionally; no presentation counterpart, learned A or new report is
+that failure is retained. The separate diagnosis accounts for all discrepancies,
+and a reviewed corrected reference passes all 206,070 original checks without
+changing the experiment. Native task semantics are supported; no presentation
+counterpart, executed learned A or new report is
 qualified. The separate
 [semantic development review](../audits/attention_content_form_semantics_design_v1/review.md)
 finds that the existing category/orientation consumer cannot establish a

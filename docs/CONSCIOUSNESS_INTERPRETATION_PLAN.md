@@ -1,6 +1,6 @@
 # Plan: test report structure against functional organization
 
-Updated 2026-10-10. **Design plan, not a frozen confirmation protocol. Development
+Updated 2026-10-11. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.
 
@@ -70,7 +70,9 @@ passes 12 author and nine independent checks after preserving and correcting an
 exact-restoration defect. The [native spatial development](SPATIAL_NATIVE_TASK_V1_RESULTS.md)
 now supports targeting/content semantics in retained outputs. First numerical
 verification agrees on utility and summaries but fails 106 comparisons; arithmetic
-diagnosis remains open. Presentation manner remains unqualified, and no learned A
+diagnosis explains all failures, and separately reviewed reference arithmetic now
+passes all 206,070 original checks on the same data. The first failure remains
+preserved. Presentation manner remains unqualified, and no learned A
 or new Reporter has been evaluated in this stage.
 
 The revised [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md)

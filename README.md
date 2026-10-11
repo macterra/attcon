@@ -300,8 +300,9 @@ The [native spatial development](docs/SPATIAL_NATIVE_TASK_V1_RESULTS.md) now
 completes its registered run. All three frozen encoders support actual targeting
 (96.875–99.805% fine accuracy, 100% coarse order); transformed fields retain correct
 coarse order in 766/768 items. First numerical reconstruction agrees on utility
-and summaries but fails 106 comparisons; that failure remains preserved. Native
-content/access semantics are supported provisionally, with no learned A, new
+and summaries but fails 106 comparisons; that failure remains preserved. A reviewed
+arithmetic correction now passes all 206,070 original checks on the same data.
+Native content/access semantics are supported, with no executed learned A, new
 Reporter output or qualified presentation counterpart.
 
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)

@@ -1,8 +1,9 @@
 # Spatial native task v1: first development results
 
 2026-10-11. The single registered development run completed. All three frozen
-encoders support the declared native targeting task, but the first independent
-numerical verification failed and remains preserved. No learned attention model
+encoders support the declared native targeting task. The first independent
+numerical verification failed and remains preserved; a separately reviewed
+corrected reference now passes all 206,070 checks. No learned attention model
 A or Reporter was run. Presentation manner and the source-of-qualia hypothesis
 remain unqualified.
 
@@ -71,8 +72,8 @@ the reference used batched head arithmetic where the native consumer used an
 individual item, and separate matrix multiplication/bias addition where the
 control consumer used a linear operation. Matching those execution paths exactly
 reproduces the archived values underlying all 106 failures. The [independent static adjudication](../audits/spatial_native_task_v1/numeric_diagnosis/independent_review.md)
-supports a narrow reference correction. Full corrected revalidation remains
-pending; diagnosis alone does not pass the original audit. This is not permission to relax tolerances,
+supports a narrow reference correction. Diagnosis alone does not pass the original
+audit. This is not permission to relax tolerances,
 replace first results or call the failed full verification successful.
 
 The [unchanged first log](../audits/spatial_native_task_v1/numerical_review/first_run.log),
@@ -82,6 +83,25 @@ preserve every comparison. Decompression recovers the exact original 60.6 MiB
 JSON bytes from a 1.1 MiB transport file. Review independence is separate task
 allocation within the same AI model team, not an independent model family or
 human endorsement.
+
+## Separately labelled corrected revalidation
+
+After exact source and design review and their publication at `ffcd400`, the
+[corrected reference](../audits/spatial_native_task_v1/numerical_corrected_review/review.md)
+ran once against the same archived experiment. **All 206,070 original checks
+pass, with zero errors; their ordered names and count match the first audit
+exactly.** The correction changes only reference execution shape/linear arithmetic
+and preservation bindings. Fit and raw-head comparisons retain their actual
+batched contexts; the native head retains itemwise computation. All numerical
+tolerances, exact ties, task gates, data, weights and first results are unchanged.
+No new worlds, fits, experiment retry or Reporter calls occurred.
+
+The [complete compressed audit](../audits/spatial_native_task_v1/numerical_corrected_review/metadata.json.gz)
+and [byte-identity manifest](../audits/spatial_native_task_v1/numerical_corrected_review/metadata_manifest.json)
+preserve every comparison in 1.1 MiB instead of the 60.6 MiB raw JSON. Thirteen
+additional preservation bindings are separate from the original check inventory.
+This resolves numerical reconstruction on the retained data, not independent
+replication or presentation qualification. The first failed audit is unchanged.
 
 ## What this advances
 
@@ -101,6 +121,7 @@ distinct from the absent external Reporter. The present stage cannot establish
 that A supplies consciousness-like reports or is the source of qualia.
 
 First source approval was committed at `2cdaafb`, registration at `3e92bd1`,
-actual results at `614e74a`, and failed numerical review at `432146a`; each was
-pushed before the next stage. Any arithmetic diagnosis or corrected audit must
-preserve this first failure and leave the registered experiment unchanged.
+actual results at `614e74a`, failed numerical review at `432146a`, arithmetic
+diagnosis at `0f8cf09` and corrected revalidation at `c84d3da`; each was pushed
+before the next stage. The reviewed learned-model design is now approved for
+bounded implementation; its actual run remains separately gated and unexecuted.

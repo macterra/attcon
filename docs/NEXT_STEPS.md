@@ -53,12 +53,15 @@ transforms and actual-state/model-estimate conflicts. The [toy primitives](ATTEN
 now pass 12 author and nine independent checks after a preserved exact-restoration
 correction. The [registered native spatial run](SPATIAL_NATIVE_TASK_V1_RESULTS.md)
 now passes all three engineering gates, but its first numerical reconstruction
-fails 106 comparisons while agreeing on utility and summaries. Diagnose those
-arithmetic differences without changing the experiment or tolerances. Retain
-native content/access as the provisional endpoint; presentation manner is still
-unqualified. Next design and independently review a learned A_current/A_next
-actually used by the Controller, with equally informed alternatives and selective
-A/W controls. Reporting requires its separate qualification and registration.
+fails 106 comparisons while agreeing on utility and summaries. The preserved
+diagnosis and separately reviewed corrected reference now pass all 206,070
+original checks without changing the experiment or tolerances. Retain native
+content/access as the endpoint; presentation manner is still unqualified. The
+[learned A_current/A_next design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) is independently
+approved for bounded implementation. Implement and review its module, collector
+and phase runner before the separately registered run. That run must demonstrate
+actual Controller use, equally informed alternatives and selective A/W controls.
+Reporting requires its separate qualification and registration.
 
 Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
 correction does not demonstrate Modeler refinement. Success at modeled internal
