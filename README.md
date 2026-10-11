@@ -269,6 +269,12 @@ Next qualify neutral factual reporting; strict appearance claims still require a
 qualified source counterpart. Human review is optional; the research goal remains
 unachieved.
 
+The [grounded reporting interface draft](docs/GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
+now passes13 generated fixtures and13 independent edge checks after preserved
+failures. It separates native stored evidence, forecasts and external diagnostic
+readouts. Target export and fresh reporting still need a frozen protocol and
+source-aware factual qualification.
+
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its
 positive engineering gate does not establish participant appearance or attention

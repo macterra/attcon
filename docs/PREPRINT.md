@@ -39,6 +39,9 @@ Fresh executed-outcome attention models subsequently pass all 56 declared
 functional gates in each of three models, with 21–22 percentage-point Controller
 gains on unseen queries. History-only parity, seen zero-contrast overprediction
 and the absence of an appearance endpoint limit this to functional qualification.
+Fresh external readouts of these models' risk hidden states retain objective
+image-property information, with stronger upstream sensory readouts. Exact replay
+and independent arithmetic support that physical result, not represented appearance.
 The broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
@@ -660,6 +663,14 @@ This is bounded synthetic rule application, not a validated consciousness classi
 or human-reference distribution. Source fidelity and strict presentation counterparts
 remain separate. Auxiliary neutral factual reporting can proceed after interface
 qualification; unqualified appearance claims cannot complete the qualia-source goal.
+
+The [auxiliary source-interface draft](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
+implements neutral native-memory/forecast exports and separately attributed external
+physical readouts. Independent review catches five initial edge failures; their
+sources and logs remain saved. Corrected bounds, field/address whitelists, opportunity
+enforcement and task-only legend pass13 fixtures, nine original independent checks
+and four additional edges. No selected target view or new report is generated.
+These interface checks do not qualify presentation or complete the theory goal.
 
 ### 6.1 Authorized AI review route
 

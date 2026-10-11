@@ -159,6 +159,14 @@ qualification into a blanket block on neutral reports or declare that auxiliary
 success completes the theory-facing goal. Source qualification and a frozen
 fresh-report protocol still precede target generation.
 
+The [grounded reporting source inventory](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
+now has an implemented auxiliary draft and independently reviewed corrections.
+Thirteen generated fixtures, nine preserved independent checks and four additional
+edges pass. The original five edge failures remain saved. No selected target views
+or new Reporter outputs have been generated. Next freeze the exporter and factual
+qualification/report protocol; the completed annotation exercise does not replace
+source-aware factual auditing or strict presentation-counterpart qualification.
+
 ## 1. Specify the target features before observing new reports
 
 The [subsequent orientation diagnostic](ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)

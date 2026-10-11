@@ -16,6 +16,13 @@ qualification gates strict appearance claims, not all auxiliary factual reportin
 Broad access structure alone cannot complete the qualia-source goal. No new target
 prose or consciousness-related confirmation is claimed.
 
+The [new grounded reporting interface](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md)
+is an implemented auxiliary draft with13 passing fixtures and13 independent edge
+checks after preserved first-pass failures. It distinguishes native stored evidence,
+attention-model forecasts and external physical readouts; full chronology stays
+audit-only. Next freeze its target exporter and supportedness qualification before
+neutral reports. No target views or new reports have yet been generated.
+
 ## Current plan (2026-10-10)
 
 The [isolated orientation task](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) now
