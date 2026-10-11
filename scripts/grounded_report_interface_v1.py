@@ -22,6 +22,8 @@ VARIANTS = ('natural', 'sham', 'memory_readdressed', 'delivery_patched',
 FORECAST_KEYS = ('delivery', 'current', 'refresh', 'after', 'risk_hidden')
 LOCATION_NAMES = ('l0', 'l1', 'l2', 'l3')
 COMMAND_NAMES = ('k0', 'k1', 'k2', 'k3')
+SOURCE_ATOL, SOURCE_RTOL, DECODE_ROUNDOFF = 1e-6, 1e-5, 1e-12
+SOURCE_SEMANTICS = {'stored_content': 'Current memory rows describe represented evidence. They may differ from past observation placement.', 'history': 'Native input stores only each command row’s latest observed delivery or an unknown-zero row; it is not a full chronological history and does not certify current memory placement.', 'forecasts': 'Supplied represented estimates, including possible export overrides; not observed future events.', 'logits': 'Uncalibrated orientation decision coordinates; positive selects vertical, otherwise horizontal.', 'success': 'Estimated correctness of a fixed orientation decision; not an observed outcome.', 'after_composition': 'delivery*refresh+(1-delivery)*current at each command/location.', 'external_readout': 'Linear estimates are retained without clipping and may lie outside physical ranges; no per-item guarantees.'}
 
 
 @dataclass
@@ -38,6 +40,8 @@ class SourceBundle:
     physical_by_variant: dict
     provenance: dict
     physical_error_summary: dict
+    risk_decoder_parameters: dict
+    decode_permutation_error_bounds: dict
 
 
 def digest(path):
@@ -66,6 +70,9 @@ def load_bundle(visual_seed, root=PHYSICAL_ROOT):
     root = Path(root)
     manifest_path, completion_path = root/'manifest.json', root/'completion.json'
     manifest = json.loads(manifest_path.read_text())
+    _require(manifest['permutation_source_tolerance'] == {'atol': SOURCE_ATOL, 'rtol': SOURCE_RTOL}
+             and manifest['linear_decoder_roundoff_floor'] == DECODE_ROUNDOFF,
+             'registered source numerical rules differ')
     completion = json.loads(completion_path.read_text())
     verification = json.loads((root/'verification.json').read_text())
     _require(completion['status'] == 'single_registered_attempt_completed', 'study incomplete')
@@ -131,7 +138,11 @@ def load_bundle(visual_seed, root=PHYSICAL_ROOT):
                            'grounded_model_archive': model_path,
                            'grounded_model_sha256': manifest['frozen_input_sha256'][model_path],
                            'risk_decoder_layout': decoder['layout'],
-                           'risk_decoder_feature_dimensions': decoder['feature_dimensions']}, error_summary)
+                           'risk_decoder_feature_dimensions': decoder['feature_dimensions']}, error_summary,
+                          {key: decoder['fits'][0][key].detach().cpu().clone()
+                           for key in ('feature_scale', 'weights', 'target_scale')},
+                          {key: trace['decode_permutation_error_bounds']['risk_hidden'][key].detach().cpu().clone()
+                           for key in ('absolute_feature_difference', 'absolute_output_difference', 'propagated_bound')})
     validate_bundle(bundle)
     return bundle
 
@@ -204,8 +215,35 @@ def validate_bundle(bundle):
     _require(torch.equal(moved['delivery'], base['delivery']), 'memory readdressing changed route')
     for key in ('risk_hidden', 'current', 'refresh'):
         axis = -2 if key == 'risk_hidden' else -1
-        _require(torch.allclose(moved[key], base[key].roll(1, axis), atol=1e-6, rtol=1e-5),
+        _require(torch.allclose(moved[key], base[key].roll(1, axis), atol=SOURCE_ATOL, rtol=SOURCE_RTOL),
                  'memory readdressing changed item-wise risk outside frozen numerical tolerance')
+    # Archive-only decoder coordinates and registered propagation envelope.
+    params = bundle.risk_decoder_parameters
+    _require(isinstance(params, dict) and set(params) == {'feature_scale', 'weights', 'target_scale'},
+             'unexpected source-only decoder parameters')
+    for key, shape in (('feature_scale', (32,)), ('weights', (32, 3)), ('target_scale', (2,))):
+        value = params[key]
+        _require(isinstance(value, torch.Tensor) and value.shape == shape
+                 and bool(torch.isfinite(value).all()), 'invalid source-only decoder parameter')
+    _require(bool((params['feature_scale'] > 0).all()) and bool((params['target_scale'] > 0).all()),
+             'decoder scales must be positive')
+    envelope = bundle.decode_permutation_error_bounds
+    expected_keys = {'absolute_feature_difference', 'absolute_output_difference', 'propagated_bound'}
+    _require(isinstance(envelope, dict) and set(envelope) == expected_keys, 'unexpected decoder bound fields')
+    actual_feature_difference = (moved['risk_hidden'][:, 0].double()-base['risk_hidden'][:, 0].roll(1, 1).double()).abs()
+    actual_output_difference = (bundle.physical_by_variant['memory_readdressed']
+                                -bundle.physical_by_variant['natural'].roll(1, 1)).abs()
+    recomputed_bound = ((actual_feature_difference/params['feature_scale'])
+                        @params['weights'][:, :2].abs()*params['target_scale'])
+    for key, expected in (('absolute_feature_difference', actual_feature_difference),
+                          ('absolute_output_difference', actual_output_difference),
+                          ('propagated_bound', recomputed_bound)):
+        value = envelope[key]
+        _require(isinstance(value, torch.Tensor) and value.shape == expected.shape
+                 and bool(torch.isfinite(value).all()) and bool((value >= 0).all()), 'invalid decoder bound tensor')
+        _require(torch.equal(value, expected), 'archived decoder discrepancy/bound differs from actual source/parameters')
+    _require(bool((actual_output_difference <= recomputed_bound+DECODE_ROUNDOFF).all()),
+             'readdressed external readout exceeds registered feature-roundoff envelope')
 
 
 def compose_after(delivery, current, refresh):
@@ -230,6 +268,7 @@ def record(bundle, row, variant='natural'):
     Intervention IDs, physical-truth data and archive paths are audit-only.
     """
     _require(variant in VARIANTS, 'unknown source view')
+    selection_indices(bundle)
     _require(isinstance(row, int) and row in SELECTED_WORLD_INDICES and row < len(bundle.original_sensory),
              'world index outside fixed first-sixteen opportunity rule')
     validate_bundle(bundle)
@@ -261,7 +300,7 @@ def record(bundle, row, variant='natural'):
                               'units': 'normalized image-value units',
                               'image_value_std_estimate': _float(physical[loc, 0]) if observed else None,
                               'nearest_neighbor_rms_estimate': _float(physical[loc, 1]) if observed else None,
-                              'interpretation': 'objective image-statistic estimates; not native presentation or confidence fields'}})
+                              'interpretation': 'linear estimates of objective stored-image statistics'}})
     commands = [{'command': COMMAND_NAMES[c],
                  'predicted_delivery_distribution': {LOCATION_NAMES[l]: _float(p['delivery'][c, l]) for l in range(4)},
                  'estimated_decision_success_after_command': {LOCATION_NAMES[l]: _float(p['after'][c, l]) for l in range(4)}}
@@ -270,14 +309,7 @@ def record(bundle, row, variant='natural'):
                 'frozen_sources': {'visual_model': f'visual-{bundle.visual_seed}',
                                    'outcome_model': f'structured-{bundle.visual_seed}',
                                    'external_readout': f'risk-hidden-ridge-{bundle.visual_seed}'},
-                'source_semantics': {
-                    'stored_content': 'Current memory rows describe represented evidence. They may differ from past observation placement.',
-                    'history': 'Native input stores only each command row’s latest observed delivery or an unknown-zero row; it is not a full chronological history and does not certify current memory placement.',
-                    'forecasts': 'Supplied represented estimates, including possible export overrides; not observed future events.',
-                    'logits': 'Uncalibrated orientation decision coordinates; positive selects vertical, otherwise horizontal.',
-                    'success': 'Estimated correctness of a fixed orientation decision; not actual correctness or felt confidence.',
-                    'after_composition': 'delivery*refresh+(1-delivery)*current at each command/location.',
-                    'external_readout': 'Linear estimates are retained without clipping and may lie outside physical ranges; no per-item guarantees.'},
+                'source_semantics': copy.deepcopy(SOURCE_SEMANTICS),
                 'native_route_history': [{'command': COMMAND_NAMES[c],
                                           'status': 'observed_delivery' if bool(bundle.native_history[row, 0, c].any()) else 'no_delivery_observed',
                                           'last_observed_delivery_one_hot': {LOCATION_NAMES[l]: int(bundle.native_history[row, 0, c, l]) for l in range(4)}}
@@ -299,6 +331,9 @@ def record(bundle, row, variant='natural'):
              'risk_hidden_tensor_pointer': {'variant': variant, 'row': row, 'snapshot_axis': 0},
              'frozen_provenance': copy.deepcopy(bundle.provenance),
              'unseen_physical_decoder_outputs_suppressed': True,
+             'decoder_parameters_and_bounds_reporter_context': False,
+             'source_numeric_rules': {'atol': SOURCE_ATOL, 'rtol': SOURCE_RTOL, 'decode_roundoff_floor': DECODE_ROUNDOFF},
+             'interpretation_limits': 'Task-success forecasts and external physical-statistic estimates do not qualify appearance, felt confidence or qualia.',
              'reporter_run': False, 'appearance_qualified': False, 'goal_achieved': False}
     return {'reporter_input': reporter, 'audit_provenance': audit}
 
@@ -325,8 +360,126 @@ def _error_summary(source):
     return result
 
 
+METADATA_KEYS = {'schema_version', 'snapshot_after_commands', 'frozen_sources', 'source_semantics',
+                 'native_route_history', 'external_readout_evaluation_summary'}
+LOCATION_KEYS = {'location', 'observed', 'stored_evidence', 'estimated_current_decision_success',
+                 'estimated_fresh_glimpse_decision_success', 'risk_feature_source', 'external_image_statistic_readouts'}
+COMMAND_KEYS = {'command', 'predicted_delivery_distribution', 'estimated_decision_success_after_command'}
+TABLE_SCHEMAS = {
+    'stored_evidence': ('location', {'location', 'observed', 'stored_evidence'}),
+    'risk_forecasts': ('location', {'location', 'estimated_current_decision_success', 'estimated_fresh_glimpse_decision_success'}),
+    'external_readouts': ('location', {'location', 'risk_feature_source', 'external_image_statistic_readouts'}),
+    'delivery_forecasts': ('command', {'command', 'predicted_delivery_distribution'}),
+    'post_command_forecasts': ('command', {'command', 'estimated_decision_success_after_command'})}
+
+
+def _keys(value, expected, name):
+    _require(isinstance(value, dict) and set(value) == set(expected), 'unexpected fields in '+name)
+
+
+def _address_rows(rows, address, fields):
+    expected = set(LOCATION_NAMES if address == 'location' else COMMAND_NAMES)
+    _require(isinstance(rows, list) and len(rows) == 4, 'exactly four address rows required')
+    for row in rows:
+        _keys(row, fields, 'address row')
+        _require(isinstance(row[address], str) and row[address] in expected, 'noncanonical address')
+    _require(len({row[address] for row in rows}) == 4, 'duplicate/missing address')
+    return {row[address]: row for row in rows}
+
+
+def _number(value, missing=False, probability=False):
+    if missing and value is None:
+        return
+    _require(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value),
+             'finite numeric value required')
+    if probability:
+        _require(0 <= value <= 1, 'probability outside range')
+
+
+def _validate_metadata(value, collection_keys):
+    _keys(value, METADATA_KEYS | set(collection_keys), 'top metadata')
+    _require(value['schema_version'] == 'grounded_report_interface_v1_draft'
+             and value['snapshot_after_commands'] == 8, 'unknown source schema/snapshot')
+    models = value['frozen_sources']
+    _keys(models, {'visual_model', 'outcome_model', 'external_readout'}, 'frozen sources')
+    _require(any(models == {'visual_model': f'visual-{seed}', 'outcome_model': f'structured-{seed}',
+                            'external_readout': f'risk-hidden-ridge-{seed}'} for seed in SEEDS), 'unknown frozen source IDs')
+    _keys(value['source_semantics'], {'stored_content', 'history', 'forecasts', 'logits', 'success',
+                                     'after_composition', 'external_readout'}, 'source semantics')
+    _require(value['source_semantics'] == SOURCE_SEMANTICS, 'source legend differs from fixed task semantics')
+    history = _address_rows(value['native_route_history'], 'command',
+                            {'command', 'status', 'last_observed_delivery_one_hot'})
+    for row in history.values():
+        mapping = row['last_observed_delivery_one_hot']
+        _keys(mapping, LOCATION_NAMES, 'native delivery row')
+        _require(all(type(v) is int and v in (0, 1) for v in mapping.values()) and sum(mapping.values()) <= 1,
+                 'native row must be unknown-zero or one-hot')
+        _require(row['status'] == ('observed_delivery' if sum(mapping.values()) else 'no_delivery_observed'),
+                 'native history status mismatch')
+    summary = value['external_readout_evaluation_summary']
+    _keys(summary, {'mae', 'rmse', 'scope'}, 'external error summary')
+    for metric in ('mae', 'rmse'):
+        _keys(summary[metric], {'value', 'conditional_world_bootstrap_95', 'valid_bootstrap_counts'}, 'error metric')
+    _require(summary == _error_summary(summary), 'noncanonical error scope/values')
+
+
+def validate_reporter_input(value):
+    """Strict schema boundary for helpers; reject rather than drop extra fields."""
+    _validate_metadata(value, {'locations', 'command_forecasts'})
+    nodes = _address_rows(value['locations'], 'location', LOCATION_KEYS)
+    commands = _address_rows(value['command_forecasts'], 'command', COMMAND_KEYS)
+    for node in nodes.values():
+        _require(type(node['observed']) is bool, 'observed must be boolean')
+        evidence = node['stored_evidence']
+        _keys(evidence, {'status', 'raw_orientation_logit', 'logit_sign', 'stored_decision',
+                         'evidence_item', 'decision_if_no_sample'}, 'stored evidence')
+        raw = evidence['raw_orientation_logit']
+        if node['observed']:
+            _number(raw)
+            _require(evidence['status'] == 'sample_stored' and evidence['evidence_item'] in {f'e{i}' for i in range(4)}
+                     and evidence['decision_if_no_sample'] is None, 'stored evidence status mismatch')
+            _require(evidence['logit_sign'] == ('positive' if raw > 0 else 'negative' if raw < 0 else 'zero')
+                     and evidence['stored_decision'] == ('vertical' if raw > 0 else 'horizontal'), 'stored sign/decision mismatch')
+        else:
+            _require(evidence['status'] == 'no_sample_stored'
+                     and all(evidence[k] is None for k in ('raw_orientation_logit', 'logit_sign', 'stored_decision', 'evidence_item')),
+                     'unseen content must be undefined')
+            _keys(evidence['decision_if_no_sample'], {'value', 'basis'}, 'default guess')
+            _require(evidence['decision_if_no_sample'] == {'value': 'horizontal', 'basis': 'fixed default guess'}, 'unexpected default guess')
+        for key in ('estimated_current_decision_success', 'estimated_fresh_glimpse_decision_success'):
+            _number(node[key], probability=True)
+        risk = node['risk_feature_source']
+        _keys(risk, {'model', 'field', 'dimensions', 'meaning'}, 'risk feature provenance')
+        _require(risk == {'model': value['frozen_sources']['outcome_model'], 'field': 'risk_hidden', 'dimensions': 32,
+                          'meaning': 'local learned decision-outcome representation; coordinates not interpreted'}, 'unexpected risk provenance')
+        external = node['external_image_statistic_readouts']
+        _keys(external, {'status', 'source', 'units', 'image_value_std_estimate', 'nearest_neighbor_rms_estimate',
+                         'interpretation'}, 'external readout')
+        _require(external['source'] == 'external shared linear readout of frozen risk_hidden'
+                 and external['units'] == 'normalized image-value units'
+                 and external['interpretation'] == 'linear estimates of objective stored-image statistics', 'unexpected external semantics')
+        _require(external['status'] == ('estimated_for_stored_sample' if node['observed'] else 'undefined_without_stored_sample'),
+                 'external readout status mismatch')
+        for key in ('image_value_std_estimate', 'nearest_neighbor_rms_estimate'):
+            if node['observed']:
+                _number(external[key])  # Unclipped linear estimates, negative allowed.
+            else:
+                _require(external[key] is None, 'unseen external readout must be undefined')
+    for row in commands.values():
+        for key in ('predicted_delivery_distribution', 'estimated_decision_success_after_command'):
+            _keys(row[key], LOCATION_NAMES, 'forecast address map')
+            for number in row[key].values():
+                _number(number, probability=True)
+        _require(abs(sum(row['predicted_delivery_distribution'].values())-1) <= 1e-12, 'delivery probabilities do not sum to one')
+        for loc, node in nodes.items():
+            d = row['predicted_delivery_distribution'][loc]
+            expected = d*node['estimated_fresh_glimpse_decision_success']+(1-d)*node['estimated_current_decision_success']
+            _require(row['estimated_decision_success_after_command'][loc] == expected, 'joined post-command composition mismatch')
+
+
 def address_aware_tables(reporter_input):
     """Same information in unjoined address-aware tables, no dropped relation."""
+    validate_reporter_input(reporter_input)
     value = copy.deepcopy(reporter_input)
     locations = value.pop('locations')
     commands = value.pop('command_forecasts')
@@ -342,10 +495,13 @@ def address_aware_tables(reporter_input):
 
 
 def join_address_aware_tables(table_input):
+    _validate_metadata(table_input, {'tables'})
     value = copy.deepcopy(table_input)
     tables = value.pop('tables')
     expected = {'stored_evidence', 'risk_forecasts', 'external_readouts', 'delivery_forecasts', 'post_command_forecasts'}
-    _require(set(tables) == expected, 'unexpected table schema')
+    _keys(tables, expected, 'table namespaces')
+    for name, (address, fields) in TABLE_SCHEMAS.items():
+        _address_rows(tables[name], address, fields)
     nodes = copy.deepcopy(tables['stored_evidence'])
     rows = copy.deepcopy(tables['delivery_forecasts'])
     for name in ('risk_forecasts', 'external_readouts'):
@@ -358,6 +514,7 @@ def join_address_aware_tables(table_input):
     for row in rows:
         row.update(by_command[row['command']])
     value['locations'], value['command_forecasts'] = nodes, rows
+    validate_reporter_input(value)
     return value
 
 

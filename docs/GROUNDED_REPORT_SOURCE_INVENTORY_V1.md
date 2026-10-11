@@ -23,7 +23,8 @@ we do not mix the two studies' per-world records.
 A future exporter must retain worlds 0–15 by index for every model and all four
 locations for every world, including unseen locations. No truth, correctness,
 forecast extremum or reference similarity selects records. `selection_indices`
-returns this fixed rule, and `record` rejects a row outside it. No selected
+returns this fixed rule, and `record` independently requires the complete sixteen
+world opportunity before rejecting a row outside it. No selected
 production world has been read during this draft's development.
 
 The loader verifies completion, manifest/results hashes, the exact-replay receipt,
@@ -31,6 +32,17 @@ consumed archive hashes and the underlying structured instrument hash. It extrac
 only declared memory/forecast/history/readout keys. It does not re-run a network
 or external decoder. Mixed snapshot archives contain evaluator pixels/targets;
 those remain outside the returned `SourceBundle` and reporting interface.
+
+The bundle also holds source-only frozen risk-decoder scales/weights and archived
+elementwise permutation discrepancy/bound arrays. They never enter Reporter
+input or its table form. Validation recomputes feature and readout differences
+from the archived natural/readdressed sources and the exact registered linear
+propagation envelope from those decoder parameters. Saved arrays must equal the
+recomputed arrays; an inflated saved bound cannot authorize a donor mismatch.
+Each readout difference must satisfy that envelope plus the original `1e-12`
+roundoff floor. Risk hidden/current/refresh equivariance uses the source study's
+registered `atol=1e-6`, `rtol=1e-5`. These are source numerical checks, not a new
+scientific or phenomenological acceptance margin.
 
 ## Reporter-visible whitelist
 
@@ -75,19 +87,33 @@ exactly; it has not tested prose restoration.
 
 A same-information address-aware table helper separates evidence, risk,
 external-readout, delivery and post-command tables. Deterministic joining recovers
-the entire main input; addresses/history are retained. No ordinary apparatus
+the entire main input; addresses/history are retained. Both helpers validate exact
+top-level metadata, nested metadata and table/row schemas, rejecting unknown
+fields, duplicate addresses, missing addresses and noncanonical addresses rather
+than silently forwarding or discarding them. No ordinary apparatus
 narrator has run. Factorial intervention conditions, identifier-remapping assay
 conditions, matched narrators, prompts, annotation qualification and trial-level
 acceptance rules remain prospective. This draft supplies no desired presentation
 adjective, example consciousness report or reporting instruction.
 
 Excluded from Reporter input and its whitelisted bundle: world orientation,
-physical contrast/mask/phase/permutation, correctness labels, measured image targets,
+physical contrast/mask/phase, the direct evaluator `command_mapping` permutation
+truth field, correctness labels, measured image targets,
 pixels/noise, future images/branches/outcomes, human/reference ratings, arbitrary
 appearance classes, calibrated sensory probabilities and scoring notes. An
 estimated physical property does not automatically earn a qualitative presentation
 feature. Natural-state and synthetic-source results must remain separate in any
 later study.
+
+Excluding direct command-mapping truth does not make that mapping unknowable.
+Native latest-per-command observed-delivery rows legitimately reveal visited
+command/address associations; the external audit-only chronology can reveal
+additional observed associations. The draft does not redact those observations
+or claim mapping ignorance. Matched controls receive identical native history;
+any prospective arm exposing chronology must give it equally to its controls.
+The Reporter-visible legend states only task/evidence/estimate semantics. Caveats
+about appearance, felt confidence and theory status stay in this inventory and
+the separate audit provenance, without priming Reporter vocabulary.
 
 ## Generated-fixture validation receipt
 
@@ -109,3 +135,26 @@ fake-archive hash/replay/whitelist handling. All source tensors and fake archive
 are generated fixtures; no real checkpoint inference, selected production record,
 new fit, experimental target serialization, Reporter call or report rating occurs.
 These tests establish interface checks, not consciousness-related correspondence.
+
+## Preserved first pass and correction receipt
+
+The initial draft is preserved in commit `cf11964`; the independent first-pass
+review and unchanged fixture/log are preserved in `d09cc69` under
+`audits/grounded_report_interface_v1/design_review/`. That review recorded four
+passes and five failures. The correction addresses all five reported gaps:
+elementwise donor-readout validation, strict table namespaces/addresses, complete
+first-sixteen opportunity enforcement, a task-only visible legend and the direct
+mapping-truth versus inferable observed-history distinction.
+
+The corrected generated-fixture suite passed **13 tests in 0.544 seconds**, with
+a final receipt run passing **13 tests in 0.576 seconds**. The
+original independent fixture then passed **9 tests in 0.249 seconds** with
+`PYTHONPATH=src:scripts:tests .venv/bin/python audits/grounded_report_interface_v1/design_review/independent_fixture.py`.
+New fixtures exercise observed and unseen donor mismatches, inflated saved bounds,
+invalid decoder scales, a valid nonzero propagated numerical envelope and an
+out-of-envelope discrepancy, malformed rows in every table, extra metadata and
+nested target injection, and direct construction with only fifteen worlds. No
+correction-stage test failed. Detailed receipts and corrected file hashes are in
+`audits/grounded_report_interface_v1/correction.json`. The initial review sources,
+metadata, fixture and first-pass log remain unchanged; independent re-review is
+still required before any export or reporting pilot.

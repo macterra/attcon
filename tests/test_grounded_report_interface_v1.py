@@ -45,6 +45,13 @@ def fixture(n=20):
     physical = torch.stack((sensory[:, 0, :, 0].double()-1.3, sensory[:, 0, :, 1].double()), -1)
     error = {metric: {'value': [.01, .02], 'conditional_world_bootstrap_95': [[.005, .015], [.01, .03]],
                       'valid_bootstrap_counts': [256, 256]} for metric in ('mae', 'rmse')}
+    weights = torch.zeros(32, 3, dtype=torch.float64)
+    weights[0, 0], weights[1, 1] = 1., 1.
+    parameters = {'feature_scale': torch.ones(32, dtype=torch.float64), 'weights': weights,
+                  'target_scale': torch.ones(2, dtype=torch.float64)}
+    bounds = {'absolute_feature_difference': torch.zeros(n, 4, 32, dtype=torch.float64),
+              'absolute_output_difference': torch.zeros(n, 4, 2, dtype=torch.float64),
+              'propagated_bound': torch.zeros(n, 4, 2, dtype=torch.float64)}
     return interface.SourceBundle(1301, sensory, history, commands, delivered, last,
                                   {'natural': sensory.clone(), 'sham': sensory.clone(),
                                    'memory_readdressed': rotated_memory, 'delivery_patched': sensory.clone(),
@@ -55,7 +62,7 @@ def fixture(n=20):
                                   {'natural': physical, 'sham': physical.clone(),
                                    'memory_readdressed': physical.roll(1, 1), 'delivery_patched': physical.clone(),
                                    'memory_restored': physical.clone(), 'delivery_restored': physical.clone()},
-                                  {'fixture_only': True, 'grounded_model_sha256': 'toy-hash'}, error)
+                                  {'fixture_only': True, 'grounded_model_sha256': 'toy-hash'}, error, parameters, bounds)
 
 
 class GroundedReportInterfaceTests(unittest.TestCase):
@@ -200,7 +207,8 @@ class GroundedReportInterfaceTests(unittest.TestCase):
                  'restored': source.forecasts_by_variant['memory_restored'],
                  'patched_forecasts': source.forecasts_by_variant['delivery_patched'],
                  'restored_patch_delivery': source.forecasts_by_variant['natural']['delivery'],
-                 'restored_patch_after': source.forecasts_by_variant['natural']['after']}
+                 'restored_patch_after': source.forecasts_by_variant['natural']['after'],
+                 'decode_permutation_error_bounds': {'risk_hidden': source.decode_permutation_error_bounds}}
         for key, variant in (('original_local_decoded', 'natural'), ('readdressed_local_decoded', 'memory_readdressed'),
                              ('restored_local_decoded', 'memory_restored'), ('patch_local_decoded', 'delivery_patched')):
             trace[key] = {'risk_hidden': {'physical': source.physical_by_variant[variant]}}
@@ -221,9 +229,11 @@ class GroundedReportInterfaceTests(unittest.TestCase):
             archive('evaluation_predictions', {'risk_hidden': {'physical': source.physical_by_variant['natural']}})
             archive('interventions', trace)
             archive('decoders', {'risk_hidden': {'layout': 'shared_pooled_seen_rows', 'decoder_count': 1,
-                                                'feature_dimensions': 32}})
+                                                'feature_dimensions': 32, 'fits': [source.risk_decoder_parameters]}})
             model_path = 'audits/grounded_attention_outcomes_v1/model-1301/instrument-structured.pt.gz'
-            (root/'manifest.json').write_text(json.dumps({'frozen_input_sha256': {model_path: 'toy-frozen-model'}}))
+            (root/'manifest.json').write_text(json.dumps({'frozen_input_sha256': {model_path: 'toy-frozen-model'},
+                                                         'permutation_source_tolerance': {'atol': 1e-6, 'rtol': 1e-5},
+                                                         'linear_decoder_roundoff_floor': 1e-12}))
             (root/'results.json').write_text(json.dumps({'models': {'1301': {'readouts': {'risk_hidden': {
                 'assessment': {'all_seen': {'pooled': source.physical_error_summary}}}}}}}))
             completion = {'status': 'single_registered_attempt_completed', 'archive_files': archive_files,
@@ -246,6 +256,84 @@ class GroundedReportInterfaceTests(unittest.TestCase):
                 (root/'verification.json').write_text(json.dumps(verification))
                 with self.assertRaises(ValueError):
                     interface.load_bundle(1301, root)
+
+
+    def test_memory_readout_corruption_and_inflated_bounds_are_rejected(self):
+        for recipient in (0, 1):  # Both unseen and observed recipients validated.
+            source = fixture()
+            source.physical_by_variant['memory_readdressed'][0, recipient, 0] += 10
+            with self.assertRaises(ValueError):
+                interface.record(source, 0, 'memory_readdressed')
+        source = fixture()
+        source.decode_permutation_error_bounds['propagated_bound'] += 100
+        with self.assertRaises(ValueError):
+            interface.record(source, 0)
+        source = fixture()
+        source.risk_decoder_parameters['feature_scale'][0] = 0
+        with self.assertRaises(ValueError):
+            interface.record(source, 0)
+
+    def test_registered_roundoff_envelope_accepts_measured_small_source_delta(self):
+        source = fixture()
+        original = source.forecasts_by_variant['natural']['risk_hidden'][:, 0].roll(1, 1).double()
+        moved = source.forecasts_by_variant['memory_readdressed']['risk_hidden']
+        moved[0, 0, 1, 0] += 1e-7
+        delta = (moved[:, 0].double()-original).abs()
+        params = source.risk_decoder_parameters
+        bound = delta/params['feature_scale']@params['weights'][:, :2].abs()*params['target_scale']
+        source.physical_by_variant['memory_readdressed'][0, 1, 0] += float(delta[0, 1, 0])
+        actual = (source.physical_by_variant['memory_readdressed']-source.physical_by_variant['natural'].roll(1, 1)).abs()
+        source.decode_permutation_error_bounds = {'absolute_feature_difference': delta,
+                                                 'absolute_output_difference': actual, 'propagated_bound': bound}
+        value = interface.record(source, 0, 'memory_readdressed')
+        self.assertFalse(value['audit_provenance']['decoder_parameters_and_bounds_reporter_context'])
+        self.assertNotIn('risk_decoder_parameters', value['reporter_input'])
+        self.assertNotIn('decode_permutation_error_bounds', value['reporter_input'])
+        source.physical_by_variant['memory_readdressed'][0, 1, 0] += .001
+        source.decode_permutation_error_bounds['absolute_output_difference'] = (
+            source.physical_by_variant['memory_readdressed']-source.physical_by_variant['natural'].roll(1, 1)).abs()
+        with self.assertRaises(ValueError):
+            interface.record(source, 0)
+
+    def test_all_table_boundaries_reject_duplicates_missing_addresses_and_extra_fields(self):
+        value = interface.record(fixture(), 0)['reporter_input']
+        tables = interface.address_aware_tables(value)
+        for name in interface.TABLE_SCHEMAS:
+            for operation in ('duplicate', 'missing', 'extra', 'wrong'):
+                changed = copy.deepcopy(tables)
+                rows = changed['tables'][name]
+                if operation == 'duplicate':
+                    rows.append(copy.deepcopy(rows[0]))
+                elif operation == 'missing':
+                    rows.pop()
+                elif operation == 'extra':
+                    rows[0]['physical_targets'] = 'FORBIDDEN'
+                else:
+                    rows[0][interface.TABLE_SCHEMAS[name][0]] = 'wrong'
+                with self.subTest(table=name, operation=operation), self.assertRaises(ValueError):
+                    interface.join_address_aware_tables(changed)
+        for target in ('top', 'metadata', 'nested'):
+            changed = copy.deepcopy(tables)
+            if target == 'top':
+                changed['physical_targets'] = 'FORBIDDEN'
+            elif target == 'metadata':
+                changed['frozen_sources']['physical_targets'] = 'FORBIDDEN'
+            else:
+                changed['tables']['external_readouts'][0]['external_image_statistic_readouts']['physical_targets'] = 'FORBIDDEN'
+            with self.assertRaises(ValueError):
+                interface.join_address_aware_tables(changed)
+        value['locations'][0]['physical_targets'] = 'FORBIDDEN'
+        with self.assertRaises(ValueError):
+            interface.address_aware_tables(value)
+
+    def test_record_complete_opportunity_and_task_only_legend(self):
+        with self.assertRaises(ValueError):
+            interface.record(fixture(n=15), 0)
+        value = interface.record(fixture(), 0)['reporter_input']
+        pieces = list(value['source_semantics'].values())
+        pieces += [node['external_image_statistic_readouts']['interpretation'] for node in value['locations']]
+        for phrase in ('felt confidence', 'native presentation', 'appearance', 'consciousness', 'qualia'):
+            self.assertFalse(any(phrase in text.lower() for text in pieces))
 
 
 if __name__ == '__main__':

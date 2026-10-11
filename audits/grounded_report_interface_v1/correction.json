@@ -1,0 +1,89 @@
+{
+  "schema_version": "grounded_report_interface_v1_correction_receipt",
+  "status": "corrected_source_only_draft_ready_for_independent_rereview",
+  "preserved_first_pass": {
+    "parent_reported_initial_draft_commit": "cf11964",
+    "parent_reported_review_commit": "d09cc69",
+    "local_commit_comparison": "Read-only git diff d09cc69 failed with bad revision; exact files preserved and hashed here. Parent commit labels are not locally verified.",
+    "initial_source_sha256": {
+      "scripts/grounded_report_interface_v1.py": "d8d4328a3ef0c8765109536568fab667c2f670b4af556311e77451b05ad6270e",
+      "tests/test_grounded_report_interface_v1.py": "1e85178d003240689d62462e7e892acb0b767de6ad1583dc6f7d0a2f317a2fee",
+      "docs/GROUNDED_REPORT_SOURCE_INVENTORY_V1.md": "6f056321fe439419446260b5eb777c0087ed4df8ee10a177d5f303e78e514442"
+    },
+    "independent_first_pass": {
+      "tests": 9,
+      "passed": 4,
+      "failed": 5,
+      "fixture_seconds": 0.268,
+      "files_unchanged_by_correction": true,
+      "supplementary_observed_recipient_evidence_preserved": true
+    }
+  },
+  "sha256": {
+    "scripts/grounded_report_interface_v1.py": "b1d27f6131cf9c49c4ec24aa06b2ebdf9456de4c8062486e712594046558cc64",
+    "tests/test_grounded_report_interface_v1.py": "011d68c9fa545f4bddfc5ae54531cca60dad2fe6ccd28c1ccea6e14b34a3e745",
+    "docs/GROUNDED_REPORT_SOURCE_INVENTORY_V1.md": "264ca6c06b8da36729e7cfefb450e28a4ff80a7ba2109c23317727d910852d97",
+    "audits/grounded_report_interface_v1/design_review/review.md": "5a891fa1d64aa345101f28a11e89dfd7139b2f0b47bd9a6a83a4e2044fd7507e",
+    "audits/grounded_report_interface_v1/design_review/metadata.json": "31cd571f532e19c4a750753f5f84f5f9fe643106f3ba36b51a9d2c978ac3b473",
+    "audits/grounded_report_interface_v1/design_review/independent_fixture.py": "93c30e987cbaadb75c527b131f5e1b94878280436ea4c746aa995e43c8cfa8e2",
+    "audits/grounded_report_interface_v1/design_review/independent_first_pass.log": "272812d0ea5f7cf8f647125fe5029c7345035fc6b4943a266a09c64b7d27f4bd"
+  },
+  "changes": [
+    "Bundle extracts only needed frozen feature_scale/weights/target_scale and registered risk_hidden elementwise discrepancy/bound arrays; these remain source-only and never enter Reporter context.",
+    "Actual risk-feature and physical-readout permutation differences and exact propagated linear bound are recomputed; archived arrays must match and every readout discrepancy must be <= bound + original DECODE_ROUNDOFF=1e-12. Registered source risk_hidden/current/refresh tolerances atol=1e-6,rtol=1e-5 are enforced. No new scientific tolerance or phenomenological margin.",
+    "Strict helper schemas reject duplicate/missing/noncanonical addresses and unknown table/top/nested metadata fields, including injected physical_targets. The canonical-identifier draft drops its earlier unused identifier-remap helper; identifier-remapping assay remains prospective.",
+    "record itself requires at least all 16 fixed opportunities before returning any row.",
+    "Reporter-visible legend/fields now use only task/evidence/estimate semantics; appearance/felt-confidence/theory limitations remain separate audit/inventory context.",
+    "Inventory distinguishes excluded direct evaluator command_mapping truth from mapping legitimately inferable from exposed native observed-delivery history; full actual chronology remains audit-only."
+  ],
+  "numerical_order_note": "Parent temporarily requested float32 subtraction-before-double, then corrected that request after rereading frozen source line437. No implementation change was made: double-before-subtract matches the frozen source arithmetic.",
+  "tests": [
+    {
+      "command": "PYTHONPATH=src:scripts .venv/bin/python -m unittest discover -s tests -p 'test_grounded_report_interface_v1.py' -v",
+      "intermediate_receipt": {
+        "passed": 13,
+        "failed": 0,
+        "seconds": 0.544
+      },
+      "final_receipt": {
+        "chunk_id": "351e13",
+        "wall_time_seconds": 2.6308418959999997,
+        "exit_code": 0,
+        "original_token_count": 694,
+        "output": "test_all_table_boundaries_reject_duplicates_missing_addresses_and_extra_fields (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_all_table_boundaries_reject_duplicates_missing_addresses_and_extra_fields) ... ok\ntest_external_readouts_are_unclipped_and_extra_summary_fields_are_excluded (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_external_readouts_are_unclipped_and_extra_summary_fields_are_excluded) ... ok\ntest_fake_archive_loader_extracts_only_whitelist_and_requires_verified_hashes (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_fake_archive_loader_extracts_only_whitelist_and_requires_verified_hashes) ... ok\ntest_invalid_sources_fail_before_record_and_no_implicit_loader (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_invalid_sources_fail_before_record_and_no_implicit_loader) ... ok\ntest_memory_readout_corruption_and_inflated_bounds_are_rejected (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_memory_readout_corruption_and_inflated_bounds_are_rejected) ... ok\ntest_native_history_is_latest_only_and_chronology_is_audit_only (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_native_history_is_latest_only_and_chronology_is_audit_only) ... ok\ntest_preselection_retains_all_locations_and_unseen_has_no_content (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_preselection_retains_all_locations_and_unseen_has_no_content) ... ok\ntest_raw_sign_decision_and_exact_composition_are_distinct_from_truth (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_raw_sign_decision_and_exact_composition_are_distinct_from_truth) ... ok\ntest_readdressing_preserves_actual_past_and_restoration_is_exact (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_readdressing_preserves_actual_past_and_restoration_is_exact) ... ok\ntest_record_complete_opportunity_and_task_only_legend (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_record_complete_opportunity_and_task_only_legend) ... ok\ntest_registered_roundoff_envelope_accepts_measured_small_source_delta (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_registered_roundoff_envelope_accepts_measured_small_source_delta) ... ok\ntest_route_patch_is_export_only_and_retains_memory_risk_and_readouts (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_route_patch_is_export_only_and_retains_memory_risk_and_readouts) ... ok\ntest_same_information_table_roundtrip_and_no_mutation (test_grounded_report_interface_v1.GroundedReportInterfaceTests.test_same_information_table_roundtrip_and_no_mutation) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.576s\n\nOK\n"
+      }
+    },
+    {
+      "command": "PYTHONPATH=src:scripts:tests .venv/bin/python audits/grounded_report_interface_v1/design_review/independent_fixture.py",
+      "receipt": {
+        "chunk_id": "e163c8",
+        "wall_time_seconds": 2.180018862,
+        "exit_code": 0,
+        "original_token_count": 335,
+        "output": "test_chronology_remains_audit_only_despite_memory_conflict (__main__.IndependentEdges.test_chronology_remains_audit_only_despite_memory_conflict) ... ok\ntest_duplicate_table_address_must_be_rejected (__main__.IndependentEdges.test_duplicate_table_address_must_be_rejected) ... ok\ntest_extra_table_field_must_be_rejected (__main__.IndependentEdges.test_extra_table_field_must_be_rejected) ... ok\ntest_inconsistent_latest_command_history_is_rejected (__main__.IndependentEdges.test_inconsistent_latest_command_history_is_rejected) ... ok\ntest_memory_readout_donor_mismatch_must_be_rejected (__main__.IndependentEdges.test_memory_readout_donor_mismatch_must_be_rejected) ... ok\ntest_neutral_task_source_legend_excludes_theory_vocabulary (__main__.IndependentEdges.test_neutral_task_source_legend_excludes_theory_vocabulary) ... ok\ntest_record_requires_entire_fixed_opportunity_set (__main__.IndependentEdges.test_record_requires_entire_fixed_opportunity_set) ... ok\ntest_restores_and_patch_origin_match_factual_sources (__main__.IndependentEdges.test_restores_and_patch_origin_match_factual_sources) ... ok\ntest_unseen_hidden_and_logit_nonzero_are_rejected (__main__.IndependentEdges.test_unseen_hidden_and_logit_nonzero_are_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.249s\n\nOK\n"
+      }
+    }
+  ],
+  "correction_stage_failed_test_checks": [],
+  "routine_read_failures": [
+    "Two preliminary rg reads included guessed nonexistent paths, then actual source filenames were located.",
+    "Read-only git diff against parent-provided d09cc69 reported bad revision; no write or history change occurred."
+  ],
+  "scope": {
+    "generated_toy_sources_only": true,
+    "real_selected_archives_loaded": false,
+    "production_network_inference": false,
+    "decoder_fit": false,
+    "targetviews_serialized": false,
+    "reporter_run": false,
+    "report_rating": false,
+    "appearance_qualified": false,
+    "theory_goal_achieved": false
+  },
+  "limitations": [
+    "Six variants remain draft; no factorial/identifier-remapping/matched-narrator condition is claimed implemented.",
+    "Factual interface validation does not establish appearance correspondence.",
+    "No production selected-world compatibility is claimed from generated fixtures."
+  ],
+  "hold": "Corrected files frozen for independent source-only re-review; no export/reporting follow-up."
+}
