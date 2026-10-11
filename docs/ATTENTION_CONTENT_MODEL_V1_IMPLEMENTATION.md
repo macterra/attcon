@@ -1,8 +1,10 @@
 # Learned attention-content model v1: software implementation
 
 2026-10-11. The approved learned model and evaluator collector are implemented.
-Their bounded software fixtures pass; **no registered A training, development or
-heldout run has occurred, and no new reports were generated**.
+Their bounded software fixtures pass. The [first registered fit](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
+has now completed; independent phase reconstruction is pending, development and
+heldout remain sealed, and no new reports were generated. The preparation history
+below records what was established before that execution.
 
 The [design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) fixes a shared GRUCell(771,48)
 and residual decoder 435→96→384: 197,328 parameters per learned source. The
