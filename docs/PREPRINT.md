@@ -54,8 +54,9 @@ completes six fixed 300-update fits and evaluation on 288 fresh development worl
 Separately reviewed fit/development reconstruction passes 143,599/134,367 checks,
 preserving the original failed fit reference. Fresh-world A targeting is
 39.9–44.8%, compared with 98.6–100% for the analytic source; prediction errors
-increase relative to fitting worlds. Semantic assessment and consciousness-report
-correspondence remain separate and unfinished. The broader theory-facing
+increase relative to fitting worlds. Separate dev assessment qualifies bounded
+estimated location content/bookkeeping, but leaves manner unqualified. Consciousness-report
+correspondence remains untested. The broader theory-facing
 interpretation remains unresolved.
 
 ## 1. Question
@@ -763,10 +764,15 @@ MSE .07989–.08565/.19750–.20539 and targeting 58.0–59.7%. Ordinary predict
 similar; analytic next MSE is .08288–.08808 and targeting 98.6–100%. These are
 complete per-encoder descriptors, not selected examples or pooled significance.
 The full field, support-distance, ambiguity, intervention and interval ledgers
-remain available for the predeclared independent semantic assessment. Predictive
+remain available in the full ledger and separate semantic assessment. Predictive
 generalization, literal estimated-content semantics, presentation manner and later
-neutral report correspondence are distinct. Heldout remains sealed pending the
-explicit development assessment; no new consciousness-report result is claimed.
+neutral report correspondence are distinct. The [complete dev review](../audits/attention_content_model_v1/semantic_review/dev_review.md)
+qualifies narrowly addressed red/blue location estimates, including wrong estimates,
+and exact bookkeeping for all three sources. Learned attended-state fidelity
+remains limited; analytic mixture estimates are not executed maps. Manner remains
+unqualified for every source under the frozen gate. The explicit dev acceptance
+permits fixed technical heldout, without refitting or releasing Reporter.
+No new consciousness-report result is claimed.
 
 ### 6.1 Authorized AI review route
 

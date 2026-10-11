@@ -64,7 +64,9 @@ models. The separately reviewed corrected reconstruction passes all 143,599
 checks on unchanged fitted bytes and exactly reproduces the original 27,616-row
 prefix; the original failed run remains preserved. Fixed development now completes
 and passes all 134,367 reconstruction checks, with fresh-world errors retained.
-Next assess literal content/manner before the fixed heldout run.
+The full dev assessment qualifies bounded estimated location content/bookkeeping
+and leaves manner unqualified for all sources. Next complete fixed technical
+heldout without refitting or releasing Reporter.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)

@@ -83,8 +83,12 @@ probe after 27,616 passing checks and remains preserved. A separately reviewed,
 explicitly versioned correction now passes all 143,599 checks on unchanged fitted
 bytes, including exact full evidence equality for that original prefix. The fixed
 development split now completes and passes all 134,367 reconstruction checks.
-Fresh-world prediction errors rise; source semantics remain a separate assessment.
-Heldout awaits that explicit assessment, with no refitting or adapted schedule.
+Fresh-world prediction errors rise. A separate complete-ledger review qualifies
+bounded red/blue location estimates and exact bookkeeping for all three sources;
+learned attended-state fidelity remains limited and presentation manner remains
+unqualified under v1's frozen gate. Fixed technical heldout is next, without
+refitting, adapted schedules or releasing Reporter. A prospective relational-content
+report interpretation must remain a distinct version, preserving this v1 negative.
 No new Reporter or consciousness-report correspondence result exists for this
 version; source-content, bookkeeping and manner assessments remain separate.
 

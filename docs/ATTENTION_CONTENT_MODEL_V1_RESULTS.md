@@ -3,8 +3,9 @@
 2026-10-11. The first fixed **fit phase completed** and its separately reviewed
 corrected reconstruction **passes all 143,599 checks**. The original failed
 reconstruction remains preserved. The first fixed development phase has completed;
-its independent reconstruction passes all 134,367 checks. Semantic assessment
-is next and heldout remains sealed. No Reporter
+its independent reconstruction passes all 134,367 checks. Estimated location
+content and bookkeeping qualify; presentation manner remains unqualified.
+Fixed technical heldout is next. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -175,8 +176,27 @@ they do not establish task necessity, literal H(A) semantics or a qualia verdict
 Complete role-indexed errors, field discrepancies, ambiguity and donor ledgers
 remain available for the separate assessment without a new performance cutoff.
 
-Next preserve its independent reconstruction and separate literal-content/manner
-assessment, then release fixed heldout only through those committed receipts.
+## Fixed development semantic assessment
+
+The [separate full-ledger review](../audits/attention_content_model_v1/semantic_review/dev_review.md)
+qualifies **addressed red/blue location estimates** and exact bookkeeping for
+A, ordinary and analytic. This permits descriptions of identifiable model estimates,
+including errors; it does not promote those estimates to actual attended W or felt
+appearance. Learned attended-state fidelity remains limited: H(A) often retains
+physical object locations while disagreeing with attention-transformed H(W).
+Analytic mixtures retain their conditional-map provenance, and H(mean-map) is
+distinct from mean-H and an executed operator state. Localization fields are not
+calibrated object-presence probabilities.
+
+**Presentation manner is unqualified for all sources under the frozen gate.**
+The full donor/control ledger establishes source dependence and operational use,
+but supplies no independent form warrant beyond fine spatial content, uncertainty,
+access and filter mechanics. The [explicit dev acceptance](../audits/attention_content_model_v1/dev_acceptance.json)
+preserves that negative and permits the fixed technical heldout phase after
+publication, without refitting or releasing Reporter. Review uses a separate task
+within the same AI family; it is not human or independent-family validation.
+
+Next release fixed heldout only through these committed receipts and assessment.
 Errors, null interventions and ordinary/analytic parity remain results. Controller
 and Reporter are distinct; accurate prediction alone does not achieve the
 qualia-source goal.

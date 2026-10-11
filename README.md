@@ -295,7 +295,8 @@ now completes six fixed 300-update models, with complete fitting-world diagnosti
 its separately reviewed corrected reconstruction passes all 143,599 checks,
 retaining the original failed run. Fixed development completes with 134,367
 reconstruction checks; fresh-world prediction is worse than fitting diagnostics.
-Semantic assessment is next; heldout remains sealed and no positive qualia result
+Estimated location content/bookkeeping qualify, manner does not; fixed technical
+heldout is next and no positive qualia result
 is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
