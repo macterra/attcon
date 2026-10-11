@@ -249,5 +249,9 @@ It must test source fidelity and independently grounded consciousness-like
 organization, with matched rivals and selective A/W interventions. This is a
 post-development hypothesis, not retrospective promotion of v1's manner gate.
 No additional fit or Modeler-refinement experiment is a prerequisite for that
-report test. Protocol, exporter/auditor and independent reference packs are being
-prepared before any new reports.
+report test. The new protocol/reference and complete source closure are reviewed;
+its [first archive export](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+now preserves 552 inputs, 25,440 required peak facts per arm and 684 causal pairs.
+The corrected reporting pipeline passes all 19 handcrafted checks; its original
+18-pass/1-fail fixture result remains preserved. Narration and reference-rating
+outcomes remain pending; these software/source results do not establish qualia.

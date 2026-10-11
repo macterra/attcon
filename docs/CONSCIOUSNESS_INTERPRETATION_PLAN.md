@@ -102,7 +102,11 @@ and exact proposition checks assess fidelity separately; donor, fixed-A/W-change
 and restoration pairs test attribution. Ordinary, analytic, richer W and reduced
 sensor controls bound the language pipeline's contribution. This is post-development
 and does not retrospectively pass v1's stricter manner gate. The source exporter,
-auditor and pipeline are being implemented and reviewed before export/reporting.
+auditor and pipeline are reviewed. The first retained-archive export now completes
+with 552 inputs, 25,440 required peak facts per arm and 684 planned causal pairs;
+all controls, restorations and nulls are retained. Narration and rating outcomes
+remain pending. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).
 The ultimate goal remains credible evidence that the attention-control model is
 the source of qualia; protocol readiness or numerical verification alone does not
 achieve it.

@@ -69,8 +69,9 @@ and leaves manner unqualified for all sources. Fixed technical heldout now
 completes with all 134,390 reconstruction checks passing. Next implement the
 separately reviewed prospective [relational-content protocol](ATTENTION_RELATIONAL_REPORT_PROTOCOL_V1.md),
 neutral exporter, factual auditor and [withheld reference pack](ATTENTION_RELATIONAL_REFERENCE_V1.md)
-before the fixed 552 new report attempts. The protocol and reference are prepared;
-actual exports, narration and source-blind ratings remain unexecuted.
+before the fixed 552 new report attempts. The protocol, reference and reporting source are frozen and reviewed.
+The first archive export completes with all 552 inputs and 684 causal pairs
+preserved; narration and source-blind rating outcomes remain pending.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)

@@ -780,11 +780,15 @@ next MSE is .08275–.08986 and targeting 97.9–100%. Selected-current H(A)
 cell disagreements with H(W) remain 57.8–58.4%, consistent with the development
 tracking limitation. The complete first ledgers
 and all errors are retained; v1 manner remains unqualified. A separate
-prospective relational-content reporting protocol is being prepared under its
-[critical review](../audits/attention_content_model_v1/next_mechanism_review/critical_review/review.md),
-with source-aware fidelity, independently grounded resemblance and matched
-interventions/rivals. It does not retrospectively change the frozen v1 gate.
-No new consciousness-report result is claimed.
+[prospective relational-content reporting protocol](ATTENTION_RELATIONAL_REPORT_PROTOCOL_V1.md)
+now has a frozen publication-grounded reference and a
+[reviewed source closure](../audits/attention_relational_report_v1/preexecution_review/review.md).
+Its first retained-archive export completes once: all 552 inputs, 25,440 required
+peak facts per narrator/template arm and 684 planned causal comparisons are
+preserved, including nulls and exact restorations. The source-aware fidelity and
+source-blind reference measurements remain separate, with matched ordinary,
+analytic, W, sensor and template controls. Narration/rating outcomes are pending.
+This does not retrospectively change the frozen v1 gate or establish qualia.
 
 ### 6.1 Authorized AI review route
 

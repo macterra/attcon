@@ -300,7 +300,9 @@ now passes all 134,390 reconstruction checks; A targeting is 41.3–47.9%, ordin
 38.2–45.1%, analytic 97.9–100%. No consciousness-report result exists for this
 version. The separate [prospective relational-report protocol](docs/ATTENTION_RELATIONAL_REPORT_PROTOCOL_V1.md)
 now fixes 552 narrator attempts, 552 literal-template comparisons and independent
-source-fidelity/reference endpoints; source software is being prepared before calls. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+source-fidelity/reference endpoints. The reviewed first archive export now preserves
+all 552 inputs, 25,440 required facts per arm and 684 causal comparisons;
+narration and reference-rating outcomes are pending. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.
