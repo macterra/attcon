@@ -592,17 +592,20 @@ def evaluate_sources(models, episode, native_head, native_standardizer, extracto
     actual_evidence = readout.consume(episode['actual_completed_w'])
     source_tensors, source_checks, visibility, update_visibility, decoder_visibility, per_world_metrics = {}, {}, {}, {}, {}, {}
     progress.update({'source_tensors':source_tensors,'source_checks':source_checks,'visibility':visibility,
+                     'source_update_visibility':update_visibility,'source_decoder_visibility':decoder_visibility,
                      'actual_evidence':actual_evidence})
     shared_checks, actual_provenance, actual_control_outputs = _controls(controller, episode,progress)
     progress.update({'shared_checks':shared_checks,'actual_control_outputs':actual_control_outputs})
     donors, donor_provenance = _donors(episode,progress)
     actual_actions = {}
+    progress['actual_actions'] = actual_actions
     for time in (12, 13, 14):
         addresses, roles = episode['command_addresses'][:, time], episode['query_roles'][:, time]
         for symbol in range(3):
             actual_actions[(time, symbol)] = _native_action(controller, v, episode['actual_forks'][:, time, symbol],
                                                            addresses, roles, time+1)
     analytic_secondary = {}
+    progress['analytic_secondary'] = analytic_secondary
     for name, source in sources.items():
         state = source.initial_state(WORLDS)
         records, checks, calls, updates, decoder_calls = {}, {}, [], [], []

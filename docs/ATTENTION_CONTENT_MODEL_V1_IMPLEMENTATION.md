@@ -54,7 +54,13 @@ prospective corrections retain complete analytic masks, actual prediction/update
 manifests, named assembly gates, completed-source failure snapshots and full paired
 diagnostics. Their runtime and independent reconstruction remain pending. The
 heldout boundary must also bind an actual passing independent dev reconstruction
-and source semantic assessment before release.
+and source semantic assessment before release. The first
+[dev-release boundary suite](../audits/attention_content_model_v1/runner_software/first_dev_release_test_run.log)
+passes **5/5**, after exact source and review were published at `f2f78eb`.
+Temporary synthetic reports check rejection of an unbound assertion, a failed
+report, another verifier and another fit commit. A passing bound report with
+negative source semantics permits the fixed technical heldout run while reporting
+remains unreleased. Mocked fixtures provide no actual dev reconstruction evidence.
 Fit, dev and heldout releases must follow the design's immutable receipt sequence.
 Their first outputs, errors, ordinary/analytic parity and negative semantic
 endpoints will be retained. Literal source contents and later neutral report
