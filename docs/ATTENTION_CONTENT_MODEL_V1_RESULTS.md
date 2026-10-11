@@ -50,6 +50,13 @@ full evidence equality and rejection of unapproved or incomplete phase evidence.
 Source preparation and fixture review do not establish a corrected fit pass;
 development and heldout remain sealed until that first full result is preserved.
 
+The [first bounded-fixture log](../audits/attention_content_model_v1/reference_amendment/fixtures/first_run.log)
+records eight passing fixtures and one error in the amendment-creation fixture.
+Its mocked immutable context omits `original_source_hashes`, which the production
+helper requires for collision checks. The complete first outcome is retained;
+this failed suite does not authorize amendment creation or corrected reconstruction.
+No actual archives, registered worlds, fitting or Reporter were used by the suite.
+
 ## Fitting-world diagnostics, pending complete reconstruction
 
 The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
