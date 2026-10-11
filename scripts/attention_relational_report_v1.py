@@ -60,12 +60,12 @@ REPORT_RESPONSE_SCHEMA = dict(type='object',additionalProperties=False,
     required=['schema','text','propositions'],properties=dict(schema={'const':REPORT_SCHEMA},
         text={'type':'string'},propositions={'type':'array','items':{'anyOf':[
             _proposition_schema('peaks',dict(role={'enum':list(ROLES)},cells={
-                'type':'array','minItems':1,'maxItems':16,'uniqueItems':True,'items':{
+                'type':'array','minItems':1,'maxItems':16,'items':{
                     'type':'array','minItems':2,'maxItems':2,'items':{
                         'type':'integer','minimum':0,'maximum':3}}})),
             _proposition_schema('relation',dict(relation={'const':'red_blue_peak_relation'},
-                horizontal={'type':'array','uniqueItems':True,'items':{'enum':['left_of','same_column','right_of']}},
-                vertical={'type':'array','uniqueItems':True,'items':{'enum':['above','same_row','below']}},
+                horizontal={'type':'array','items':{'enum':['left_of','same_column','right_of']}},
+                vertical={'type':'array','items':{'enum':['above','same_row','below']}},
                 coincident_possible={'type':'boolean'},coincident_all={'type':'boolean'})),
             _proposition_schema('scalar',dict(role={'enum':list(ROLES)},name={'enum':[
                 'peak_probability','entropy_nats','expected_row','expected_column']},value={'type':'number'})),
