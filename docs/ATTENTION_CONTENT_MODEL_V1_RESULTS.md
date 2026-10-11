@@ -32,6 +32,36 @@ This is an incomplete failed first reconstruction, not a passing scientific
 phase audit or a reason to refit. Diagnose the exact probe before proposing a
 separately reviewed reference correction; retain the original verifier and run.
 
+## Fitting-world diagnostics, pending complete reconstruction
+
+The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
+binds the retained archives and preserves all three sources, registered metrics,
+bootstrap intervals, time curves, errors, ambiguity and donor opportunities.
+Its first execution completed without model inference, optimization or new worlds.
+The full descriptive ledger is published losslessly; it does not replace the
+failed independent reconstruction or qualify source semantics.
+
+| Frozen encoder | Source | Current selected normalized MSE | Next selected normalized MSE | Actual targeting under selected policy |
+|---|---|---:|---:|---:|
+| 1301 | A | .08362 | .19975 | 58.0% |
+| 1301 | Ordinary | .08205 | .19511 | 57.6% |
+| 1301 | Analytic | .10295 | .08272 | 97.9% |
+| 1311 | A | .08565 | .20539 | 59.4% |
+| 1311 | Ordinary | .08547 | .20463 | 56.9% |
+| 1311 | Analytic | .10792 | .08586 | 96.9% |
+| 1321 | A | .07989 | .19750 | 59.7% |
+| 1321 | Ordinary | .08288 | .20173 | 62.2% |
+| 1321 | Analytic | .10317 | .08303 | 100% |
+
+Each row uses96 fitting worlds. Current scores cover decisions1..14, excluding
+the exactly observed initial state; next scores cover all fifteen decisions and
+three symbols. Actual policy accuracy uses all288 final query opportunities per
+source/encoder. These are fitting diagnostics with shared operator/layout support,
+not fresh-world prediction or reporting results. A and ordinary show similar
+recorded errors; the analytic alternative has lower prospective error and higher
+targeting accuracy. No performance necessity or unique qualia interpretation is
+inferred from these comparisons.
+
 After a valid preserved reconstruction, use the immutable fitted bytes for the one development pass,
 preserve its independent reconstruction and separate literal-content/manner
 assessment, and release fixed heldout only through those committed receipts.

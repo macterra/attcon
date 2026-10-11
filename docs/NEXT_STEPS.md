@@ -58,13 +58,17 @@ diagnosis and separately reviewed corrected reference now pass all 206,070
 original checks without changing the experiment or tolerances. Retain native
 content/access as the endpoint; presentation manner is still unqualified. The
 [learned A_current/A_next design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) is independently
-approved for bounded implementation. Implement and review its module, collector
-and phase runner before the separately registered run. That run must demonstrate
+approved and its complete source closure reviewed before registration. Its
+[first fixed fit](ATTENTION_CONTENT_MODEL_V1_RESULTS.md) completes all six300-update
+models; the first independent reconstruction stops at an inconsistent t0 input
+probe after27,616 passing checks. Preserve that failure and independently review
+a narrow reference correction on the unchanged fitted bytes; development/heldout
+remain sealed. The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
-now pass 13 and seven fixtures respectively. Complete the experiment engine,
-phase runner and independent reconstruction, review their exact source closure,
-then register the one fit/dev/heldout execution. Reporting requires its separate
+now provide53 first passing bounded fixtures across six suites. Complete actual
+phase reconstruction and the fixed development assessment before heldout.
+Reporting requires its separate
 qualification and registration.
 
 Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
