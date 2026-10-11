@@ -1,0 +1,49 @@
+Spatial native task v1 runner: FIRST SOFTWARE-ONLY PASS
+Scope: in-memory compilation and --help only. No runtime development execution.
+Python: 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+Check 1: compile runner bytes in memory, mode exec, without import.
+PASS: runner compiled.
+Check 2: /usr/bin/python3 scripts/run_spatial_native_task_v1.py --help
+usage: run_spatial_native_task_v1.py [-h] (--register | --run) --registration
+                                     REGISTRATION [--review REVIEW]
+                                     [--source SOURCE]
+                                     [--source-commit SOURCE_COMMIT]
+                                     [--preservation-checkout PRESERVATION_CHECKOUT]
+                                     [--registration-commit REGISTRATION_COMMIT]
+                                     [--execution EXECUTION]
+                                     [--output-dir OUTPUT_DIR]
+
+Single-attempt registered spatial task DEVELOPMENT runner. --help and
+compilation do not import torch, load checkpoints, or generate worlds.
+Registration hashes bytes only. Execution is separately authorized by a
+committed registration and an independently approved, exact source review
+receipt.
+
+options:
+  -h, --help            show this help message and exit
+  --register            hash and register exact reviewed source; no execution
+  --run                 claim and execute the single committed development
+                        registration
+  --registration REGISTRATION
+                        repository-relative registration JSON, created
+                        exclusively
+  --review REVIEW       independent approved exact-hash JSON receipt for
+                        registration
+  --source SOURCE       additional reviewed source/artifact path binding
+  --source-commit SOURCE_COMMIT
+                        full preserved reviewed source commit for --register
+  --preservation-checkout PRESERVATION_CHECKOUT
+                        read-only path to checkout containing preservation
+                        commits
+  --registration-commit REGISTRATION_COMMIT
+                        full committed preexecution registration commit for
+                        --run
+  --execution EXECUTION
+                        fixed exclusive claim JSON path declared at
+                        registration and used for execution
+  --output-dir OUTPUT_DIR
+                        fixed new archive directory declared at registration
+                        and used for execution
+Exit status: 0
+No --register or --run invoked. No checkpoint/tensor archive loaded; no worlds/fit/inference.
+First software-only pass complete; independent preexecution source approval remains required.
