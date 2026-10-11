@@ -291,8 +291,8 @@ tests attention-dependent internal content form at fixed sensory evidence. Separ
 source and critical reviews retain the current negative strict-counterpart finding.
 The new plan requires current/future separation, independent semantics and matched
 ordinary/non-attentional controls. The [first learned-model fit](docs/ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
-now completes six fixed300-update models, with complete fitting-world diagnostics;
-its first reconstruction stops at an inconsistent initial-input probe after27,616
+now completes six fixed 300-update models, with complete fitting-world diagnostics;
+its first reconstruction stops at an inconsistent initial-input probe after 27,616
 passing checks. Development/heldout remain sealed and no positive qualia result
 is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.

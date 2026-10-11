@@ -32,6 +32,14 @@ This is an incomplete failed first reconstruction, not a passing scientific
 phase audit or a reason to refit. Diagnose the exact probe before proposing a
 separately reviewed reference correction; retain the original verifier and run.
 
+The [author diagnosis](../audits/attention_content_model_v1/numerical_diagnosis/review.md)
+and [separate critical diagnosis](../audits/attention_content_model_v1/numerical_diagnosis/critical_review.md)
+agree that the initial decoy should change its observed W alongside V, only at t0.
+The proposed correction preserves the valid model guard, exact selected-output
+checks, all fitted bytes and numerical tolerances. It needs a separately named,
+reviewed reference and explicit phase-acceptance provenance; neither diagnosis
+authorizes an unseen program or makes the first failed report pass.
+
 ## Fitting-world diagnostics, pending complete reconstruction
 
 The [first read-only summary](../audits/attention_content_model_v1/fit_summary/first_summary_manifest.json)
@@ -53,9 +61,9 @@ failed independent reconstruction or qualify source semantics.
 | 1321 | Ordinary | .08288 | .20173 | 62.2% |
 | 1321 | Analytic | .10317 | .08303 | 100% |
 
-Each row uses96 fitting worlds. Current scores cover decisions1..14, excluding
+Each row uses 96 fitting worlds. Current scores cover decisions 1..14, excluding
 the exactly observed initial state; next scores cover all fifteen decisions and
-three symbols. Actual policy accuracy uses all288 final query opportunities per
+three symbols. Actual policy accuracy uses all 288 final query opportunities per
 source/encoder. These are fitting diagnostics with shared operator/layout support,
 not fresh-world prediction or reporting results. A and ordinary show similar
 recorded errors; the analytic alternative has lower prospective error and higher
