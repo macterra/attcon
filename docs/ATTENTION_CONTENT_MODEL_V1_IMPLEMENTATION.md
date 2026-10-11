@@ -40,6 +40,10 @@ presentation manner or consciousness-like reporting.
 The native prerequisite is now satisfied numerically: the separately labelled
 [revalidation](SPATIAL_NATIVE_TASK_V1_RESULTS.md) passes all 206,070 checks of the
 retained experiment. The corrected phase runner's first
+[native prerequisite preflight](../audits/attention_content_model_v1/runner_software/first_native_acceptance_preflight.json)
+also passes against the current accepted native review and archive hashes, using
+JSON and byte checks only, without loading tensor archives or releasing task data.
+The first
 [boundary suite](../audits/attention_content_model_v1/runner_software/first_boundary_test_run.log)
 passes **7/7** after exact source and scoped static approval were published at
 `d1e3d36`. These fixtures use temporary files and mocked bindings/import failures;
