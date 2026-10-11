@@ -56,7 +56,17 @@ independent reconstruction and committed input registration. The engine's first
 review identified E1–E5 provenance, state-isolation and diagnostic omissions;
 prospective corrections retain complete analytic masks, actual prediction/update
 manifests, named assembly gates, completed-source failure snapshots and full paired
-diagnostics. Their runtime and independent reconstruction remain pending. The
+diagnostics. Its first
+[engine suite](../audits/attention_content_model_v1/experiment_software/first_engine_test_run.log)
+passes **8/8**, after exact source and static approval were published at `9fc132d`.
+Two handcrafted numerical worlds exercise all fifteen decisions, the declared
+gates and call manifests, analytic masks, donor restoration, paired bootstrap
+diagnostics and preservation of earlier-source records when a later source fails.
+The fit-handoff fixture uses scalar fake sources, real zero-derivative backward
+and a no-op optimizer; it performs no registered-model optimization. A manual fake
+scalar mutation checks that the preserved snapshot is independent. These passing
+fixtures provide no learned predictive-performance or presentation evidence.
+Independent reconstruction and the registered study remain pending. The
 heldout boundary must also bind an actual passing independent dev reconstruction
 and source semantic assessment before release. The first
 [dev-release boundary suite](../audits/attention_content_model_v1/runner_software/first_dev_release_test_run.log)
