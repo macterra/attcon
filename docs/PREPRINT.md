@@ -50,8 +50,9 @@ A separately reviewed correction to reference arithmetic passes all 206,070
 original checks on the same archived data, preserving the first failure.
 This establishes task/content semantics, with no executed learned attention model or new
 reports in that stage. A subsequent registered learned attention-content model
-completes six fixed 300-update fits and evaluation on 288 fresh development worlds.
-Separately reviewed fit/development reconstruction passes 143,599/134,367 checks,
+completes six fixed 300-update fits and evaluation on 288 fresh development and
+288 reserved heldout worlds. Separately reviewed fit/development/heldout
+reconstruction passes 143,599/134,367/134,390 checks,
 preserving the original failed fit reference. Fresh-world A targeting is
 39.9–44.8%, compared with 98.6–100% for the analytic source; prediction errors
 increase relative to fitting worlds. Separate dev assessment qualifies bounded
@@ -772,6 +773,15 @@ and exact bookkeeping for all three sources. Learned attended-state fidelity
 remains limited; analytic mixture estimates are not executed maps. Manner remains
 unqualified for every source under the frozen gate. The explicit dev acceptance
 permits fixed technical heldout, without refitting or releasing Reporter.
+Heldout now completes once, with all 134,390 numerical reconstruction checks
+passing. A current MSE is .20475–.23388, next MSE .27072–.30132 and targeting
+41.3–47.9%; ordinary errors are similar and targeting is 38.2–45.1%. Analytic
+next MSE is .08275–.08986 and targeting 97.9–100%. The complete first ledgers
+and all errors are retained; v1 manner remains unqualified. A separate
+prospective relational-content reporting protocol is being prepared under its
+[critical review](../audits/attention_content_model_v1/next_mechanism_review/critical_review/review.md),
+with source-aware fidelity, independently grounded resemblance and matched
+interventions/rivals. It does not retrospectively change the frozen v1 gate.
 No new consciousness-report result is claimed.
 
 ### 6.1 Authorized AI review route

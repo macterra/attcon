@@ -295,9 +295,10 @@ now completes six fixed 300-update models, with complete fitting-world diagnosti
 its separately reviewed corrected reconstruction passes all 143,599 checks,
 retaining the original failed run. Fixed development completes with 134,367
 reconstruction checks; fresh-world prediction is worse than fitting diagnostics.
-Estimated location content/bookkeeping qualify, manner does not; fixed technical
-heldout is next and no positive qualia result
-is claimed. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+Estimated location content/bookkeeping qualify, manner does not. Fixed heldout
+now passes all 134,390 reconstruction checks; A targeting is 41.3–47.9%, ordinary
+38.2–45.1%, analytic 97.9–100%. No consciousness-report result exists for this
+version. A separate prospective relational-report protocol is being prepared. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.

@@ -5,7 +5,8 @@ corrected reconstruction **passes all 143,599 checks**. The original failed
 reconstruction remains preserved. The first fixed development phase has completed;
 its independent reconstruction passes all 134,367 checks. Estimated location
 content and bookkeeping qualify; presentation manner remains unqualified.
-The first fixed technical heldout phase has completed; reconstruction is next. No Reporter
+The first fixed technical heldout phase has completed; its reconstruction passes
+all 134,390 checks. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -208,3 +209,42 @@ This execution does not change the frozen negative manner disposition.
 Errors, null interventions and ordinary/analytic parity remain results. Controller
 and Reporter are distinct; accurate prediction alone does not achieve the
 qualia-source goal.
+
+
+## Complete fixed heldout reconstruction and results
+
+The [first complete heldout reconstruction](../audits/attention_content_model_v1/heldout_reconstruction/first_report_manifest.json)
+passes **134,390 checks, zero errors and no exception** across all three frozen
+encoders. The lossless transport retains the complete original report; the
+[execution receipt](../audits/attention_content_model_v1/heldout_reconstruction/first_cli_execution.json)
+records one execution, no retry, and no new worlds, fitting or Reporter.
+The [complete read-only heldout ledger](../audits/attention_content_model_v1/heldout_summary/first_summary_manifest.json)
+preserves every source, interval, error, time curve and intervention opportunity.
+
+| Frozen encoder | Source | Current selected normalized MSE | Next selected normalized MSE | Actual targeting under selected policy |
+|---|---|---:|---:|---:|
+| 1301 | A | .20475 | .27072 | 41.7% |
+| 1301 | Ordinary | .20645 | .26779 | 42.0% |
+| 1301 | Analytic | .10416 | .08275 | 98.6% |
+| 1311 | A | .23388 | .30132 | 41.3% |
+| 1311 | Ordinary | .23201 | .30047 | 38.2% |
+| 1311 | Analytic | .11417 | .08986 | 97.9% |
+| 1321 | A | .21338 | .27227 | 47.9% |
+| 1321 | Ordinary | .21739 | .27405 | 45.1% |
+| 1321 | Analytic | .10441 | .08399 | 100% |
+
+These use all 288 reserved worlds and all registered opportunities, with no
+selection or adaptation. A and the matched ordinary predictor show similar
+prediction errors and substantially lower targeting than the analytic source.
+These descriptive results complete the fixed technical experiment; they do not
+supply a new semantic endorsement or consciousness-report result. V1's frozen
+manner negative remains unchanged, and Controller remains distinct from Reporter.
+
+The [prospective critical review](../audits/attention_content_model_v1/next_mechanism_review/critical_review/review.md)
+authorizes concrete preparation of a separate relational-content reporting test.
+It must test source fidelity and independently grounded consciousness-like
+organization, with matched rivals and selective A/W interventions. This is a
+post-development hypothesis, not retrospective promotion of v1's manner gate.
+No additional fit or Modeler-refinement experiment is a prerequisite for that
+report test. Protocol, exporter/auditor and independent reference packs are being
+prepared before any new reports.

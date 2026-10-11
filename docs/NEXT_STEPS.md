@@ -65,13 +65,15 @@ checks on unchanged fitted bytes and exactly reproduces the original 27,616-row
 prefix; the original failed run remains preserved. Fixed development now completes
 and passes all 134,367 reconstruction checks, with fresh-world errors retained.
 The full dev assessment qualifies bounded estimated location content/bookkeeping
-and leaves manner unqualified for all sources. Next complete fixed technical
-heldout without refitting or releasing Reporter.
+and leaves manner unqualified for all sources. Fixed technical heldout now
+completes with all 134,390 reconstruction checks passing. Next implement the
+separately reviewed prospective relational-content protocol, neutral exporter,
+factual auditor and withheld reference pack before any new reports.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
 now provide 53 first passing bounded fixtures across six suites. Complete actual
-phase reconstruction and the fixed development assessment before heldout.
+phase reconstruction and the fixed development assessment are complete.
 Reporting requires its separate
 qualification and registration.
 
