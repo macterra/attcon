@@ -66,6 +66,36 @@ class EpisodeDataTests(unittest.TestCase):
                 self.assertTrue(torch.equal(actual[world, address],
                     family[world, address, (1, 2, 4).index(band)]))
 
+    def test_invalid_common_commands_are_rejected_before_any_fork(self):
+        for invalid in (-1, 3):
+            symbols = self.symbols.clone()
+            symbols[0, 0] = invalid
+            with patch.object(data, 'execute_command', side_effect=AssertionError('fork called')) as executor:
+                with self.assertRaises(ValueError):
+                    data.actual_episode(self.v, self.addresses, symbols, self.mapping)
+                executor.assert_not_called()
+        for addresses, symbols in ((self.addresses.float(), self.symbols),
+                                   (self.addresses, self.symbols.float())):
+            with self.assertRaises(ValueError):
+                data.actual_episode(self.v, addresses, symbols, self.mapping)
+
+    def test_invalid_mapping_dtype_permutation_and_donor_indices_are_rejected(self):
+        fractional = self.mapping.float()
+        fractional[0, 0, 0] = 1.9
+        duplicate = self.mapping.clone()
+        duplicate[0, 0] = torch.tensor([1, 1, 4])
+        for mapping in (fractional, duplicate, self.mapping.float()):
+            with self.assertRaises(ValueError):
+                data.execute_command(self.v, self.v, torch.tensor([0, 1]),
+                                     torch.tensor([0, 0]), mapping)
+        for invalid in (-1, 6):
+            indices = torch.tensor([[0] * 4, [1] * 4])
+            indices[0, 0] = invalid
+            schedule = {'evaluator_mapping_indices': indices,
+                        'command_addresses': self.addresses, 'command_symbols': self.symbols}
+            with self.assertRaises(ValueError):
+                data.donor_prefix(self.v, schedule, 12, torch.tensor([0, 2]))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

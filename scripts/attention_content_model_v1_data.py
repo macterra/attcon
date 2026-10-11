@@ -17,6 +17,21 @@ WORLDS = 96
 MAPPINGS = tuple(permutations((1, 2, 4)))
 
 
+def _integer_tensor(value, shape, upper, name):
+    if (not isinstance(value, torch.Tensor) or value.shape != shape
+            or value.dtype != torch.long or value.device.type != 'cpu'
+            or ((value < 0) | (value >= upper)).any()):
+        raise ValueError(f'{name} must be CPU long {shape} in 0..{upper - 1}')
+
+
+def _mapping_tensor(value, batch):
+    if (not isinstance(value, torch.Tensor) or value.shape != (batch, 4, 3)
+            or value.dtype != torch.long or value.device.type != 'cpu'
+            or not torch.equal(value.sort(dim=-1).values,
+                               torch.tensor((1, 2, 4)).expand(batch, 4, 3))):
+        raise ValueError('each evaluator mapping must be a CPU long permutation of {1,2,4}')
+
+
 def _indices(seed, split):
     if seed not in ENCODER_SEEDS or split not in SPLITS:
         raise ValueError('only the registered encoder seeds and split names are allowed')
@@ -75,12 +90,9 @@ def execute_command(v, completed_w, addresses, symbols, evaluator_mappings):
             or not torch.isfinite(v).all()):
         raise ValueError('executor requires [B,4,24,4,4] V and completed W')
     batch = v.shape[0]
-    if (addresses.shape != (batch,) or symbols.shape != (batch,)
-            or addresses.dtype != torch.long or symbols.dtype != torch.long
-            or evaluator_mappings.shape != (batch, 4, 3)
-            or ((addresses < 0) | (addresses >= 4)).any()
-            or ((symbols < 0) | (symbols >= 3)).any()):
-        raise ValueError('invalid executor command or evaluator mapping')
+    _integer_tensor(addresses, (batch,), 4, 'executor addresses')
+    _integer_tensor(symbols, (batch,), 3, 'executor symbols')
+    _mapping_tensor(evaluator_mappings, batch)
     if (completed_w.dtype != torch.float32 or not torch.isfinite(completed_w).all()
             or completed_w.device.type != 'cpu'):
         raise ValueError('invalid actual completed W')
@@ -94,8 +106,9 @@ def execute_command(v, completed_w, addresses, symbols, evaluator_mappings):
 
 def actual_episode(v, command_addresses, command_symbols, evaluator_mappings):
     """Shared actual history and all three forks; sources never receive this object."""
-    if command_addresses.shape != (v.shape[0], 15) or command_symbols.shape != command_addresses.shape:
-        raise ValueError('exactly fifteen transitions are required')
+    _integer_tensor(command_addresses, (v.shape[0], 15), 4, 'episode addresses')
+    _integer_tensor(command_symbols, (v.shape[0], 15), 3, 'episode symbols')
+    _mapping_tensor(evaluator_mappings, v.shape[0])
     completed = [v.clone()]
     forks = []
     for time in range(15):
@@ -120,9 +133,11 @@ def donor_prefix(v, episode_schedule, decision_time, patched_addresses):
     if decision_time not in (12, 13, 14):
         raise ValueError('donors exist only at the three registered query times')
     batch = v.shape[0]
-    if (patched_addresses.shape != (batch,) or patched_addresses.dtype != torch.long
-            or ((patched_addresses < 0) | (patched_addresses >= 4)).any()):
-        raise ValueError('invalid donor address')
+    _integer_tensor(patched_addresses, (batch,), 4, 'donor addresses')
+    _integer_tensor(episode_schedule['evaluator_mapping_indices'], (batch, 4), 6,
+                    'donor mapping indices')
+    _integer_tensor(episode_schedule['command_addresses'], (batch, 15), 4, 'donor commands')
+    _integer_tensor(episode_schedule['command_symbols'], (batch, 15), 3, 'donor symbols')
     indices = episode_schedule['evaluator_mapping_indices'].clone()
     row = torch.arange(batch)
     indices[row, patched_addresses] = (indices[row, patched_addresses] + 1) % 6
