@@ -93,6 +93,20 @@ report interpretation must remain a distinct version, preserving this v1 negativ
 No new Reporter or consciousness-report correspondence result exists for this
 version; source-content, bookkeeping and manner assessments remain separate.
 
+The new [prospective relational protocol](ATTENTION_RELATIONAL_REPORT_PROTOCOL_V1.md)
+now fixes 552 narrator opportunities on 12 output-independent cases, plus 552
+matched literal templates and one source-blind rating per text. Its withheld
+[publication-grounded reference](ATTENTION_RELATIONAL_REFERENCE_V1.md) separates
+model organization/access from claimed appearance. Source-aware prose audits
+and exact proposition checks assess fidelity separately; donor, fixed-A/W-change
+and restoration pairs test attribution. Ordinary, analytic, richer W and reduced
+sensor controls bound the language pipeline's contribution. This is post-development
+and does not retrospectively pass v1's stricter manner gate. The source exporter,
+auditor and pipeline are being implemented and reviewed before export/reporting.
+The ultimate goal remains credible evidence that the attention-control model is
+the source of qualia; protocol readiness or numerical verification alone does not
+achieve it.
+
 The revised [factual v2 qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V2_RESULTS.md)
 after pre-blind review and fresh responses. Both auditors get all supportedness
 judgments and inventories correct, but differ from the key on content/time labels
