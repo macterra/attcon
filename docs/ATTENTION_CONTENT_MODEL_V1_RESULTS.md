@@ -2,7 +2,8 @@
 
 2026-10-11. The first fixed **fit phase completed** and its separately reviewed
 corrected reconstruction **passes all 143,599 checks**. The original failed
-reconstruction remains preserved. Development has not run and heldout remains sealed. No Reporter
+reconstruction remains preserved. The first fixed development phase has completed;
+its independent reconstruction is next and heldout remains sealed. No Reporter
 calls or consciousness-report correspondence results exist for this version.
 
 The [frozen design](ATTENTION_CONTENT_MODEL_V1_DESIGN.md) and
@@ -128,9 +129,19 @@ inspection found all eighteen labelled panels legible.
 
 ![Fixed fitting-state role fields: baseline model estimate, actual internal state, and donor-patched estimate](../audits/attention_content_model_v1/fit_visualization/fixed_sample.png)
 
-After a valid preserved reconstruction, use the immutable fitted bytes for the one development pass,
-preserve its independent reconstruction and separate literal-content/manner
-assessment, and release fixed heldout only through those committed receipts.
+## First fixed development execution
+
+The [first development CLI record](../audits/attention_content_model_v1/run/first_dev_cli_execution.json)
+records exit0 and the [phase receipt](../audits/attention_content_model_v1/run/dev/receipt.json)
+binds all three archives and the complete first log. This is the first registered
+development execution: 96 fresh worlds for each of the three frozen encoders,
+using the original fitted weights and normalizer without optimization or adaptation.
+The exact amended boundary validated the committed full corrected fit pass before
+creating its exclusive claim. All fixed execution inventories passed. The phase
+has not yet received its independent numerical or semantic assessment.
+
+Next preserve its independent reconstruction and separate literal-content/manner
+assessment, then release fixed heldout only through those committed receipts.
 Errors, null interventions and ordinary/analytic parity remain results. Controller
 and Reporter are distinct; accurate prediction alone does not achieve the
 qualia-source goal.
