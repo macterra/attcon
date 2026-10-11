@@ -275,6 +275,16 @@ failures. It separates native stored evidence, forecasts and external diagnostic
 readouts. Target export and fresh reporting still need a frozen protocol and
 source-aware factual qualification.
 
+The [auxiliary reporting pilot draft](docs/GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
+now fixes thirteen arms and 624 report opportunities. Source-only export and
+reporting have separate review/registration gates. No targets or reports have
+been generated, and accurate factual reporting alone cannot complete the
+source-of-qualia goal.
+
+Its [factual-auditor qualification draft](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+contains twelve generated packets and 48 assertions. Nine scorer fixtures pass;
+independent key review and fresh auditor qualification remain outstanding.
+
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its
 positive engineering gate does not establish participant appearance or attention

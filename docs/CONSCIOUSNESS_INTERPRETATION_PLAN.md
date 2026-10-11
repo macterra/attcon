@@ -13,6 +13,10 @@ for future work by this plan. The scientific fidelity and correspondence goals r
 
 ## Goal and current evidence
 
+The ultimate goal is credible evidence for the theory that the attention-control
+model is the source of qualia. Accurate factual reporting is one necessary
+measurement component; it does not by itself achieve that goal.
+
 Test the proposed connection between an attention-control model and independently
 specified features of consciousness reports. The required evidence combines
 accurate internal-state reporting, independently assessed report structure, and
@@ -166,6 +170,21 @@ edges pass. The original five edge failures remain saved. No selected target vie
 or new Reporter outputs have been generated. Next freeze the exporter and factual
 qualification/report protocol; the completed annotation exercise does not replace
 source-aware factual auditing or strict presentation-counterpart qualification.
+
+The [auxiliary grounded reporting pilot draft](GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
+now specifies thirteen arms and 624 fixed report opportunities, with all sixteen
+worlds per model retained. It separates source-only export registration from
+reporting release, bounded factual coverage from volunteered claims, and native
+evidence/forecasts from external objective estimates. The draft is saved for
+independent implementation review; targets and reports remain ungenerated.
+Strict source-faithful presentation remains `not_established` until an independent
+presentation counterpart is qualified. No human-only prerequisite is introduced.
+
+The [new factual-auditor qualification draft](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+contains twelve generated source packets, 48 assertions and separately preserved
+author-proposed answers. Its nine scorer fixtures pass; independent source/key
+review and two fresh auditor responses remain required. Passing generated code
+fixtures is not auditor qualification or permission to generate target reports.
 
 ## 1. Specify the target features before observing new reports
 

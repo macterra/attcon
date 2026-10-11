@@ -23,6 +23,20 @@ attention-model forecasts and external physical readouts; full chronology stays
 audit-only. Next freeze its target exporter and supportedness qualification before
 neutral reports. No target views or new reports have yet been generated.
 
+The [auxiliary grounded pilot draft](GROUNDED_NEUTRAL_REPORT_PILOT_V1.md)
+fixes thirteen arms and 624 report opportunities, including the crossed
+memory/route intervention, restorations, same-information controls and three
+unmatched ablations. Complete independent exporter review and a source-only
+registration before target export; independently qualify the factual auditors
+and freeze reporting components before prose. This is a prospective measurement
+milestone. The source-of-qualia goal remains open.
+
+The [factual-auditor challenge draft](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1.md)
+now supplies twelve generated packets, 48 assertions, source-first inventories
+and a hash-bound scorer with nine passing fixtures. Independently review the
+proposed key and scorer before freezing materials or obtaining fresh responses.
+No factual auditor has yet qualified for this pilot.
+
 ## Current plan (2026-10-10)
 
 The [isolated orientation task](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) now
