@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 
 SCHEMA = 'attention_relational_report_v1_runtime_manifest'
@@ -41,7 +42,7 @@ def git_bytes(commit, path):
 
 
 def validate_review_inventory(manifest, review):
-    for key in ('settings', 'requests_path', 'request_count', 'request_ids'):
+    for key in ('settings', 'requests_path', 'request_count', 'request_ids', 'output_root'):
         if review.get('reviewed_'+key) != manifest[key]:
             raise ValueError('runtime review does not bind exact '+key)
 
@@ -75,6 +76,7 @@ def validate(manifest_path, commit):
         if name != manifest['review_path'] and review.get('reviewed_sha256', {}).get(name) != sha:
             raise ValueError('review does not bind executable/request source: '+name)
     settings = manifest['settings']
+    relative_path(manifest['output_root'])
     if set(settings) != {'model', 'reasoning_effort', 'max_output_tokens', 'timeout_seconds', 'concurrency', 'output_schema'}:
         raise ValueError('unexpected settings, refusing hidden API inputs')
     if not isinstance(settings['model'], str) or not settings['model']:
@@ -99,9 +101,12 @@ def exclusive_json(path, value):
         stream.write(encoded(value))
 
 
-async def execute(manifest, requests, manifest_sha256, commit, output_root, client):
+async def execute(manifest, requests, manifest_sha256, commit, output_root, client=None,
+                  client_factory=None):
     """No retry/resume: an existing batch reservation always rejects execution."""
     root = Path(output_root)
+    if relative_path(output_root) != relative_path(manifest['output_root']):
+        raise ValueError('output root differs from fixed reviewed stage root')
     root.mkdir(parents=True, exist_ok=True)
     exclusive_json(root/'first_batch_claim.json', {
         'schema': 'attention_relational_report_v1_first_batch_claim',
@@ -109,6 +114,11 @@ async def execute(manifest, requests, manifest_sha256, commit, output_root, clie
         'manifest_sha256': manifest_sha256, 'preservation_commit': commit,
         'request_ids': [r['id'] for r in requests], 'max_attempts': len(requests),
         'retry_performed': False, 'conversation_or_previous_response': False})
+    owned_client = client is None
+    if owned_client:
+        if client_factory is None:
+            raise ValueError('client factory required')
+        client = client_factory()
     semaphore = asyncio.Semaphore(manifest['settings']['concurrency'])
     settings = manifest['settings']
 
@@ -117,7 +127,7 @@ async def execute(manifest, requests, manifest_sha256, commit, output_root, clie
             path = root/(req['id']+'.json')
             claimed = {'id': req['id'], 'status': 'attempt_reserved',
                        'started_at_utc': now(), 'request_sha256': digest(encoded(req))}
-            exclusive_json(path, claimed)
+            exclusive_json(root/(req['id']+'.claim.json'), claimed)
             result = dict(claimed)
             text = {'verbosity': 'low'}
             if settings['output_schema'] is not None:
@@ -143,15 +153,34 @@ async def execute(manifest, requests, manifest_sha256, commit, output_root, clie
                 result.update(status='error', error_type=type(exc).__name__,
                               http_status=getattr(exc, 'status_code', None))
             result['completed_at_utc'] = now()
-            # Reservation is first-attempt provenance, not a license for overwriting
-            # another outcome. A single coroutine owns this path after exclusive creation.
-            with path.open('wb') as stream:
-                stream.write(encoded(result))
+            # Keep the reservation separate, and never overwrite a first outcome.
+            storage_error = None
+            try:
+                exclusive_json(path, result)
+            except Exception as exc:
+                envelope = {'id': req['id'], 'first_outcome': result,
+                            'primary_write_error': type(exc).__name__}
+                path = root/(req['id']+'.secondary.json')
+                try:
+                    exclusive_json(path, envelope)
+                except Exception as second_exc:
+                    envelope['secondary_write_error'] = type(second_exc).__name__
+                    storage_error = envelope
+                    # The external first CLI log and batch completion retain this
+                    # envelope if neither per-attempt outcome file can be written.
+                    print(json.dumps(envelope, allow_nan=False), file=sys.stderr, flush=True)
             print(req['id'], result['status'], result.get('api_response_status', ''), flush=True)
-            return {'id': req['id'], 'status': result['status'],
+            if storage_error is not None:
+                return {'id': req['id'], 'status': 'storage_failure',
+                        'retained_first_outcome_envelope': storage_error}
+            return {'id': req['id'], 'status': result['status'], 'response_path': str(path),
                     'response_sha256': digest(path.read_bytes())}
 
-    outcomes = await asyncio.gather(*(one(req) for req in requests))
+    try:
+        outcomes = await asyncio.gather(*(one(req) for req in requests))
+    finally:
+        if owned_client:
+            await client.close()
     exclusive_json(root/'first_completion.json', {
         'schema': 'attention_relational_report_v1_first_batch_completion',
         'completed_at_utc': now(), 'manifest_sha256': manifest_sha256,
@@ -162,17 +191,18 @@ async def execute(manifest, requests, manifest_sha256, commit, output_root, clie
 
 async def main_async(args):
     manifest, requests, sha = validate(args.manifest, args.commit)
+    if relative_path(args.output_root) != relative_path(manifest['output_root']):
+        raise ValueError('output root differs from fixed reviewed stage root')
     # Reject an existing claim before credential loading or API client construction.
     if (Path(args.output_root)/'first_batch_claim.json').exists():
         raise ValueError('first batch already reserved; refusing retry or resume')
-    from openai import AsyncOpenAI
-    from attcon.nl_report import load_dotenv
-    load_dotenv()
-    client = AsyncOpenAI(max_retries=0, timeout=manifest['settings']['timeout_seconds'])
-    try:
-        await execute(manifest, requests, sha, args.commit, args.output_root, client)
-    finally:
-        await client.close()
+    def make_client():
+        from openai import AsyncOpenAI
+        from attcon.nl_report import load_dotenv
+        load_dotenv()
+        return AsyncOpenAI(max_retries=0, timeout=manifest['settings']['timeout_seconds'])
+    await execute(manifest, requests, sha, args.commit, args.output_root,
+                  client_factory=make_client)
 
 
 def main():

@@ -1,0 +1,22 @@
+{
+  "schema": "attention_relational_report_v1_runner_static_review_correction",
+  "date": "2026-10-11",
+  "reviewer": "spatial_content_manner_critical_review",
+  "findings": [
+    "Unbound output root allowed same reviewed batch in different directory",
+    "Overwritten reservation allowed first raw response loss on result-write failure"
+  ],
+  "corrections": [
+    "Bind reviewed output_root and reject alternatives before credentials/API",
+    "Separate exclusive claim/outcome files; retain write errors and full first response in secondary or completion/CLI envelopes",
+    "Reserve batch before credentials/client construction"
+  ],
+  "source_sha256": {
+    "scripts/run_attention_relational_reports_v1.py": "ecf3e7601255d8fb37d29b0bf44ff98c3fea8e068450f41e5f803cedad41b69a",
+    "tests/test_attention_relational_runner_v1.py": "ffa5146bd58448701eb2b986718d4efd162fce196e69b2e0248e5d25820a88b2",
+    "tests/test_attention_relational_runner_binding_v1.py": "ed3a8f4a4f9a3f5f7aa46dd46c8e1b42560e22ad278d1909f6cb3cb0fba862a0"
+  },
+  "first_original_four_fixture_results_unchanged": true,
+  "updated_fixture_suite_execution_permitted": true,
+  "actual_api_execution_approved": false
+}

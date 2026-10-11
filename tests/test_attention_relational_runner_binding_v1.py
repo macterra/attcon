@@ -11,11 +11,13 @@ from run_attention_relational_reports_v1 import validate_review_inventory
 class ReviewBindingTests(unittest.TestCase):
     def test_changed_model_schema_or_opportunity_inventory_requires_new_review(self):
         manifest = {'settings': {'model': 'fixed-fixture', 'output_schema': None},
-                    'requests_path': 'fixture.json', 'request_count': 1, 'request_ids': ['x']}
+                    'requests_path': 'fixture.json', 'request_count': 1, 'request_ids': ['x'],
+                    'output_root': 'fixed-output'}
         review = {'reviewed_'+k: copy.deepcopy(v) for k, v in manifest.items()}
         validate_review_inventory(manifest, review)
         variants = []
-        for key, value in [('requests_path', 'other.json'), ('request_count', 2), ('request_ids', ['y'])]:
+        for key, value in [('requests_path', 'other.json'), ('request_count', 2), ('request_ids', ['y']),
+                           ('output_root', 'second-output')]:
             changed = copy.deepcopy(manifest); changed[key] = value; variants.append(changed)
         for key, value in [('model', 'different-fixture'), ('output_schema', {'type': 'string'})]:
             changed = copy.deepcopy(manifest); changed['settings'][key] = value; variants.append(changed)

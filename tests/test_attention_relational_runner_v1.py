@@ -6,6 +6,9 @@ from pathlib import Path
 from types import SimpleNamespace
 import tempfile
 import unittest
+from unittest.mock import patch
+from contextlib import redirect_stderr
+import io
 
 
 path = Path(__file__).resolve().parents[1]/'scripts/run_attention_relational_reports_v1.py'
@@ -36,7 +39,11 @@ class FirstAttemptTests(unittest.TestCase):
             'output_schema': schema}}
 
     def run_batch(self, root, client, records=None, schema=None):
-        return asyncio.run(runner.execute(self.manifest(schema), records or [
+        manifest = self.manifest(schema)
+        manifest['output_root'] = str(root)
+        # Test temporary paths outside the repo without weakening production validation.
+        with patch.object(runner, 'relative_path', side_effect=Path):
+            return asyncio.run(runner.execute(manifest, records or [
             {'id': 'p001', 'input': 'neutral record'}], 'a'*64, 'b'*40, root, client))
 
     def test_incomplete_raw_response_and_parse_failure_are_preserved(self):
@@ -81,6 +88,52 @@ class FirstAttemptTests(unittest.TestCase):
             self.assertEqual([v['id'] for v in outcomes], ['baseline', 'restored'])
             self.assertEqual([v['input'] for v in responses.calls], ['x', 'x'])
             self.assertEqual(json.loads((Path(tmp)/'first_completion.json').read_text())['request_count'], 2)
+
+    def test_alternative_stage_directory_rejects_before_api(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            responses = FakeResponses(result='x')
+            manifest = self.manifest(); manifest['output_root'] = 'fixed-output'
+            with self.assertRaises(ValueError):
+                asyncio.run(runner.execute(manifest, [], 'a'*64, 'b'*40,
+                                           'alternative-output', SimpleNamespace(responses=responses)))
+            self.assertEqual(responses.calls, [])
+
+    def test_primary_response_write_failure_retains_first_response_in_secondary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            original = runner.exclusive_json
+            def writer(path, value):
+                if Path(path).name == 'p001.json':
+                    raise OSError('handcrafted disk failure')
+                original(path, value)
+            responses = FakeResponses(result='first response retained')
+            with patch.object(runner, 'exclusive_json', side_effect=writer):
+                outcomes = self.run_batch(tmp, SimpleNamespace(responses=responses))
+            self.assertEqual(len(responses.calls), 1)
+            retained = json.loads((Path(tmp)/'p001.secondary.json').read_text())
+            self.assertEqual(retained['first_outcome']['output_text'], 'first response retained')
+            self.assertEqual(retained['primary_write_error'], 'OSError')
+            self.assertTrue(outcomes[0]['response_path'].endswith('.secondary.json'))
+            self.assertTrue((Path(tmp)/'p001.claim.json').exists())
+
+    def test_secondary_failure_retains_response_and_both_errors_in_completion_and_log(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            original = runner.exclusive_json
+            def writer(path, value):
+                if Path(path).name in ('p001.json', 'p001.secondary.json'):
+                    raise OSError('handcrafted disk failure')
+                original(path, value)
+            responses = FakeResponses(result='first response retained')
+            log = io.StringIO()
+            with patch.object(runner, 'exclusive_json', side_effect=writer), redirect_stderr(log):
+                outcomes = self.run_batch(tmp, SimpleNamespace(responses=responses))
+            self.assertEqual(len(responses.calls), 1)
+            self.assertEqual(outcomes[0]['status'], 'storage_failure')
+            envelope = outcomes[0]['retained_first_outcome_envelope']
+            self.assertEqual(envelope['first_outcome']['output_text'], 'first response retained')
+            self.assertEqual(envelope['secondary_write_error'], 'OSError')
+            self.assertIn('first response retained', log.getvalue())
+            saved = json.loads((Path(tmp)/'first_completion.json').read_text())
+            self.assertEqual(saved['outcomes'], outcomes)
 
 
 if __name__ == '__main__':
