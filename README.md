@@ -285,6 +285,14 @@ review finds rule ambiguity; the [v2 plan](docs/GROUNDED_FACTUAL_AUDITOR_QUALIFI
 clarifies wording before fresh qualification. Full reporting registration remains
 separate. Auxiliary reporting cannot complete the theory goal.
 
+The next [source experiment](docs/ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
+tests attention-dependent internal content form at fixed sensory evidence. Separate
+source and critical reviews retain the current negative strict-counterpart finding.
+The new plan requires current/future separation, independent semantics and matched
+ordinary/non-attentional controls; no new trained source or positive qualia result
+is claimed. [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
+correction, Modeler refinement and the external Reporter distinct.
+
 The latest [synthetic orientation diagnostic](docs/ORIENTATION_TRANSFER_DIAGNOSTIC_V1_RESULTS.md)
 finds paired orientation information in all three upstream visual encoders. Its
 positive engineering gate does not establish participant appearance or attention

@@ -38,6 +38,23 @@ but cannot by itself achieve the theory goal. Continue toward a defensible nativ
 appearance counterpart, selective source controls, powered confirmation and
 replication. Save and attempt GitHub publication at each milestone.
 
+## Theory-facing source work now
+
+Implement the [content-form development plan](ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
+in parallel with auxiliary factual qualification. New source and critical reviews
+retain no qualified strict counterpart in the present architecture. Their concrete
+next mechanism is an executed internal allocation transform at fixed retained
+sensory evidence, with current/future state separation, independent content-form
+semantics, information-matched ordinary/analytic predictors, matched non-attentional
+transforms and actual-state/model-estimate conflicts. Begin with toy mechanical
+primitives; production evaluation and reports require their separate registration.
+
+Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
+correction does not demonstrate Modeler refinement. Success at modeled internal
+form can support model-presentation correspondence; it does not certify qualia or
+exclude an equally informed state estimator. Preserve negative qualification and
+ordinary parity rather than adjusting definitions after outputs.
+
 ## Current plan (2026-10-10)
 
 The [isolated orientation task](ISOLATED_ORIENTATION_TASK_V1_RESULTS.md) now

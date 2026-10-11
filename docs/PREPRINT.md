@@ -682,6 +682,19 @@ all-label gate. The key, answers and failed verdict remain unchanged; no v1 pros
 is released. These source and qualification checks neither qualify presentation
 nor complete the theory goal.
 
+A subsequent [role audit](MSTC_REPORTING_ROLE_AUDIT_V1.md) distinguishes attention
+forecasting and Controller correction from Modeler refinement in the referenced
+MSTC proposal. Separate [source](../audits/attention_source_bridge_design_v1/review.md)
+and [critical](../audits/attention_source_bridge_design_v1/critical_review/review.md)
+reviews retain the current negative strict-counterpart verdict. They motivate a
+[new content-form development study](ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md):
+execute internal allocation changes at fixed retained sensory evidence, separate
+current estimates/future predictions/actual events, qualify content-specific form
+semantics independently, and compare equally informed ordinary/analytic models and
+matched non-attentional transformations. No new trained source, production result
+or positive phenomenal-source inference is claimed. Ordinary state-estimation
+parity remains a viable explanation even if the proposed mechanism succeeds.
+
 ### 6.1 Authorized AI review route
 
 The user has authorized separate-context AI reviewers instead of waiting for

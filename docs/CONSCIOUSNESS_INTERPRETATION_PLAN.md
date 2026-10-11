@@ -46,6 +46,30 @@ and not evidence of consciousness by itself. The recurrent consistency diagnosti
 remain related mechanism evidence. Building an MSTC Modeler-schema comparator is
 not a prerequisite for this reporting experiment or an automatic extension of it.
 
+## Next source experiment, alongside auxiliary qualification
+
+The [MSTC role audit](MSTC_REPORTING_ROLE_AUDIT_V1.md) separates current attention
+forecasts from the theory's proposed comparison/refinement role. New
+[source assessment](../audits/attention_source_bridge_design_v1/review.md) and
+[critical review](../audits/attention_source_bridge_design_v1/critical_review/review.md)
+find no qualified strict counterpart in the existing native source. They recommend
+bounded mechanism development, not another physical decoder renamed appearance.
+
+The [content-form development plan](ATTENTION_CONTENT_FORM_DEVELOPMENT_V1_PLAN.md)
+adds an executed internal allocation operation at identical retained sensory
+input, explicit current versus future estimates, independent content/form
+semantics, matched ordinary and analytic predictors, non-attentional transformations,
+and crossed actual-state/model-estimate reporting. Start with mechanical toy
+primitives, then register source/semantic evaluation before held-out inference or
+prose. A positive native represented-form result would be a substantive bridge;
+ordinary parity and an absent counterpart remain valid outcomes. Phenomenal-source
+identification is still open. Action correction and Modeler refinement are distinct.
+
+The revised factual qualification proceeds separately. Its draft code tests and
+independent software checks pass, but pre-blind rule precedence needs correction
+before any fresh responses. That auxiliary gate cannot substitute for the source
+experiment or complete the theory goal.
+
 ## Latest integrated reporting result
 
 The [fixed integrated-task pilot](INTEGRATED_REPORT_PILOT_V2_RESULTS.md) now completes
