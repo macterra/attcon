@@ -15,6 +15,30 @@ representational form that can change through attention operations while upstrea
 sensory evidence remains fixed. It is separate from the auxiliary factual pilot.
 Prediction of a filter output alone cannot complete that goal.
 
+## Current development status
+
+The [toy mechanical milestone](ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+passes after a preserved exact-restoration correction. No learned source or
+native semantic endpoint has been executed. The separate
+[semantic development review](../audits/attention_content_form_semantics_design_v1/review.md)
+finds that the existing category/orientation consumer cannot establish a
+within-item content relation or its manner from spatial maps alone.
+
+Its smallest proposed extension is a new native spatial targeting task: local
+red/blue constituent evidence guides actual grid-targeting actions, while coarse
+order, fine arrangement, identity, confidence and access remain separately tested.
+The primary extraction candidate is the existing frozen encoder's 24×4×4 map
+after its second pool. All budget numbers remain development proposals. Write and
+independently review the exact new task/consumer contract before generation or
+fitting. This is a source extension, not discovery of an existing counterpart.
+
+Fine location information may be additional content or task access rather than
+representational manner. Native utility therefore supports task semantics only;
+independent semantic review still has to justify any model-presentation claim.
+Retain a negative endpoint if only statistics, confidence or fine-task accuracy
+are supported. No automatic layer search or adjective training is authorized by
+this development status.
+
 ## Define the states before testing them
 
 Use fresh worlds with the existing frozen sensory encoders as engineering
