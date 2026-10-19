@@ -308,8 +308,8 @@ the type-only amendment passes its fixture and API acceptance check. A separatel
 registered second collection of the unchanged 552 inputs now retains 537 completed
 and 15 incomplete responses. The first deterministic factual assessment passes
 444/552 reports and covers 24,022/25,440 required peak facts; prose fidelity and
-source-blind correspondence remain pending. Exact requests for both downstream
-stages are prepared for review. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+source-blind correspondence remain pending. Both reviewed downstream batches are
+running: 537 prose audits and 1,104 blind rating positions. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.

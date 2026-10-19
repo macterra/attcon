@@ -797,8 +797,8 @@ collection of the same 552 inputs retains 537 completed and 15 incomplete respon
 this adds no independent archive cases. The first deterministic assessment passes
 444/552 reports and covers 24,022/25,440 required peak facts. These are listed-fact
 results across all sources, including copied records and comparison panels, not
-an attention-only result or a free-prose assessment. Exact inputs for 537 factual
-prose audits and 1,104 blind reference ratings are prepared for stage review.
+an attention-only result or a free-prose assessment. The reviewed batches of 537 factual
+prose audits and 1,104 blind reference ratings are running.
 The original failed batch remains failed, and no report-correspondence result is
 established.
 

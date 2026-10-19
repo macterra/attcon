@@ -312,8 +312,8 @@ attention-derived fact inventory to 2,100 slots. The aggregate factual total mus
 not be described as attention-only accuracy or world-truth accuracy.
 
 This deterministic assessment does not assess the truth of free prose. The
-prepared downstream inventories contain 537 prose-audit requests and 1,104 blind
+reviewed downstream batches are running with 537 prose-audit requests and 1,104 blind
 rating positions, with every incomplete narrator opportunity retained in final
-denominators. Their exact stage reviews precede execution. Source fidelity,
+denominators. The final manifests were published before execution. Source fidelity,
 reference correspondence, selective source attribution, appearance qualification,
 and the source-of-qualia interpretation remain separate, unestablished outcomes.

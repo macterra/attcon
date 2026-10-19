@@ -77,8 +77,9 @@ The explicit-type amendment passes its first fixture and handcrafted API
 acceptance. The separately registered second collection of the unchanged
 552 inputs is complete: 537 completed responses and 15 incomplete responses,
 all retained without retry. The first listed-fact assessment passes 444/552 reports
-and covers 24,022/25,440 required peak facts. Execute the prepared 537 source-aware
-prose-audit requests and 1,104 blind-rating positions after their exact stage reviews.
+and covers 24,022/25,440 required peak facts. The reviewed 537 source-aware
+prose-audit requests and 1,104 blind-rating positions are running. Preserve their
+first outcomes, then collect and join the factual and reference assessments.
 Source-blind ratings and theory-facing evidence remain unestablished.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
