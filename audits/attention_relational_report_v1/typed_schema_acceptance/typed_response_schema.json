@@ -1,0 +1,264 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "propositions": {
+      "items": {
+        "anyOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "cells": {
+                "items": {
+                  "items": {
+                    "maximum": 3,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "maxItems": 2,
+                  "minItems": 2,
+                  "type": "array"
+                },
+                "maxItems": 16,
+                "minItems": 1,
+                "type": "array"
+              },
+              "command": {
+                "enum": [
+                  null,
+                  "k0",
+                  "k1",
+                  "k2"
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "kind": {
+                "const": "peaks",
+                "type": "string"
+              },
+              "node": {
+                "enum": [
+                  "n0",
+                  "n1",
+                  "n2",
+                  "n3"
+                ],
+                "type": "string"
+              },
+              "panel": {
+                "enum": [
+                  "p0",
+                  "p1"
+                ],
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "red",
+                  "blue"
+                ],
+                "type": "string"
+              },
+              "view": {
+                "enum": [
+                  "current",
+                  "candidate"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "panel",
+              "view",
+              "command",
+              "node",
+              "role",
+              "cells"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "coincident_all": {
+                "type": "boolean"
+              },
+              "coincident_possible": {
+                "type": "boolean"
+              },
+              "command": {
+                "enum": [
+                  null,
+                  "k0",
+                  "k1",
+                  "k2"
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "horizontal": {
+                "items": {
+                  "enum": [
+                    "left_of",
+                    "same_column",
+                    "right_of"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "const": "relation",
+                "type": "string"
+              },
+              "node": {
+                "enum": [
+                  "n0",
+                  "n1",
+                  "n2",
+                  "n3"
+                ],
+                "type": "string"
+              },
+              "panel": {
+                "enum": [
+                  "p0",
+                  "p1"
+                ],
+                "type": "string"
+              },
+              "relation": {
+                "const": "red_blue_peak_relation",
+                "type": "string"
+              },
+              "vertical": {
+                "items": {
+                  "enum": [
+                    "above",
+                    "same_row",
+                    "below"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "view": {
+                "enum": [
+                  "current",
+                  "candidate"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "panel",
+              "view",
+              "command",
+              "node",
+              "relation",
+              "horizontal",
+              "vertical",
+              "coincident_possible",
+              "coincident_all"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "command": {
+                "enum": [
+                  null,
+                  "k0",
+                  "k1",
+                  "k2"
+                ],
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "kind": {
+                "const": "scalar",
+                "type": "string"
+              },
+              "name": {
+                "enum": [
+                  "peak_probability",
+                  "entropy_nats",
+                  "expected_row",
+                  "expected_column"
+                ],
+                "type": "string"
+              },
+              "node": {
+                "enum": [
+                  "n0",
+                  "n1",
+                  "n2",
+                  "n3"
+                ],
+                "type": "string"
+              },
+              "panel": {
+                "enum": [
+                  "p0",
+                  "p1"
+                ],
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "red",
+                  "blue"
+                ],
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              },
+              "view": {
+                "enum": [
+                  "current",
+                  "candidate"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "panel",
+              "view",
+              "command",
+              "node",
+              "role",
+              "name",
+              "value"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "attention_relational_report_v1_report",
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "text",
+    "propositions"
+  ],
+  "type": "object"
+}
