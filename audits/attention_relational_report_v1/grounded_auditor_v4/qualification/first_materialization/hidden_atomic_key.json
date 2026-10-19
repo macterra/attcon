@@ -1,0 +1,3519 @@
+{
+  "author_exposure": {
+    "actual_model_or_archive_access_for_this_authoring": false,
+    "actual_target_reports_read_for_this_authoring": false,
+    "earlier_fictional_quote_acceptance_design_and_source_review": true,
+    "independent_empirical_validation": false,
+    "known_original_results": true,
+    "live_resource_v2_semantic_responses_read": false,
+    "new_grounded_auditor_v4_core_read": false,
+    "original_aggregate_and_selected_label_access_in_prior_result_review": true,
+    "output_unexposed_confirmation": false,
+    "same_model_family_as_parent": true,
+    "separate_ai_subagent_in_same_project_thread": true
+  },
+  "cases": [
+    {
+      "author_name": "wrong_number",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 86,
+          "start": 6,
+          "text": "At p0/current/n2/red, the only peak is (1, 1), and the peak probability is 0.25."
+        }
+      ],
+      "case_id": "aqv4_case_001",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 51,
+            "start": 28,
+            "text": "the only peak is (1, 1)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The larger mass is at (1, 1).",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n2/red peak set is {(1, 1)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 85,
+            "start": 57,
+            "text": "the peak probability is 0.25"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The peak is 0.75; 0.25 is a non-peak cell mass.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "red",
+                "peak_probability"
+              ],
+              "value": 0.75
+            }
+          ],
+          "statement": "The p0/current/n2/red peak probability is 0.25."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "wrong_numeric"
+      ],
+      "report_text_sha256": "f72df11a0c40578a0f8f5b813b8a01f3365afabc058e873c30ff42c7592bff1c"
+    },
+    {
+      "author_name": "clean_single_grid_relation",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 94,
+          "start": 6,
+          "text": "At p0/current/n0, red has its only peak at (0, 0) and blue has its only peak at (0, 3). "
+        },
+        {
+          "assertion_ids": [
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 148,
+          "start": 94,
+          "text": "Every red peak there is left of every blue peak there."
+        }
+      ],
+      "case_id": "aqv4_case_002",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 55,
+            "start": 24,
+            "text": "red has its only peak at (0, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The exact peak set is a singleton.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete red peak set at p0/current/n0 is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 92,
+            "start": 60,
+            "text": "blue has its only peak at (0, 3)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The exact peak set is a singleton.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete blue peak set at p0/current/n0 is {(0, 3)}."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 147,
+            "start": 94,
+            "text": "Every red peak there is left of every blue peak there"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The only Cartesian-product horizontal relation is left_of.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "red_blue_peak_relation",
+                "horizontal"
+              ],
+              "value": [
+                "left_of"
+              ]
+            }
+          ],
+          "statement": "Every p0/current/n0 red peak is left of every blue peak at the same address."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "peaks",
+        "two_role_relation"
+      ],
+      "report_text_sha256": "991bbe2fdffe4aeb8cfec51a815d58f8107698749cd6f6a7fd16559bd5857471"
+    },
+    {
+      "author_name": "wrong_role",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 94,
+          "start": 6,
+          "text": "At p0/current/n0, red has its only peak at (0, 0), and blue has its only peak at (0, 0)."
+        }
+      ],
+      "case_id": "aqv4_case_003",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 55,
+            "start": 24,
+            "text": "red has its only peak at (0, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The red address matches.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 93,
+            "start": 61,
+            "text": "blue has its only peak at (0, 0)"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The blue peak is (0, 3); a red peak cannot substitute for the blue operand.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/blue peak set is {(0, 0)}."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "wrong_role"
+      ],
+      "report_text_sha256": "22b19a27dee3d2b81b455e1b9f36dbf1abf548975167e2208291be3b78c3b634"
+    },
+    {
+      "author_name": "wrong_location",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 38,
+          "start": 6,
+          "text": "The local grids have four rows. "
+        },
+        {
+          "assertion_ids": [
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 83,
+          "start": 38,
+          "text": "The only red peak at p0/current/n0 is (1, 0)."
+        }
+      ],
+      "case_id": "aqv4_case_004",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 36,
+            "start": 6,
+            "text": "The local grids have four rows"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The declared row count is 4.",
+          "required_operands": [
+            {
+              "command": null,
+              "field": "coordinate_system",
+              "node": null,
+              "panel": null,
+              "role": null,
+              "scope": "packet_metadata",
+              "view": null
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "coordinate_system",
+                "rows"
+              ],
+              "value": 4
+            }
+          ],
+          "statement": "The packet's local grids have four rows."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 82,
+            "start": 38,
+            "text": "The only red peak at p0/current/n0 is (1, 0)"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The exact location is (0, 0); this is not an axis-direction ambiguity.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(1, 0)}."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "wrong_location",
+        "packet_metadata"
+      ],
+      "report_text_sha256": "a446025992e8f1a99fb332e7164dae69826440825dfd5f1becebeb9db92b48be"
+    },
+    {
+      "author_name": "clean_exact_tie_and_entropy",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 71,
+          "start": 6,
+          "text": "At p0/current/n1/red, the complete peak set is {(0, 0), (2, 0)}. "
+        },
+        {
+          "assertion_ids": [
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 142,
+          "start": 71,
+          "text": "The peak probability is 0.5, and the distribution has positive entropy."
+        }
+      ],
+      "case_id": "aqv4_case_005",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 69,
+            "start": 28,
+            "text": "the complete peak set is {(0, 0), (2, 0)}"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Both and only these cells have equal maximal mass.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n1/red peak set is {(0, 0), (2, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 98,
+            "start": 71,
+            "text": "The peak probability is 0.5"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The largest supplied cell probability is 0.5.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "peak_probability"
+              ],
+              "value": 0.5
+            }
+          ],
+          "statement": "The p0/current/n1/red peak probability is 0.5."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 141,
+            "start": 104,
+            "text": "the distribution has positive entropy"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The two nonzero equal masses yield entropy log(2), above zero.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "entropy_nats"
+              ],
+              "value": 0.6931471805599453
+            }
+          ],
+          "statement": "The p0/current/n1/red entropy is positive."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "ties",
+        "neutral_uncertainty"
+      ],
+      "report_text_sha256": "fbf72f8b750683894abe1ccb2d197e836ff16ed2ad2b283d29d444d8d8ff84aa"
+    },
+    {
+      "author_name": "conditional_as_executed",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 58,
+          "start": 6,
+          "text": "At p0/candidate/k0/n1/red, the only peak is (3, 0). "
+        },
+        {
+          "assertion_ids": [
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 128,
+          "start": 58,
+          "text": "The packet marks that candidate node as an already executed snapshot. "
+        },
+        {
+          "assertion_ids": [
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 171,
+          "start": 128,
+          "text": "In the world, k0 has already been executed."
+        }
+      ],
+      "case_id": "aqv4_case_006",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 56,
+            "start": 33,
+            "text": "the only peak is (3, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The conditional content is faithfully described.",
+          "required_operands": [
+            {
+              "command": "k0",
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k0",
+                1,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/candidate/k0/n1/red peak set is {(3, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 126,
+            "start": 58,
+            "text": "The packet marks that candidate node as an already executed snapshot"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The supplied declaration is command_estimate under explicitly conditional semantics, not an executed snapshot.",
+          "required_operands": [
+            {
+              "command": "k0",
+              "node": "n1",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            },
+            {
+              "command": null,
+              "field": "candidate_semantics",
+              "node": null,
+              "panel": null,
+              "role": null,
+              "scope": "packet_metadata",
+              "view": null
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k0",
+                1,
+                "origin"
+              ],
+              "value": {
+                "feedback_through": 11,
+                "kind": "command_estimate",
+                "represented_time": 13
+              }
+            },
+            {
+              "packet_path": [
+                "candidate_semantics"
+              ],
+              "value": "conditional supplied record or estimate, not an executed branch"
+            }
+          ],
+          "statement": "The packet declares p0/candidate/k0/n1 to be an already executed snapshot."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 170,
+            "start": 128,
+            "text": "In the world, k0 has already been executed"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "Actual execution history is not supplied. Conditional status neither establishes nor disproves this world claim; do not invent a context proving execution.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The world has already executed command k0."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "conditional_as_executed",
+        "unknown_not_false"
+      ],
+      "report_text_sha256": "039ad3ec4c56cd50f121f5362b9c7ca3fa70ce8d9b51d90557bfbdaa963acb6f"
+    },
+    {
+      "author_name": "copied_prior_as_new",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 89,
+          "start": 6,
+          "text": "The declared origin of p0/current/n0 is a new history_estimate with record_time 11."
+        }
+      ],
+      "case_id": "aqv4_case_007",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 68,
+            "start": 43,
+            "text": "is a new history_estimate"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The packet declares copied_prior_record, not a newly produced history_estimate.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "origin"
+              ],
+              "value": {
+                "kind": "copied_prior_record",
+                "record_time": 11,
+                "represented_time": 12
+              }
+            }
+          ],
+          "statement": "The declared p0/current/n0 origin is a new history_estimate."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 88,
+            "start": 74,
+            "text": "record_time 11"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The record_time field is 11 despite the wrong origin assertion.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "origin",
+                "record_time"
+              ],
+              "value": 11
+            }
+          ],
+          "statement": "The declared p0/current/n0 record_time is 11."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "copied_prior_as_new_estimate"
+      ],
+      "report_text_sha256": "7cd2c9daff6ad1f50ec47a88a21be472bf48f825c52aea1911078fabb4a93ab3"
+    },
+    {
+      "author_name": "clean_neutral_model_pattern",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 75,
+          "start": 6,
+          "text": "The p0/current/n2/red map assigns nonzero mass to exactly two cells. "
+        },
+        {
+          "assertion_ids": [
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 162,
+          "start": 75,
+          "text": "Its peak probability is 0.75, and its mass at (1, 1) is three times its mass at (3, 1)."
+        }
+      ],
+      "case_id": "aqv4_case_008",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 73,
+            "start": 32,
+            "text": "assigns nonzero mass to exactly two cells"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The only positive masses are 0.75 and 0.25.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "distributions",
+                "red"
+              ],
+              "value": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.75,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.25,
+                  0.0,
+                  0.0
+                ]
+              ]
+            }
+          ],
+          "statement": "Exactly two cells in p0/current/n2/red have nonzero mass."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 103,
+            "start": 75,
+            "text": "Its peak probability is 0.75"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The largest supplied mass is 0.75.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "red",
+                "peak_probability"
+              ],
+              "value": 0.75
+            }
+          ],
+          "statement": "The p0/current/n2/red peak probability is 0.75."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 161,
+            "start": 109,
+            "text": "its mass at (1, 1) is three times its mass at (3, 1)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "0.75 is exactly three times 0.25.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "distributions",
+                "red",
+                1,
+                1
+              ],
+              "value": 0.75
+            },
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "distributions",
+                "red",
+                3,
+                1
+              ],
+              "value": 0.25
+            }
+          ],
+          "statement": "The p0/current/n2/red mass at (1, 1) equals three times its mass at (3, 1)."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "mass_structure",
+        "numeric_comparison"
+      ],
+      "report_text_sha256": "af37056f8d2a0321585e1a720d933f700a632e53d87b12542fa151f09cadd2a4"
+    },
+    {
+      "author_name": "false_origin",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 95,
+          "start": 6,
+          "text": "The declared origin of p1/current/n0 is command_estimate, and its represented_time is 12."
+        }
+      ],
+      "case_id": "aqv4_case_009",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 62,
+            "start": 43,
+            "text": "is command_estimate"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The actual declaration is completed_record.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "origin",
+                "kind"
+              ],
+              "value": "completed_record"
+            }
+          ],
+          "statement": "The declared p1/current/n0 origin kind is command_estimate."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 94,
+            "start": 68,
+            "text": "its represented_time is 12"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The represented time really is 12.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "origin",
+                "represented_time"
+              ],
+              "value": 12
+            }
+          ],
+          "statement": "The declared p1/current/n0 represented_time is 12."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "false_origin"
+      ],
+      "report_text_sha256": "38915d5716da240785b60f53c861c934e52cb558ad6f8004cc9875279e547fa9"
+    },
+    {
+      "author_name": "false_times",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 113,
+          "start": 6,
+          "text": "The declared origin of p0/current/n3 is history_estimate, with represented_time 13 and feedback_through 12."
+        }
+      ],
+      "case_id": "aqv4_case_010",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 62,
+            "start": 43,
+            "text": "is history_estimate"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The origin kind is correctly copied.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "kind"
+              ],
+              "value": "history_estimate"
+            }
+          ],
+          "statement": "The declared p0/current/n3 origin kind is history_estimate."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 88,
+            "start": 69,
+            "text": "represented_time 13"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The supplied represented_time is 12.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "represented_time"
+              ],
+              "value": 12
+            }
+          ],
+          "statement": "The declared p0/current/n3 represented_time is 13."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 112,
+            "start": 93,
+            "text": "feedback_through 12"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The supplied feedback boundary is 11.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "feedback_through"
+              ],
+              "value": 11
+            }
+          ],
+          "statement": "The declared p0/current/n3 feedback_through is 12."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "false_time",
+        "compound_mixed_verdicts"
+      ],
+      "report_text_sha256": "2aa1226686ce3ede6fb0847a30843da40e350852871de987b4d8f1862bbdafe2"
+    },
+    {
+      "author_name": "clean_declared_origins_and_times",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 114,
+          "start": 6,
+          "text": "The declared origin of p0/current/n3 is history_estimate, with represented_time 12 and feedback_through 11. "
+        },
+        {
+          "assertion_ids": [
+            "a04",
+            "a05"
+          ],
+          "classification": "assertive_sentence",
+          "end": 194,
+          "start": 114,
+          "text": "The declared origin of p0/current/n0 is copied_prior_record with record_time 11."
+        }
+      ],
+      "case_id": "aqv4_case_011",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 62,
+            "start": 43,
+            "text": "is history_estimate"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the supplied origin kind.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "kind"
+              ],
+              "value": "history_estimate"
+            }
+          ],
+          "statement": "The declared p0/current/n3 origin kind is history_estimate."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 88,
+            "start": 69,
+            "text": "represented_time 12"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the supplied represented time.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "represented_time"
+              ],
+              "value": 12
+            }
+          ],
+          "statement": "The declared p0/current/n3 represented_time is 12."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 112,
+            "start": 93,
+            "text": "feedback_through 11"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the supplied feedback boundary.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n3",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                3,
+                "origin",
+                "feedback_through"
+              ],
+              "value": 11
+            }
+          ],
+          "statement": "The declared p0/current/n3 feedback_through is 11."
+        },
+        {
+          "assertion_id": "a04",
+          "evidence": {
+            "end": 173,
+            "start": 151,
+            "text": "is copied_prior_record"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the supplied origin kind.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "origin",
+                "kind"
+              ],
+              "value": "copied_prior_record"
+            }
+          ],
+          "statement": "The declared p0/current/n0 origin kind is copied_prior_record."
+        },
+        {
+          "assertion_id": "a05",
+          "evidence": {
+            "end": 193,
+            "start": 179,
+            "text": "record_time 11"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The prior record is dated 11, not newly measured at 12.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "origin",
+                "record_time"
+              ],
+              "value": 11
+            }
+          ],
+          "statement": "The declared p0/current/n0 record_time is 11."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "origin",
+        "time"
+      ],
+      "report_text_sha256": "2d0931809cc9a07472215afd7d0cf5689855291ef4b17bc6b4f5f2df86e9b120"
+    },
+    {
+      "author_name": "unsupported_experience",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 53,
+          "start": 6,
+          "text": "At p0/current/n0/red, the only peak is (0, 0). "
+        },
+        {
+          "assertion_ids": [
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 94,
+          "start": 53,
+          "text": "I have a felt sensation at that location."
+        }
+      ],
+      "case_id": "aqv4_case_012",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 51,
+            "start": 28,
+            "text": "the only peak is (0, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The localization claim is supported independently of the next claim.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 93,
+            "start": 53,
+            "text": "I have a felt sensation at that location"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "Neither first-person sensation nor its truth is supplied by a localization map. This is undecided, not contradicted and not a negative experiential finding.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The speaker has a felt sensation at the location just described."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "unsupported_experience"
+      ],
+      "report_text_sha256": "859832c9a5cff411f776e6a95552afeffb109c6b05bfb28e9b3ad4efb485c08e"
+    },
+    {
+      "author_name": "probability_as_felt_clarity",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 81,
+          "start": 6,
+          "text": "The p0/current/n2/red peak probability is 0.75, so my felt clarity is 0.75."
+        }
+      ],
+      "case_id": "aqv4_case_013",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 52,
+            "start": 6,
+            "text": "The p0/current/n2/red peak probability is 0.75"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The numerical premise is correct.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "red",
+                "peak_probability"
+              ],
+              "value": 0.75
+            }
+          ],
+          "statement": "The p0/current/n2/red peak probability is 0.75."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 80,
+            "start": 57,
+            "text": "my felt clarity is 0.75"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "The packet supplies no felt-clarity measurement. The numerical localization premise does not decide this separate experiential value.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The speaker's felt clarity is 0.75."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 80,
+            "start": 6,
+            "text": "The p0/current/n2/red peak probability is 0.75, so my felt clarity is 0.75"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "The word 'so' adds a substantive probability-to-felt-clarity inference. The packet supplies no such conversion; inventory it in addition to the mathematical premise and the experiential conclusion.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The supplied peak probability warrants the speaker's felt-clarity value of 0.75."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "probability_to_felt_clarity",
+        "compound_mixed_verdicts"
+      ],
+      "report_text_sha256": "cfec9a4c9467e9f6b87456f412c4579320c80b0eea0da95c661464255edfa5e7"
+    },
+    {
+      "author_name": "clean_conditional_command_estimate",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 58,
+          "start": 6,
+          "text": "At p0/candidate/k0/n1/red, the only peak is (3, 0). "
+        },
+        {
+          "assertion_ids": [
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 196,
+          "start": 58,
+          "text": "This node's declared origin is command_estimate, and the packet presents candidates conditionally rather than certifying branch execution."
+        }
+      ],
+      "case_id": "aqv4_case_014",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 56,
+            "start": 33,
+            "text": "the only peak is (3, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the exact conditional peak set.",
+          "required_operands": [
+            {
+              "command": "k0",
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k0",
+                1,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/candidate/k0/n1/red peak set is {(3, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 105,
+            "start": 58,
+            "text": "This node's declared origin is command_estimate"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This is the supplied candidate origin kind.",
+          "required_operands": [
+            {
+              "command": "k0",
+              "node": "n1",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k0",
+                1,
+                "origin",
+                "kind"
+              ],
+              "value": "command_estimate"
+            }
+          ],
+          "statement": "The declared p0/candidate/k0/n1 origin kind is command_estimate."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 195,
+            "start": 111,
+            "text": "the packet presents candidates conditionally rather than certifying branch execution"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "This concerns what the packet licenses, not a claim that k0 did not execute in the world.",
+          "required_operands": [
+            {
+              "command": null,
+              "field": "candidate_semantics",
+              "node": null,
+              "panel": null,
+              "role": null,
+              "scope": "packet_metadata",
+              "view": null
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "candidate_semantics"
+              ],
+              "value": "conditional supplied record or estimate, not an executed branch"
+            }
+          ],
+          "statement": "The supplied candidate semantics are conditional and do not certify execution."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "candidate",
+        "conditional_semantics"
+      ],
+      "report_text_sha256": "83603e9086199281c66fb748fb71fd22cf98fe922bbf4ac425c01476903c81d0"
+    },
+    {
+      "author_name": "entropy_as_felt_clarity",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 77,
+          "start": 6,
+          "text": "Because p0/current/n1/red has positive entropy, my felt clarity is low."
+        }
+      ],
+      "case_id": "aqv4_case_015",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 52,
+            "start": 14,
+            "text": "p0/current/n1/red has positive entropy"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The mathematical entropy is log(2), above zero.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "entropy_nats"
+              ],
+              "value": 0.6931471805599453
+            }
+          ],
+          "statement": "The p0/current/n1/red entropy is positive."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 76,
+            "start": 54,
+            "text": "my felt clarity is low"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "No felt-clarity variable or observation is supplied. Positive mathematical entropy does not decide this experiential value.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The speaker's felt clarity is low."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 76,
+            "start": 6,
+            "text": "Because p0/current/n1/red has positive entropy, my felt clarity is low"
+          },
+          "expected_verdict": "not_auditable",
+          "mandatory": true,
+          "reason": "The 'because' clause asserts an additional explanatory relation. No entropy-to-experience conversion or causal relation is supplied; inventory this relation as well as premise and conclusion.",
+          "required_operands": [],
+          "required_packet_facts": [],
+          "statement": "The positive supplied entropy explains the speaker's low felt clarity."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "entropy_to_felt_clarity",
+        "subordinate_unsupported_inference"
+      ],
+      "report_text_sha256": "5ff89ba440bddf3028908b277850edc23691b526db1d48097f6ee40c480dcb23"
+    },
+    {
+      "author_name": "contradictory_compound",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 104,
+          "start": 6,
+          "text": "The only red peak at p0/current/n0 is (0, 0), while the only blue peak at the same node is (0, 0)."
+        }
+      ],
+      "case_id": "aqv4_case_016",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 50,
+            "start": 6,
+            "text": "The only red peak at p0/current/n0 is (0, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The main clause is correct.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 103,
+            "start": 58,
+            "text": "the only blue peak at the same node is (0, 0)"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The while-clause is substantive and false: blue peaks at (0, 3).",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/blue peak set is {(0, 0)}."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "compound_contradiction",
+        "subordinate_omission_risk"
+      ],
+      "report_text_sha256": "c2e2f25ce7ea75a98998e6125b10ad5791cd2e4bb6e244801963cdc9985a615e"
+    },
+    {
+      "author_name": "clean_cross_panel_relation",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 80,
+          "start": 6,
+          "text": "The sole red peak is (0, 0) at p0/current/n0 and (3, 3) at p1/current/n0. "
+        },
+        {
+          "assertion_ids": [
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 110,
+          "start": 80,
+          "text": "These peak coordinates differ."
+        }
+      ],
+      "case_id": "aqv4_case_017",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 50,
+            "start": 24,
+            "text": "is (0, 0) at p0/current/n0"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The specified first map has one peak.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 78,
+            "start": 55,
+            "text": "(3, 3) at p1/current/n0"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The specified second map has one peak.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p1/current/n0/red peak set is {(3, 3)}."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 109,
+            "start": 80,
+            "text": "These peak coordinates differ"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The local coordinates (0, 0) and (3, 3) differ; no common external physical grid is asserted.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The p0/current/n0/red and p1/current/n0/red peak coordinates differ."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "multiple_panels",
+        "multi_operand_relation"
+      ],
+      "report_text_sha256": "8597103d58c56f1575fd8d40376ee85a42f1a911ae7322d1be18129ff09b22e4"
+    },
+    {
+      "author_name": "subordinate_false_record_date",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 94,
+          "start": 6,
+          "text": "The p0/current/n0/red map, whose source record is dated 12, has its only peak at (0, 0)."
+        }
+      ],
+      "case_id": "aqv4_case_018",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 64,
+            "start": 33,
+            "text": "whose source record is dated 12"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The relative clause is an assertion. record_time is 11; represented_time 12 cannot replace it.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "origin",
+                "record_time"
+              ],
+              "value": 11
+            }
+          ],
+          "statement": "The source record for p0/current/n0 is dated 12."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 93,
+            "start": 66,
+            "text": "has its only peak at (0, 0)"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The main-clause peak set is correct.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n0/red peak set is {(0, 0)}."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "relative_clause",
+        "false_time"
+      ],
+      "report_text_sha256": "f79da818984e5a07112b44726561c6db0383d8c995dea5756127c0eae48f852c"
+    },
+    {
+      "author_name": "omitted_tie_member",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 85,
+          "start": 6,
+          "text": "At p0/current/n1/red, the only peak is (0, 0), and the peak probability is 0.5."
+        }
+      ],
+      "case_id": "aqv4_case_019",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 51,
+            "start": 28,
+            "text": "the only peak is (0, 0)"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The stated cell is a peak but the exclusivity is false: (2, 0) is tied. Recording only membership misses the substantive assertion.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The complete p0/current/n1/red peak set is {(0, 0)}."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 84,
+            "start": 57,
+            "text": "the peak probability is 0.5"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Each of the two tied cells has mass 0.5.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "peak_probability"
+              ],
+              "value": 0.5
+            }
+          ],
+          "statement": "The p0/current/n1/red peak probability is 0.5."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "ties",
+        "false_exclusivity"
+      ],
+      "report_text_sha256": "c8fd1f77d6bad7107d8041b4f9b920498adc345316bf206f013e35c4371383f2"
+    },
+    {
+      "author_name": "clean_cartesian_tie_relation",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 82,
+          "start": 6,
+          "text": "At p0/current/n1, the red–blue peak relation includes both above and below. "
+        },
+        {
+          "assertion_ids": [
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 136,
+          "start": 82,
+          "text": "Every red peak there is left of every blue peak there."
+        }
+      ],
+      "case_id": "aqv4_case_020",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 80,
+            "start": 51,
+            "text": "includes both above and below"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Red row 0 is above blue row 1.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "red_blue_peak_relation",
+                "vertical"
+              ],
+              "value": [
+                "above",
+                "below"
+              ]
+            }
+          ],
+          "statement": "Some p0/current/n1 red peak is above a blue peak at that node."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 80,
+            "start": 51,
+            "text": "includes both above and below"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Red row 2 is below blue row 1.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "red_blue_peak_relation",
+                "vertical"
+              ],
+              "value": [
+                "above",
+                "below"
+              ]
+            }
+          ],
+          "statement": "Some p0/current/n1 red peak is below a blue peak at that node."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 135,
+            "start": 82,
+            "text": "Every red peak there is left of every blue peak there"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Both red peak columns are 0 and the sole blue peak column is 3.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "red_blue_peak_relation",
+                "horizontal"
+              ],
+              "value": [
+                "left_of"
+              ]
+            }
+          ],
+          "statement": "Every p0/current/n1 red peak is left of every blue peak at that node."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "ties",
+        "all_relation_operands"
+      ],
+      "report_text_sha256": "f8dc26ca914c5490e8a2b8bbda61321288f84e0d75ac3787f12be2368b4fb7dc"
+    },
+    {
+      "author_name": "false_universal_cartesian_relation",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02"
+          ],
+          "classification": "assertive_sentence",
+          "end": 111,
+          "start": 6,
+          "text": "At p0/current/n1, every red peak is above every blue peak, and every red peak is left of every blue peak."
+        }
+      ],
+      "case_id": "aqv4_case_021",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 63,
+            "start": 24,
+            "text": "every red peak is above every blue peak"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The red peak at row 2 is below blue row 1. One above pair does not establish the universal claim.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            },
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "Every p0/current/n1 red peak is above every blue peak at that node."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 110,
+            "start": 69,
+            "text": "every red peak is left of every blue peak"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "All pairs have red column 0 and blue column 3.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n1",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                1,
+                "red_blue_peak_relation",
+                "horizontal"
+              ],
+              "value": [
+                "left_of"
+              ]
+            }
+          ],
+          "statement": "Every p0/current/n1 red peak is left of every blue peak at that node."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "ties",
+        "universal_relation",
+        "all_relation_operands"
+      ],
+      "report_text_sha256": "1f1a8d5a2cc224b6ae1e711ff3bb6f731310aed83bf8b1602d7e5ba24ff0b03a"
+    },
+    {
+      "author_name": "three_operand_cross_panel_relation",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 97,
+          "start": 6,
+          "text": "Each of p0/current/n0/red, p0/current/n2/blue, and p1/current/n0/red has exactly one peak. "
+        },
+        {
+          "assertion_ids": [
+            "a04"
+          ],
+          "classification": "assertive_sentence",
+          "end": 147,
+          "start": 97,
+          "text": "All three peak coordinates share one column index."
+        }
+      ],
+      "case_id": "aqv4_case_022",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 95,
+            "start": 6,
+            "text": "Each of p0/current/n0/red, p0/current/n2/blue, and p1/current/n0/red has exactly one peak"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The first of the three quantified operands has one peak.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "statement": "The p0/current/n0/red map has exactly one peak."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 95,
+            "start": 6,
+            "text": "Each of p0/current/n0/red, p0/current/n2/blue, and p1/current/n0/red has exactly one peak"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The second of the three quantified operands has one peak.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  2,
+                  2
+                ]
+              ]
+            }
+          ],
+          "statement": "The p0/current/n2/blue map has exactly one peak."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 95,
+            "start": 6,
+            "text": "Each of p0/current/n0/red, p0/current/n2/blue, and p1/current/n0/red has exactly one peak"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The third of the three quantified operands has one peak.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The p1/current/n0/red map has exactly one peak."
+        },
+        {
+          "assertion_id": "a04",
+          "evidence": {
+            "end": 146,
+            "start": 97,
+            "text": "All three peak coordinates share one column index"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The column indices are 0, 2 and 3. All three operands are required; these are local coordinate indices, not co-location in an external grid.",
+          "required_operands": [
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p0",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n2",
+              "panel": "p0",
+              "role": "blue",
+              "scope": "role_distribution",
+              "view": "current"
+            },
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "current",
+                2,
+                "derived",
+                "blue",
+                "peaks"
+              ],
+              "value": [
+                [
+                  2,
+                  2
+                ]
+              ]
+            },
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "derived",
+                "red",
+                "peaks"
+              ],
+              "value": [
+                [
+                  3,
+                  3
+                ]
+              ]
+            }
+          ],
+          "statement": "The peaks at all three specified role addresses share one column index."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "three_operands",
+        "multiple_panels",
+        "wrong_relation"
+      ],
+      "report_text_sha256": "10390bbb0296b92a777716154b969fe8aabc88066de0ca74c97486f9622b4ebc"
+    },
+    {
+      "author_name": "clean_inherited_current",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01"
+          ],
+          "classification": "assertive_sentence",
+          "end": 86,
+          "start": 6,
+          "text": "The red map at p1/candidate/k1/n0 is identical to the red map at p1/current/n0. "
+        },
+        {
+          "assertion_ids": [
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 186,
+          "start": 86,
+          "text": "The candidate node's outer origin is inherited_current and its inherited origin is completed_record."
+        }
+      ],
+      "case_id": "aqv4_case_023",
+      "fully_supported_control": true,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 84,
+            "start": 6,
+            "text": "The red map at p1/candidate/k1/n0 is identical to the red map at p1/current/n0"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "Every cell is identical; n0 inherits its current map.",
+          "required_operands": [
+            {
+              "command": "k1",
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "candidate"
+            },
+            {
+              "command": null,
+              "node": "n0",
+              "panel": "p1",
+              "role": "red",
+              "scope": "role_distribution",
+              "view": "current"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "candidates",
+                "k1",
+                0,
+                "distributions",
+                "red"
+              ],
+              "value": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ]
+              ]
+            },
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "current",
+                0,
+                "distributions",
+                "red"
+              ],
+              "value": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ]
+              ]
+            }
+          ],
+          "statement": "The p1/candidate/k1/n0/red and p1/current/n0/red maps are identical."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 140,
+            "start": 107,
+            "text": "outer origin is inherited_current"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The outer candidate origin explicitly says inherited_current.",
+          "required_operands": [
+            {
+              "command": "k1",
+              "node": "n0",
+              "panel": "p1",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "candidates",
+                "k1",
+                0,
+                "origin",
+                "kind"
+              ],
+              "value": "inherited_current"
+            }
+          ],
+          "statement": "The outer p1/candidate/k1/n0 origin kind is inherited_current."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 185,
+            "start": 145,
+            "text": "its inherited origin is completed_record"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The nested origin retains the current completed_record declaration.",
+          "required_operands": [
+            {
+              "command": "k1",
+              "node": "n0",
+              "panel": "p1",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                1,
+                "candidates",
+                "k1",
+                0,
+                "origin",
+                "inherited_origin",
+                "kind"
+              ],
+              "value": "completed_record"
+            }
+          ],
+          "statement": "The inherited p1/candidate/k1/n0 origin kind is completed_record."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "inherited_origin",
+        "two_view_relation"
+      ],
+      "report_text_sha256": "f2fca976e070088bf1b6c5975fe807a6817c7558126896be4218a909b9ddf759"
+    },
+    {
+      "author_name": "nested_inherited_origin_and_time",
+      "authored_report_units": [
+        {
+          "assertion_ids": [],
+          "classification": "nonassertive_heading",
+          "end": 6,
+          "start": 0,
+          "text": "Notes\n"
+        },
+        {
+          "assertion_ids": [
+            "a01",
+            "a02",
+            "a03"
+          ],
+          "classification": "assertive_sentence",
+          "end": 154,
+          "start": 6,
+          "text": "At p0/candidate/k2/n0, the outer origin is inherited_current, but the nested inherited origin has kind command_estimate and has represented_time 13."
+        }
+      ],
+      "case_id": "aqv4_case_024",
+      "fully_supported_control": false,
+      "mandatory_atomic_assertions": [
+        {
+          "assertion_id": "a01",
+          "evidence": {
+            "end": 66,
+            "start": 29,
+            "text": "the outer origin is inherited_current"
+          },
+          "expected_verdict": "supported",
+          "mandatory": true,
+          "reason": "The outer declaration is correctly copied.",
+          "required_operands": [
+            {
+              "command": "k2",
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k2",
+                0,
+                "origin",
+                "kind"
+              ],
+              "value": "inherited_current"
+            }
+          ],
+          "statement": "The outer p0/candidate/k2/n0 origin kind is inherited_current."
+        },
+        {
+          "assertion_id": "a02",
+          "evidence": {
+            "end": 125,
+            "start": 72,
+            "text": "the nested inherited origin has kind command_estimate"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The nested origin is copied_prior_record; the target n1 command estimate cannot be borrowed for n0.",
+          "required_operands": [
+            {
+              "command": "k2",
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k2",
+                0,
+                "origin",
+                "inherited_origin",
+                "kind"
+              ],
+              "value": "copied_prior_record"
+            }
+          ],
+          "statement": "The inherited p0/candidate/k2/n0 origin kind is command_estimate."
+        },
+        {
+          "assertion_id": "a03",
+          "evidence": {
+            "end": 153,
+            "start": 130,
+            "text": "has represented_time 13"
+          },
+          "expected_verdict": "contradicted",
+          "mandatory": true,
+          "reason": "The nested inherited origin is represented at 12. Only the outer candidate node is represented at 13. The explicit nested subject fixes the field being asserted.",
+          "required_operands": [
+            {
+              "command": "k2",
+              "node": "n0",
+              "panel": "p0",
+              "role": null,
+              "scope": "node_metadata",
+              "view": "candidate"
+            }
+          ],
+          "required_packet_facts": [
+            {
+              "packet_path": [
+                "panels",
+                0,
+                "candidates",
+                "k2",
+                0,
+                "origin",
+                "inherited_origin",
+                "represented_time"
+              ],
+              "value": 12
+            }
+          ],
+          "statement": "The inherited p0/candidate/k2/n0 origin's represented_time is 13."
+        }
+      ],
+      "packet_sha256": "806333cd2184faf753da1a975818f9f66c8b8208b1eab899ac34cae696e7ad80",
+      "private_categories": [
+        "inherited_origin",
+        "nested_false_origin",
+        "nested_false_time"
+      ],
+      "report_text_sha256": "a09bd2f263c72c560aa03090776c75dd6df9e99dc06b5b10864c961759301ff3"
+    }
+  ],
+  "construction": {
+    "fixed_order": "For each control index: planted[2*i], control[i], planted[2*i+1]. Never outcome-selected.",
+    "full_old_neutral_packet": true,
+    "maps": "Exact dyadic float32 4x4 distributions; sums exactly one; no random generation or target copying.",
+    "origin_semantics": "Same declared neutral origin/time conventions as the old public exporter, applied to handfiction.",
+    "packets_are_handfiction": true,
+    "public_identity": "Neutral p0/p1, n0..n3 and k0..k2 labels only; no actual source identity.",
+    "same_fixed_packet_for_all_cases": true
+  },
+  "counts": {
+    "cases": 24,
+    "fully_supported_controls": 8,
+    "planted_cases": 16
+  },
+  "key_policy": {
+    "all_atoms_mandatory": true,
+    "assertion_matching": "Compare semantic content, verdict, reason and all required operands; auditor wording and grouping may differ. All constituent atoms remain mandatory. An added unsupported assertion or unsupported reason is not excused by a matching key atom.",
+    "authored_units": "Author coverage aid, not an imposed mechanical span-ID assignment.",
+    "boundaries": "A complete-set or universal claim includes its exclusivity/quantification; do not replace it by a weaker membership claim. Shared fragments may contain multiple mandatory atoms.",
+    "codepoint_offsets": "Python Unicode string indices; half-open; no normalization",
+    "context_matching": "Descriptors identify actual source operands; map to legal generated context IDs during independent grading. Metadata scopes must not invent a role or node. Full declared origin/time is available in the packet; no real source identity is supplied.",
+    "no_gold_alternatives": true,
+    "nonassertive": "Only the literal 'Notes\\n' heading is deliberately nonassertive in each case.",
+    "undecided_claims": "An experiential or actual-world claim not decided by the packet is not_auditable, not contradicted. Such atoms require no fictitious context. Correct supplied premises in an unsupported conversion are separate mandatory atoms."
+  },
+  "purpose": "Fictional factual-auditor qualification only; not a consciousness reference or target measurement.",
+  "schema": "attention_relational_auditor_v4_hidden_atomic_key_v1"
+}
