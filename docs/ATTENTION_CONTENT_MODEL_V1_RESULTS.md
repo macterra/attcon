@@ -255,6 +255,7 @@ now preserves 552 inputs, 25,440 required peak facts per arm and 684 causal pair
 The corrected reporting pipeline passes all 19 handcrafted checks; its original
 18-pass/1-fail fixture result remains preserved. The first 552 narration requests
 all returned HTTP 400 with no retained reports. A separate diagnostic identifies
-missing response-schema types; a versioned type-only amendment is under review.
+missing response-schema types. The type-only amendment passes its first fixture
+and API acceptance; a separately registered second collection is running.
 The original reporting failure remains unchanged, and reference correspondence
 is unestablished. These software/source results do not establish qualia.

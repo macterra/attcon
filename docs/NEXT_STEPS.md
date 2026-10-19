@@ -73,8 +73,9 @@ before the fixed 552 new report attempts. The protocol, reference and reporting 
 The first archive export completes with all 552 inputs and 684 causal pairs
 preserved. All first 552 narration attempts returned HTTP 400, with no retained
 reports. A separately retained diagnostic identifies a missing schema type.
-Validate the explicit-type transport amendment on a handcrafted request before
-a separately registered collection using the unchanged inputs and criteria.
+The explicit-type amendment passes its first fixture and handcrafted API
+acceptance. Complete the separately registered second collection of the unchanged
+552 inputs, then prepare its exact source-aware audit and source-blind rating stages.
 Source-blind ratings and theory-facing evidence remain unestablished.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.

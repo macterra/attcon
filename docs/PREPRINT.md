@@ -791,8 +791,11 @@ analytic, W, sensor and template controls. The first 552 narrator attempts all
 returned HTTP 400 and retained no reports. A separately preserved handcrafted
 diagnostic directly identifies a missing response-schema type; the original
 error bodies were not retained. A versioned amendment adds the implied literal
-types while keeping inputs and scientific criteria unchanged. The original
-failed batch remains failed, and no report-correspondence result is established.
+types while keeping inputs and scientific criteria unchanged. Its first equivalence
+fixture and handcrafted API acceptance pass. A separately registered second
+collection of the same 552 inputs is running; this adds no independent archive
+cases. The original failed batch remains failed, and no report-correspondence
+result is established.
 This does not retrospectively change the frozen v1 gate or establish qualia.
 
 ### 6.1 Authorized AI review route

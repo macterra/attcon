@@ -108,8 +108,10 @@ all controls, restorations and nulls are retained. The first 552 narration attem
 returned HTTP 400 and retained no reports; the [failure disposition](../audits/attention_relational_report_v1/run/report/failure_disposition.json)
 preserves all attempts. A separate handcrafted diagnostic identifies a missing
 response-schema type. A transport-v2 amendment adds only implied literal types,
-with the original inputs, criteria and failures preserved. Rating and theory-facing
-results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+with the original inputs, criteria and failures preserved. Its first equivalence
+fixture and handcrafted API acceptance pass; the separately registered second
+552-input collection is running. These remain the same 12 cases, with both
+transport histories retained. Rating and theory-facing results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).
 The ultimate goal remains credible evidence that the attention-control model is
 the source of qualia; protocol readiness or numerical verification alone does not
