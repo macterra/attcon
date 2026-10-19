@@ -1,0 +1,262 @@
+{
+  "api_or_archive_execution_performed": false,
+  "diagnostic_manifest_draft_sha256": "899e7289484f8cd02f452a924fe54ac548baf6b31503f0f8e304845198277239",
+  "max_attempts": 1,
+  "original_scientific_batch_remains_failed": true,
+  "review_markdown_sha256": "069e74588bb38b0d557622303ef46329fb01ac43e220ce73bb284fc88b1391f6",
+  "review_method": "independent static source inspection and exact local settings/hash comparison",
+  "reviewed_input": "This is a transport diagnostic with no scientific state. Return a JSON object matching the supplied schema, with empty text and an empty propositions array.",
+  "reviewed_output_root": "audits/attention_relational_report_v1/api_transport_diagnostic/run",
+  "reviewed_settings": {
+    "concurrency": 6,
+    "max_output_tokens": 8192,
+    "model": "gpt-5-mini-2025-08-07",
+    "output_schema": {
+      "additionalProperties": false,
+      "properties": {
+        "propositions": {
+          "items": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "cells": {
+                    "items": {
+                      "items": {
+                        "maximum": 3,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "maxItems": 2,
+                      "minItems": 2,
+                      "type": "array"
+                    },
+                    "maxItems": 16,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "command": {
+                    "enum": [
+                      null,
+                      "k0",
+                      "k1",
+                      "k2"
+                    ]
+                  },
+                  "kind": {
+                    "const": "peaks"
+                  },
+                  "node": {
+                    "enum": [
+                      "n0",
+                      "n1",
+                      "n2",
+                      "n3"
+                    ]
+                  },
+                  "panel": {
+                    "enum": [
+                      "p0",
+                      "p1"
+                    ]
+                  },
+                  "role": {
+                    "enum": [
+                      "red",
+                      "blue"
+                    ]
+                  },
+                  "view": {
+                    "enum": [
+                      "current",
+                      "candidate"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "panel",
+                  "view",
+                  "command",
+                  "node",
+                  "role",
+                  "cells"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "coincident_all": {
+                    "type": "boolean"
+                  },
+                  "coincident_possible": {
+                    "type": "boolean"
+                  },
+                  "command": {
+                    "enum": [
+                      null,
+                      "k0",
+                      "k1",
+                      "k2"
+                    ]
+                  },
+                  "horizontal": {
+                    "items": {
+                      "enum": [
+                        "left_of",
+                        "same_column",
+                        "right_of"
+                      ]
+                    },
+                    "type": "array"
+                  },
+                  "kind": {
+                    "const": "relation"
+                  },
+                  "node": {
+                    "enum": [
+                      "n0",
+                      "n1",
+                      "n2",
+                      "n3"
+                    ]
+                  },
+                  "panel": {
+                    "enum": [
+                      "p0",
+                      "p1"
+                    ]
+                  },
+                  "relation": {
+                    "const": "red_blue_peak_relation"
+                  },
+                  "vertical": {
+                    "items": {
+                      "enum": [
+                        "above",
+                        "same_row",
+                        "below"
+                      ]
+                    },
+                    "type": "array"
+                  },
+                  "view": {
+                    "enum": [
+                      "current",
+                      "candidate"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "panel",
+                  "view",
+                  "command",
+                  "node",
+                  "relation",
+                  "horizontal",
+                  "vertical",
+                  "coincident_possible",
+                  "coincident_all"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "command": {
+                    "enum": [
+                      null,
+                      "k0",
+                      "k1",
+                      "k2"
+                    ]
+                  },
+                  "kind": {
+                    "const": "scalar"
+                  },
+                  "name": {
+                    "enum": [
+                      "peak_probability",
+                      "entropy_nats",
+                      "expected_row",
+                      "expected_column"
+                    ]
+                  },
+                  "node": {
+                    "enum": [
+                      "n0",
+                      "n1",
+                      "n2",
+                      "n3"
+                    ]
+                  },
+                  "panel": {
+                    "enum": [
+                      "p0",
+                      "p1"
+                    ]
+                  },
+                  "role": {
+                    "enum": [
+                      "red",
+                      "blue"
+                    ]
+                  },
+                  "value": {
+                    "type": "number"
+                  },
+                  "view": {
+                    "enum": [
+                      "current",
+                      "candidate"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "panel",
+                  "view",
+                  "command",
+                  "node",
+                  "role",
+                  "name",
+                  "value"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "schema": {
+          "const": "attention_relational_report_v1_report"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema",
+        "text",
+        "propositions"
+      ],
+      "type": "object"
+    },
+    "reasoning_effort": "medium",
+    "timeout_seconds": 180
+  },
+  "reviewed_sha256": {
+    "audits/attention_relational_report_v1/run/report_preparation/runtime_manifest.json": "8efc0919d66dbfce5239fb019a61e5a57951f474bc8103ff4e24e429222d0c10",
+    "scripts/diagnose_attention_relational_api_v1.py": "9b5f040c82d29bb20a3aae5f2bec9577922c3234e2d5b94093ba357f7a1d4182",
+    "src/attcon/__init__.py": "f19b330950e6bb5ea74ad626bf64a23ce9c1df7c764478d0aea1e7449179a7a7",
+    "src/attcon/data.py": "5b19ae5755b621ea263c7991ce54ceba5bd040d92bf7ca2a02c766529cc34c02",
+    "src/attcon/models.py": "3049eab25f0156963505f55a3911c04e747058e7512599aa035189c1f25658f5",
+    "src/attcon/nl_report.py": "e5c6822ec9eaf66ac3e4953121305ee9c8965620e7c894648a259c51465d052d"
+  },
+  "runtime_approved": true,
+  "schema": "attention_relational_report_v1_transport_diagnostic_review",
+  "scientific_report": false,
+  "scope": "one handcrafted transport diagnostic; no scientific states; no retry of original scientific batch"
+}

@@ -1,0 +1,13 @@
+# Independent one-attempt transport diagnostic review
+
+Approved scope: one handcrafted diagnostic request using the exact failed batch settings and schema. This is infrastructure diagnosis, not a scientific report or a retry of any of the original 552 failed scientific opportunities.
+
+I inspected `scripts/diagnose_attention_relational_api_v1.py`, the diagnostic manifest draft, the original report runtime manifest, and the local credential loader and package imports. The diagnostic settings compare exactly equal to the original report settings. Every listed current source SHA-256 matches the draft. No API request, archive deserialization, model execution, or scientific-state inspection was performed for this review.
+
+The only transmitted input explicitly identifies a transport diagnostic and asks for empty text and propositions. There is no scientific state, reference criterion, report prompt, previous response, or conversation history. The output schema is intentionally unchanged so the provider can expose the original request rejection. The declared concurrency of six is inherited metadata; the diagnostic executes one synchronous call, not a concurrent batch.
+
+The script verifies the committed manifest, ancestor relationship, each current and committed listed source, and the exact review source/input/settings binding before reserving an exclusive first claim. The claim is created before credential loading and client construction. There is one `responses.create` expression, no retry loop, and SDK retries are disabled. A second invocation reaches the existing exclusive claim and stops before client construction. The final manifest must add only the hash of this review metadata to the draft source map and must be committed before execution.
+
+The request uses `store=False`. On provider failure, the retained fields include exception type, HTTP status, and provider body; exception headers and raw exception rendering are excluded. Body strings recursively replace the loaded API key and token-like `sk-` strings before the exclusive first-outcome write and console output. An ordinary successful response is also retained with the same scrubber. This narrow review accepts the concrete provider-response handling; it does not claim protection against arbitrary corrupt SDK objects or filesystem write failure.
+
+No new scientific evidence is authorized by this review. The original batch remains failed and unmodified. Preserve the diagnostic first claim, first outcome, and execution log whether the request fails or succeeds. Any request correction or scientific re-collection requires a distinct prospective decision and must not replace the original failures.
