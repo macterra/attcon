@@ -336,3 +336,9 @@ rating positions, with every incomplete narrator opportunity retained in final
 denominators. The final manifests were published before execution. Source fidelity,
 reference correspondence, selective source attribution, appearance qualification,
 and the source-of-qualia interpretation remain separate, unestablished outcomes.
+
+The [first downstream execution-limit snapshot](../audits/attention_relational_report_v1/run_v2/progress/downstream_first_limit_snapshot.json)
+retains early incomplete responses whose provider reason is `max_output_tokens`,
+including blind ratings. These remain unestablished measurements, not negative
+reference matches. Both fixed batches continue without retries or setting changes;
+early status counts do not estimate the completed study's measurement-validity rate.
