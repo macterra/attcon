@@ -94,6 +94,33 @@ Actual attribution awaits complete factual audits, blind ratings, and the
 registered primary summary. It adds no endpoint gate or template-attribution
 comparison and cannot establish experience from quote containment.
 
+## Which source interventions actually change peak locations?
+
+A separate source-only manipulation check was developed after an exploratory
+read-only count during narrator collection. It includes all 684 registered pairs
+and preserves the original denominators. It compares exact supplied distributions
+and their required peak sets; it does not inspect reports or change any criterion.
+
+| Source | Current donor: changed distributions / cases | Current donor: changed peaks / cases | Prospective donor: changed distributions / cases | Prospective donor: changed peaks / cases |
+|---|---:|---:|---:|---:|
+| Attention A | 12 / 12 | 4 / 12 | 12 / 12 | 3 / 12 |
+| Ordinary | 12 / 12 | 7 / 12 | 12 / 12 | 9 / 12 |
+| Analytic | 8 / 12 | 8 / 12 | 12 / 12 | 12 / 12 |
+
+The two report formats duplicate these same archive-case manipulations. W-change
+controls alter native-W peak sets in eight of twelve cases; the other four
+retain their nulls. A-only inputs remain fixed under W changes. Every
+baseline-to-restoration pair reproduces the supplied fields exactly, and copied
+W11 fields remain fixed throughout the pair inventory.
+
+Consequently, unchanged peak-location reporting under an A intervention need not
+mean that the reporter ignored A: many changed distributions retain the same
+maxima. Conversely, a changed scalar or different wording does not establish a
+changed consciousness-related structure. The primary causal summaries, source
+bindings, and reference evidence must be read together. The
+[inventory source](../scripts/inventory_attention_relational_interventions_v1.py)
+preserves all changed contexts, origin classes, and grouped counts.
+
 Selective intervention results must likewise identify which attention-derived
 content changed and which report evidence followed it. Preserve null changes,
 restorations, incomplete outputs, mixed claims, and unmatched evidence. Ordinary
