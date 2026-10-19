@@ -796,6 +796,15 @@ fixture and handcrafted API acceptance pass. A separately registered second
 collection of the same 552 inputs is running; this adds no independent archive
 cases. The original failed batch remains failed, and no report-correspondence
 result is established.
+
+The [first fixed source-control illustration](assets/attention_relational_report_v1_sources/source_controls.png)
+shows the retained A-view and W localization fields for both roles at all four
+addresses. Source transplantation changes the A-view while W stays fixed, and
+restoration reproduces the baseline. The W-change branch is a retained current-field
+null in this first preselected case. This numerical illustration does not score
+narrative fidelity or reference correspondence; its [full-precision data](assets/attention_relational_report_v1_sources/source_controls.json)
+and [PDF](assets/attention_relational_report_v1_sources/source_controls.pdf) are preserved.
+
 This does not retrospectively change the frozen v1 gate or establish qualia.
 
 ### 6.1 Authorized AI review route

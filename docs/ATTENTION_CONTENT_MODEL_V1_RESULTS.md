@@ -259,3 +259,17 @@ missing response-schema types. The type-only amendment passes its first fixture
 and API acceptance; a separately registered second collection is running.
 The original reporting failure remains unchanged, and reference correspondence
 is unestablished. These software/source results do not establish qualia.
+
+
+The [first preselected reporting-case illustration](assets/attention_relational_report_v1_sources/source_controls.png)
+shows all four addressed local grids for both roles, with A-donor, W-change and
+restoration controls. Its A-view combines copied W11 records with the A estimate
+at n3; the W comparison remains fixed under the A donor. All restorations reproduce
+the baseline fields. The synthetic W-change branch has identical current fields
+in this first case, and that null remains visible. The illustration uses the
+preserved source JSON exclusively; report fidelity and reference correspondence
+await their separate assessments. [PDF](assets/attention_relational_report_v1_sources/source_controls.pdf)
+and [full-precision packets and provenance](assets/attention_relational_report_v1_sources/source_controls.json)
+are retained.
+
+![First preselected source-control case: numerical A-view and W readouts, both roles and all four local grids](assets/attention_relational_report_v1_sources/source_controls.png)
