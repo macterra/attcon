@@ -10,6 +10,13 @@ choosing another experiment. The [reviewed witness/source plan](ATTENTION_RELATI
 preserves missing whole-prose fidelity and distinguishes actual A content from
 copied W; it commissions no successor auditor or new Reporter run.
 
+Its preparation source and the template review's disk-based first-judgment helper
+now pass 31 first fictional checks together, with separate independent source
+reviews. A pre-execution finding corrected exporter-derived relation provenance;
+the original source and reviews remain retained. This establishes preparation and
+retention mechanics only. Actual source review still awaits the original V3
+process's observed terminal state and the complete first reference assessment.
+
 The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
 Three new separate-context reviews remove the blanket raw-trial prerequisite for

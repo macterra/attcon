@@ -10,6 +10,13 @@ choosing another experiment. The [reviewed witness/source plan](ATTENTION_RELATI
 preserves missing whole-prose fidelity and distinguishes actual A content from
 copied W; it commissions no successor auditor or new Reporter run.
 
+The narrator preparation source and template review's disk-based first-judgment
+helper now pass 31 first fictional checks together after independent source review.
+The preserved pre-execution provenance correction marks exporter-derived red/blue
+relations separately from native estimates. Actual semantic review remains pending
+the original V3 terminal assessment; these checks establish no source/report
+correspondence, whole-prose fidelity or consciousness-related finding.
+
 Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.

@@ -1,0 +1,7 @@
+# Worker-instructions source-review addendum
+
+Approve instructions SHA `695171b440c945aed1d6fe19859854d8cad8724ca239ef5c95c5a3b0dcd11d23`; no blocker found. These instructions arrived after the exclusive first helper review was saved, which remains unchanged.
+
+The instructions require binding verification and complete protocol/reference/schema reading, restrict targets to the assigned chunk, withhold peer judgments, desired verdicts, result summaries and earlier grades, and retain all 24 records in fixed order. They require complete text and exact-path paginated inspection, every component/evidence/binding position, distinct duplicate quotations, literal values, nested origin operands and explicit reasons for outside-overlap operands. They correctly distinguish unestablished source annotations and forbid default semantics or scope/status upgrades.
+
+First working records are exclusively saved with no schema/semantic feedback; overwrites, alternative corrected paths, collector validation for repair and replacement contexts are expressly prohibited. Final assembly uses all 24 first records and the bound envelope under the unchanged schema. Incomplete work retains actual fragments and limitations, with no placeholders, row salvage or fabricated completion. Root's existing actual-terminal/whole-chunk policy remains applicable. No actual target chunk, labels or grades were read and no tests or model calls were executed for this addendum.
