@@ -122,8 +122,11 @@ after 83 provider-completed and 219 capped responses; six reserved outcomes rema
 unknown and 796 positions were never reserved. Retain its interrupted primary
 assessment over all 1,104 positions. The raw contract assessment has 25 usable
 ratings, only two concerning narrator texts. The original primary raw-reference
-projection matches exactly. The resource-v2 auditor is running after original
-terminal evidence was published; its unstarted rater is withdrawn in favor of a
+projection matches exactly. The resource-v2 auditor was
+[operationally stopped](ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md) after
+zero contract-valid audits in its fixed first 12 completed responses. A
+[distinct auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
+requires planted-error semantic qualification before target calls; its unstarted rater is withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 with unchanged reference semantics and a separately versioned evidence contract. These remain
 the same 12 cases, with both transport histories retained. Broad report-correspondence and theory-facing

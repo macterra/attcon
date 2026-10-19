@@ -314,7 +314,8 @@ contract-valid audit, and 0/552 narrator fidelity establishments. The [original 
 after 83 provider-completed and 219 capped responses; six claimed outcomes are
 unknown and 796 positions were never reserved. All 1,104 positions remain in its
 interrupted primary assessment. Raw contract assessment leaves only 25 usable
-ratings, including two narrator texts. The resource-v2 auditor is now running after publication of both original terminal records;
+ratings, including two narrator texts. The [resource-v2 auditor was stopped](docs/ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md)
+after a fixed first-12 check found zero contract-valid audits, despite all 12 completing;
 its unstarted rater is withdrawn in favor of a prospective
 [quote-grounded reference instrument](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
 V3 target calls require its own reviewed release. The

@@ -90,7 +90,12 @@ Source-blind ratings and theory-facing evidence remain unestablished.
 A [separate resource-amended measurement](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 is now registered and separately reviewed: unchanged full inventories and criteria,
 with a 32,768-token output cap and 600-second timeout. Both original stages are terminal and their first evidence is published; the
-resource-v2 auditor is now running. An independent contract diagnosis is in progress.
+resource-v2 auditor is now [deliberately stopped](ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md):
+zero contract-valid results among its fixed first 12 completed responses. Its
+terminal inventory retains 30 returned, six claimed-unknown and 501 never-reserved
+positions. Preserve its whole interrupted collection and factual summary. A
+[distinct grounded-auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
+requires semantic error-detection qualification before further target audits.
 The unstarted resource-v2 rater is now explicitly withdrawn. The
 [prospective quote-grounded v3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 retains all 1,104 positions and the frozen semantic criteria while deriving offsets

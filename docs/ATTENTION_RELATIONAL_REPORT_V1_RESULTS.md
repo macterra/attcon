@@ -73,18 +73,27 @@ restoration or failed report is removed to obtain this result.
 
 ## Prospective work
 
-The separately registered resource-v2 auditor has started after both original
-processes terminated and their evidence was published. It repeats the complete
-537-request inventory with more output headroom, preserving the original result
-as primary. An independent diagnosis is examining whether the original contract
-failure requires a further prospective instrument change. No supplementary result
-is substituted per item or counted as independent replication.
+The separately registered resource-v2 auditor was
+[deliberately stopped](ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md)
+after a published operational contract check: zero of the fixed first 12
+provider-completed responses passed the unchanged contract. This fixed prefix is
+not representative of the full corpus. Its final terminal inventory retains 30
+completed responses, six reserved outcomes unknown and 501 positions never
+reserved. All 537 audit positions remain; no missing call is resumed. The original
+result stays primary. Whole-version interruption is retained for the preselected
+V3 factual substrate; no favorable audit is substituted per item.
+
+The [grounded-auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
+uses deterministic report/source addresses and requires actual planted-error
+semantic qualification before another target audit. It is informed development,
+not output-unexposed confirmation. A separately declared V4 factual join cannot
+replace V3's earlier whole-version preselection.
 
 The unstarted resource-v2 rater remains withdrawn. The
 [quote-grounded V3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 changes evidence-location mechanics prospectively while retaining reference
 semantics. Its foundation passes 21 fictional software fixtures and a separate
-source review; integration, acceptance and the full reviewed release are still
-required before target calls. These are instrument-development checks, not
+source review; ten additional fictional integration fixtures also pass; acceptance and the full
+reviewed release are still required before target calls. These are instrument-development checks, not
 evidence of consciousness. Fresh powered confirmation and replication remain
 necessary for the ultimate theory goal.

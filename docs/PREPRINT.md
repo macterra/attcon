@@ -821,7 +821,13 @@ established.
 A [separately registered resource amendment](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 increases only the annotation output cap and timeout for the same full inventories.
 Its exact runtimes are separately reviewed. Both original stages are terminal
-with published evidence, and the resource-v2 auditor is running. The original summary remains primary, and
+with published evidence. The resource-v2 auditor was then
+[operationally stopped](ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md): zero
+contract-valid audits in the fixed first 12 completed responses met the separately
+registered resource-stop guard. Its final inventory retains 30 completed responses,
+six claimed unknowns and 501 never-reserved positions, without resuming or
+substituting responses. A different audit interface requires semantic qualification
+on planted factual errors before any further target measurement. The original summary remains primary, and
 the supplementary measurement neither replaces failures nor adds independent
 source cases.
 

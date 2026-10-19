@@ -400,7 +400,11 @@ The full [resource-amended measurement v2](ATTENTION_RELATIONAL_RESOURCE_MEASURE
 is separately registered and reviewed for the unchanged 537 audit requests and
 1,104 rating positions. It uses the same larger cap/timeout without changing
 instructions, schemas, reference or scientific criteria. Both original stages
-are terminal with published evidence; the resource-v2 auditor is now running. The original summary remains
+are terminal with published evidence. The resource-v2 auditor was subsequently
+[deliberately stopped](ATTENTION_RELATIONAL_AUDITOR_OPERATIONAL_STOP_V2.md) after
+zero of the fixed first 12 completed responses passed the contract. Its final
+inventory has 30 returned responses, six claimed unknowns and 501 never-reserved
+positions; the full interrupted version remains the preselected V3 factual source. The original summary remains
 primary; the supplementary measurement cannot replace failures or provide
 independent replication of these same 12 source cases.
 
