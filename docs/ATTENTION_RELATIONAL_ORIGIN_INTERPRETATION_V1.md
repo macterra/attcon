@@ -47,6 +47,10 @@ reads only the hash-bound preserved export, recursively unwraps inherited
 origins, and records per-request and aggregate counts. It never reads generated
 reports, changes prompts, or executes a model. This accounting was independently
 checked against exporter source and the preserved JSON by a separate agent.
+The [first inventory](../audits/attention_relational_report_v1/origin_inventory/first_inventory.json)
+completed successfully and preserves every per-request denominator; its
+[execution receipt](../audits/attention_relational_report_v1/origin_inventory/first_execution.json)
+records the source commit and input/output hashes.
 
 ## What the control connection establishes
 
