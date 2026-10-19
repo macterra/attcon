@@ -1,0 +1,63 @@
+s1301_w00_t12_A_A_only_current_restored received completed
+s1301_w00_t12_A_A_only_baseline received completed
+s1301_w00_t12_A_A_only_prospective_donor received completed
+s1301_w00_t12_A_A_only_current_donor received completed
+s1301_w00_t12_A_A_only_W_changed received completed
+s1301_w00_t12_A_A_only_prospective_restored received completed
+s1301_w00_t12_A_A_only_W_restored received completed
+s1301_w00_t12_A_joined_baseline received completed
+s1301_w00_t12_A_joined_current_restored received completed
+s1301_w00_t12_A_joined_current_donor received completed
+s1301_w00_t12_A_joined_prospective_donor received completed
+s1301_w00_t12_A_joined_prospective_restored received completed
+s1301_w00_t12_ordinary_A_only_baseline received completed
+s1301_w00_t12_A_joined_W_restored received completed
+s1301_w00_t12_A_joined_W_changed received completed
+s1301_w00_t12_ordinary_A_only_current_donor received completed
+s1301_w00_t12_ordinary_A_only_prospective_donor received completed
+s1301_w00_t12_ordinary_A_only_current_restored received completed
+s1301_w00_t12_ordinary_A_only_prospective_restored received completed
+s1301_w00_t12_ordinary_A_only_W_restored received completed
+s1301_w00_t12_ordinary_A_only_W_changed received completed
+s1301_w00_t12_ordinary_joined_baseline received completed
+s1301_w00_t12_ordinary_joined_current_donor received completed
+s1301_w00_t12_ordinary_joined_prospective_donor received completed
+s1301_w00_t12_ordinary_joined_current_restored received completed
+s1301_w00_t12_ordinary_joined_prospective_restored received completed
+s1301_w00_t12_ordinary_joined_W_changed received completed
+s1301_w00_t12_analytic_A_only_current_donor received completed
+s1301_w00_t12_analytic_A_only_baseline received completed
+s1301_w00_t12_ordinary_joined_W_restored received completed
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/david/dev/attcon/scripts/run_attention_relational_reports_v1.py", line 225, in main_async
+    await execute(manifest, requests, sha, args.commit, args.output_root,
+  File "/home/david/dev/attcon/scripts/run_attention_relational_reports_v1.py", line 201, in execute
+    outcomes = await asyncio.gather(*(one(req) for req in requests))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/david/dev/attcon/scripts/run_attention_relational_reports_v1.py", line 147, in one
+    async with semaphore:
+  File "/usr/lib/python3.12/asyncio/locks.py", line 14, in __aenter__
+    await self.acquire()
+  File "/usr/lib/python3.12/asyncio/locks.py", line 386, in acquire
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/david/dev/attcon/scripts/run_attention_relational_reports_v1.py", line 239, in <module>
+    main()
+  File "/home/david/dev/attcon/scripts/run_attention_relational_reports_v1.py", line 235, in main
+    asyncio.run(main_async(args))
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
