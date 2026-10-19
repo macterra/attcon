@@ -34,7 +34,10 @@ all atoms but make factual judgment errors. Independent reviews agree; no furthe
 target audit is released. The separate V3 reference run remains underway. The
 [complete template construction index](docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now verifies all 552 texts and 25,440 peak sets with exact source/time provenance;
-independent reference meaning and source correspondence remain pending.
+independent reference meaning and source correspondence remain pending. A
+[pre-label grammar review](docs/ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
+limits those templates to a technical control; qualifying spontaneous structure
+would have to be established in the neutral-prose arm.
 
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed

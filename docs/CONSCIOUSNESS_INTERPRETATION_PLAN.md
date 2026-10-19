@@ -137,8 +137,11 @@ requires both auditors and keeps earlier results separate. The [complete templat
 fixes a separate construction-verified route before V3 label inspection. Its
 [first complete index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently verifies all 552 texts and 25,440 peak sets with exact origin,
-time and character provenance. Next assess feature-to-property meaning while
-retaining all 684 pairs, controls, nulls and restorations. This does not release
+time and character provenance. The [pre-label grammar review](ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
+limits that renderer to technical control/reference calibration; no qualifying
+O/D/A witness is identified. Next apply the [complete semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
+while retaining all 684 pairs, controls, nulls and restorations. Qualifying
+spontaneous structure would have to come from the neutral-prose arm. This does not release
 V4 audits or establish spontaneous prose or qualia. The unstarted
 resource-v2 rater remains withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)

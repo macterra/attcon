@@ -842,6 +842,13 @@ provenance. Its first actual run passes after a pre-data header-check correction
 Reference labels were uninspected; semantic feature grounding and source-specific
 correspondence remain pending. Literal renderer tracking is instrumentation,
 not an independently demonstrated quale-generating process.
+A [pre-label grammar review](ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
+finds no qualifying O/D/A witness in that renderer under the frozen reference,
+which excludes coordinates/provenance/command labels alone. This method-capacity
+critique limits the template branch to control and reference calibration; it does
+not rescore target judgments or remove the fixed complete analysis. The
+[prospective semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
+retains every first outcome and requires actual feature and property witnesses.
 
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original

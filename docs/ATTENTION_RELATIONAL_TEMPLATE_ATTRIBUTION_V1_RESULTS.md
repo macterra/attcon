@@ -56,6 +56,13 @@ qualified appearance endpoint or quale-generating locus is established here.
 Fresh-system confirmation and task/architecture replication remain future work;
 the ultimate theory goal is unachieved.
 
+The [pre-label grammar review](ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
+now identifies no qualifying O/D/A witness in this literal grammar under the
+unchanged reference. Its role is technical control and reference calibration.
+This is a capacity critique, not an actual reference result; all first judgments
+and complete semantic-review obligations remain. The [review protocol](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
+keeps grounding distinct from source meaning and retains reviewer failures.
+
 ## Exact artifacts
 
 The [first summary](../audits/attention_relational_report_v1/template_attribution_v1/construction_index/first_summary.json)

@@ -104,9 +104,11 @@ is fixed before target outputs and retains V3's earlier factual preselection.
 The [complete literal-template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
 is fixed before V3 label inspection. Its [first construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently verifies all 552 texts and 25,440 peak sets, preserving 684 pairs
-and exact property/source/time provenance. Next independently review what each
-reference feature actually concerns, using every archived intervention, null and
-restoration. This route needs no failed V4 target audit; authored template tracking
+and exact property/source/time provenance. A [pre-label grammar review](ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
+finds no qualifying O/D/A witness in that renderer; retain the branch as technical
+control and reference calibration. Next apply the [complete semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
+to what each recorded feature actually concerns, retaining every intervention,
+null and restoration. This route needs no failed V4 target audit; authored template tracking
 is a limited measurement result, not spontaneous reporting or an identified
 experiencing locus.
 The unstarted resource-v2 rater is now explicitly withdrawn. The
