@@ -46,12 +46,27 @@ saved their first artifacts or their actual agent handles are terminal.
 
 Target contexts, if eventually released, receive four reports each, matching the
 long phase's maximum report length, fact density, packet count, source visibility
-and tools. The short phase separately tests the old error categories; its pass
+and tools. Every target chunk in each stream starts a fresh `fork_turns=none`
+context; no findings or annotations accumulate across chunks. The short phase separately tests the old error categories; its pass
 is not the workload qualification. Qualification is informed development, not
 independent-system or theory confirmation. Four new fictional packets are a
 finite generalization check, not a population error estimate. The model/runtime
 identity available from the host must be recorded; inherited defaults are not
 represented as a reproducibly pinned API model/configuration.
+
+Before qualification, bind the actual case order and the conditional target-ID
+inventory. Sort each qualification phase by SHA-256 of UTF-8
+`attention_relational_subagent_auditor_v5_qualification_order_20261019:` plus
+the phase (`short` or `long`), `:`, and its case ID, breaking ties by case ID.
+Both streams use the same order. Sort the original552 target IDs by SHA-256 of
+UTF-8 `attention_relational_subagent_auditor_v5_target_order_20261019:` plus
+the ID, breaking ties by ID, then partition consecutively into138 chunks of four.
+Binding this inventory does not release target requests or source annotations.
+Record available host context/output controls honestly; unavailable controls
+remain unpinned host defaults. Actual terminal resource exhaustion preserves a
+partial first attempt without a replacement context or gap filling. Observation
+timeouts remain nonterminal. Complete independent review of every new packet,
+report, atom, operand and exact span before qualification input hashes are frozen.
 
 ## Tools, access and first submissions
 

@@ -1,0 +1,17 @@
+This is an independently authored, output-unexposed fictional supplement. The author read only the neutral packet/source-context interface in `scripts/attention_relational_grounded_auditor_v4.py` and the neutral numerical interface in `scripts/attention_relational_report_v1.py`. The author did not read actual target reports, reference outputs, old qualification keys or answers, archive exports, or private data, and made no API, Git, model, test, or materialization calls.
+
+The generator contains four literal, independently chosen peak inventories and four different dyadic mass recipes. Every distribution is finite, unit range, exactly mass one, and losslessly float32 representable. Each fictional packet has two panels, four nodes, a current view and three candidate views. The reports carry all 64 complete role peak sets and dense subordinate prose. All three-operand arithmetic concerns explicitly local indices. The two controls retain nested temporal distinctions and correctly leave actual execution and experience undecidable. The two planted reports mix supported premises with false record/represented-time claims, conditional-to-completed conversion, unknown-to-false execution inference, unsupported physical conversion, and unsupported experience inference. No desired consciousness classification is provided.
+
+The hidden key includes the coordinate/ledger header, every peak assertion, every asserted prose premise, quantified claim, relation, numerical expression, temporal subordinate clause, conversion, and actual-world assertion. Each atom carries exact report offsets, explicit source operands, and exact packet facts. Same-verdict conjunctions may be grouped semantically in judging; a mixed-verdict sentence is always split. The key is independent author judgment and requires independent review before any real auditor qualification.
+
+The CLI is inert until explicitly invoked. Root should inspect the source and key construction, then materialize into a NEW directory, for example:
+
+```sh
+python scripts/build_attention_relational_auditor_v5_long_qualification.py --output /tmp/attention-v5-long-fictional-review
+```
+
+Only `public_cases.json`, `hidden_atomic_key.json`, and `receipt.json` are written. Existing output paths are rejected. All JSON files and packet hashes use sorted-key, two-space-indented UTF-8 JSON with `ensure_ascii=False`, `allow_nan=False`, and exactly one final LF. Report hashes cover exact UTF-8 report text with no added LF. The receipt hashes public/key file bytes, records designed word and atom counts, and explicitly records that semantic review and actual auditor execution have not occurred. Runtime construction assertions enforce four cases, two controls/two planted cases, the 180–220-word report interval, 64 peak atoms per case, unique packet hashes, finite unit-range exact-float32 maps, and exact evidence slices.
+
+By manual counting, the designed `(words, mandatory atoms)` inventories are `q7m2=(182,88)`, `q4v9=(183,86)`, `q8h1=(196,88)`, and `q2x6=(187,88)`. These are authoring estimates, with the executable construction checks and receipt providing the authoritative measured counts after root materializes.
+
+The author has not executed the generator, so materialized byte hashes and measured report counts are deliberately not claimed. Root owns the first materialization and any validation execution. Stable source-file hashes should be computed by root after review, avoiding a self-referential hash in these notes.
