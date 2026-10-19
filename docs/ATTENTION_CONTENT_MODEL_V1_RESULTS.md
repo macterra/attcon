@@ -342,3 +342,11 @@ retains early incomplete responses whose provider reason is `max_output_tokens`,
 including blind ratings. These remain unestablished measurements, not negative
 reference matches. Both fixed batches continue without retries or setting changes;
 early status counts do not estimate the completed study's measurement-validity rate.
+
+A separately reviewed [unscored resource check](../audits/attention_relational_report_v1/resource_acceptance/result.md)
+completed its one fictional-text request using 8,688 total output tokens,
+including 6,912 reasoning tokens. Its strict JSON and frozen quote-offset contract
+pass. The diagnostic used a 32,768 output cap and 600-second client timeout;
+both original scientific batches retain their fixed 8,192/180 settings. This
+supports testing additional output headroom in a separate registered version,
+without establishing semantic rating accuracy or a consciousness-related result.
