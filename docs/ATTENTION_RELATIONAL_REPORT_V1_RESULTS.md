@@ -85,7 +85,9 @@ V3 factual substrate; no favorable audit is substituted per item.
 
 The [grounded-auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
 uses deterministic report/source addresses and requires actual planted-error
-semantic qualification before another target audit. It is informed development,
+semantic qualification before another target audit. Its first 19 fictional
+mechanics fixtures and a separate foundation review pass; neither qualifies
+semantic judgments. It is informed development,
 not output-unexposed confirmation. A separately declared V4 factual join cannot
 replace V3's earlier whole-version preselection.
 
