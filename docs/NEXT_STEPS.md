@@ -22,7 +22,11 @@ now pass 31 first fictional checks together, with separate independent source
 reviews. A pre-execution finding corrected exporter-derived relation provenance;
 the original source and reviews remain retained. This establishes preparation and
 retention mechanics only. Original V3 termination and its full first assessment
-are now verified; actual source packet preparation and reviews remain next.
+are now verified. Actual packet preparation and production-collector preflights
+pass; the [complete first assignments](../audits/attention_relational_report_v1/source_review_release_v1/first_release.json)
+are frozen for both streams: 46 template contexts and two narrator contexts
+covering every original candidate binding. These are review work units, not new
+independent systems. Semantic judgments and property accounting remain next.
 The narrator first-review collector now passes 104 first fictional checks after
 retained pre-execution terminal-order and timestamp-field corrections. Independent
 arithmetic tooling passes 18 separate first checks; its numbers do not certify
