@@ -1,6 +1,6 @@
 # Reporting Bound Contents of an Attention-Control Model
 
-Working preprint, updated 2026-10-11. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
+Working preprint, updated 2026-10-19. The preceding [numerical-report manuscript](PREDICTIVE_NUMERICAL_PREPRINT.md)
 and [inspection-model manuscript](INSPECTION_MODEL_PREPRINT.md) remain archived.
 
 ## Abstract
@@ -803,7 +803,11 @@ this adds no independent archive cases. The first deterministic assessment passe
 444/552 reports and covers 24,022/25,440 required peak facts. These are listed-fact
 results across all sources, including copied records and comparison panels, not
 an attention-only result or a free-prose assessment. The original 537-request
-factual prose audit is running. Following a separately published and reviewed
+factual prose audit is terminal: 453 completed and 84 capped responses. The
+[original full assessment](ATTENTION_RELATIONAL_REPORT_V1_RESULTS.md) has only one
+contract-valid prose audit and 0/552 established narrator fidelity results, owing
+to systematic quote/source-binding failures. This leaves fidelity unestablished;
+it does not show every narration is false. Following a separately published and reviewed
 [operational addendum](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md), the
 8,192-token rater was interrupted after 83 provider-completed and 219 capped
 responses. Six reserved outcomes remain unknown and 796 positions were never
@@ -816,15 +820,20 @@ established.
 
 A [separately registered resource amendment](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 increases only the annotation output cap and timeout for the same full inventories.
-Its exact runtimes are separately reviewed; execution waits for the original
-auditor to finish and both stages' first evidence to be preserved. The original summary remains primary, and
+Its exact runtimes are separately reviewed. Both original stages are terminal
+with published evidence, and the resource-v2 auditor is running. The original summary remains primary, and
 the supplementary measurement neither replaces failures nor adds independent
 source cases.
 
 The original raw contract assessment finds 25 usable ratings among the full
 1,104 positions: two narrator texts and 23 templates. Of 83 provider-completed
 responses, 54 are contract-invalid; 45 fail only on offsets. These are instrument
-availability results, not consciousness judgments. The unstarted resource-v2
+availability results. The full original join matches the earlier raw-reference
+projection exactly. Narrator COD and CA each have zero explicit, one ambiguous,
+one absent and 550 unestablished judgments; template COD has 14 explicit and
+six ambiguous judgments, while template CA has one explicit and six ambiguous
+judgments (552 positions per arm). These sparse, single-rater judgments do not
+establish consciousness-related correspondence or attention-model specificity. The unstarted resource-v2
 rater is explicitly withdrawn; its auditor is retained. A separately proposed
 [quote-grounded v3 instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 removes model-generated offsets, requiring unique exact quotations and applying

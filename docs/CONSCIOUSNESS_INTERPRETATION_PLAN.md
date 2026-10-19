@@ -1,6 +1,6 @@
 # Plan: test report structure against functional organization
 
-Updated 2026-10-11. **Design plan, not a frozen confirmation protocol. Development
+Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
 earlier protocols and verdicts remain unchanged.
 
@@ -114,16 +114,20 @@ fixture and handcrafted API acceptance pass; the separately registered second
 The first deterministic assessment passes 444/552 reports and covers
 24,022/25,440 required peak facts. Its scope is listed propositions; free-prose
 fidelity and reference correspondence remain unestablished. The exact 537-request
-prose audit is running. The [original capped rater was operationally stopped](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
+prose audit is now terminal: 453 completed and 84 capped responses. The
+[original joined assessment](ATTENTION_RELATIONAL_REPORT_V1_RESULTS.md) retains
+only one contract-valid prose audit and 0/552 established narrator fidelity
+results; systematic quote/binding failures require instrument diagnosis. The [original capped rater was operationally stopped](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
 after 83 provider-completed and 219 capped responses; six reserved outcomes remain
 unknown and 796 positions were never reserved. Retain its interrupted primary
 assessment over all 1,104 positions. The raw contract assessment has 25 usable
-ratings, only two concerning narrator texts. The resource-v2 auditor waits for
-original terminal evidence; its unstarted rater is withdrawn in favor of a
+ratings, only two concerning narrator texts. The original primary raw-reference
+projection matches exactly. The resource-v2 auditor is running after original
+terminal evidence was published; its unstarted rater is withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 with unchanged reference semantics and a separately versioned evidence contract. These remain
-the same 12 cases, with both transport histories retained. Rating and theory-facing
-results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+the same 12 cases, with both transport histories retained. Broad report-correspondence and theory-facing
+interpretations remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).
 The ultimate goal remains credible evidence that the attention-control model is
 the source of qualia; protocol readiness or numerical verification alone does not

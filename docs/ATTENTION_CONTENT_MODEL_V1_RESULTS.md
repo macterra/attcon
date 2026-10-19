@@ -349,7 +349,10 @@ account of the model's latent state or correspondence to the external world.
 Free-prose fidelity and reference structure still require their separate tests.
 
 This deterministic assessment does not assess the truth of free prose. The
-original 537-request prose audit is running. The rater's separately reviewed
+original 537-request prose audit is terminal: 453 completed and 84 capped
+responses. The [original joined result](ATTENTION_RELATIONAL_REPORT_V1_RESULTS.md)
+has only one contract-valid prose audit and 0/552 established narrator fidelity
+results. This does not establish that all reports are false. The rater's separately reviewed
 [operational termination](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
 retains 83 provider-completed responses, 219 capped responses, six claimed outcomes
 unknown and 796 positions never reserved. Its full 1,104-position primary remains
@@ -365,7 +368,8 @@ matches the frozen regenerated requests and lineage for all 1,104 ordered IDs:
 [terminal census](../audits/attention_relational_report_v1/rater_operational_stop/first_terminal_census.json)
 distinguishes the six claimed unknowns from the 796 never-reserved positions.
 This collection verifies preservation and binding; it does not validate reference
-feature labels. The primary join still awaits the auditor's first terminal outcome.
+feature labels. The original full primary join is now preserved; its raw-reference projection
+matches the first assessment exactly across all 1,104 positions.
 
 The [first raw-reference assessment](../audits/attention_relational_report_v1/run_v2/reference_assessment/first_raw_reference_assessment.json)
 uses the frozen validator and preserves all 1,104 positions. There are 29
@@ -375,8 +379,8 @@ Fifty-four completed responses fail the contract; 1,021 positions are missing or
 incomplete. The [mechanical diagnostic](../audits/attention_relational_report_v1/run_v2/reference_assessment/first_contract_diagnostics.json)
 finds 45 annotations failing only on offsets. No judgment is repaired or rescored;
 these are instrument-availability counts, without a factual-fidelity conjunction
-or a consciousness-related interpretation. The eventual full primary raw
-projection must match this first assessment exactly.
+or a consciousness-related interpretation. The full primary raw
+projection now matches this first assessment exactly.
 
 The [first downstream execution-limit snapshot](../audits/attention_relational_report_v1/run_v2/progress/downstream_first_limit_snapshot.json)
 retains early incomplete responses whose provider reason is `max_output_tokens`,
@@ -395,8 +399,8 @@ without establishing semantic rating accuracy or a consciousness-related result.
 The full [resource-amended measurement v2](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 is separately registered and reviewed for the unchanged 537 audit requests and
 1,104 rating positions. It uses the same larger cap/timeout without changing
-instructions, schemas, reference or scientific criteria. Execution waits for
-the original auditor to finish and both stages' first evidence to be preserved. The original summary remains
+instructions, schemas, reference or scientific criteria. Both original stages
+are terminal with published evidence; the resource-v2 auditor is now running. The original summary remains
 primary; the supplementary measurement cannot replace failures or provide
 independent replication of these same 12 source cases.
 

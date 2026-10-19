@@ -308,15 +308,16 @@ the type-only amendment passes its fixture and API acceptance check. A separatel
 registered second collection of the unchanged 552 inputs now retains 537 completed
 and 15 incomplete responses. The first deterministic factual assessment passes
 444/552 reports and covers 24,022/25,440 required peak facts; prose fidelity and
-source-blind correspondence remain pending. The original 537-request prose audit
-is running. The [original rater was operationally stopped](docs/ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
+source-blind correspondence remain unestablished. The [original joined result](docs/ATTENTION_RELATIONAL_REPORT_V1_RESULTS.md)
+now retains all positions: 453 completed and 84 capped prose audits, only one
+contract-valid audit, and 0/552 narrator fidelity establishments. The [original rater was operationally stopped](docs/ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
 after 83 provider-completed and 219 capped responses; six claimed outcomes are
 unknown and 796 positions were never reserved. All 1,104 positions remain in its
 interrupted primary assessment. Raw contract assessment leaves only 25 usable
-ratings, including two narrator texts. The resource-v2 auditor remains reviewed;
+ratings, including two narrator texts. The resource-v2 auditor is now running after publication of both original terminal records;
 its unstarted rater is withdrawn in favor of a prospective
 [quote-grounded reference instrument](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
-Further calls wait for the original terminal records and the applicable release. The
+V3 target calls require its own reviewed release. The
 [complete first-text gallery](docs/assets/attention_relational_report_v1_gallery/index.html)
 retains every narrator position and literal control in fixed order, including
 unavailable narrations; it makes no free-prose fidelity or consciousness verdict.

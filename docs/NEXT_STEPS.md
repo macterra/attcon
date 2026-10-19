@@ -78,16 +78,19 @@ acceptance. The separately registered second collection of the unchanged
 552 inputs is complete: 537 completed responses and 15 incomplete responses,
 all retained without retry. The first listed-fact assessment passes 444/552 reports
 and covers 24,022/25,440 required peak facts. The reviewed 537-request source-aware
-prose audit is running. The [original capped rater was operationally stopped](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md):
+prose audit is terminal: 453 completed and 84 capped responses. The
+[original joined result](ATTENTION_RELATIONAL_REPORT_V1_RESULTS.md) has only one
+contract-valid prose audit and 0/552 established narrator fidelity results. This
+is a measurement failure, not proof that every report is false. The [original capped rater was operationally stopped](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md):
 83 provider-completed, 219 capped, six claimed outcomes unknown and 796 positions
 never reserved. Its primary assessment remains interrupted over all 1,104 positions.
-Collect its preserved first outcomes with the frozen interrupted collector, then
-collect the auditor when terminal and join the original assessments.
+Both first collections and the original full join are now preserved. Its
+raw-reference projection matches the earlier raw assessment exactly.
 Source-blind ratings and theory-facing evidence remain unestablished.
 A [separate resource-amended measurement](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 is now registered and separately reviewed: unchanged full inventories and criteria,
-with a 32,768-token output cap and 600-second timeout. The original auditor must
-finish and both stages' first evidence must be preserved before its auditor starts.
+with a 32,768-token output cap and 600-second timeout. Both original stages are terminal and their first evidence is published; the
+resource-v2 auditor is now running. An independent contract diagnosis is in progress.
 The unstarted resource-v2 rater is now explicitly withdrawn. The
 [prospective quote-grounded v3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 retains all 1,104 positions and the frozen semantic criteria while deriving offsets
