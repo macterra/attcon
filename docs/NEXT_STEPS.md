@@ -1,12 +1,19 @@
 # Current outcome and further research
 
+The [first complete V3 assessment](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
+retains 1,102 responses and two timeouts. Only 4/552 narrator and 148/552 template
+reference annotations are established; whole-prose narrator fidelity remains
+0/552. Complete source-aware semantic review and property accounting next. Raw
+template labels and three narrator COD candidates do not establish source meaning
+or an experiencing locus.
+
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
 now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
 audits or automatic successor are released. Both independent semantic reviews
 agree: short phases pass and long phases fail, with correct verdict meanings but
-incomplete required citations. Complete the frozen reference assessment before
-choosing another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
+incomplete required citations. Complete the frozen source reviews before choosing
+another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
 preserves missing whole-prose fidelity and distinguishes actual A content from
 copied W; it commissions no successor auditor or new Reporter run.
 
@@ -14,8 +21,8 @@ Its preparation source and the template review's disk-based first-judgment helpe
 now pass 31 first fictional checks together, with separate independent source
 reviews. A pre-execution finding corrected exporter-derived relation provenance;
 the original source and reviews remain retained. This establishes preparation and
-retention mechanics only. Actual source review still awaits the original V3
-process's observed terminal state and the complete first reference assessment.
+retention mechanics only. Original V3 termination and its full first assessment
+are now verified; actual source packet preparation and reviews remain next.
 The narrator first-review collector now passes 104 first fictional checks after
 retained pre-execution terminal-order and timestamp-field corrections. Independent
 arithmetic tooling passes 18 separate first checks; its numbers do not certify
@@ -132,8 +139,8 @@ control and reference calibration. Next apply the [complete semantic review](ATT
 to what each recorded feature actually concerns, retaining every intervention,
 null and restoration. The independently reviewed packet preparer passes its first
 nine fictional checks and retains every component, binding, duplicate evidence
-position and both full reviewer streams. Actual preparation/review awaits the
-original V3 batch's observed terminal state; labels remain uninspected. This route
+position and both full reviewer streams. The original V3 batch is now terminal
+with its full first result preserved; actual source preparation/review is next. This route
 needs no failed V4 target audit; authored template tracking
 is a limited measurement result, not spontaneous reporting or an identified
 experiencing locus.

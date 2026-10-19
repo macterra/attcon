@@ -1,20 +1,26 @@
 # Plan: test report structure against functional organization
 
+The [complete first V3 result](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
+now retains all 1,104 outcomes, with 4/552 established narrator annotations and
+148/552 template annotations. Whole-prose narrator fidelity remains 0/552.
+Complete the fixed source reviews and all-pair property accounting before selecting
+another experiment; raw labels are not validated source meanings or qualia evidence.
+
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
 now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
 audits or automatic successor are released. Both independent semantic reviews
 agree: short phases pass and long phases fail, with correct verdict meanings but
-incomplete required citations. Complete the frozen reference assessment before
-choosing another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
+incomplete required citations. Complete the frozen source reviews before choosing
+another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
 preserves missing whole-prose fidelity and distinguishes actual A content from
 copied W; it commissions no successor auditor or new Reporter run.
 
 The narrator preparation source and template review's disk-based first-judgment
 helper now pass 31 first fictional checks together after independent source review.
 The preserved pre-execution provenance correction marks exporter-derived red/blue
-relations separately from native estimates. Actual semantic review remains pending
-the original V3 terminal assessment; these checks establish no source/report
+relations separately from native estimates. The original V3 terminal assessment
+is now preserved; actual semantic review remains pending. These checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
 The independently reviewed narrator first-judgment collector also passes 104 first
 fictional checks, with terminal verification before reading the data-bearing
@@ -169,7 +175,8 @@ resource-v2 rater remains withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 with unchanged reference semantics and a separately versioned evidence contract. Its first 31
 fictional software fixtures and one fictional API grounding check pass; the
-reviewed full V3 run is now underway across all 1,104 positions. These remain
+reviewed full V3 run is now complete across all 1,104 positions, with its
+[first joined assessment](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md) preserved. These remain
 the same 12 cases, with both transport histories retained. Broad report-correspondence and theory-facing
 interpretations remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).

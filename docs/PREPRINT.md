@@ -56,9 +56,12 @@ reconstruction passes 143,599/134,367/134,390 checks,
 preserving the original failed fit reference. Development A targeting is
 39.9–44.8%, compared with 98.6–100% for the analytic source; prediction errors
 increase relative to fitting worlds. Separate dev assessment qualifies bounded
-estimated location content/bookkeeping, but leaves manner unqualified. Consciousness-report
-correspondence remains untested. The broader theory-facing
-interpretation remains unresolved.
+estimated location content/bookkeeping, but leaves manner unqualified. Those
+functional checks do not establish consciousness-report correspondence. A later
+complete quote-grounded reference assessment retains only 4/552 established
+narrator annotations and 148/552 template annotations; whole-prose narrator
+fidelity remains unestablished. Source-aware semantic review is pending, and the
+broader theory-facing interpretation remains unresolved.
 
 ## 1. Question
 
@@ -865,9 +868,9 @@ not rescore target judgments or remove the fixed complete analysis. The
 [prospective semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
 retains every first outcome and requires actual feature and property witnesses.
 Its packet-preparation software is separately reviewed and checked on fictional
-inputs. Actual semantic review awaits the original V3 terminal collection; no
-reference-label result or source-specific correspondence is inferred from software
-readiness.
+inputs. The original V3 collection is now terminal and its first full reference
+result is preserved. Actual semantic source review remains pending; software
+readiness alone establishes no source-specific correspondence.
 
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original
@@ -890,9 +893,22 @@ removes model-generated offsets, requiring unique exact quotations and applying
 the frozen semantic validator to explicitly derived annotations. It keeps original
 failures unchanged. Its first 21 core and ten integration fixtures pass, together
 with a single fictional transport/grounding API check that scores no scientific
-labels. The reviewed full 1,104-position V3 measurement is now underway. The
-preselected interrupted resource-v2 factual summary retains zero established
-narrator-fidelity results out of 552 positions.
+labels. The reviewed full 1,104-position V3 measurement now
+[completes normally](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md), retaining
+1,102 responses and two timeouts without retry. Four narrator annotations and
+148 template annotations are established over 552 opportunities per arm. Literal
+quote grounding fails in 527 positions; 408 more fail frozen composite/feature
+compatibility. Fifteen internally valid annotations concern unavailable narrator
+texts and remain unestablished. Narrator COD is explicit in one, ambiguous in two
+and absent in one established annotation. The three COD bindings have
+model-organization scope; CA is absent in all four. Template COD has 135 explicit and 12 ambiguous labels; CA has
+12 explicit and five ambiguous labels. These raw template labels require the
+fixed semantic/source review rather than automatic endorsement or rejection.
+No established binding claims perceptual-appearance scope, while most positions
+remain unknown. The unchanged preselected whole resource-v2 factual summary
+retains zero established narrator-fidelity results out of 552; no narrator
+fidelity-conjoined COD or CA result is established. This supplementary result
+neither replaces the original primary assessment nor adds independent source cases.
 
 A separate descriptive origin inventory isolates the attention-derived facts:
 2,027/2,100 required peak facts are correctly listed, compared with 2,048/2,100

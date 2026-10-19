@@ -31,7 +31,9 @@ follows the representation's label.
 The [V4 grounded-auditor qualification](docs/ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
 retains a complete first failure: both streams pass mechanical checks and inventory
 all atoms but make factual judgment errors. Independent reviews agree; no further
-target audit is released. The separate V3 reference run remains underway. The
+target audit is released. The [complete V3 reference result](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
+retains 4/552 established narrator annotations and 148/552 template annotations;
+whole-prose narrator fidelity remains unestablished. The
 [complete template construction index](docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now verifies all 552 texts and 25,440 peak sets with exact source/time provenance;
 independent reference meaning and source correspondence remain pending. A
@@ -339,8 +341,10 @@ ratings, including two narrator texts. The [resource-v2 auditor was stopped](doc
 after a fixed first-12 check found zero contract-valid audits, despite all 12 completing;
 its unstarted rater is withdrawn in favor of a prospective
 [quote-grounded reference instrument](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
-The reviewed V3 run is now underway across all 1,104 positions after its first
-fictional transport/grounding check passed; no scientific judgment was scored in that check. The
+The [first full V3 run](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
+completed without retry: 1,102 responses and two timeouts, with 4/552 narrator and
+148/552 template reference annotations established. Most positions remain unknown;
+source-aware semantic review is pending and narrator fidelity remains 0/552. The
 [complete first-text gallery](docs/assets/attention_relational_report_v1_gallery/index.html)
 retains every narrator position and literal control in fixed order, including
 unavailable narrations; it makes no free-prose fidelity or consciousness verdict.
