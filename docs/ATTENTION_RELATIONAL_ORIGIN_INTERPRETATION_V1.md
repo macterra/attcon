@@ -79,6 +79,21 @@ so automatically. Supported relational comparisons between A and W can be
 relevant; requiring every statement to concern A alone would discard the theory's
 relational content.
 
+The separate [descriptive attribution helper](../scripts/attention_relational_origin_attribution_v1.py)
+recomputes the complete registered primary summary before linking evidence spans
+to supported auditor claims. It retains every matching claim and exact quote
+occurrence, marks repeated quotes and record-scope bindings as unresolved, and
+preserves all operands of mixed A–W relations. Absence of containment means that
+attribution is unresolved, not that consciousness-related structure is absent.
+Its implementation author had no access to generated outputs; the coordinator
+had previously inspected an early baseline narrative, as disclosed above.
+
+The first independently reviewed software execution passes all **22 synthetic
+fixtures** ([receipt](../audits/attention_relational_report_v1/origin_attribution/first_fixture_execution.json)).
+Actual attribution awaits complete factual audits, blind ratings, and the
+registered primary summary. It adds no endpoint gate or template-attribution
+comparison and cannot establish experience from quote containment.
+
 Selective intervention results must likewise identify which attention-derived
 content changed and which report evidence followed it. Preserve null changes,
 restorations, incomplete outputs, mixed claims, and unmatched evidence. Ordinary
