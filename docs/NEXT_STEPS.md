@@ -103,7 +103,10 @@ only for unique exact quotations. The original raw contract assessment has only
 25 usable ratings, including two narrator texts; no failed judgment is repaired.
 Its first 21 core and ten integration fixtures pass, as does the first fictional
 API grounding check. The reviewed full 1,104-position V3 run is now underway. No original
-failure is replaced, and repeated annotation of these cases is not replication.
+failure is replaced, and repeated annotation of these cases is not replication. Use the
+[fresh confirmation requirements](ATTENTION_RELATIONAL_CONFIRMATION_DESIGN.md)
+to freeze the next actual study after factual and reference instruments are
+qualified; the current twelve cases cannot supply independent confirmation.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)

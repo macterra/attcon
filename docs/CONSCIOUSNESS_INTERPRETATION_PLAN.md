@@ -15,7 +15,10 @@ for future work by this plan. The scientific fidelity and correspondence goals r
 
 The ultimate goal is credible evidence for the theory that the attention-control
 model is the source of qualia. Accurate factual reporting is one necessary
-measurement component; it does not by itself achieve that goal.
+measurement component; it does not by itself achieve that goal. The
+[fresh confirmation and replication requirements](ATTENTION_RELATIONAL_CONFIRMATION_DESIGN.md)
+separate instrument development from new-system evidence, power planning and
+replication. No powered sample size or theory-success threshold is claimed.
 
 Test the proposed connection between an attention-control model and independently
 specified features of consciousness reports. The required evidence combines
