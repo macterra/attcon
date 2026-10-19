@@ -367,6 +367,17 @@ distinguishes the six claimed unknowns from the 796 never-reserved positions.
 This collection verifies preservation and binding; it does not validate reference
 feature labels. The primary join still awaits the auditor's first terminal outcome.
 
+The [first raw-reference assessment](../audits/attention_relational_report_v1/run_v2/reference_assessment/first_raw_reference_assessment.json)
+uses the frozen validator and preserves all 1,104 positions. There are 29
+contract-valid provider-completed responses, four attached to unavailable actor
+text; 25 ratings remain usable after the actor-text gate (two narrator, 23 template).
+Fifty-four completed responses fail the contract; 1,021 positions are missing or
+incomplete. The [mechanical diagnostic](../audits/attention_relational_report_v1/run_v2/reference_assessment/first_contract_diagnostics.json)
+finds 45 annotations failing only on offsets. No judgment is repaired or rescored;
+these are instrument-availability counts, without a factual-fidelity conjunction
+or a consciousness-related interpretation. The eventual full primary raw
+projection must match this first assessment exactly.
+
 The [first downstream execution-limit snapshot](../audits/attention_relational_report_v1/run_v2/progress/downstream_first_limit_snapshot.json)
 retains early incomplete responses whose provider reason is `max_output_tokens`,
 including blind ratings. These remain unestablished measurements, not negative
@@ -388,3 +399,9 @@ instructions, schemas, reference or scientific criteria. Execution waits for
 the original auditor to finish and both stages' first evidence to be preserved. The original summary remains
 primary; the supplementary measurement cannot replace failures or provide
 independent replication of these same 12 source cases.
+
+The resource-v2 **auditor** remains approved; its **unstarted rater is withdrawn**
+under the [quote-grounded v3 plan](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
+The earlier resource registration remains preserved. V3 changes quotation
+location mechanics prospectively, with actual new request lineage and no repair
+of old invalid outputs; its synthetic qualification and reviewed release are pending.

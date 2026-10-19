@@ -87,7 +87,13 @@ Source-blind ratings and theory-facing evidence remain unestablished.
 A [separate resource-amended measurement](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 is now registered and separately reviewed: unchanged full inventories and criteria,
 with a 32,768-token output cap and 600-second timeout. The original auditor must
-finish and both stages' first evidence must be preserved before this version starts. No original
+finish and both stages' first evidence must be preserved before its auditor starts.
+The unstarted resource-v2 rater is now explicitly withdrawn. The
+[prospective quote-grounded v3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
+retains all 1,104 positions and the frozen semantic criteria while deriving offsets
+only for unique exact quotations. The original raw contract assessment has only
+25 usable ratings, including two narrator texts; no failed judgment is repaired.
+Develop and review that new instrument before target calls. No original
 failure is replaced, and repeated annotation of these cases is not replication.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.

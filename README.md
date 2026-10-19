@@ -312,8 +312,11 @@ source-blind correspondence remain pending. The original 537-request prose audit
 is running. The [original rater was operationally stopped](docs/ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
 after 83 provider-completed and 219 capped responses; six claimed outcomes are
 unknown and 796 positions were never reserved. All 1,104 positions remain in its
-interrupted primary assessment. The reviewed full-inventory resource amendment
-waits for the auditor to finish and both original stages to be preserved. The
+interrupted primary assessment. Raw contract assessment leaves only 25 usable
+ratings, including two narrator texts. The resource-v2 auditor remains reviewed;
+its unstarted rater is withdrawn in favor of a prospective
+[quote-grounded reference instrument](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
+Further calls wait for the original terminal records and the applicable release. The
 [complete first-text gallery](docs/assets/attention_relational_report_v1_gallery/index.html)
 retains every narrator position and literal control in fixed order, including
 unavailable narrations; it makes no free-prose fidelity or consciousness verdict.

@@ -821,6 +821,16 @@ auditor to finish and both stages' first evidence to be preserved. The original 
 the supplementary measurement neither replaces failures nor adds independent
 source cases.
 
+The original raw contract assessment finds 25 usable ratings among the full
+1,104 positions: two narrator texts and 23 templates. Of 83 provider-completed
+responses, 54 are contract-invalid; 45 fail only on offsets. These are instrument
+availability results, not consciousness judgments. The unstarted resource-v2
+rater is explicitly withdrawn; its auditor is retained. A separately proposed
+[quote-grounded v3 instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
+removes model-generated offsets, requiring unique exact quotations and applying
+the frozen semantic validator to explicitly derived annotations. It keeps original
+failures unchanged and requires a new reviewed release before target calls.
+
 A separate descriptive origin inventory isolates the attention-derived facts:
 2,027/2,100 required peak facts are correctly listed, compared with 2,048/2,100
 ordinary-model and 1,931/2,100 analytic estimates. These counts exclude copied W11
