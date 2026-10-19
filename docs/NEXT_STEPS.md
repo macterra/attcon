@@ -30,6 +30,11 @@ independent systems. The [first narrator/source result](ATTENTION_RELATIONAL_NAR
 now retains both terminal first reviews: one valid chunk and one whole-chunk
 provenance-field failure. No source witness is established; all 684 report-pair
 correspondences remain unestablished. The complete template review is running.
+Its [first numerical property bank](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
+retains all 552 templates and 684 original pairs, source/time transitions,
+unchanged peaks with changed raw distributions and exact baseline restorations.
+These are numerical source checks; endpoint meanings and assertion tracking still
+require the complete fixed semantic assessment.
 The narrator first-review collector now passes 104 first fictional checks after
 retained pre-execution terminal-order and timestamp-field corrections. Independent
 arithmetic tooling passes 18 separate first checks; its numbers do not certify

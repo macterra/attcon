@@ -65,8 +65,12 @@ keeps grounding distinct from source meaning and retains reviewer failures.
 Its first preparation implementation passes nine fictional checks and a separate
 bound source review. It prepares all 23×24 template positions, 552 narrator
 availability rows and 684 pairs, preserving all component/evidence/binding paths.
-Actual packet preparation remains unexecuted pending observed V3 terminal state;
-no scientific reference labels or semantic review results are established.
+The original V3 batch has since completed and its
+[first full reference result](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
+is preserved. Actual packets are frozen and both complete semantic streams are
+running. The [first numerical pair bank](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
+retains all 684 original pairs, property nulls and baseline restoration checks;
+it establishes no semantic endpoint correspondence.
 
 ## Exact artifacts
 

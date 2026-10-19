@@ -1,0 +1,21 @@
+from author import author
+C='content_operand';S='status_operand';X='context_only'
+p=[('u0106',[],C,'Native W current p1 n1 red peak (0,0).')];q=[('u0016',[],C,'Copied W11 current p0 n2 red quadrant.')];h=[('u0000',[],X,'Authored coordinate convention.')]
+o=[('u0104',['kind'],S,'Completed record provenance.'),('u0104',['record_time'],X,'Record12.'),('u0104',['represented_time'],X,'Represented12.')]
+a=[('u0002',['kind'],S,'Copied record provenance.'),('u0002',['record_time'],X,'Record11.'),('u0002',['represented_time'],X,'Represented12.')]
+b=[('u0020',['kind'],S,'History-estimate provenance.'),('u0020',['feedback_through'],X,'Feedback11.'),('u0020',['represented_time'],X,'Represented12.')]
+k=[('u0032',['kind'],S,'Command-estimate provenance.'),('u0032',['feedback_through'],X,'Feedback11.'),('u0032',['represented_time'],X,'Conditional represented13.')]
+author(16,[('supported','Red p1 n1 and p0 n2 have explicitly identified location content.'),('unsupported','Completed-record provenance and grid orientation do not establish current content access or organization.'),('unsupported','Red coordinates and separate completed-record metadata separate content from provenance, not presentation/access status.'),('supported','Conditional k labels do not relate attention or processing to content organization/access.'),('supported','The header explicitly orients rows down and columns right.'),('supported','No identity or location uncertainty is stated, including in estimate tags alone.'),('supported','No answer confidence is expressed.'),('supported','Conditional entries do not assert success/recovery.'),('supported','Copied, history-estimate and command-estimate origins explicitly distinguish processes, with a timing error in the third evidence entry.'),('supported','Neither panel asserts experience.'),('unsupported','The W current n1 red binding lacks O and D despite literal content and origin.'),('supported','No A relation is stated to support CA.')],[
+('supported','source_specific',p,'Literal red p1 n1 current content with indexed native W provenance; no access quality is inferred.'),
+('supported','source_specific',q,'Literal red p0 n2 current content has copied W11 provenance despite ordinary p0 panel.'),
+('unsupported','unrelated_property',o+p,'The adjacent red content binds current/p1/n1 and represented_time12 outside this quote; completed-record kind supplies provenance, not O.'),
+('unsupported','global_convention',h,'Partial header states coordinate direction, without identified-content access or organization.'),
+('unsupported','source_specific',p+o,'The red peak and neighboring origin share p1/n1/time12, but provide coordinates and provenance rather than D.'),
+('unsupported','unrelated_property',o+p,'Matching p1/current/n1 prefix binds the outside red operand; completed-record metadata is not differentiation of presentation/access.'),
+('supported','global_convention',h,'Header row/column orientation directly supports the basic spatial relation.'),
+('supported','source_specific',a,'Kind and both time fields explicitly identify a copied prior record.'),
+('supported','source_specific',b,'History-estimate kind and feedback/represented times distinguish current estimation.'),
+('unsupported','source_specific',k,'Command-estimate kind distinguishes processing, but represented_time13 is conditional future; recorded current time is inconsistent.'),
+('supported','source_specific',p,'COD own0 literal red current p1 n1 content witness.'),
+('unsupported','unrelated_property',o+p,'COD own1 binds completed-record provenance to adjacent red n1/time12, but supplies neither O nor D.')],
+[('unsupported',[('C',[0]),('O',[]),('D',[])],'C0/own0 identify red p1 current n1/time12. O0/own1 are completed-record provenance, O1 is global orientation, and D0/D1 are coordinates/provenance. No qualified O/D witnesses can bind at model_access scope.')],['The third source_process_distinction evidence entry labels a represented_time13 candidate as current.','Indexed native W and copied W11 content retain their provenance; ordinary panel naming adds no source-specific attention relation.'],'Full joined text read in three pages, all12 evidence positions and exact operands inspected, with no original status repairs.')

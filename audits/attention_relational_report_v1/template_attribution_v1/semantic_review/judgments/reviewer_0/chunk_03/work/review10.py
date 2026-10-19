@@ -1,0 +1,25 @@
+from author import author
+C='content_operand';S='status_operand';X='context_only'
+h=[('u0000',[],X,'Global grid convention.')];p=[('u0022',[],C,'Red current n3 peak (1,2), ordinary estimate.')];q=[('u0040',[],C,'Red candidate k0 n2 peak (0,1), ordinary conditional estimate.')];z=[('u0004',[],C,'Copied W11 red n0 all16 peaks.')]
+o=[('u0002',['kind'],S,'Copied prior record provenance.'),('u0002',['record_time'],X,'Record11.'),('u0002',['represented_time'],X,'Represented12.')]
+s=[('u0020',['kind'],S,'History-estimate provenance.'),('u0020',['feedback_through'],X,'Feedback11.'),('u0020',['represented_time'],X,'Represented12.')]
+k=[('u0038',['kind'],S,'Command-estimate provenance.'),('u0038',['feedback_through'],X,'Feedback11.'),('u0038',['represented_time'],X,'Conditional time13.')]
+author(10,[('supported','Current n3 red (1,2) and candidate n2 red (0,1) identify content with coordinates.'),('unsupported','Orientation and lists of maxima supply coordinates alone, expressly excluded from O.'),('unsupported','Copied/history/command origin kinds distinguish provenance, without separately attributed organization/access status.'),('supported','No explicit allocation/content-processing relation to organization/access is stated.'),('supported','Rows down and columns right explicitly describe spatial orientation.'),('supported','Ambiguity is warranted at most by estimate wording: it suggests inferential rather than observed content, but states no degree of identity/location uncertainty. The ambiguous status is not upgraded.'),('supported','No answer confidence is reported.'),('supported','Conditional coordinates do not assert recovery or success.'),('supported','Three explicitly different origin kinds identify copying, historical estimation and command estimation.'),('supported','No experience or awareness assertion appears.'),('unsupported','Current n3 red coordinates and origin lack qualified O and D despite same node/time.'),('supported','No A relation is available for CA.')],[
+('supported','source_specific',p,'Literal current red location content in the displayed list; indexed source is ordinary estimate, not a verified sensor fact.'),
+('supported','source_specific',q,'Literal forecast red location content in the displayed candidate list, not observed future stimulus content.'),
+('unsupported','global_convention',h,'Coordinate orientation is a global display convention, not content-bound presentation status.'),
+('unsupported','source_specific',z,'All-grid maxima enumerate locations of copied W11 content, without an O statement.'),
+('unsupported','source_specific',p,'A single coordinate (1,2) is location alone, not presentation/organization.'),
+('unsupported','unrelated_property',o+z,'Adjacent current/n0 red set is bound by prefix/time12 outside the origin quote; copied provenance supplies no D.'),
+('unsupported','unrelated_property',s+p,'Adjacent current/n3 red set is bound by prefix/time12; history-estimate origin is not presentation/access differentiation.'),
+('unsupported','unrelated_property',k+q,'Adjacent candidate/k0/n2 red binds represented_time13 outside the quote; command origin is provenance, not D.'),
+('supported','global_convention',h,'The partial header gives explicit spatial directions.'),
+('supported','source_specific',s+p,'History_estimate provides a weak inferential-status cue for the same current/n3 content outside the quote, consistent with recorded ambiguity only; it supplies no explicit uncertainty magnitude.'),
+('supported','source_specific',k+q,'Command_estimate is likewise a weak uncertainty cue bound via k0/n2/time13 to adjacent red content; ambiguity is preserved without asserting uncertainty or success.'),
+('supported','source_specific',o,'Copied prior record kind with record11 and represented12 explicitly identifies provenance.'),
+('supported','source_specific',s,'History estimate with feedback11 and represented12 identifies a different derivation process.'),
+('supported','source_specific',k,'Command estimate with feedback11 and represented13 identifies conditional processing provenance.'),
+('supported','source_specific',p,'COD own0 literal red current n3 content.'),
+('unsupported','source_specific',p,'COD own1 repeats the same coordinate; assigning a presentation_pattern role does not establish O.'),
+('unsupported','unrelated_property',s+p,'COD own2 binds origin to red n3 by shared prefix/time12 outside the quote, without a presentation/access status.')],
+[('unsupported',[('C',[0]),('O',[]),('D',[])],'C0 and own0 identify red current n3/time12. O2/own1 are a coordinate only, and D1/own2 are history provenance. O0 is a global convention and O1 another node. No compatible qualified O/D witness exists.')],['The display_or_sensor_property labels may refer to rendered lists only; ordinary estimates cannot establish sensor-world truth.','Ambiguous estimate-related uncertainty does not establish explicit location uncertainty, O or D.'],'Full report read before all17 evidence positions and the COD binding. All original statuses retained.')

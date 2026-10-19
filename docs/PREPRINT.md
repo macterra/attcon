@@ -860,6 +860,12 @@ provenance. Its first actual run passes after a pre-data header-check correction
 Reference labels were uninspected; semantic feature grounding and source-specific
 correspondence remain pending. Literal renderer tracking is instrumentation,
 not an independently demonstrated quale-generating process.
+The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
+retains all 552 templates and 684 pairs. It distinguishes changed peaks from
+unchanged peaks with changed raw distributions and preserves source/time transitions
+as unmatched rather than invariant. All 228 direct baseline-to-restored pairs
+agree on indexed properties, raw peak operands and literal text. This verifies
+archived renderer/source behavior; semantic report correspondence remains pending.
 A [pre-label grammar review](ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
 finds no qualifying O/D/A witness in that renderer under the frozen reference,
 which excludes coordinates/provenance/command labels alone. This method-capacity

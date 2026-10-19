@@ -44,6 +44,10 @@ The [first narrator/source review](docs/ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLO
 retains one valid first chunk and one whole-chunk provenance-field failure. No
 consciousness-related source witness is established; the complete template review
 continues with both full streams and all opportunities retained.
+The [first numerical property comparison](docs/ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
+retains all 552 templates and 684 pairs, including peak-set nulls, source/time
+transitions and baseline restorations. Semantic endpoint correspondence remains
+unestablished by this numerical stage.
 
 A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 now fixes two fresh reviewer streams, the unchanged short challenge and four new

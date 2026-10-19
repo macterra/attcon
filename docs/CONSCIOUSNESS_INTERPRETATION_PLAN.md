@@ -5,6 +5,10 @@ now retains all 1,104 outcomes, with 4/552 established narrator annotations and
 148/552 template annotations. Whole-prose narrator fidelity remains 0/552.
 Complete the fixed source reviews and all-pair property accounting before selecting
 another experiment; raw labels are not validated source meanings or qualia evidence.
+The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
+now retains all 552 template positions and 684 pairs with source/time comparability,
+peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
+asserted-predicate tracking to the complete fixed source reviews.
 
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
 now retains 56 first judgments: 50 pass mechanics, while six dense annotations
