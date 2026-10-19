@@ -359,6 +359,14 @@ manifests were published before execution. Source fidelity,
 reference correspondence, selective source attribution, appearance qualification,
 and the source-of-qualia interpretation remain separate, unestablished outcomes.
 
+The [first interrupted rating collection](../audits/attention_relational_report_v1/run_v2/rate_collection/first_collection_integrity.json)
+matches the frozen regenerated requests and lineage for all 1,104 ordered IDs:
+302 retained raw outcomes and 802 missing records. The separate
+[terminal census](../audits/attention_relational_report_v1/rater_operational_stop/first_terminal_census.json)
+distinguishes the six claimed unknowns from the 796 never-reserved positions.
+This collection verifies preservation and binding; it does not validate reference
+feature labels. The primary join still awaits the auditor's first terminal outcome.
+
 The [first downstream execution-limit snapshot](../audits/attention_relational_report_v1/run_v2/progress/downstream_first_limit_snapshot.json)
 retains early incomplete responses whose provider reason is `max_output_tokens`,
 including blind ratings. These remain unestablished measurements, not negative
