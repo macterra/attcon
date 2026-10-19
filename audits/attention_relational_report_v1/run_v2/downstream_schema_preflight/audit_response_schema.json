@@ -1,0 +1,140 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "bindings": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "basis": {
+                  "enum": [
+                    "peaks",
+                    "relation",
+                    "scalar",
+                    "origin",
+                    "record_scope",
+                    "not_supplied"
+                  ],
+                  "type": "string"
+                },
+                "command": {
+                  "enum": [
+                    null,
+                    "k0",
+                    "k1",
+                    "k2"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "node": {
+                  "enum": [
+                    null,
+                    "n0",
+                    "n1",
+                    "n2",
+                    "n3"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "panel": {
+                  "enum": [
+                    "p0",
+                    "p1",
+                    null
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "role": {
+                  "enum": [
+                    null,
+                    "red",
+                    "blue"
+                  ],
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "view": {
+                  "enum": [
+                    "current",
+                    "candidate",
+                    "record_scope"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "panel",
+                "view",
+                "command",
+                "node",
+                "role",
+                "basis"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "quote": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "supported",
+              "contradicted",
+              "not_auditable"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "quote",
+          "verdict",
+          "reason",
+          "bindings"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "conditional_covered": {
+      "type": "boolean"
+    },
+    "current_covered": {
+      "type": "boolean"
+    },
+    "schema": {
+      "enum": [
+        "attention_relational_report_v1_prose_audit"
+      ],
+      "type": "string"
+    },
+    "unparsed_or_ambiguous": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "claims",
+    "current_covered",
+    "conditional_covered",
+    "unparsed_or_ambiguous"
+  ],
+  "type": "object"
+}
