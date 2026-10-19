@@ -869,8 +869,16 @@ not rescore target judgments or remove the fixed complete analysis. The
 retains every first outcome and requires actual feature and property witnesses.
 Its packet-preparation software is separately reviewed and checked on fictional
 inputs. The original V3 collection is now terminal and its first full reference
-result is preserved. Actual semantic source review remains pending; software
-readiness alone establishes no source-specific correspondence.
+result is preserved. The full template semantic review is running. The
+[first narrator/source review](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
+retains both terminal first contexts: one passes the source-field contract and one
+fails it by naming origin containers rather than individual fields. Its whole
+chunk remains unestablished without repair or replacement. The usable review does
+not support the three complete original COD bindings; the joint analysis establishes
+no source witness and leaves all 684 report-property correspondences unestablished.
+The other 548 reference annotations remain unknown. Whole-prose fidelity stays
+unestablished; neither this limited finding nor software readiness identifies an
+experiencing locus.
 
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original

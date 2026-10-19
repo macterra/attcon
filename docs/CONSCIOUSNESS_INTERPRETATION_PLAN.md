@@ -20,13 +20,17 @@ The narrator preparation source and template review's disk-based first-judgment
 helper now pass 31 first fictional checks together after independent source review.
 The preserved pre-execution provenance correction marks exporter-derived red/blue
 relations separately from native estimates. The original V3 terminal assessment
-is now preserved; actual semantic review remains pending. These checks establish no source/report
+is now preserved. Both narrator first reviews are terminal; the
+[first source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
+retains one valid chunk and one whole-chunk provenance-field failure, with no
+established source witness and all 684 report-pair correspondences unestablished.
+The complete template review is running. These software checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
 The independently reviewed narrator first-judgment collector also passes 104 first
 fictional checks, with terminal verification before reading the data-bearing
 manifest and exact time kinds retained. Its structural checks do not certify
-source ownership, arithmetic assertions or report meaning; actual reviews remain
-pending.
+source ownership, arithmetic assertions or report meaning; actual first narrator
+judgments and their contract failures are now retained without replacement.
 
 Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;

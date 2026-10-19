@@ -26,7 +26,10 @@ are now verified. Actual packet preparation and production-collector preflights
 pass; the [complete first assignments](../audits/attention_relational_report_v1/source_review_release_v1/first_release.json)
 are frozen for both streams: 46 template contexts and two narrator contexts
 covering every original candidate binding. These are review work units, not new
-independent systems. Semantic judgments and property accounting remain next.
+independent systems. The [first narrator/source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
+now retains both terminal first reviews: one valid chunk and one whole-chunk
+provenance-field failure. No source witness is established; all 684 report-pair
+correspondences remain unestablished. The complete template review is running.
 The narrator first-review collector now passes 104 first fictional checks after
 retained pre-execution terminal-order and timestamp-field corrections. Independent
 arithmetic tooling passes 18 separate first checks; its numbers do not certify
@@ -144,7 +147,8 @@ to what each recorded feature actually concerns, retaining every intervention,
 null and restoration. The independently reviewed packet preparer passes its first
 nine fictional checks and retains every component, binding, duplicate evidence
 position and both full reviewer streams. The original V3 batch is now terminal
-with its full first result preserved; actual source preparation/review is next. This route
+with its full first result preserved; source packets are frozen and the complete
+semantic template review is running. This route
 needs no failed V4 target audit; authored template tracking
 is a limited measurement result, not spontaneous reporting or an identified
 experiencing locus.
@@ -154,7 +158,8 @@ retains all 1,104 positions and the frozen semantic criteria while deriving offs
 only for unique exact quotations. The original raw contract assessment has only
 25 usable ratings, including two narrator texts; no failed judgment is repaired.
 Its first 21 core and ten integration fixtures pass, as does the first fictional
-API grounding check. The reviewed full 1,104-position V3 run is now underway. No original
+API grounding check. The reviewed full 1,104-position V3 run has completed normally; its full first
+assessment is retained. No original
 failure is replaced, and repeated annotation of these cases is not replication. Use the
 [fresh confirmation requirements](ATTENTION_RELATIONAL_CONFIRMATION_DESIGN.md)
 to freeze the next actual study after factual and reference instruments are

@@ -40,6 +40,10 @@ independent reference meaning and source correspondence remain pending. A
 [pre-label grammar review](docs/ATTENTION_RELATIONAL_TEMPLATE_GRAMMAR_REVIEW_V1.md)
 limits those templates to a technical control; qualifying spontaneous structure
 would have to be established in the neutral-prose arm.
+The [first narrator/source review](docs/ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
+retains one valid first chunk and one whole-chunk provenance-field failure. No
+consciousness-related source witness is established; the complete template review
+continues with both full streams and all opportunities retained.
 
 A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 now fixes two fresh reviewer streams, the unchanged short challenge and four new
