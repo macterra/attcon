@@ -793,9 +793,14 @@ diagnostic directly identifies a missing response-schema type; the original
 error bodies were not retained. A versioned amendment adds the implied literal
 types while keeping inputs and scientific criteria unchanged. Its first equivalence
 fixture and handcrafted API acceptance pass. A separately registered second
-collection of the same 552 inputs is running; this adds no independent archive
-cases. The original failed batch remains failed, and no report-correspondence
-result is established.
+collection of the same 552 inputs retains 537 completed and 15 incomplete responses;
+this adds no independent archive cases. The first deterministic assessment passes
+444/552 reports and covers 24,022/25,440 required peak facts. These are listed-fact
+results across all sources, including copied records and comparison panels, not
+an attention-only result or a free-prose assessment. Exact inputs for 537 factual
+prose audits and 1,104 blind reference ratings are prepared for stage review.
+The original failed batch remains failed, and no report-correspondence result is
+established.
 
 The [first fixed source-control illustration](assets/attention_relational_report_v1_sources/source_controls.png)
 shows the retained A-view and W localization fields for both roles at all four

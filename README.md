@@ -305,7 +305,11 @@ all 552 inputs, 25,440 required facts per arm and 684 causal comparisons;
 the first 552 narration attempts all returned HTTP 400, with no retained reports.
 A separate handcrafted diagnostic identifies missing response-schema types;
 the type-only amendment passes its fixture and API acceptance check. A separately
-registered second collection of the unchanged 552 inputs is now running. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+registered second collection of the unchanged 552 inputs now retains 537 completed
+and 15 incomplete responses. The first deterministic factual assessment passes
+444/552 reports and covers 24,022/25,440 required peak facts; prose fidelity and
+source-blind correspondence remain pending. Exact requests for both downstream
+stages are prepared for review. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.

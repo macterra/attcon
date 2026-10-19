@@ -66,24 +66,26 @@ prefix; the original failed run remains preserved. Fixed development now complet
 and passes all 134,367 reconstruction checks, with fresh-world errors retained.
 The full dev assessment qualifies bounded estimated location content/bookkeeping
 and leaves manner unqualified for all sources. Fixed technical heldout now
-completes with all 134,390 reconstruction checks passing. Next implement the
+completes with all 134,390 reconstruction checks passing. The
 separately reviewed prospective [relational-content protocol](ATTENTION_RELATIONAL_REPORT_PROTOCOL_V1.md),
 neutral exporter, factual auditor and [withheld reference pack](ATTENTION_RELATIONAL_REFERENCE_V1.md)
-before the fixed 552 new report attempts. The protocol, reference and reporting source are frozen and reviewed.
+are implemented. The protocol, reference and reporting source are frozen and reviewed.
 The first archive export completes with all 552 inputs and 684 causal pairs
 preserved. All first 552 narration attempts returned HTTP 400, with no retained
 reports. A separately retained diagnostic identifies a missing schema type.
 The explicit-type amendment passes its first fixture and handcrafted API
-acceptance. Complete the separately registered second collection of the unchanged
-552 inputs, then prepare its exact source-aware audit and source-blind rating stages.
+acceptance. The separately registered second collection of the unchanged
+552 inputs is complete: 537 completed responses and 15 incomplete responses,
+all retained without retry. The first listed-fact assessment passes 444/552 reports
+and covers 24,022/25,440 required peak facts. Execute the prepared 537 source-aware
+prose-audit requests and 1,104 blind-rating positions after their exact stage reviews.
 Source-blind ratings and theory-facing evidence remain unestablished.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)
 now provide 53 first passing bounded fixtures across six suites. Complete actual
 phase reconstruction and the fixed development assessment are complete.
-Reporting requires its separate
-qualification and registration.
+Reporting outcomes still require separate free-prose and reference assessments.
 
 Keep the [MSTC roles](MSTC_REPORTING_ROLE_AUDIT_V1.md) explicit: Controller action
 correction does not demonstrate Modeler refinement. Success at modeled internal

@@ -110,8 +110,13 @@ preserves all attempts. A separate handcrafted diagnostic identifies a missing
 response-schema type. A transport-v2 amendment adds only implied literal types,
 with the original inputs, criteria and failures preserved. Its first equivalence
 fixture and handcrafted API acceptance pass; the separately registered second
-552-input collection is running. These remain the same 12 cases, with both
-transport histories retained. Rating and theory-facing results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+552-input collection now retains 537 completed and 15 incomplete responses.
+The first deterministic assessment passes 444/552 reports and covers
+24,022/25,440 required peak facts. Its scope is listed propositions; free-prose
+fidelity and reference correspondence remain unestablished. The exact 537 prose-audit
+and 1,104 blind-rating requests are prepared for their stage reviews. These remain
+the same 12 cases, with both transport histories retained. Rating and theory-facing
+results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).
 The ultimate goal remains credible evidence that the attention-control model is
 the source of qualia; protocol readiness or numerical verification alone does not

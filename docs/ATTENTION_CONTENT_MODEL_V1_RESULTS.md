@@ -256,9 +256,10 @@ The corrected reporting pipeline passes all 19 handcrafted checks; its original
 18-pass/1-fail fixture result remains preserved. The first 552 narration requests
 all returned HTTP 400 with no retained reports. A separate diagnostic identifies
 missing response-schema types. The type-only amendment passes its first fixture
-and API acceptance; a separately registered second collection is running.
+and API acceptance; the separately registered second collection is complete,
+retaining 537 completed and 15 incomplete responses without retry.
 The original reporting failure remains unchanged, and reference correspondence
-is unestablished. These software/source results do not establish qualia.
+is unestablished. These software, source, and partial factual results do not establish qualia.
 
 The [source-origin interpretation note](ATTENTION_RELATIONAL_ORIGIN_INTERPRETATION_V1.md)
 distinguishes the 2,100 attention-derived required fact slots from copied prior
@@ -278,3 +279,41 @@ and [full-precision packets and provenance](assets/attention_relational_report_v
 are retained.
 
 ![First preselected source-control case: numerical A-view and W readouts, both roles and all four local grids](assets/attention_relational_report_v1_sources/source_controls.png)
+
+## First transport-v2 listed-fact assessment
+
+The [verified first collection](../audits/attention_relational_report_v1/run_v2/report_collection/first_collection_execution.json)
+retains all 552 first outcomes from the same 12 archive cases. Every response
+identifies the pinned `gpt-5-mini-2025-08-07` snapshot. There are 537 completed and
+15 incomplete responses, with no transport errors. The original 552 HTTP 400
+failures remain failed; the second transport is not a replication.
+
+The [first deterministic audit](../audits/attention_relational_report_v1/run_v2/machine_audit/first_machine_audits.json)
+passes **444/552 reports** on every listed machine-fact check and covers
+**24,022/25,440 required peak facts**. Both denominators retain incomplete attempts.
+The 93 additional completed responses fail one or more listed-fact checks.
+All errors and omitted facts are preserved; no reports are repaired or repeated.
+
+| Source panel | Report format | Complete transport / attempts | All listed checks pass / attempts | Correct required peak facts / required |
+|---|---|---:|---:|---:|
+| Attention A | A_only | 84 / 84 | 81 / 84 | 2,621 / 2,688 |
+| Attention A plus W | joined | 83 / 84 | 58 / 84 | 5,137 / 5,376 |
+| Ordinary | A_only | 84 / 84 | 82 / 84 | 2,624 / 2,688 |
+| Ordinary plus W | joined | 82 / 84 | 50 / 84 | 5,169 / 5,376 |
+| Analytic | A_only | 82 / 84 | 77 / 84 | 2,586 / 2,688 |
+| Analytic plus W | joined | 75 / 84 | 52 / 84 | 4,675 / 5,376 |
+| W | W_only | 35 / 36 | 32 / 36 | 1,114 / 1,152 |
+| Sensor | sensor_only | 12 / 12 | 12 / 12 | 96 / 96 |
+
+These are correlated reporting opportunities, not independent replications.
+`A_only` retains copied W11 fields, and joined formats add native W. The
+[origin inventory](ATTENTION_RELATIONAL_ORIGIN_INTERPRETATION_V1.md) limits the
+attention-derived fact inventory to 2,100 slots. The aggregate factual total must
+not be described as attention-only accuracy or world-truth accuracy.
+
+This deterministic assessment does not assess the truth of free prose. The
+prepared downstream inventories contain 537 prose-audit requests and 1,104 blind
+rating positions, with every incomplete narrator opportunity retained in final
+denominators. Their exact stage reviews precede execution. Source fidelity,
+reference correspondence, selective source attribution, appearance qualification,
+and the source-of-qualia interpretation remain separate, unestablished outcomes.
