@@ -77,14 +77,17 @@ The explicit-type amendment passes its first fixture and handcrafted API
 acceptance. The separately registered second collection of the unchanged
 552 inputs is complete: 537 completed responses and 15 incomplete responses,
 all retained without retry. The first listed-fact assessment passes 444/552 reports
-and covers 24,022/25,440 required peak facts. The reviewed 537 source-aware
-prose-audit requests and 1,104 blind-rating positions are running. Preserve their
-first outcomes, then collect and join the factual and reference assessments.
+and covers 24,022/25,440 required peak facts. The reviewed 537-request source-aware
+prose audit is running. The [original capped rater was operationally stopped](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md):
+83 provider-completed, 219 capped, six claimed outcomes unknown and 796 positions
+never reserved. Its primary assessment remains interrupted over all 1,104 positions.
+Collect its preserved first outcomes with the frozen interrupted collector, then
+collect the auditor when terminal and join the original assessments.
 Source-blind ratings and theory-facing evidence remain unestablished.
 A [separate resource-amended measurement](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 is now registered and separately reviewed: unchanged full inventories and criteria,
-with a 32,768-token output cap and 600-second timeout. The original batches must
-finish and be preserved before this supplementary version starts. No original
+with a 32,768-token output cap and 600-second timeout. The original auditor must
+finish and both stages' first evidence must be preserved before this version starts. No original
 failure is replaced, and repeated annotation of these cases is not replication.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.

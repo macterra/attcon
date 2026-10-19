@@ -349,23 +349,27 @@ account of the model's latent state or correspondence to the external world.
 Free-prose fidelity and reference structure still require their separate tests.
 
 This deterministic assessment does not assess the truth of free prose. The
-reviewed downstream batches are running with 537 prose-audit requests and 1,104 blind
-rating positions, with every incomplete narrator opportunity retained in final
-denominators. The final manifests were published before execution. Source fidelity,
+original 537-request prose audit is running. The rater's separately reviewed
+[operational termination](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
+retains 83 provider-completed responses, 219 capped responses, six claimed outcomes
+unknown and 796 positions never reserved. Its full 1,104-position primary remains
+interrupted; provider completion does not establish annotation validity. Every
+incomplete narrator opportunity remains in final denominators. The original
+manifests were published before execution. Source fidelity,
 reference correspondence, selective source attribution, appearance qualification,
 and the source-of-qualia interpretation remain separate, unestablished outcomes.
 
 The [first downstream execution-limit snapshot](../audits/attention_relational_report_v1/run_v2/progress/downstream_first_limit_snapshot.json)
 retains early incomplete responses whose provider reason is `max_output_tokens`,
 including blind ratings. These remain unestablished measurements, not negative
-reference matches. Both fixed batches continue without retries or setting changes;
+reference matches. At that checkpoint both fixed batches continued without retries or setting changes;
 early status counts do not estimate the completed study's measurement-validity rate.
 
 A separately reviewed [unscored resource check](../audits/attention_relational_report_v1/resource_acceptance/result.md)
 completed its one fictional-text request using 8,688 total output tokens,
 including 6,912 reasoning tokens. Its strict JSON and frozen quote-offset contract
 pass. The diagnostic used a 32,768 output cap and 600-second client timeout;
-both original scientific batches retain their fixed 8,192/180 settings. This
+the original scientific settings remain preserved at 8,192/180. This
 supports testing additional output headroom in a separate registered version,
 without establishing semantic rating accuracy or a consciousness-related result.
 
@@ -373,6 +377,6 @@ The full [resource-amended measurement v2](ATTENTION_RELATIONAL_RESOURCE_MEASURE
 is separately registered and reviewed for the unchanged 537 audit requests and
 1,104 rating positions. It uses the same larger cap/timeout without changing
 instructions, schemas, reference or scientific criteria. Execution waits for
-both original batches to finish and be preserved. The original summary remains
+the original auditor to finish and both stages' first evidence to be preserved. The original summary remains
 primary; the supplementary measurement cannot replace failures or provide
 independent replication of these same 12 source cases.

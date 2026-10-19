@@ -802,15 +802,22 @@ collection of the same 552 inputs retains 537 completed and 15 incomplete respon
 this adds no independent archive cases. The first deterministic assessment passes
 444/552 reports and covers 24,022/25,440 required peak facts. These are listed-fact
 results across all sources, including copied records and comparison panels, not
-an attention-only result or a free-prose assessment. The reviewed batches of 537 factual
-prose audits and 1,104 blind reference ratings are running.
+an attention-only result or a free-prose assessment. The original 537-request
+factual prose audit is running. Following a separately published and reviewed
+[operational addendum](ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md), the
+8,192-token rater was interrupted after 83 provider-completed and 219 capped
+responses. Six reserved outcomes remain unknown and 796 positions were never
+reserved. The original full-attempt schedule was not completed; all 1,104 positions
+remain in its primary interrupted assessment, with missing judgments unestablished.
+The decision used provider metadata before annotation-label or text inspection;
+cap-related missingness can still depend on text complexity.
 The original failed batch remains failed, and no report-correspondence result is
 established.
 
 A [separately registered resource amendment](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
 increases only the annotation output cap and timeout for the same full inventories.
-Its exact runtimes are separately reviewed; execution waits for both original
-batches to finish and be preserved. The original summary remains primary, and
+Its exact runtimes are separately reviewed; execution waits for the original
+auditor to finish and both stages' first evidence to be preserved. The original summary remains primary, and
 the supplementary measurement neither replaces failures nor adds independent
 source cases.
 

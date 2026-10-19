@@ -308,8 +308,12 @@ the type-only amendment passes its fixture and API acceptance check. A separatel
 registered second collection of the unchanged 552 inputs now retains 537 completed
 and 15 incomplete responses. The first deterministic factual assessment passes
 444/552 reports and covers 24,022/25,440 required peak facts; prose fidelity and
-source-blind correspondence remain pending. Both reviewed downstream batches are
-running: 537 prose audits and 1,104 blind rating positions. The
+source-blind correspondence remain pending. The original 537-request prose audit
+is running. The [original rater was operationally stopped](docs/ATTENTION_RELATIONAL_RATER_OPERATIONAL_STOP_V1.md)
+after 83 provider-completed and 219 capped responses; six claimed outcomes are
+unknown and 796 positions were never reserved. All 1,104 positions remain in its
+interrupted primary assessment. The reviewed full-inventory resource amendment
+waits for the auditor to finish and both original stages to be preserved. The
 [complete first-text gallery](docs/assets/attention_relational_report_v1_gallery/index.html)
 retains every narrator position and literal control in fixed order, including
 unavailable narrations; it makes no free-prose fidelity or consciousness verdict.
