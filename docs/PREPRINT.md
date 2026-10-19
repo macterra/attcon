@@ -827,7 +827,13 @@ contract-valid audits in the fixed first 12 completed responses met the separate
 registered resource-stop guard. Its final inventory retains 30 completed responses,
 six claimed unknowns and 501 never-reserved positions, without resuming or
 substituting responses. A different audit interface requires semantic qualification
-on planted factual errors before any further target measurement. The original summary remains primary, and
+on planted factual errors before any further target measurement. Its first
+[48-call semantic qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md)
+is now running over 24 independently reviewed fictional cases, with 65 mandatory
+assertions per stream and a separate grading key. Qualification remains unproven.
+A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
+requires both auditors and retains the earlier whole-version results. The original
+summary remains primary, and
 the supplementary measurement neither replaces failures nor adds independent
 source cases.
 
@@ -840,7 +846,7 @@ one absent and 550 unestablished judgments; template COD has 14 explicit and
 six ambiguous judgments, while template CA has one explicit and six ambiguous
 judgments (552 positions per arm). These sparse, single-rater judgments do not
 establish consciousness-related correspondence or attention-model specificity. The unstarted resource-v2
-rater is explicitly withdrawn; its auditor is retained. A separately proposed
+rater is explicitly withdrawn; its auditor's interrupted version is preserved. A separately proposed
 [quote-grounded v3 instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 removes model-generated offsets, requiring unique exact quotations and applying
 the frozen semantic validator to explicitly derived annotations. It keeps original
