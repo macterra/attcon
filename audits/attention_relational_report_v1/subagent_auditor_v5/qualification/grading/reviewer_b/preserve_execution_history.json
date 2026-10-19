@@ -1,0 +1,15 @@
+{
+  "scope": "Reviewer B's own first attempt only; tool transcript retains exact execution details.",
+  "initial_failures": [
+    {"command":"python - (instruction read)","failure":"/bin/bash: line 1: python: command not found","exit_code":127,"calculation_started":false},
+    {"operation":"first structural inspection of long request","failure":"KeyError: 'request_id'","exit_code":1,"cause":"The public batch request uses id; no data changed."},
+    {"operation":"first invalid-long annotation summary","failure":"TypeError: object of type 'NoneType' has no len()","exit_code":1,"cause":"Mechanically invalid derived_assertions is null; later diagnostic reads used original raw annotations without repair."}
+  ],
+  "inspection_limitation": "An initial broad schema-inspection output was truncated by the tool. Subsequent incremental workbooks retained complete assertions, sources and calculations.",
+  "first_successful_numerical_calculation": {
+    "script":"calculate_first_successful.py",
+    "stdout":["calculated 1792 all summaries agree True","peak reason checks 512 all true True"],
+    "outputs":["first_successful_calculations.json","peak_assertion_calculations.json","semantic_mapping.json","long_assertions_workbook.json"],
+    "preservation":"First successful output files created exclusively; later imports do not overwrite them. The original successful calculator script is retained unchanged."
+  }
+}
