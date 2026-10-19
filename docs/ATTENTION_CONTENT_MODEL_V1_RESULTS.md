@@ -297,6 +297,19 @@ passes **444/552 reports** on every listed machine-fact check and covers
 The 93 additional completed responses fail one or more listed-fact checks.
 All errors and omitted facts are preserved; no reports are repaired or repeated.
 
+The [complete first-text gallery](assets/attention_relational_report_v1_gallery/index.html)
+provides readable pages for all 12 archived cases, every one of the 552 narrator
+positions and all 552 literal-template controls in frozen order. The 15 unavailable
+narrations remain explicit. No examples are chosen by fluency, accuracy or
+consciousness resemblance. All displayed text matches the preserved inputs and
+first collection; this does not certify free-prose fidelity. The
+[manifest](assets/attention_relational_report_v1_gallery/manifest.json) binds the
+source hashes, order and every generated page. The
+[full artifact verification](../audits/attention_relational_report_v1/gallery/corrected_artifact_verification.json)
+checks both formats against every source text. Its preserved
+[checker correction](../audits/attention_relational_report_v1/gallery/verification_correction.json)
+changes no source or displayed text.
+
 | Source panel | Report format | Complete transport / attempts | All listed checks pass / attempts | Correct required peak facts / required |
 |---|---|---:|---:|---:|
 | Attention A | A_only | 84 / 84 | 81 / 84 | 2,621 / 2,688 |
