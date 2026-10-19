@@ -1,5 +1,11 @@
 # Current outcome and further research
 
+The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
+now retains56 first judgments:50 pass mechanics, while six dense annotations
+omit a required source reference. The whole release gate fails; no V5 target
+audits or automatic successor are released. Complete the two independent semantic
+reviews while keeping invalid annotations unestablished and raw diagnostics separate.
+
 The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
 Three new separate-context reviews remove the blanket raw-trial prerequisite for

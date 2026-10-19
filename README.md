@@ -28,7 +28,7 @@ relabelling the identical table as an outside camera's produced the same stated
 dependence attributed to the camera: with a pretrained reporter, self-attribution
 follows the representation's label.
 
-The latest [grounded-auditor qualification](docs/ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
+The [V4 grounded-auditor qualification](docs/ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
 retains a complete first failure: both streams pass mechanical checks and inventory
 all atoms but make factual judgment errors. Independent reviews agree; no further
 target audit is released. The separate V3 reference run remains underway. The
@@ -42,9 +42,10 @@ would have to be established in the neutral-prose arm.
 A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 now fixes two fresh reviewer streams, the unchanged short challenge and four new
 dense fictional reports with350 keyed assertions. Independent review approves
-the exact new key, and16 fictional workflow checks pass. V5 qualification is
-underway; target audits remain withheld. Both
-streams must pass both phases before a separate target release can proceed.
+the exact new key, and16 fictional workflow checks pass. Its [first mechanical
+qualification fails](docs/ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
+50/56 annotations are valid, with six dense reviews missing a required source
+citation. Independent semantic grading is underway; target audits remain withheld.
 
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed

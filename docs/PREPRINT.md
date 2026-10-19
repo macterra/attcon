@@ -841,8 +841,11 @@ judgments, it retains the unchanged short qualification and adds four new dense
 fictional reports with350 keyed assertions. First materialization is complete;
 independent review approves every new packet, assertion and operand.
 Sixteen fictional workflow checks pass after preserved pre-data retention
-corrections, and fresh V5 qualification is now underway. No V5 qualification pass
-or target release is claimed. This finite instrument
+corrections. The [first V5 qualification fails mechanics](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
+all56 first annotations are retained, but only50 are mechanically valid. Six
+dense reviews omit a required source citation; each stream passes only1/4 long
+contracts. Independent semantic grading is underway, with invalid annotations
+remaining unestablished in the primary assessment. No target audits are released. This finite instrument
 check cannot establish consciousness or general audit reliability.
 A separately planned [literal-template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently reconstructs all 552 texts and 25,440 complete peak sets from
