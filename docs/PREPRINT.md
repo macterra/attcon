@@ -738,9 +738,14 @@ source and consciousness-like reporting remain to be tested.
 The subsequent [learned attention-content v1 study](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
 implements addressed recurrent estimates of current completed contents and
 command-conditioned future contents. A frozen native head H reads those estimated
-maps; Controller symbol selection uses H(A_next), while actual targeting reads
-H(W). A, an equally informed ordinary recurrent predictor, and a uniform-posterior
-analytic alternative receive the same permitted observations. Current estimates,
+maps. A common prediction readout selects commands from each source's conditional
+estimates; NativeController subsequently targets from actual completed W through
+H. All three sources estimate allocation-command effects. A and `ordinary` are
+independently initialized instances of the same recurrent architecture; the
+analytic alternative maintains a posterior over command mappings. They receive
+the same permitted observations, with explicit operator-family knowledge in the
+analytic algorithm. These are alternative attention-effect models, not a contrast
+between an attention model and its absence. Current estimates,
 forecasts, completed actual state and evaluator truth remain separately attributed.
 Predetermined donor-state patches test changes in estimated fields at fixed actual
 W, with complete null outcomes and exact restoration retained.
@@ -808,7 +813,12 @@ ordinary-model and 1,931/2,100 analytic estimates. These counts exclude copied W
 and native-W comparison fields and retain incomplete attempts. They concern
 current/conditional readout peaks, including inherited repetitions, rather than
 the complete latent state. Primary report failures remain failures; this is no
-new acceptance threshold or attention-specific reporting advantage. The
+new acceptance threshold or demonstrated reporting advantage for designated A
+over the alternative attention-effect estimators. Ordinary parity concerns the
+particular fitted instance; analytic parity can limit specificity to the learned
+recurrent implementation. Neither comparison tests attention modeling against its
+absence. The [source-role clarification](ATTENTION_RELATIONAL_ORIGIN_INTERPRETATION_V1.md)
+keeps this comparator distinct from earlier ordinary-language controls. The
 [source-stratified results](ATTENTION_CONTENT_MODEL_V1_RESULTS.md) preserve the
 breakdown and its limits. Free-prose faithfulness and reference correspondence
 remain unestablished.

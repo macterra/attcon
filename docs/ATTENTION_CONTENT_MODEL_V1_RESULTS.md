@@ -172,8 +172,11 @@ These rows use all 96 fresh development worlds per encoder, current decisions
 1..14, next decisions 0..14 and all 288 final query opportunities. A and ordinary
 have similar retained errors; their normalized MSE rises and targeting decreases
 relative to fitting worlds. Analytic prospective error and targeting are better
-in this ledger. These comparisons bound predictive generalization and specificity;
-they do not establish task necessity, literal H(A) semantics or a qualia verdict.
+in this ledger. These comparisons bound predictive generalization and dependence
+on the particular estimator; all three model allocation-command effects, with
+A and ordinary using the same architecture. They do not compare the presence
+and absence of attention modeling or establish task necessity, literal H(A)
+semantics or a qualia verdict.
 Complete role-indexed errors, field discrepancies, ambiguity and donor ledgers
 remain available for the separate assessment without a new performance cutoff.
 
@@ -325,7 +328,9 @@ that attention denominator:
 
 These are descriptive atom counts, including repeated inherited records, rather
 than a new report-pass rule. All primary report failures remain failures. The
-comparison supplies no attention-specific reporting advantage. Correctness here
+comparison supplies no reporting advantage for the designated A source over
+these alternative attention-effect estimators. It does not compare the presence
+and absence of attention modeling. Correctness here
 means correspondence to the supplied model-derived peak sets, not a complete
 account of the model's latent state or correspondence to the external world.
 Free-prose fidelity and reference structure still require their separate tests.

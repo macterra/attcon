@@ -68,6 +68,37 @@ Source: [export construction](../scripts/attention_relational_report_v1.py),
 [experiment execution](../scripts/attention_content_model_v1_experiment.py), and
 [native Controller](../scripts/spatial_native_task_v1.py).
 
+## What the alternative estimators control
+
+All three sources estimate the effects of allocation commands. A and the source
+named `ordinary` instantiate the identical `LearnedContentModel` architecture
+with different initialization seeds and source keys. Both receive the same
+observations, delayed feedback, current/next map targets and fixed training
+procedure. Ordinary is an independently trained instance of that functional
+attention-effect estimator, rather than an attention-model-absent control.
+
+The analytic source instead maintains surviving hypotheses over six command-to-
+bandwidth mappings at each address and predicts their posterior-mean transformed
+maps. It has explicit operator-family knowledge and a different inference
+algorithm; it is also a model of the same attention-command effects. Its primary
+readout is H(posterior-mean map), not an executed map or the posterior mean of H.
+Each source can select a command through the common prediction readout before
+the native Controller targets from actual W. Candidate address and query role
+are supplied to this command-selection task.
+
+Ordinary parity therefore concerns the particular fitted A instance and its
+designation, not a difference in recurrent architecture. Analytic parity can
+limit specificity to the learned recurrent implementation. Neither comparison
+tests attention-model contents against their absence. Nor does parity establish
+the broader hypothesis: that still needs faithful, source-linked report
+correspondence and the remaining confirmation evidence. The comparator called
+`ordinary` here is distinct from ordinary-language/template controls elsewhere.
+
+This clarification follows a separate-context source review and coordinator
+verification while annotation batches were running, without inspecting their
+labels or text. See the [source review](../audits/attention_relational_report_v1/comparator_role_review/review.md).
+It changes interpretation, not frozen inputs, endpoints or pass rules.
+
 ## How to interpret the reporting results
 
 Keep the registered factual and source-blind reference summaries. Then inspect
@@ -129,8 +160,9 @@ not a narrator, reference, or theory-facing result.
 Selective intervention results must likewise identify which attention-derived
 content changed and which report evidence followed it. Preserve null changes,
 restorations, incomplete outputs, mixed claims, and unmatched evidence. Ordinary
-or analytic parity limits attention specificity without automatically invalidating
-an accurately reported attention-model relation. This note claims no report
+or analytic parity limits claims specific to the designated A instance or its
+learned implementation without automatically invalidating an accurately reported
+attention-model relation. This note claims no report
 fidelity, reference correspondence, attention specificity, or phenomenal status.
 
 ## First listed-fact counts by actual origin
