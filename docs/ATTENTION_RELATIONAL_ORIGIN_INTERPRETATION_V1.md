@@ -132,3 +132,19 @@ restorations, incomplete outputs, mixed claims, and unmatched evidence. Ordinary
 or analytic parity limits attention specificity without automatically invalidating
 an accurately reported attention-model relation. This note claims no report
 fidelity, reference correspondence, attention specificity, or phenomenal status.
+
+## First listed-fact counts by actual origin
+
+The [first machine-origin inventory](../audits/attention_relational_report_v1/run_v2/machine_origin_inventory/first_origin_counts.json)
+identifies 2,027/2,100 attention-derived peak facts correctly covered in the
+preserved first reports. Ordinary estimates cover 2,048/2,100 and analytic
+estimates 1,931/2,100. Copied W11 facts are excluded from those source-specific
+denominators. The [results table](ATTENTION_CONTENT_MODEL_V1_RESULTS.md)
+separates current, conditional, and inherited estimates.
+
+This post-development descriptive accounting reconstructs the frozen auditor's
+covered slots from its exact omission inventory. It retains every primary audit
+and incomplete response; it does not independently re-audit raw responses,
+change report-pass rules, assess free prose, or establish a consciousness-related
+interpretation. The [execution receipt](../audits/attention_relational_report_v1/run_v2/machine_origin_inventory/first_execution.json)
+records the preserved source commit and input/output hashes.

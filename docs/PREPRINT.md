@@ -802,6 +802,17 @@ prose audits and 1,104 blind reference ratings are running.
 The original failed batch remains failed, and no report-correspondence result is
 established.
 
+A separate descriptive origin inventory isolates the attention-derived facts:
+2,027/2,100 required peak facts are correctly listed, compared with 2,048/2,100
+ordinary-model and 1,931/2,100 analytic estimates. These counts exclude copied W11
+and native-W comparison fields and retain incomplete attempts. They concern
+current/conditional readout peaks, including inherited repetitions, rather than
+the complete latent state. Primary report failures remain failures; this is no
+new acceptance threshold or attention-specific reporting advantage. The
+[source-stratified results](ATTENTION_CONTENT_MODEL_V1_RESULTS.md) preserve the
+breakdown and its limits. Free-prose faithfulness and reference correspondence
+remain unestablished.
+
 The [first fixed source-control illustration](assets/attention_relational_report_v1_sources/source_controls.png)
 shows the retained A-view and W localization fields for both roles at all four
 addresses. Source transplantation changes the A-view while W stays fixed, and

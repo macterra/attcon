@@ -311,6 +311,25 @@ These are correlated reporting opportunities, not independent replications.
 attention-derived fact inventory to 2,100 slots. The aggregate factual total must
 not be described as attention-only accuracy or world-truth accuracy.
 
+The [first source-stratified inventory](../audits/attention_relational_report_v1/run_v2/machine_origin_inventory/first_origin_counts.json)
+reconstructs correct slots from the frozen auditor's exact omission inventory.
+It records **2,027/2,100 attention-derived peak facts** correctly, retaining
+incomplete attempts and excluding copied W11 and native-W comparison fields from
+that attention denominator:
+
+| Estimate source | Current estimate facts | Conditional estimate facts | Inherited current-estimate facts | Total correct / required |
+|---|---:|---:|---:|---:|
+| Attention A | 326 / 336 | 974 / 1,008 | 727 / 756 | 2,027 / 2,100 |
+| Ordinary | 318 / 336 | 974 / 1,008 | 756 / 756 | 2,048 / 2,100 |
+| Analytic | 306 / 336 | 903 / 1,008 | 722 / 756 | 1,931 / 2,100 |
+
+These are descriptive atom counts, including repeated inherited records, rather
+than a new report-pass rule. All primary report failures remain failures. The
+comparison supplies no attention-specific reporting advantage. Correctness here
+means correspondence to the supplied model-derived peak sets, not a complete
+account of the model's latent state or correspondence to the external world.
+Free-prose fidelity and reference structure still require their separate tests.
+
 This deterministic assessment does not assess the truth of free prose. The
 reviewed downstream batches are running with 537 prose-audit requests and 1,104 blind
 rating positions, with every incomplete narrator opportunity retained in final
