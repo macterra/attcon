@@ -159,14 +159,21 @@ def validate_attempts(prepared, preparation_sha, launch, launch_sha, outcome):
             and context.get('batch_sha256') == expected['public_sha256'] and context.get('output_root') == expected['output_root']
             and terminal.get('agent_id') == context['agent_id'], 'host context/source/runtime binding differs')
         first = terminal.get('first_batch')
-        pipeline.require((type(first) is dict or first is None) and (type(first) is dict or terminal.get('actual_agent_terminal') is True
-            and type(terminal.get('terminal_attestation')) is dict
-            and terminal['terminal_attestation'].get('agent_id') == context['agent_id']
-            and terminal['terminal_attestation'].get('terminal_observed') is True),
-            'timeout or running context cannot stand for terminal first attempt')
+        pipeline.require(type(first) is dict or first is None, 'first-batch descriptor must be an object or null')
+        retained = False
         if first is not None:
             pipeline.require(Path(first['path']).resolve() == (Path(expected['output_root']) / 'first_batch.json').resolve()
                 and valid_sha(first.get('sha256')), 'actual exclusive first-batch descriptor required')
+            try:
+                retained = pipeline.digest(Path(first['path']).read_bytes()) == first['sha256']
+            except OSError:
+                retained = False
+        terminal_observed = (terminal.get('actual_agent_terminal') is True
+            and type(terminal.get('terminal_attestation')) is dict
+            and terminal['terminal_attestation'].get('agent_id') == context['agent_id']
+            and terminal['terminal_attestation'].get('terminal_observed') is True)
+        pipeline.require(retained or terminal_observed,
+                         'timeout or running context needs an actually retained hash-bound first manifest or actual terminal attestation')
     return launched, finished
 
 
@@ -196,11 +203,13 @@ def collect(prepared, preparation_sha, launch, launch_sha, outcome):
         if first_ref is None:
             context_issues.append('first_batch_manifest_unestablished_despite_terminal_retention')
         if first_ref is not None:
-            if Path(first_ref['path']).is_file():
+            try:
                 first_artifact = retained_file(first_ref['path'])
                 first = first_artifact['parsed'] if type(first_artifact['parsed']) is dict else None
                 if first_artifact['sha256'] != first_ref['sha256']:
                     context_issues.append('first_batch_file_sha_differs')
+            except OSError as exc:
+                context_issues.append('first_batch_unreadable: ' + type(exc).__name__)
             if first is None:
                 context_issues.append('first_batch_missing_or_malformed')
             elif not (first.get('schema') == submitter.FIRST_SCHEMA and first.get('batch_sha256') == schedule['public_sha256']
@@ -213,12 +222,17 @@ def collect(prepared, preparation_sha, launch, launch_sha, outcome):
                 context_issues.append('malformed_first_batch_structure')
                 first = None
             for ref in (first.get('calculator_artifacts', []) if first else []):
-                pipeline.require(Path(ref['path']).resolve().is_relative_to(root.resolve()), 'calculator artifact outside assigned context')
-                if not Path(ref['path']).is_file():
-                    calculator.append(dict(**ref, missing=True))
-                    context_issues.append('calculator_artifact_missing')
+                try:
+                    inside = Path(ref['path']).resolve().is_relative_to(root.resolve())
+                    if not inside:
+                        calculator.append(dict(declared_reference=deepcopy(ref), skipped_unsafe_read=True))
+                        context_issues.append('calculator_artifact_outside_assigned_context')
+                        continue
+                    retained = retained_file(ref['path'])
+                except (OSError, RuntimeError) as exc:
+                    calculator.append(dict(declared_reference=deepcopy(ref), unreadable=True, read_error=type(exc).__name__))
+                    context_issues.append('calculator_artifact_unreadable: ' + type(exc).__name__)
                     continue
-                retained = retained_file(ref['path'])
                 # Calculator artifacts need not be JSON; raw bytes remain authoritative.
                 if retained['sha256'] != ref['sha256']:
                     context_issues.append('calculator_artifact_sha_differs')

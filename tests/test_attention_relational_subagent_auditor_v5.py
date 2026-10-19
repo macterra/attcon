@@ -176,3 +176,160 @@ def test_terminal_retention_without_first_manifest_cannot_establish_a_context(mo
     assert retained['derived_evidence']['derived_assertions'] is None
     assert collection['contexts'][0]['annotation_files'] and collection['contexts'][0]['event_logs']
     assert all(not r['mechanical_contract_established'] for r in result['rows'])
+
+
+@pytest.mark.parametrize('failure', ['missing', 'hash_mismatch'])
+def test_nonterminal_manifest_descriptor_requires_actual_retained_bytes(monkeypatch, tmp_path, failure):
+    monkeypatch.chdir(tmp_path)
+    prepared = prepared_fixture()
+    scheduled = prepared['schedule'][0]
+    root = Path(scheduled['output_root'])
+    ref = method.descriptor(root / 'first_batch.json', '0' * 64)
+    if failure == 'hash_mismatch':
+        root.mkdir(parents=True)
+        (root / 'first_batch.json').write_bytes(b'Fictional mismatched bytes.')
+    launch, outcome = host_receipts(prepared, {scheduled['batch_id']: ref})
+    outcome['contexts'][0].update(actual_agent_terminal=False, terminal_attestation=None)
+    with pytest.raises(ValueError, match='actually retained hash-bound'):
+        method.collect(prepared, 'p' * 64, launch, method.digest(launch), outcome)
+    # Actual terminal observation permits retention, never an invented manifest.
+    outcome['contexts'][0].update(actual_agent_terminal=True,
+        terminal_attestation=dict(agent_id=launch['contexts'][0]['agent_id'], terminal_observed=True))
+    retained = method.collect(prepared, 'p' * 64, launch, method.digest(launch), outcome)
+    assert len(retained['records']) == 56
+    assert all(not r['mechanical_contract_established'] for r in method.derive(prepared, retained)['rows'])
+
+
+@pytest.mark.parametrize('failure', ['outside_root', 'unreadable'])
+def test_unsafe_or_unreadable_calculator_reference_preserves_first_manifest_and_unknowns(monkeypatch, tmp_path, failure):
+    monkeypatch.chdir(tmp_path)
+    prepared = prepared_fixture()
+    paths = publish_batches(prepared, tmp_path)
+    scheduled = prepared['schedule'][0]
+    bid, root = scheduled['batch_id'], Path(scheduled['output_root'])
+    request = prepared['public_batches'][bid]['requests'][0]
+    method.submitter.submit(paths[bid], root, request['id'], manual_annotation(request))
+    method.submitter.finalize(paths[bid], root)
+    calculator = (tmp_path / 'outside_context.txt') if failure == 'outside_root' else root / 'unreadable.txt'
+    calculator.write_text('Fictional calculator bytes; not target data.\n')
+    first_path = root / 'first_batch.json'
+    first = method.pipeline.decoded(first_path.read_bytes())
+    first['calculator_artifacts'] = [method.descriptor(calculator, method.pipeline.digest(calculator.read_bytes()))]
+    # An invented malformed first manifest is a fixture input, never repaired by collection.
+    first_path.write_bytes(method.pipeline.encoded(first) + b'\n')
+    raw_manifest = first_path.read_bytes()
+    original_reader = method.retained_file
+
+    def guarded_reader(path):
+        if Path(path).resolve() == calculator.resolve():
+            if failure == 'outside_root':
+                raise AssertionError('collector attempted unsafe read')
+            raise PermissionError('fictional unreadable calculator')
+        return original_reader(path)
+
+    monkeypatch.setattr(method, 'retained_file', guarded_reader)
+    ref = method.descriptor(first_path, method.pipeline.digest(raw_manifest))
+    launch, outcome = host_receipts(prepared, {bid: ref})
+    collection = method.collect(prepared, 'p' * 64, launch, method.digest(launch), outcome)
+    context = collection['contexts'][0]
+    assert context['first_batch_artifact']['sha256'] == method.pipeline.digest(raw_manifest)
+    assert context['first_batch']['calculator_artifacts'] == first['calculator_artifacts']
+    assert context['annotation_files'] and len(collection['records']) == 56
+    skipped = context['calculator_artifacts'][0]
+    assert 'raw_bytes_base64' not in skipped
+    assert skipped['declared_reference'] == first['calculator_artifacts'][0]
+    assert skipped['skipped_unsafe_read'] if failure == 'outside_root' else skipped['unreadable']
+    assert all(not r['mechanical_contract_established'] for r in method.derive(prepared, collection)['rows'])
+
+
+def test_fictional_main_prepare_submit_finalize_collect_derive_exact_dependency_wiring(monkeypatch, tmp_path):
+    """Actual CLI entrypoints in-process, with only synthetic public/key pins."""
+    monkeypatch.chdir(tmp_path)
+    fixture = prepared_fixture()
+
+    def write_json(path, value):
+        method.pipeline.exclusive_json(path, value)
+        return method.pipeline.digest(Path(path).read_bytes())
+
+    short_path, long_path, approval_path = (tmp_path / name for name in ('short.json', 'long.json', 'approval.json'))
+    short_sha = write_json(short_path, fixture['public_cases']['short'])
+    long_sha = write_json(long_path, fixture['public_cases']['long'])
+    monkeypatch.setattr(method, 'SHORT_SHA', short_sha)
+    monkeypatch.setattr(method, 'LONG_SHA', long_sha)
+    monkeypatch.setattr(method, 'LONG_KEY_SHA', 'a' * 64)  # No key exists or is read.
+    approval = dict(fixture['long_key_approval'], public_cases_sha256=long_sha, hidden_key_sha256='a' * 64)
+    approval_sha = write_json(approval_path, approval)
+    preparation_root = tmp_path / 'first_preparation'
+
+    def run_main(module, arguments):
+        monkeypatch.setattr(sys, 'argv', [module.__file__, *map(str, arguments)])
+        module.main()
+
+    run_main(method, ['--stage', 'prepare', '--short-cases', short_path, '--short-cases-sha256', short_sha,
+        '--long-cases', long_path, '--long-cases-sha256', long_sha, '--long-key-review', approval_path,
+        '--long-key-review-sha256', approval_sha, '--output', preparation_root])
+    preparation_path = preparation_root / 'preparation.json'
+    preparation_sha = method.pipeline.digest(preparation_path.read_bytes())
+    prepared = method.load_preparation(preparation_path, preparation_sha)
+    assert prepared['lineage']['inputs'] == dict(short_cases=method.descriptor(short_path, short_sha),
+        long_cases=method.descriptor(long_path, long_sha), long_key_review=method.descriptor(approval_path, approval_sha))
+    first_batches = {}
+    for scheduled in prepared['schedule']:
+        bid, root = scheduled['batch_id'], Path(scheduled['output_root'])
+        batch_path = preparation_root / scheduled['public_file']
+        assert method.pipeline.digest(batch_path.read_bytes()) == scheduled['public_sha256']
+        root.mkdir(parents=True, exist_ok=False)
+        for request in prepared['public_batches'][bid]['requests']:
+            manual_path = root / (request['id'] + '.manual.json')
+            manual_sha = write_json(manual_path, manual_annotation(request, verdict='not_auditable'))
+            run_main(method.submitter, ['--batch', batch_path, '--output-root', root,
+                '--request-id', request['id'], '--submit-manual', manual_path])
+            receipt = method.pipeline.decoded((root / (request['id'] + '.receipt.json')).read_bytes())
+            assert receipt['annotation_sha256'] == manual_sha
+            assert receipt['batch_sha256'] == scheduled['public_sha256']
+            assert receipt['request_sha256'] == method.pipeline.runner_request_sha256(request)
+        calculator = root / 'fictional_calculator.txt'
+        calculator.write_text('Fictional arithmetic evidence, not a key.\n')
+        run_main(method.submitter, ['--batch', batch_path, '--output-root', root, '--finalize',
+            '--calculator-artifact', calculator, '--limitation', 'Entirely fictional CLI fixture.'])
+        first_path = root / 'first_batch.json'
+        first_batches[bid] = method.descriptor(first_path, method.pipeline.digest(first_path.read_bytes()))
+    launch, outcome = host_receipts(prepared, first_batches)
+    launch['preparation_sha256'] = preparation_sha
+    launch_path, outcome_path = tmp_path / 'launch.json', tmp_path / 'outcome.json'
+    launch_sha = write_json(launch_path, launch)
+    outcome.update(preparation_sha256=preparation_sha, launch_receipt_sha256=launch_sha)
+    # Saved and hash-bound first manifests are sufficient even before the host
+    # context becomes terminal. They can never be replaced by descriptors alone.
+    for context in outcome['contexts']:
+        context.update(actual_agent_terminal=False, terminal_attestation=None)
+    outcome_sha = write_json(outcome_path, outcome)
+    collection_path = tmp_path / 'first_collection.json'
+    run_main(method, ['--stage', 'collect', '--preparation', preparation_path, '--preparation-sha256', preparation_sha,
+        '--launch-receipt', launch_path, '--launch-receipt-sha256', launch_sha, '--outcome-receipt', outcome_path,
+        '--outcome-receipt-sha256', outcome_sha, '--output', collection_path])
+    collection_sha = method.pipeline.digest(collection_path.read_bytes())
+    collection = method.pipeline.bound_json(collection_path, collection_sha)
+    assert collection['input_dependencies'] == dict(preparation=method.descriptor(preparation_path, preparation_sha),
+        launch_receipt=method.descriptor(launch_path, launch_sha), outcome_receipt=method.descriptor(outcome_path, outcome_sha))
+    assert len(collection['records']) == 56 and all(r['first_artifact_binding_established'] for r in collection['records'])
+    derived_path = tmp_path / 'first_derived.json'
+    run_main(method, ['--stage', 'derive', '--preparation', preparation_path, '--preparation-sha256', preparation_sha,
+        '--collection', collection_path, '--collection-sha256', collection_sha, '--output', derived_path])
+    derived = method.pipeline.decoded(derived_path.read_bytes())
+    assert derived['input_dependencies'] == dict(preparation=method.descriptor(preparation_path, preparation_sha),
+        collection=method.descriptor(collection_path, collection_sha))
+    retained = method.collect(prepared, preparation_sha, launch, launch_sha, outcome)
+    assert derived['collection_content_sha256'] == method.digest(retained)
+    assert derived['preparation_content_sha256'] == method.digest(prepared)
+    assert len(derived['rows']) == 56 and all(r['mechanical_contract_established'] for r in derived['rows'])
+    assert not derived['semantic_qualification_assessed'] and not derived['target_release_implemented']
+    # Wrong receipt SHA cannot be hidden inside an otherwise newly bound collection.
+    bad = deepcopy(collection)
+    bad['input_dependencies']['launch_receipt']['sha256'] = '0' * 64
+    bad_path = tmp_path / 'fictional_bad_collection.json'
+    bad_sha = write_json(bad_path, bad)
+    with pytest.raises(ValueError, match='SHA-256 mismatch'):
+        run_main(method, ['--stage', 'derive', '--preparation', preparation_path, '--preparation-sha256', preparation_sha,
+            '--collection', bad_path, '--collection-sha256', bad_sha, '--output', tmp_path / 'must_not_exist.json'])
+    assert not (tmp_path / 'must_not_exist.json').exists()
