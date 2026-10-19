@@ -1,7 +1,7 @@
 # Plan: test report structure against functional organization
 
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
-now retains56 first judgments:50 pass mechanics, while six dense annotations
+now retains 56 first judgments:50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
 audits or automatic successor are released. Complete the two independent semantic
 reviews while keeping invalid annotations unestablished and raw diagnostics separate.

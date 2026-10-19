@@ -41,8 +41,8 @@ would have to be established in the neutral-prose arm.
 
 A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 now fixes two fresh reviewer streams, the unchanged short challenge and four new
-dense fictional reports with350 keyed assertions. Independent review approves
-the exact new key, and16 fictional workflow checks pass. Its [first mechanical
+dense fictional reports with 350 keyed assertions. Independent review approves
+the exact new key, and 16 fictional workflow checks pass. Its [first mechanical
 qualification fails](docs/ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
 50/56 annotations are valid, with six dense reviews missing a required source
 citation. Independent semantic grading is underway; target audits remain withheld.

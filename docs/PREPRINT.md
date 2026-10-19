@@ -838,12 +838,12 @@ establish that target reports are false or that consciousness is absent.
 A prospective [tool-assisted auditor method](ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 uses fresh subagent contexts with local numerical calculations. Before any V5
 judgments, it retains the unchanged short qualification and adds four new dense
-fictional reports with350 keyed assertions. First materialization is complete;
+fictional reports with 350 keyed assertions. First materialization is complete;
 independent review approves every new packet, assertion and operand.
 Sixteen fictional workflow checks pass after preserved pre-data retention
 corrections. The [first V5 qualification fails mechanics](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
-all56 first annotations are retained, but only50 are mechanically valid. Six
-dense reviews omit a required source citation; each stream passes only1/4 long
+all 56 first annotations are retained, but only 50 are mechanically valid. Six
+dense reviews omit a required source citation; each stream passes only 1/4 long
 contracts. Independent semantic grading is underway, with invalid annotations
 remaining unestablished in the primary assessment. No target audits are released. This finite instrument
 check cannot establish consciousness or general audit reliability.
