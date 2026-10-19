@@ -31,7 +31,10 @@ follows the representation's label.
 The latest [grounded-auditor qualification](docs/ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
 retains a complete first failure: both streams pass mechanical checks and inventory
 all atoms but make factual judgment errors. Independent reviews agree; no further
-target audit is released. The separate V3 reference run remains underway.
+target audit is released. The separate V3 reference run remains underway. The
+[complete template construction index](docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
+now verifies all 552 texts and 25,440 peak sets with exact source/time provenance;
+independent reference meaning and source correspondence remain pending.
 
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed

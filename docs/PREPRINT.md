@@ -835,6 +835,14 @@ plus three and one unsupported reasons; auditor 1 also omits one required operan
 Two independent first reviews agree on all atom-level accuracy judgments. These
 finite instrument results release no V4 target preparation or calls and do not
 establish that target reports are false or that consciousness is absent.
+A separately planned [literal-template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
+now independently reconstructs all 552 texts and 25,440 complete peak sets from
+supplied float32 maps, retaining 684 original pairs and exact origin/time/property
+provenance. Its first actual run passes after a pre-data header-check correction.
+Reference labels were uninspected; semantic feature grounding and source-specific
+correspondence remain pending. Literal renderer tracking is instrumentation,
+not an independently demonstrated quale-generating process.
+
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original
 summary remains primary, and

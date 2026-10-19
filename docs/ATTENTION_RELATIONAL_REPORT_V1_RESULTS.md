@@ -114,5 +114,12 @@ The [complete template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTI
 is fixed before inspecting V3 judgments. Its separate factual route uses exact
 literal construction, with all reference-to-property meaning independently
 reviewed. It preserves all 552 templates, 684 pairs, mixed origins, true nulls and
-restorations. No result is yet claimed; authored tracking cannot establish a
+restorations. No semantic correspondence result is yet claimed; authored tracking cannot establish a
 spontaneous report or identify the experiencing subsystem.
+
+The [first complete template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
+now passes: all 552 texts, 25,440 independently recomputed peak sets and 684 fixed
+pairs are preserved with exact property/source/time and character provenance.
+Reference-feature meaning and source-specific correspondence remain unassessed;
+no V4 target audit is released. Continue the existing V3 run, then the frozen
+complete semantic attribution and pair assessment.

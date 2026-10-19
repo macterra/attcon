@@ -134,9 +134,11 @@ requires planted-error semantic qualification before target calls. Its first
 both independent first reviews agree on verdict/reason errors. No V4 target calls
 are released; the [distinct future assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and keeps earlier results separate. The [complete template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
-now fixes a separate construction-verified route before V3 label inspection:
-index every template property, independently assess feature-to-property meaning,
-and retain all original source controls/nulls/restorations. This does not release
+fixes a separate construction-verified route before V3 label inspection. Its
+[first complete index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
+now independently verifies all 552 texts and 25,440 peak sets with exact origin,
+time and character provenance. Next assess feature-to-property meaning while
+retaining all 684 pairs, controls, nulls and restorations. This does not release
 V4 audits or establish spontaneous prose or qualia. The unstarted
 resource-v2 rater remains withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
