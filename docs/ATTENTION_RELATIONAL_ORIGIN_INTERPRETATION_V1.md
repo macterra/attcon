@@ -120,6 +120,11 @@ changed consciousness-related structure. The primary causal summaries, source
 bindings, and reference evidence must be read together. The
 [inventory source](../scripts/inventory_attention_relational_interventions_v1.py)
 preserves all changed contexts, origin classes, and grouped counts.
+Its [first complete inventory](../audits/attention_relational_report_v1/intervention_inventory/first_inventory.json)
+passes all source-accounting assertions; the
+[receipt](../audits/attention_relational_report_v1/intervention_inventory/first_execution.json)
+binds the published source commit and output bytes. This is a manipulation check,
+not a narrator, reference, or theory-facing result.
 
 Selective intervention results must likewise identify which attention-derived
 content changed and which report evidence followed it. Preserve null changes,
