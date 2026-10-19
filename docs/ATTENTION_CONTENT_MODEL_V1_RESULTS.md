@@ -260,6 +260,11 @@ and API acceptance; a separately registered second collection is running.
 The original reporting failure remains unchanged, and reference correspondence
 is unestablished. These software/source results do not establish qualia.
 
+The [source-origin interpretation note](ATTENTION_RELATIONAL_ORIGIN_INTERPRETATION_V1.md)
+distinguishes the 2,100 attention-derived required fact slots from copied prior
+records and other sources. Whole-report reference resemblance must be attributed
+to its supporting content before it can support an attention-model interpretation.
+
 
 The [first preselected reporting-case illustration](assets/attention_relational_report_v1_sources/source_controls.png)
 shows all four addressed local grids for both roles, with A-donor, W-change and
