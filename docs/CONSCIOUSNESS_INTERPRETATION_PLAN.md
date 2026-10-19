@@ -1,10 +1,13 @@
 # Plan: test report structure against functional organization
 
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
-now retains 56 first judgments:50 pass mechanics, while six dense annotations
+now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
-audits or automatic successor are released. Complete the two independent semantic
-reviews while keeping invalid annotations unestablished and raw diagnostics separate.
+audits or automatic successor are released. Both independent semantic reviews
+agree: short phases pass and long phases fail, with correct verdict meanings but
+incomplete required citations. Complete the frozen reference assessment before
+choosing another experiment; any witness-to-source analysis must preserve missing
+whole-prose fidelity and distinguish actual A content from copied W.
 
 Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;

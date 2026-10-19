@@ -844,8 +844,11 @@ Sixteen fictional workflow checks pass after preserved pre-data retention
 corrections. The [first V5 qualification fails mechanics](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
 all 56 first annotations are retained, but only 50 are mechanically valid. Six
 dense reviews omit a required source citation; each stream passes only 1/4 long
-contracts. Independent semantic grading is underway, with invalid annotations
-remaining unestablished in the primary assessment. No target audits are released. This finite instrument
+contracts. Both independent first grades agree: short phases pass and long phases
+fail. All 306 eligible mandatory verdicts are correct, but three omit required
+operands; 524 atom opportunities remain unestablished. Separate raw diagnostics
+find correct verdict meanings with 12 operand deficiencies and cannot upgrade
+primary eligibility. No target audits are released. This finite instrument
 check cannot establish consciousness or general audit reliability.
 A separately planned [literal-template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently reconstructs all 552 texts and 25,440 complete peak sets from

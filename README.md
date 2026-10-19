@@ -45,7 +45,9 @@ dense fictional reports with 350 keyed assertions. Independent review approves
 the exact new key, and 16 fictional workflow checks pass. Its [first mechanical
 qualification fails](docs/ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md):
 50/56 annotations are valid, with six dense reviews missing a required source
-citation. Independent semantic grading is underway; target audits remain withheld.
+citation. Both independent graders agree: short phases pass, long phases fail.
+Verdict meanings are correct in this fictional challenge, but required citations
+remain incomplete; target audits stay withheld.
 
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed

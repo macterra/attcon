@@ -1,10 +1,13 @@
 # Current outcome and further research
 
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
-now retains 56 first judgments:50 pass mechanics, while six dense annotations
+now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
-audits or automatic successor are released. Complete the two independent semantic
-reviews while keeping invalid annotations unestablished and raw diagnostics separate.
+audits or automatic successor are released. Both independent semantic reviews
+agree: short phases pass and long phases fail, with correct verdict meanings but
+incomplete required citations. Complete the frozen reference assessment before
+choosing another experiment; any witness-to-source analysis must preserve missing
+whole-prose fidelity and distinguish actual A content from copied W.
 
 The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
