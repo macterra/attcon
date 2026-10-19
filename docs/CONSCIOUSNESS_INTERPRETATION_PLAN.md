@@ -128,7 +128,9 @@ zero contract-valid audits in its fixed first 12 completed responses. A
 [distinct auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
 requires planted-error semantic qualification before target calls; its unstarted rater is withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
-with unchanged reference semantics and a separately versioned evidence contract. These remain
+with unchanged reference semantics and a separately versioned evidence contract. Its first 31
+fictional software fixtures and one fictional API grounding check pass; the
+reviewed full V3 run is now underway across all 1,104 positions. These remain
 the same 12 cases, with both transport histories retained. Broad report-correspondence and theory-facing
 interpretations remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).

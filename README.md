@@ -318,7 +318,8 @@ ratings, including two narrator texts. The [resource-v2 auditor was stopped](doc
 after a fixed first-12 check found zero contract-valid audits, despite all 12 completing;
 its unstarted rater is withdrawn in favor of a prospective
 [quote-grounded reference instrument](docs/ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
-V3 target calls require its own reviewed release. The
+The reviewed V3 run is now underway across all 1,104 positions after its first
+fictional transport/grounding check passed; no scientific judgment was scored in that check. The
 [complete first-text gallery](docs/assets/attention_relational_report_v1_gallery/index.html)
 retains every narrator position and literal control in fixed order, including
 unavailable narrations; it makes no free-prose fidelity or consciousness verdict.

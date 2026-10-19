@@ -844,7 +844,11 @@ rater is explicitly withdrawn; its auditor is retained. A separately proposed
 [quote-grounded v3 instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 removes model-generated offsets, requiring unique exact quotations and applying
 the frozen semantic validator to explicitly derived annotations. It keeps original
-failures unchanged and requires a new reviewed release before target calls.
+failures unchanged. Its first 21 core and ten integration fixtures pass, together
+with a single fictional transport/grounding API check that scores no scientific
+labels. The reviewed full 1,104-position V3 measurement is now underway. The
+preselected interrupted resource-v2 factual summary retains zero established
+narrator-fidelity results out of 552 positions.
 
 A separate descriptive origin inventory isolates the attention-derived facts:
 2,027/2,100 required peak facts are correctly listed, compared with 2,048/2,100

@@ -93,7 +93,9 @@ The unstarted resource-v2 rater remains withdrawn. The
 [quote-grounded V3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 changes evidence-location mechanics prospectively while retaining reference
 semantics. Its foundation passes 21 fictional software fixtures and a separate
-source review; ten additional fictional integration fixtures also pass; acceptance and the full
-reviewed release are still required before target calls. These are instrument-development checks, not
+source review; ten additional fictional integration fixtures also pass. The first fictional API
+check passes transport and grounding without scoring scientific labels. The
+reviewed full 1,104-position V3 run is now underway. Its preselected interrupted
+resource-v2 factual summary establishes narrator fidelity in zero of 552 positions. These are instrument-development checks, not
 evidence of consciousness. Fresh powered confirmation and replication remain
 necessary for the ultimate theory goal.

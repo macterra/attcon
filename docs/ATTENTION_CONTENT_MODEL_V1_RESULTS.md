@@ -412,4 +412,8 @@ The resource-v2 **auditor** remains approved; its **unstarted rater is withdrawn
 under the [quote-grounded v3 plan](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md).
 The earlier resource registration remains preserved. V3 changes quotation
 location mechanics prospectively, with actual new request lineage and no repair
-of old invalid outputs; its synthetic qualification and reviewed release are pending.
+of old invalid outputs. Its first 21 core and ten integration fixtures pass; the
+first fictional API check passes transport and unique grounding without scoring
+scientific labels. The independently reviewed full V3 run is now underway across
+all 1,104 positions. The retained interrupted resource-v2 factual summary still
+establishes narrator fidelity in zero of 552 positions.
