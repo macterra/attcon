@@ -95,7 +95,11 @@ zero contract-valid results among its fixed first 12 completed responses. Its
 terminal inventory retains 30 returned, six claimed-unknown and 501 never-reserved
 positions. Preserve its whole interrupted collection and factual summary. A
 [distinct grounded-auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
-requires semantic error-detection qualification before further target audits.
+requires semantic error-detection qualification before further target audits. The first
+[48-call qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md) is now
+running on 24 reviewed fictional cases; no V4 target audit has begun. Its
+[separate factual/reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
+is fixed before target outputs and retains V3's earlier factual preselection.
 The unstarted resource-v2 rater is now explicitly withdrawn. The
 [prospective quote-grounded v3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 retains all 1,104 positions and the frozen semantic criteria while deriving offsets
