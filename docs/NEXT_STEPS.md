@@ -82,7 +82,7 @@ prose-audit requests and 1,104 blind-rating positions are running. Preserve thei
 first outcomes, then collect and join the factual and reference assessments.
 Source-blind ratings and theory-facing evidence remain unestablished.
 A [separate resource-amended measurement](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
-is now registered for exact runtime review: unchanged full inventories and criteria,
+is now registered and separately reviewed: unchanged full inventories and criteria,
 with a 32,768-token output cap and 600-second timeout. The original batches must
 finish and be preserved before this supplementary version starts. No original
 failure is replaced, and repeated annotation of these cases is not replication.

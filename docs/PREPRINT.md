@@ -807,6 +807,13 @@ prose audits and 1,104 blind reference ratings are running.
 The original failed batch remains failed, and no report-correspondence result is
 established.
 
+A [separately registered resource amendment](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
+increases only the annotation output cap and timeout for the same full inventories.
+Its exact runtimes are separately reviewed; execution waits for both original
+batches to finish and be preserved. The original summary remains primary, and
+the supplementary measurement neither replaces failures nor adds independent
+source cases.
+
 A separate descriptive origin inventory isolates the attention-derived facts:
 2,027/2,100 required peak facts are correctly listed, compared with 2,048/2,100
 ordinary-model and 1,931/2,100 analytic estimates. These counts exclude copied W11

@@ -355,3 +355,11 @@ pass. The diagnostic used a 32,768 output cap and 600-second client timeout;
 both original scientific batches retain their fixed 8,192/180 settings. This
 supports testing additional output headroom in a separate registered version,
 without establishing semantic rating accuracy or a consciousness-related result.
+
+The full [resource-amended measurement v2](ATTENTION_RELATIONAL_RESOURCE_MEASUREMENT_V2.md)
+is separately registered and reviewed for the unchanged 537 audit requests and
+1,104 rating positions. It uses the same larger cap/timeout without changing
+instructions, schemas, reference or scientific criteria. Execution waits for
+both original batches to finish and be preserved. The original summary remains
+primary; the supplementary measurement cannot replace failures or provide
+independent replication of these same 12 source cases.
