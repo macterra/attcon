@@ -36,7 +36,7 @@ def packet_fixture(source='A', joined=True, full=False):
         sources.append(dict(panel='p1', source_key='W'))
     packet = dict(schema=exporter.PACK_SCHEMA, decision_time=12, previous_node='n0', candidate_node='n1',
         queried_role='red', coordinate_system=dict(rows=4, columns=4, row_direction='down', column_direction='right',
-            separate_local_grids=True), candidate_semantics='Conditional supplied records, not an executed branch.', panels=panels)
+            separate_local_grids=True), candidate_semantics='conditional supplied record or estimate, not an executed branch', panels=panels)
     return packet, dict(id='fictional_fixture', case={'fictional': True}, panels=sources)
 
 
@@ -77,6 +77,43 @@ def test_independent_ties_exact_renderer_complete_partition_and_packet_paths():
     header = units[0]
     assert header['kind'] == 'header' and header['source_resolution'] is None and header['packet_path'] is None
     assert header['global_packet_metadata'][0]['value'] == packet['coordinate_system']
+    assert [v['candidate_commands'] for v in header['candidate_view_availability']] == [list(exporter.COMMANDS)] * 2
+
+
+@pytest.mark.parametrize('change', ['upward', 'missing_axis', 'missing_coordinates', 'wrong_shape', 'nonlocal',
+                                   'missing_conditional', 'wrong_conditional'])
+def test_header_requires_complete_frozen_coordinates_and_conditional_declarations(change):
+    packet, provenance = packet_fixture()
+    if change == 'upward':
+        packet['coordinate_system']['row_direction'] = 'up'
+    elif change == 'missing_axis':
+        del packet['coordinate_system']['column_direction']
+    elif change == 'missing_coordinates':
+        del packet['coordinate_system']
+    elif change == 'wrong_shape':
+        packet['coordinate_system']['rows'] = 5
+    elif change == 'nonlocal':
+        packet['coordinate_system']['separate_local_grids'] = False
+    elif change == 'missing_conditional':
+        del packet['candidate_semantics']
+    else:
+        packet['candidate_semantics'] = 'An executed future branch.'
+    # The frozen renderer still emits the same header, so matching its text
+    # alone must not establish the global declarations checked by this index.
+    report = exporter.deterministic_template(packet)
+    with pytest.raises(ValueError, match='header .* declaration differs'):
+        indexer.index_template(packet, report, provenance)
+
+
+def test_sensor_header_retains_no_candidate_view_without_fabricating_a_forecast():
+    packet, provenance = packet_fixture(source='sensor', joined=False)
+    result = indexed(packet, provenance)
+    header = result['units'][0]
+    assert header['source_resolution'] is None
+    assert header['candidate_view_availability'] == [dict(panel='p0', packet_path=['panels', 0, 'candidates'], candidate_commands=None)]
+    assert packet['panels'][0]['candidates'] is None
+    assert all(u['context']['view'] == 'current' for u in result['units'] if u['kind'] in ('origin', 'role_peaks'))
+    assert not result['semantic_source_attribution_established']
 
 
 def test_actual_hybrid_sources_and_recursive_origins_preserve_every_time_field():

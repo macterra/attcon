@@ -22,6 +22,8 @@ VERSION = 'attention_relational_template_index_v1'
 EXPORT_SHA256 = '4f5f0bc2fa78b3b24b3580f52e306f20df0f3011d079b8139a2bc1f029050837'
 PLAN = 'docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md'
 HEADER = 'Rows increase down; columns right. Current and conditional candidate peaks follow.'
+COORDINATE_SYSTEM = dict(rows=4, columns=4, row_direction='down', column_direction='right', separate_local_grids=True)
+CANDIDATE_SEMANTICS = 'conditional supplied record or estimate, not an executed branch'
 PARAMETERS = dict(offset_unit='Python Unicode code points; start inclusive, end exclusive',
     partition='One fixed header, every origin/role-peak token, every joining space separately; no character omitted.',
     peaks='All exact maxima of supplied lossless float32 values; no normalization or rounding.',
@@ -80,6 +82,10 @@ def index_template(packet, report, provenance):
                      'neutral numerical packet required')
     pipeline.require(type(report) is dict and set(report) == {'schema', 'text', 'propositions'}
         and report['schema'] == exporter.REPORT_SCHEMA and type(report['text']) is str, 'exact literal-report schema required')
+    pipeline.require(pipeline.encoded(packet.get('coordinate_system')) == pipeline.encoded(COORDINATE_SYSTEM),
+                     'header coordinate declaration differs from the complete frozen coordinate system')
+    pipeline.require(packet.get('candidate_semantics') == CANDIDATE_SEMANTICS,
+                     'header conditional declaration differs from frozen candidate semantics')
     panel_names = [p['panel'] for p in packet['panels']]
     pipeline.require(1 <= len(panel_names) <= 2 and len(panel_names) == len(set(panel_names)) and set(panel_names) <= {'p0', 'p1'}
         and set(panel_names) == {p['panel'] for p in provenance['panels']}
@@ -88,6 +94,8 @@ def index_template(packet, report, provenance):
                        for k in ('coordinate_system', 'candidate_semantics') if k in packet]
     tokens = [dict(kind='header', text=HEADER, packet_path=None, value=HEADER,
         context=dict(view='global_convention'), source_resolution=None, global_packet_metadata=global_metadata,
+        candidate_view_availability=[dict(panel=p['panel'], packet_path=['panels', i, 'candidates'],
+            candidate_commands=None if p['candidates'] is None else list(p['candidates'])) for i, p in enumerate(packet['panels'])],
         construction='Authored fixed renderer convention; not a source-content or semantic attribution.')]
     atoms, seen = [], set()
     for pi, panel in enumerate(packet['panels']):
