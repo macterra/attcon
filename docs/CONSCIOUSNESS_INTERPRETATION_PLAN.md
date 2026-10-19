@@ -6,8 +6,9 @@ omit a required source reference. The whole release gate fails; no V5 target
 audits or automatic successor are released. Both independent semantic reviews
 agree: short phases pass and long phases fail, with correct verdict meanings but
 incomplete required citations. Complete the frozen reference assessment before
-choosing another experiment; any witness-to-source analysis must preserve missing
-whole-prose fidelity and distinguish actual A content from copied W.
+choosing another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
+preserves missing whole-prose fidelity and distinguishes actual A content from
+copied W; it commissions no successor auditor or new Reporter run.
 
 Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
