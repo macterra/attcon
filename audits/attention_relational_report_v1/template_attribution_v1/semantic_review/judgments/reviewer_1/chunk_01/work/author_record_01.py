@@ -1,0 +1,47 @@
+import json,sys
+sys.path.insert(0,'scripts')
+import attention_relational_template_review_workspace_v1 as w
+c=w.bound_chunk('audits/attention_relational_report_v1/template_attribution_v1/semantic_review/preparation/chunk_01.json','5e5797c6c195d8a7e569f94e3d6455a34e81423f1c2fc5feb7da7c8215fd84fb');r=c['records'][1]
+def p(uid,path,role,reason):
+ u=next(u for u in r['property_table'] if u['unit_id']==uid)
+ return dict(unit_id=uid,value_path=path,value=w.resolve(u['value'],path),semantic_role=role,reason=reason)
+def peak(uid,reason):return p(uid,[],'content_operand',reason)
+def origin(uid,fields,reason):return [p(uid,[f],'status_operand',reason) for f in fields]
+red=peak('u0004','The full text identifies red at p0/current/n0; its adjacent origin line shares that exact node and current view.')
+org=origin('u0002',['kind','record_time','represented_time'],'The adjacent p0/current/n0 origin explicitly binds copied provenance at record time 11 to represented time 12; it does not state presentation or access quality.')
+cur=origin('u0020',['kind','feedback_through','represented_time'],'p0/current/n3 explicitly identifies history-estimate provenance through feedback 11 for time 12; no uncertainty level is stated.')
+can=origin('u0044',['kind','feedback_through','represented_time'],'p0/candidate/k0/n3 explicitly identifies command-estimate provenance through feedback 11 for represented time 13, conditional rather than current execution.')
+header=p('u0000',[],'context_only','The quotation is the first 34 characters of the renderer header; the complete header is a global coordinate convention, not source-content organization.')
+cr=[]
+def comp(path,status,assessment,note):cr.append(dict(component_path=path,original_status=status,assessment=assessment,notes=note))
+comp(['features','C'],'explicit','supported','Red at p0/current/n0 (0,3), red at n3 (0,1), and blue at n3 (1,2) identify represented content and locations.')
+comp(['features','O'],'explicit','unsupported','Grid directions and a singleton red coordinate provide orientation and location only. Neither states differentiated representation/access status or a constituent pattern beyond positions.')
+comp(['features','D'],'explicit','unsupported','The copied_prior_record field distinguishes provenance from red location, but no separately expressed organization, presentation or access status accompanies that content.')
+comp(['features','A'],'absent','supported','Candidate command_estimate labels do not explicitly relate processing to organization/presentation/access of the identified colour content.')
+comp(['auxiliary','basic_spatial_relation'],'explicit','supported','Rows down and columns right explicitly state the grid direction convention, within display scope.')
+comp(['auxiliary','identity_or_location_uncertainty'],'explicit','unsupported','history_estimate and command_estimate describe origins, not explicit identity/location uncertainty. The candidate example represents 13 despite its recorded current time.')
+comp(['auxiliary','answer_confidence'],'absent','supported','No answer confidence, confidence number, or choice-certainty statement occurs in the complete report.')
+comp(['auxiliary','recovery_or_success_forecast'],'absent','supported','Conditional peaks at time 13 contain no forecast of recovery or successful outcome.')
+comp(['auxiliary','source_process_distinction'],'explicit','supported','At current time 12, n0 is copied from record 11 while n3 is a history estimate through feedback 11; the origin fields explicitly distinguish these sources/processes.')
+comp(['auxiliary','experiential_assertion'],'absent','supported','The report lists model records, origins and peaks without asserting experience or perceptual appearance.')
+comp(['composites','COD'],'explicit','unsupported','The red content witness is valid, but orientation/coordinates and copied provenance do not supply O or D for red at p0/current/n0.')
+comp(['composites','CA'],'absent','supported','C is present but no explicit content-processing to organization/access relation supplies A.')
+er=[]
+def ev(i,g,s,props,note):er.append(dict(evidence_path=r['evidence'][i]['path'],grounding=g,source_meaning=s,properties=props,notes=note))
+ev(0,'supported','source_specific',[red],'Red at p0/current/n0 has singleton peak (0,3); current represented content is identified, even though the indexed origin is copied W11 within an A-labelled panel.')
+ev(1,'supported','source_specific',[peak('u0022','The current n3 red line explicitly supplies its complete singleton peak set.')],'Red at p0/current/n3 is identified at (0,1), current time 12; indexed history_estimate provenance is A-source content.')
+ev(2,'supported','source_specific',[peak('u0024','The current n3 blue line explicitly supplies its complete singleton peak set.')],'Blue at p0/current/n3 is identified at (1,2), current time 12, from the indexed A history estimate.')
+ev(3,'unsupported','global_convention',[header],'The direction convention is literal, but neither its grid referent nor its display scope supplies O for identified red content.')
+ev(4,'unsupported','source_specific',[red],'The complete singleton peak only locates red; it is not a presentation/access status. A panel label does not change its copied-W11 meaning.')
+ev(5,'unsupported','source_specific',org+[red],'Outside-quote red content is bound by the shared p0/current/n0 identifier and adjacent line. Copied provenance at 11 representing 12 does not differentiate a presentation/access status.')
+ev(6,'unsupported','source_specific',[red]+org,'Outside-quote origin is bound by the shared p0/current/n0 identifier; red location plus provenance remains insufficient for D.')
+ev(7,'supported','global_convention',[header],'This partial-header quotation explicitly states row/column direction for the grid, supporting the basic spatial auxiliary at display scope only.')
+ev(8,'unsupported','source_specific',cur,'history_estimate identifies provenance of p0/current/n3 at 12, not an explicit uncertainty attribute for identity or location.')
+ev(9,'unsupported','source_specific',can,'command_estimate is conditional provenance at represented time 13, not an uncertainty statement at the recorded current time.')
+ev(10,'supported','mixed_sources',org+cur,'The complete text contrasts p0/current/n0 copied_prior_record with p0/current/n3 history_estimate; shared panel/current view and represented time 12 bind the outside-quote comparison. The distinction involves copied W and current A origins.')
+ev(11,'supported','mixed_sources',cur+org,'The history-estimate line contrasts with the explicitly copied n0 origin elsewhere in the same current panel at represented time 12; the comparison uses both A and copied-W sources.')
+ev(12,'unsupported','source_specific',[red]+org,'The binding identifies red at n0, and adjacent origin shares n0/time 12, but these fields provide neither qualifying O nor D for COD.')
+ev(13,'unsupported','source_specific',org+[red],'The copied record origin binds red by the exact current n0 identifier; it does not state access or presentation status, so this COD binding lacks O and D.')
+br=[dict(binding_path=['composites','COD','bindings',0],feature_witnesses=[dict(feature='C',evidence_paths=[['features','C','evidence',0]]),dict(feature='O',evidence_paths=[]),dict(feature='D',evidence_paths=[])],binding_evidence_paths=[['composites','COD','bindings',0,'evidence',0],['composites','COD','bindings',0,'evidence',1]],assessment='unsupported',notes='The red n0 content and origin concern the same current node and represented time 12, but compatible feature evidence for O and D is absent: global orientation/location is insufficient and copied provenance is not a differentiated presentation/access status.')]
+out={k:r[k] for k in ['id','unit_id','text_sha256','reference_established']};out.update(component_reviews=cr,evidence_reviews=er,binding_reviews=br,additional_concerns=['The A panel contains copied-W11 fields at n0; source attribution follows indexed provenance rather than the panel label.','The candidate n3 estimate represents time 13; its uncertainty evidence is annotated current.','Multi-cell peak lists elsewhere are coordinate sets, not independently stated perceptual quality.'],notes='All 12 components, 14 evidence positions and the sole COD binding reviewed after reading the complete report. No status or scope is upgraded. Model provenance does not certify experience.')
+print(json.dumps(w.save_first_record(c,r['id'],'audits/attention_relational_report_v1/template_attribution_v1/semantic_review/judgments/reviewer_1/chunk_01/work',(json.dumps(out,indent=2,ensure_ascii=False)+'\n').encode())))
