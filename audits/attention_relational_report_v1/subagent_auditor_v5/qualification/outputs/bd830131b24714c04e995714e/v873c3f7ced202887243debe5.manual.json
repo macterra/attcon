@@ -1,0 +1,71 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "b014412bc14d6a434c74efbd",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "Red at p0/current/n0 has exactly one peak, at (0,0).",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0003"
+      ],
+      "verdict": "supported",
+      "reason": "Red has maximum 1 only at (0,0) and value 0 elsewhere."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "Blue at p0/current/n0 has exactly one peak, at (0,3).",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0004"
+      ],
+      "verdict": "supported",
+      "reason": "Blue has maximum 1 only at (0,3) and value 0 elsewhere."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "Every red peak at p0/current/n0 is left of every blue peak at that node.",
+      "span_ids": [
+        "s0002"
+      ],
+      "source_context_ids": [
+        "c0003",
+        "c0004",
+        "c0005"
+      ],
+      "verdict": "supported",
+      "reason": "The full Cartesian product has just ((0,0),(0,3)); red column 0 is less than blue column 3, so the universal relation holds."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "This is only the Notes heading; it asserts no factual proposition."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001",
+        "a002"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    },
+    {
+      "span_id": "s0002",
+      "assertion_ids": [
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

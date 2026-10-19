@@ -1,0 +1,58 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "20fc078a6dcf515a974f8025",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "The entropy of p0/current/n1/red is positive.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0007"
+      ],
+      "verdict": "supported",
+      "reason": "The only nonzero values are 0.5 at (0,0) and 0.5 at (2,0), giving entropy -2(0.5 ln 0.5) = 0.6931471805599453 nats > 0."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "The speaker's felt clarity is low.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [],
+      "verdict": "not_auditable",
+      "reason": "No supplied field measures felt clarity."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "The positive entropy of p0/current/n1/red explains the speaker's low felt clarity.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [],
+      "verdict": "not_auditable",
+      "reason": "The packet supplies distribution uncertainty but no causal mapping to subjective clarity."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "Notes is a heading and makes no substantive assertion."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001",
+        "a002",
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "All substantive clauses in this span are inventoried explicitly."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

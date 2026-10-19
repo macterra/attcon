@@ -1,0 +1,62 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "d8e2de12620087acad690563",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "The declared origin kind at p0/current/n0 is history_estimate.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0002"
+      ],
+      "verdict": "contradicted",
+      "reason": "The supplied origin kind is copied_prior_record, not history_estimate."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "The contents at p0/current/n0 are newly estimated rather than copied.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0002"
+      ],
+      "verdict": "contradicted",
+      "reason": "The declared copied_prior_record origin identifies copied prior contents, so it conflicts with the claimed new estimate."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "The source record_time at p0/current/n0 is 11.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0002"
+      ],
+      "verdict": "supported",
+      "reason": "The supplied origin explicitly has record_time 11; its represented_time is separately 12."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "This is only the Notes heading; it asserts no factual proposition."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001",
+        "a002",
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

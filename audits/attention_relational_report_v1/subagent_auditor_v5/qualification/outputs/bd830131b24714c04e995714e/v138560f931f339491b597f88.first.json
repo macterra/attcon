@@ -1,0 +1,75 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "2a37318331b94bf18732c5d4",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "At p0/current/n1, some red peak is above a blue peak.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0007",
+        "c0008",
+        "c0009"
+      ],
+      "verdict": "supported",
+      "reason": "The complete red set is {(0,0),(2,0)} and blue set {(1,3)}; the pair ((0,0),(1,3)) has red row 0 less than blue row 1."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "At p0/current/n1, some red peak is below a blue peak.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0007",
+        "c0008",
+        "c0009"
+      ],
+      "verdict": "supported",
+      "reason": "The full pair ((2,0),(1,3)) has red row 2 greater than blue row 1, yielding below alongside above in the relation."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "Every red peak at p0/current/n1 is left of every blue peak there.",
+      "span_ids": [
+        "s0002"
+      ],
+      "source_context_ids": [
+        "c0007",
+        "c0008",
+        "c0009"
+      ],
+      "verdict": "supported",
+      "reason": "Both red peaks (0,0) and (2,0) have column 0; the only blue peak (1,3) has column 3. Each of the two Cartesian pairs satisfies 0 < 3."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "This is only the Notes heading; it asserts no factual proposition."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001",
+        "a002"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    },
+    {
+      "span_id": "s0002",
+      "assertion_ids": [
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

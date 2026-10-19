@@ -1,0 +1,49 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "e05a3d148a1edb6022ac3bb6",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "The only peak of p0/current/n2/red is (1,1).",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0011"
+      ],
+      "verdict": "supported",
+      "reason": "The value at (1,1) is 0.75, at (3,1) is 0.25, and elsewhere is 0, so the maximum is unique."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "The peak probability of p0/current/n2/red is 0.25.",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0011"
+      ],
+      "verdict": "contradicted",
+      "reason": "The maximum is 0.75, not 0.25; 0.25 is the smaller mass at (3,1)."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "Notes is a heading and makes no substantive assertion."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001",
+        "a002"
+      ],
+      "classification": "assertive",
+      "reason": "All substantive clauses in this span are inventoried explicitly."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

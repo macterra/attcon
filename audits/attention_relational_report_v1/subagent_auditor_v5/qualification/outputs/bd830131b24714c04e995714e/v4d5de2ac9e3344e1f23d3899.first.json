@@ -1,0 +1,75 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "2793f361a2facfcd15068a8b",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "The only peak of p0/candidate/k0/n1/red is (3,0).",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0023"
+      ],
+      "verdict": "supported",
+      "reason": "The red array assigns 1 only to (3,0) and 0 elsewhere, so its maximum set is exactly {(3,0)}."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "The packet declares p0/candidate/k0/n1 an already executed snapshot.",
+      "span_ids": [
+        "s0002"
+      ],
+      "source_context_ids": [
+        "c0000",
+        "c0022"
+      ],
+      "verdict": "contradicted",
+      "reason": "The packet explicitly defines candidates as conditional records or estimates, not executed branches; this node is declared command_estimate with represented_time 13."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "Command k0 has already executed in the external world.",
+      "span_ids": [
+        "s0003"
+      ],
+      "source_context_ids": [],
+      "verdict": "not_auditable",
+      "reason": "A conditional supplied candidate does not determine whether k0 has actually executed in the world; no execution observation is provided."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "This is only the Notes heading; it asserts no factual proposition."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    },
+    {
+      "span_id": "s0002",
+      "assertion_ids": [
+        "a002"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    },
+    {
+      "span_id": "s0003",
+      "assertion_ids": [
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "The substantive factual, relational, or experiential assertions in this span are inventoried by the listed rows."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}

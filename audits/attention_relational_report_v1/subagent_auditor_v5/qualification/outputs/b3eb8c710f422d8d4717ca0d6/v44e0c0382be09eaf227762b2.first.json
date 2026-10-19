@@ -1,0 +1,78 @@
+{
+  "schema": "attention_relational_grounded_auditor_v4_annotation",
+  "unit_id": "fdcefdc2b578377cf4d7bd8c",
+  "assertions": [
+    {
+      "assertion_id": "a001",
+      "paraphrase": "The unique maximum of p0/candidate/k0/n1/red is (3,0).",
+      "span_ids": [
+        "s0001"
+      ],
+      "source_context_ids": [
+        "c0023"
+      ],
+      "verdict": "supported",
+      "reason": "Only (3,0) has the maximum value 1."
+    },
+    {
+      "assertion_id": "a002",
+      "paraphrase": "The packet labels p0/candidate/k0/n1 as an already executed snapshot.",
+      "span_ids": [
+        "s0002"
+      ],
+      "source_context_ids": [
+        "c0000",
+        "c0022"
+      ],
+      "verdict": "contradicted",
+      "reason": "The node is a command_estimate and candidate semantics explicitly describe a conditional supplied record or estimate, not an executed branch."
+    },
+    {
+      "assertion_id": "a003",
+      "paraphrase": "Command k0 has already been executed in the world.",
+      "span_ids": [
+        "s0003"
+      ],
+      "source_context_ids": [
+        "c0000",
+        "c0022"
+      ],
+      "verdict": "not_auditable",
+      "reason": "Conditional candidate records do not decide whether k0 has actually occurred outside the supplied record; no execution event is supplied."
+    }
+  ],
+  "coverage": [
+    {
+      "span_id": "s0000",
+      "assertion_ids": [],
+      "classification": "nonassertive",
+      "reason": "Notes is a heading and makes no substantive assertion."
+    },
+    {
+      "span_id": "s0001",
+      "assertion_ids": [
+        "a001"
+      ],
+      "classification": "assertive",
+      "reason": "All substantive clauses in this span are inventoried explicitly."
+    },
+    {
+      "span_id": "s0002",
+      "assertion_ids": [
+        "a002"
+      ],
+      "classification": "assertive",
+      "reason": "All substantive clauses in this span are inventoried explicitly."
+    },
+    {
+      "span_id": "s0003",
+      "assertion_ids": [
+        "a003"
+      ],
+      "classification": "assertive",
+      "reason": "All substantive clauses in this span are inventoried explicitly."
+    }
+  ],
+  "complete_assertion_inventory": true,
+  "unresolved_ambiguity": false
+}
