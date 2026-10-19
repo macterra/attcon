@@ -16,6 +16,11 @@ reviews. A pre-execution finding corrected exporter-derived relation provenance;
 the original source and reviews remain retained. This establishes preparation and
 retention mechanics only. Actual source review still awaits the original V3
 process's observed terminal state and the complete first reference assessment.
+The narrator first-review collector now passes 104 first fictional checks after
+retained pre-execution terminal-order and timestamp-field corrections. Independent
+arithmetic tooling passes 18 separate first checks; its numbers do not certify
+packet provenance or source meaning. Neither milestone supplies a semantic review
+or changes the unestablished whole-prose fidelity result.
 
 The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.

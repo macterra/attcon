@@ -16,6 +16,11 @@ The preserved pre-execution provenance correction marks exporter-derived red/blu
 relations separately from native estimates. Actual semantic review remains pending
 the original V3 terminal assessment; these checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
+The independently reviewed narrator first-judgment collector also passes 104 first
+fictional checks, with terminal verification before reading the data-bearing
+manifest and exact time kinds retained. Its structural checks do not certify
+source ownership, arithmetic assertions or report meaning; actual reviews remain
+pending.
 
 Updated 2026-10-19. **Design plan, not a frozen confirmation protocol. Development
 experiments have been run; no theory-facing confirmation has been completed.** This is the current next-stage plan;
