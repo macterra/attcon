@@ -71,7 +71,11 @@ separately reviewed prospective [relational-content protocol](ATTENTION_RELATION
 neutral exporter, factual auditor and [withheld reference pack](ATTENTION_RELATIONAL_REFERENCE_V1.md)
 before the fixed 552 new report attempts. The protocol, reference and reporting source are frozen and reviewed.
 The first archive export completes with all 552 inputs and 684 causal pairs
-preserved; narration and source-blind rating outcomes remain pending.
+preserved. All first 552 narration attempts returned HTTP 400, with no retained
+reports. A separately retained diagnostic identifies a missing schema type.
+Validate the explicit-type transport amendment on a handcrafted request before
+a separately registered collection using the unchanged inputs and criteria.
+Source-blind ratings and theory-facing evidence remain unestablished.
 The registered run must demonstrate
 actual Controller use, equally informed alternatives and selective A/W controls.
 The [core and collector software](ATTENTION_CONTENT_MODEL_V1_IMPLEMENTATION.md)

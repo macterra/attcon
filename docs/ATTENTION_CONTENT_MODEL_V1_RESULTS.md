@@ -253,5 +253,8 @@ report test. The new protocol/reference and complete source closure are reviewed
 its [first archive export](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 now preserves 552 inputs, 25,440 required peak facts per arm and 684 causal pairs.
 The corrected reporting pipeline passes all 19 handcrafted checks; its original
-18-pass/1-fail fixture result remains preserved. Narration and reference-rating
-outcomes remain pending; these software/source results do not establish qualia.
+18-pass/1-fail fixture result remains preserved. The first 552 narration requests
+all returned HTTP 400 with no retained reports. A separate diagnostic identifies
+missing response-schema types; a versioned type-only amendment is under review.
+The original reporting failure remains unchanged, and reference correspondence
+is unestablished. These software/source results do not establish qualia.

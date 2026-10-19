@@ -104,8 +104,12 @@ sensor controls bound the language pipeline's contribution. This is post-develop
 and does not retrospectively pass v1's stricter manner gate. The source exporter,
 auditor and pipeline are reviewed. The first retained-archive export now completes
 with 552 inputs, 25,440 required peak facts per arm and 684 planned causal pairs;
-all controls, restorations and nulls are retained. Narration and rating outcomes
-remain pending. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
+all controls, restorations and nulls are retained. The first 552 narration attempts
+returned HTTP 400 and retained no reports; the [failure disposition](../audits/attention_relational_report_v1/run/report/failure_disposition.json)
+preserves all attempts. A separate handcrafted diagnostic identifies a missing
+response-schema type. A transport-v2 amendment adds only implied literal types,
+with the original inputs, criteria and failures preserved. Rating and theory-facing
+results remain unestablished. See the [first export receipt](../audits/attention_relational_report_v1/run/export/first_receipt.json)
 and [complete source review](../audits/attention_relational_report_v1/preexecution_review/review.md).
 The ultimate goal remains credible evidence that the attention-control model is
 the source of qualia; protocol readiness or numerical verification alone does not

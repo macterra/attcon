@@ -302,7 +302,9 @@ version. The separate [prospective relational-report protocol](docs/ATTENTION_RE
 now fixes 552 narrator attempts, 552 literal-template comparisons and independent
 source-fidelity/reference endpoints. The reviewed first archive export now preserves
 all 552 inputs, 25,440 required facts per arm and 684 causal comparisons;
-narration and reference-rating outcomes are pending. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
+the first 552 narration attempts all returned HTTP 400, with no retained reports.
+A separate handcrafted diagnostic identifies missing response-schema types;
+a versioned compatibility amendment is being checked before a new collection. The [toy mechanical milestone](docs/ATTENTION_CONTENT_FORM_PRIMITIVES_V1_RESULTS.md)
 passes 12 author and nine independent checks after a preserved restoration correction.
 [MSTC role mapping](docs/MSTC_REPORTING_ROLE_AUDIT_V1.md) keeps Controller
 correction, Modeler refinement and the external Reporter distinct.

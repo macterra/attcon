@@ -787,7 +787,12 @@ Its first retained-archive export completes once: all 552 inputs, 25,440 require
 peak facts per narrator/template arm and 684 planned causal comparisons are
 preserved, including nulls and exact restorations. The source-aware fidelity and
 source-blind reference measurements remain separate, with matched ordinary,
-analytic, W, sensor and template controls. Narration/rating outcomes are pending.
+analytic, W, sensor and template controls. The first 552 narrator attempts all
+returned HTTP 400 and retained no reports. A separately preserved handcrafted
+diagnostic directly identifies a missing response-schema type; the original
+error bodies were not retained. A versioned amendment adds the implied literal
+types while keeping inputs and scientific criteria unchanged. The original
+failed batch remains failed, and no report-correspondence result is established.
 This does not retrospectively change the frozen v1 gate or establish qualia.
 
 ### 6.1 Authorized AI review route
