@@ -57,7 +57,17 @@ judgment or desired positive outcome. It may inspect actual packet/source values
 it may not invoke another reporter/rater, repair outputs, inspect peer grades,
 change rules or edit source evidence. Save each exclusive first artifact before
 any peer comparison. Record reviewer/context identity and exact packet/protocol
-hashes. Humans are optional; shared training and commissioning limit independence.
+hashes. Bind the frozen output schema at
+`audits/attention_relational_report_v1/template_attribution_v1/semantic_review/first_review_output_schema.json`.
+Each stream must retain all 552 positions. Missing, malformed or incomplete first
+chunk judgments retain their actual first artifacts and remain unestablished;
+never replace the reviewer, repeat the judgment or fill gaps to obtain a pass.
+Observe the actual reviewer handle before treating it as terminal; an observation
+timeout does not establish failure. Do not deliver peer comparison or adjudication
+feedback into any unfinished first-review context. Root may adjudicate explicit
+semantic disagreements from retained valid judgments, not manufacture missing
+first reviews or erase mechanical failures. Humans are optional; shared training
+and commissioning limit independence.
 
 Each established template receives three linked review inventories:
 
