@@ -77,7 +77,11 @@ is geometry, not a semantic source-attribution decision.
 
 Two separate-context reviewers independently inspect every valid template evidence
 entry, its complete report/annotation, exact candidate construction properties and
-source provenance. They determine whether the evidence earning the feature
+source provenance. Attribute the particular atomic property or nested origin field,
+including its path and value, rather than an entire intersecting token. Generic
+estimate labels and prefixes alone cannot establish A-content meaning. Review
+whether the quotation actually grounds the claimed reference feature; retain
+unsupported feature grounding separately from unresolved source attribution. They determine whether the evidence earning the feature
 actually concerns each candidate property, retaining the rater's referent,
 attribute, scope and time. Save all first mappings before peer inspection. Root
 may resolve explicit disagreements against unchanged evidence; unresolved cases
@@ -103,7 +107,11 @@ Neither template fidelity nor one attributed quote upgrades the endpoint's scope
 ## Stage 3: the full 684 fixed causal pairs
 
 Retain the original pair inventory, all source/view variants, shams and restoration
-pairs, with per-case results. Compare the actual indexed properties and independently
+pairs, with per-case results. Align properties by source, address and property
+identity, never character offsets or token positions. Construction failures remain
+explicit unavailable measurements within the full inventory; they are neither
+true invariance nor feature absence. Restored or repeated texts/pairs do not add
+independent observations. Compare the actual indexed properties and independently
 attributed endpoint evidence, rather than string changes or required category
 switches. Donor-source changes should move the relevant source property at fixed
 comparison W; fixed-A/W changes should preserve A assertions while allowing W
