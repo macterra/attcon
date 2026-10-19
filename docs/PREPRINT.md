@@ -840,7 +840,9 @@ uses fresh subagent contexts with local numerical calculations. Before any V5
 judgments, it retains the unchanged short qualification and adds four new dense
 fictional reports with350 keyed assertions. First materialization is complete;
 independent review approves every new packet, assertion and operand.
-No V5 qualification pass or target release is claimed. This finite instrument
+Sixteen fictional workflow checks pass after preserved pre-data retention
+corrections, and fresh V5 qualification is now underway. No V5 qualification pass
+or target release is claimed. This finite instrument
 check cannot establish consciousness or general audit reliability.
 A separately planned [literal-template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently reconstructs all 552 texts and 25,440 complete peak sets from

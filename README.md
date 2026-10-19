@@ -42,7 +42,8 @@ would have to be established in the neutral-prose arm.
 A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
 now fixes two fresh reviewer streams, the unchanged short challenge and four new
 dense fictional reports with350 keyed assertions. Independent review approves
-the exact new key; no V5 auditor judgments or target audits have started. Both
+the exact new key, and16 fictional workflow checks pass. V5 qualification is
+underway; target audits remain withheld. Both
 streams must pass both phases before a separate target release can proceed.
 
 Later neutral reporting pilots retain factual-audit failures. The latest
