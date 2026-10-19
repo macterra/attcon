@@ -101,6 +101,12 @@ both independent first reviews find actual verdict/reason errors in both streams
 with complete atom coverage. No V4 target preparation or calls are released. Its
 [separate factual/reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 is fixed before target outputs and retains V3's earlier factual preselection.
+The [complete literal-template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
+is now fixed before V3 label inspection. Build its exact construction-provenance
+index, then independently review what each reference feature actually concerns.
+Use all archived source interventions, nulls and restorations. This factual route
+needs no failed V4 target audit; authored template tracking remains a limited
+measurement result, not spontaneous reporting or an identified experiencing locus.
 The unstarted resource-v2 rater is now explicitly withdrawn. The
 [prospective quote-grounded v3 design](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 retains all 1,104 positions and the frozen semantic criteria while deriving offsets

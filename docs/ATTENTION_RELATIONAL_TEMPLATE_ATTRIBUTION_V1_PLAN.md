@@ -49,6 +49,14 @@ A, inherited records, ordinary, analytic, native W and sensor remain distinct.
 A_only is a hybrid; never attribute all its tokens to A. Preserve represented,
 record, feedback and archived/counterfactual times without substituting fields.
 
+Independently recompute every complete exact-maximal peak set from the actual
+supplied distribution, under the documented float32 convention. Verify stored
+derived peaks and template proposition cells against that independent result;
+reusing the renderer and its stored derived peaks alone is circular. A fixture
+must reject a jointly corrupted derived-peak field, proposition and rendered
+template when the underlying distribution is unchanged. Check literal origin and
+header claims separately rather than treating peak checks as whole-text proof.
+
 Publish this index and its exact reconstruction checks before reference analysis.
 Fixtures verify accounting, mixed origins, Unicode offsets, tied peaks and exact
 restoration; they do not establish semantic correspondence.

@@ -133,7 +133,11 @@ requires planted-error semantic qualification before target calls. Its first
 [48-call qualification fails](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md):
 both independent first reviews agree on verdict/reason errors. No V4 target calls
 are released; the [distinct future assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
-requires both auditors and keeps earlier results separate. The unstarted
+requires both auditors and keeps earlier results separate. The [complete template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
+now fixes a separate construction-verified route before V3 label inspection:
+index every template property, independently assess feature-to-property meaning,
+and retain all original source controls/nulls/restorations. This does not release
+V4 audits or establish spontaneous prose or qualia. The unstarted
 resource-v2 rater remains withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
 with unchanged reference semantics and a separately versioned evidence contract. Its first 31

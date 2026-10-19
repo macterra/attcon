@@ -109,3 +109,10 @@ reviewed full 1,104-position V3 run is now underway. Its preselected interrupted
 resource-v2 factual summary establishes narrator fidelity in zero of 552 positions. These are instrument-development checks, not
 evidence of consciousness. Fresh powered confirmation and replication remain
 necessary for the ultimate theory goal.
+
+The [complete template attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
+is fixed before inspecting V3 judgments. Its separate factual route uses exact
+literal construction, with all reference-to-property meaning independently
+reviewed. It preserves all 552 templates, 684 pairs, mixed origins, true nulls and
+restorations. No result is yet claimed; authored tracking cannot establish a
+spontaneous report or identify the experiencing subsystem.
