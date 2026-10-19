@@ -1,0 +1,30 @@
+from author_util import *
+n=10
+def p(u,path,role,why):return prop(n,u,path,role,why)
+def pk(u,why):return p(u,[],'content_operand',why)
+def oo(u,fields,why):return [p(u,[f],'status_operand' if f=='kind' else 'context_only',why+' '+f) for f in fields]
+o0=lambda:oo('u0002',['kind','record_time','represented_time'],'Copied W11 current n0 provenance')
+o3=lambda:oo('u0020',['feedback_through','kind','represented_time'],'Ordinary current n3 history origin')
+ok=lambda:oo('u0038',['feedback_through','kind','represented_time'],'Ordinary conditional k0 n2 command origin')
+h=lambda:p('u0000',[],'context_only','First sentence defines coordinate directions; second introduces current/conditional inventories.')
+c=[('supported','The current n3 red (1,2) and conditional k0/n2 red (0,1) identify color content and locations.'),('unsupported','Grid orientation, a full-grid n0 coordinate list and a singleton n3 coordinate list do not describe content presentation/organization beyond positions.'),('unsupported','Three origin kinds distinguish provenance but never differentiate content from its organization/presentation/access status.'),('supported','There is no explicit relation from processing to content organization/access among the candidate inventories.'),('supported','The header explicitly defines rows downward and columns rightward.'),('supported','Ambiguity is warranted: history_estimate and command_estimate indicate estimation but do not specify how uncertain red identity/location is; this is not upgraded to explicit uncertainty.'),('supported','No answer confidence is stated.'),('supported','Conditional peaks do not assert recovery or success.'),('supported','Copied prior, history-estimate and command-estimate origins explicitly differentiate source processes.'),('supported','No experiential assertion appears.'),('unsupported','The current n3 red binding has compatible content and provenance but no qualifying organization/presentation/access or D witness.'),('supported','No A relation supports CA.')]
+e=[
+('supported','source_specific',[pk('u0022','Ordinary current n3 red location (1,2).')],'Current red content is identified, with display scope limited to the literal coordinate representation.'),
+('supported','source_specific',[pk('u0040','Ordinary conditional k0/n2 red location (0,1).')],'Future conditional red content is identified; it is not an executed observation.'),
+('unsupported','global_convention',[h()],'The first header sentence defines axes but does not bind a presentation/access status to identified content.'),
+('unsupported','source_specific',[pk('u0004','Copied W11 current n0 all-cell red maxima.')],'An exhaustive coordinate set is still a peak list, not an organization/presentation statement.'),
+('unsupported','source_specific',[pk('u0022','Ordinary current n3 singleton red maximum.')],'A singleton location is specifically excluded as a sufficient O witness.'),
+('unsupported','source_specific',o0()+[pk('u0004','Outside quote: shared current n0 prefix links red content to this copied origin.')],'Copying metadata has no separate presentation/access status for D.'),
+('unsupported','source_specific',o3()+[pk('u0022','Outside quote: current n3 prefix binds red at represented_time12 to history origin.')],'History-estimate origin describes source derivation; red location remains unaccompanied by organization/access status.'),
+('unsupported','source_specific',ok()+[pk('u0040','Outside quote: candidate k0/n2 prefix binds red content to origin at13.')],'Command-estimate provenance is not a content-status differentiation claim, despite matching candidate node/time.'),
+('supported','global_convention',[h()],'The same partial header is independently valid evidence for the auxiliary orientation role.'),
+('unresolved','source_specific',o3()+[pk('u0022','Outside quote: current n3 prefix ties red location to history estimate.')],'Estimate wording permits uncertainty but supplies no identity/location uncertainty amount or assertion. The original ambiguous status remains ambiguous.'),
+('unresolved','source_specific',ok()+[pk('u0040','Outside quote: same candidate k0/n2 prefix ties red location to estimate at13.')],'Command-estimate origin likewise does not resolve whether red location is uncertain; it does not establish an explicit uncertainty claim.'),
+('supported','source_specific',o0(),'The copied-prior kind with record_time11 and represented_time12 explicitly identifies a source process.'),
+('supported','source_specific',o3(),'The history-estimate kind with feedback cutoff11 and represented_time12 is a distinct source process.'),
+('supported','source_specific',ok(),'The candidate command-estimate kind, feedback cutoff11 and represented_time13 explicitly identify conditional estimation.'),
+('supported','source_specific',[pk('u0022','Binding C operand: ordinary current n3 red (1,2).')],'The duplicate binding quote supports current red content at n3/time12.'),
+('unsupported','source_specific',[pk('u0022','Binding O proposal: singleton ordinary n3 red maximum.')],'The identical location quote acquires no presentation-pattern meaning in this separate evidence position.'),
+('unsupported','source_specific',o3()+[pk('u0022','Outside quote: shared current n3 prefix/time12 binds red to history provenance.')],'The binding status operand describes provenance only, not D.')]
+b=[('unsupported',[('C',[0]),('O',[]),('D',[])],[14,15,16],'Current n3 red C evidence0 and own evidence0 share node/time12 with the history origin. O evidence2 is only the same coordinate and D evidence1 only provenance; neither qualifies. Candidate n2/time13 is incompatible with this current binding.')]
+author(n,c,e,b,['The annotation display/sensor scope can describe the literal rendered grid only, not a sensory observation or perceptual appearance.','Estimation language leaves the original uncertainty ambiguity unresolved; it is not an explicit O/D/A witness.'],'Full4830-character report inspected before all17 evidence positions and the single COD binding. All original ambiguous/absent statuses preserved.')
