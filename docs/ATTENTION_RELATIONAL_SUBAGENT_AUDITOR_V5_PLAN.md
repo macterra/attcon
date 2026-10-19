@@ -44,9 +44,13 @@ old annotations, failure summaries or peer answers enter the worker context.
 No qualification feedback is delivered until both phases of both streams have
 saved their first artifacts or their actual agent handles are terminal.
 
-Target contexts, if eventually released, receive four reports each, matching the
-long phase's maximum report length, fact density, packet count, source visibility
-and tools. Every target chunk in each stream starts a fresh `fork_turns=none`
+Target contexts, if eventually released, receive four reports each, using the
+same220-word ceiling, packet count, source visibility and tools as the long
+phase. Targets have no new minimum length and are never truncated. The first
+long reports actually span183–197 words with350 mandatory atoms; archived target
+metadata spans91–215 words. This tests substantial length and dense assertions,
+but does not empirically match the longest target text; preserve that limitation.
+Every target chunk in each stream starts a fresh `fork_turns=none`
 context; no findings or annotations accumulate across chunks. The short phase separately tests the old error categories; its pass
 is not the workload qualification. Qualification is informed development, not
 independent-system or theory confirmation. Four new fictional packets are a
@@ -79,6 +83,11 @@ project-wide search. Put only public material in supplied paths. Access discipli
 is procedural under the host's unrestricted filesystem; logged helper access and
 worker attestations cannot establish the absence of every unlogged read. Disclose
 shared training/commissioning and possible correlated judgment errors.
+
+Incremental tool reading and numerical caching are permitted. Cache arithmetic
+by exact packet identity and source address/time, and resolve every annotation
+against its own supplied context IDs. Cached arithmetic does not replace reading
+each report and inventorying all its assertions.
 
 The helper may enforce JSON shape, required fields and membership in supplied
 ID inventories before submission, like a constrained form. It must provide no

@@ -835,6 +835,13 @@ plus three and one unsupported reasons; auditor 1 also omits one required operan
 Two independent first reviews agree on all atom-level accuracy judgments. These
 finite instrument results release no V4 target preparation or calls and do not
 establish that target reports are false or that consciousness is absent.
+A prospective [tool-assisted auditor method](ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
+uses fresh subagent contexts with local numerical calculations. Before any V5
+judgments, it retains the unchanged short qualification and adds four new dense
+fictional reports with350 keyed assertions. First materialization is complete;
+independent review of every new packet, assertion and operand remains underway.
+No V5 qualification pass or target release is claimed. This finite instrument
+check cannot establish consciousness or general audit reliability.
 A separately planned [literal-template construction index](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_RESULTS.md)
 now independently reconstructs all 552 texts and 25,440 complete peak sets from
 supplied float32 maps, retaining 684 original pairs and exact origin/time/property

@@ -39,6 +39,12 @@ independent reference meaning and source correspondence remain pending. A
 limits those templates to a technical control; qualifying spontaneous structure
 would have to be established in the neutral-prose arm.
 
+A [tool-assisted auditor plan](docs/ATTENTION_RELATIONAL_SUBAGENT_AUDITOR_V5_PLAN.md)
+now fixes two fresh reviewer streams, the unchanged short challenge and four new
+dense fictional reports with350 keyed assertions. Independent review of the new
+key is underway; no V5 auditor judgments or target audits have started. Both
+streams must pass both phases before a separate target release can proceed.
+
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed
 functional use of modeled effects/recovery, and its
