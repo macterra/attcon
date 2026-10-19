@@ -96,8 +96,9 @@ terminal inventory retains 30 returned, six claimed-unknown and 501 never-reserv
 positions. Preserve its whole interrupted collection and factual summary. A
 [distinct grounded-auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
 requires semantic error-detection qualification before further target audits. The first
-[48-call qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md) is now
-running on 24 reviewed fictional cases; no V4 target audit has begun. Its
+[48-call qualification fails](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md):
+both independent first reviews find actual verdict/reason errors in both streams,
+with complete atom coverage. No V4 target preparation or calls are released. Its
 [separate factual/reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 is fixed before target outputs and retains V3's earlier factual preselection.
 The unstarted resource-v2 rater is now explicitly withdrawn. The

@@ -828,9 +828,13 @@ registered resource-stop guard. Its final inventory retains 30 completed respons
 six claimed unknowns and 501 never-reserved positions, without resuming or
 substituting responses. A different audit interface requires semantic qualification
 on planted factual errors before any further target measurement. Its first
-[48-call semantic qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md)
-is now running over 24 independently reviewed fictional cases, with 65 mandatory
-assertions per stream and a separate grading key. Qualification remains unproven.
+[48-call semantic qualification fails](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
+on 24 independently reviewed fictional cases. Both streams cover all 65 mandatory
+atoms and pass mechanics, but make two and one incorrect verdicts respectively,
+plus three and one unsupported reasons; auditor 1 also omits one required operand.
+Two independent first reviews agree on all atom-level accuracy judgments. These
+finite instrument results release no V4 target preparation or calls and do not
+establish that target reports are false or that consciousness is absent.
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original
 summary remains primary, and

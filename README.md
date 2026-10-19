@@ -28,6 +28,11 @@ relabelling the identical table as an outside camera's produced the same stated
 dependence attributed to the camera: with a pretrained reporter, self-attribution
 follows the representation's label.
 
+The latest [grounded-auditor qualification](docs/ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
+retains a complete first failure: both streams pass mechanical checks and inventory
+all atoms but make factual judgment errors. Independent reviews agree; no further
+target audit is released. The separate V3 reference run remains underway.
+
 Later neutral reporting pilots retain factual-audit failures. The latest
 [Controller task assay](docs/FUNCTIONAL_DECISIONS_RESULTS.md) establishes executed
 functional use of modeled effects/recovery, and its

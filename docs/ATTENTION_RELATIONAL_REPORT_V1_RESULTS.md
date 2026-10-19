@@ -88,10 +88,12 @@ uses deterministic report/source addresses and requires actual planted-error
 semantic qualification before another target audit. Its first 19 fictional
 mechanics fixtures and a separate foundation review pass; neither qualifies
 semantic judgments. The first
-[48-call semantic qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md)
-is now running over 24 independently authored and reviewed fictional cases, with
-65 mandatory assertions per stream. Eight additional workflow fixtures pass;
-semantic qualification remains unproven. The
+[48-call semantic qualification fails](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md)
+on 24 independently authored and reviewed fictional cases. Both streams cover
+all 65 mandatory atoms and pass mechanics, but retain verdict/reason errors under
+the unchanged gate. Two independent first reviews agree. No V4 target preparation
+or calls are released. Eight additional workflow fixtures and 15 inert target
+fixtures pass; they do not override semantic failure. The
 [separate V4 factual / V3 reference plan](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and preserves the earlier whole-version result. This is
 informed development, not output-unexposed confirmation. A separately declared V4 factual join cannot

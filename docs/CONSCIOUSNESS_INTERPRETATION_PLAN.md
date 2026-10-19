@@ -130,8 +130,9 @@ projection matches exactly. The resource-v2 auditor was
 zero contract-valid audits in its fixed first 12 completed responses. A
 [distinct auditor design](ATTENTION_RELATIONAL_GROUNDED_AUDITOR_V4_DESIGN.md)
 requires planted-error semantic qualification before target calls. Its first
-[48-call qualification](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION.md) is now
-running; the [distinct future assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
+[48-call qualification fails](ATTENTION_RELATIONAL_AUDITOR_V4_QUALIFICATION_RESULTS.md):
+both independent first reviews agree on verdict/reason errors. No V4 target calls
+are released; the [distinct future assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and keeps earlier results separate. The unstarted
 resource-v2 rater remains withdrawn in favor of a
 [prospective quote-grounded instrument](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_DESIGN.md)
