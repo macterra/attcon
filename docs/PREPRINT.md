@@ -849,6 +849,10 @@ critique limits the template branch to control and reference calibration; it doe
 not rescore target judgments or remove the fixed complete analysis. The
 [prospective semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
 retains every first outcome and requires actual feature and property witnesses.
+Its packet-preparation software is separately reviewed and checked on fictional
+inputs. Actual semantic review awaits the original V3 terminal collection; no
+reference-label result or source-specific correspondence is inferred from software
+readiness.
 
 A [separate V4 factual / V3 reference assessment](ATTENTION_RELATIONAL_V4_FACTUAL_JOIN_PLAN.md)
 requires both auditors and retains the earlier whole-version results. The original

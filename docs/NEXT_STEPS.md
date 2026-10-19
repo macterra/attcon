@@ -108,7 +108,11 @@ and exact property/source/time provenance. A [pre-label grammar review](ATTENTIO
 finds no qualifying O/D/A witness in that renderer; retain the branch as technical
 control and reference calibration. Next apply the [complete semantic review](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
 to what each recorded feature actually concerns, retaining every intervention,
-null and restoration. This route needs no failed V4 target audit; authored template tracking
+null and restoration. The independently reviewed packet preparer passes its first
+nine fictional checks and retains every component, binding, duplicate evidence
+position and both full reviewer streams. Actual preparation/review awaits the
+original V3 batch's observed terminal state; labels remain uninspected. This route
+needs no failed V4 target audit; authored template tracking
 is a limited measurement result, not spontaneous reporting or an identified
 experiencing locus.
 The unstarted resource-v2 rater is now explicitly withdrawn. The

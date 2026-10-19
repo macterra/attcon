@@ -62,6 +62,11 @@ unchanged reference. Its role is technical control and reference calibration.
 This is a capacity critique, not an actual reference result; all first judgments
 and complete semantic-review obligations remain. The [review protocol](ATTENTION_RELATIONAL_TEMPLATE_SEMANTIC_REVIEW_V1.md)
 keeps grounding distinct from source meaning and retains reviewer failures.
+Its first preparation implementation passes nine fictional checks and a separate
+bound source review. It prepares all 23×24 template positions, 552 narrator
+availability rows and 684 pairs, preserving all component/evidence/binding paths.
+Actual packet preparation remains unexecuted pending observed V3 terminal state;
+no scientific reference labels or semantic review results are established.
 
 ## Exact artifacts
 
