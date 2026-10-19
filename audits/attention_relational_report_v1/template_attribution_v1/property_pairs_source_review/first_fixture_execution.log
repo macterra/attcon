@@ -1,0 +1,19 @@
+.......F....                                                             [100%]
+=================================== FAILURES ===================================
+__ test_origin_fields_do_not_control_claim_about_raw_peak_operand_restoration __
+
+    def test_origin_fields_do_not_control_claim_about_raw_peak_operand_restoration():
+        packet, provenance = packet_fixture()
+        original = table(packet, provenance)
+        packet['panels'][0]['current'][1]['origin']['extra_origin_field'] = 'fictional'
+        compared = pairs.compare(original, table(packet, provenance))
+        assert not pairs.all_equal(compared, 'value_unchanged')
+>       assert pairs.all_equal(compared, 'raw_distribution_unchanged')
+E       AssertionError: assert False
+E        +  where False = <function all_equal at 0x7c950af79440>([{'asserted_predicate_tracking': None, 'peak_null_with_raw_distribution_change': None, 'property_identity_sha256': '04...56': '0b95fb3d44dee906b95c04374edd3e2b4d15fd5c40f5e4f61b5ff986bb00a2bc', 'raw_distribution_unchanged': None, ...}, ...], 'raw_distribution_unchanged')
+E        +    where <function all_equal at 0x7c950af79440> = pairs.all_equal
+
+tests/test_attention_relational_template_property_pairs_v1.py:122: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_attention_relational_template_property_pairs_v1.py::test_origin_fields_do_not_control_claim_about_raw_peak_operand_restoration
+1 failed, 11 passed in 0.38s

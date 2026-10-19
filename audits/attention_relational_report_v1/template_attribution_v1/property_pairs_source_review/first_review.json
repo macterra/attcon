@@ -1,0 +1,102 @@
+{
+  "blocking_findings": [
+    "F1",
+    "F2"
+  ],
+  "created_utc": "2026-10-19T23:27:05.454211+00:00",
+  "data_exposure": {
+    "actual_indexes_read": false,
+    "actual_target_exports_read": false,
+    "fictional_fixtures_read": [
+      "tests/test_attention_relational_template_index_v1.py"
+    ],
+    "project_result_summaries_read": false,
+    "reference_annotations_read": false,
+    "semantic_review_judgments_read": false
+  },
+  "execution": {
+    "git_calls": false,
+    "implementation_modified": false,
+    "network_or_api_calls": false,
+    "source_executed": false,
+    "target_analysis_executed": false,
+    "tests_executed": false
+  },
+  "findings": [
+    {
+      "basis": "Delegated requirement: missing/source/time transitions never invariance; Stage1 preserves all represented/record/feedback/archived times and Stage3 matches actual source/address/property.",
+      "blocking": true,
+      "details": "Identity contains only origin_chain[0].represented_time. All inherited origin fields use that same outer time, and peak identity omits the remaining origin chain temporal fields. For a fictional copied_prior_record at represented_time=12 whose record_time changes from11 to10 while its peak set stays equal, the peak property is matched and value_unchanged=True. A nested inherited_origin.represented_time change likewise leaves peak identity and other nested leaves matched. The changed temporal leaf itself is recorded changed, but equal leaves and peaks can still be labeled invariant across a time transition.",
+      "id": "F1",
+      "lines": [
+        68,
+        86
+      ],
+      "required_change": "Define the temporal coordinates establishing comparability and preserve the full relevant temporal origin chain without substituting represented_time for record/feedback/archive time. Changed temporal operands must be unmatched/unavailable rather than invariance. Add fictional record-time, inherited represented-time and archived-time transition fixtures.",
+      "severity": "high",
+      "title": "Temporal identity omits record, archived, feedback and nested represented times"
+    },
+    {
+      "basis": "Delegated requirement: exact source/packet bindings; Stage3 compares actual indexed source-addressed properties.",
+      "blocking": true,
+      "details": "The indexed property path is checked for an equal value; source resolution is separately checked against context. No check proves that packet_path and distribution_packet_path select the node/role named by context. In a fictional packet with equal peak sets at two nodes but different raw distributions, substituting the other node distribution path still passes exact_peak_cells(raw)==unit.value and attaches the wrong raw operand hash. A substituted peak path with equal values likewise passes. The CLI pinned index digest mitigates arbitrary input corruption, but exact binding is not independently verified.",
+      "id": "F2",
+      "lines": [
+        62,
+        76
+      ],
+      "required_change": "Resolve the addressed packet node by panel/view/command/node and role and require exact origin/peak/distribution paths and values to be its operands. Reject cross-node, cross-role and cross-panel path substitution even when values coincide.",
+      "severity": "high",
+      "title": "Resolved address is not tied to indexed packet/distribution paths"
+    },
+    {
+      "basis": "Stage3 requires construction failures retained as explicit unavailable measurements within the full inventory.",
+      "blocking": false,
+      "details": "validate_index, validate_export and property_table raise on construction failure. No per-template unavailable record or per-pair unavailable state exists. The successful path retains552/684 and failures do not become nulls, but explicit unavailable measurements within the full inventory are not implemented.",
+      "id": "F3",
+      "lines": [
+        132,
+        145
+      ],
+      "required_change": "Implement unavailable construction measurements while retaining all684 pairs, or scope this artifact as conditional on fully validated Stage1 and document the unimplemented construction-failure branch.",
+      "severity": "medium",
+      "title": "Construction failures abort instead of retaining unavailable measurements"
+    }
+  ],
+  "limits": [
+    "Static review only; fictional counterexamples reasoned from source, not executed.",
+    "No assertion that any pinned target property actually suffers these cases.",
+    "Pinned CLI index/export hashes protect exact input bytes; F2 concerns independent semantic address-to-operand validation, not evidence of index corruption.",
+    "No claim of semantic correspondence, independent observations or full Stage3 completion.",
+    "Root added and executed fictional tests concurrently; their source/results were not inspected for this first static review."
+  ],
+  "positive_static_checks": [
+    "Matching keys contain no token IDs, positions, character offsets or rendered wording.",
+    "Resolved origin_source_key separates copied W from learned A/ordinary/analytic; context retains panel/view/command/node/role.",
+    "Every scalar nested origin field has an individual value_path.",
+    "Complete exact maxima are independently recomputed from raw4x4 float32 distributions; all ties retained.",
+    "Matched unchanged peaks retain a separate raw-distribution-change flag; missing/source/top-level-represented-time transitions receive None, never unchanged=True.",
+    "Original pair inventory equality,552 tables and684 pairs are required; per-pair rows, source counts and own-baseline restorations retained.",
+    "Restoration equality is nonvacuous and rejects unmatched rows.",
+    "Semantic source meaning and asserted-predicate/endpoint tracking remain unestablished."
+  ],
+  "read_source_sha256": {
+    "docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md": "5abe470b67693a23e7d3ec80c74e7bd4906175d1317fc577fd3ccfe90e0333b3",
+    "scripts/attention_relational_origin_attribution_v1.py": "2fe2df8eb282445e10b35b619f2ab0b2b0d5cd543caf75b269192c2d7a10e187",
+    "scripts/attention_relational_report_v1.py": "501ad9c54d6c32b69df78021a8f4dbd91ce0eaa1f5d6ff3a9b815bbfe343e3c0",
+    "scripts/attention_relational_reporting_pipeline_v1.py": "a4fed8e243139060b104797fa73437b06e4b828722e53ba0030816f1be486ab4",
+    "scripts/attention_relational_template_index_v1.py": "2406180bf573c9c1b7e0f04a17ba1125b735573d8126e621b34da2cc582a5d65",
+    "scripts/attention_relational_template_property_pairs_v1.py": "58ef1153b0ac4f4b2aa8a8ba4e42e5bc3a6ae6b87f8de269f867b48dc8aa2560",
+    "scripts/attention_relational_template_review_v1.py": "2f4fb760810300c024776ea226e490406f5fedf0ede03b45b57405c7ba73c183",
+    "scripts/inventory_attention_relational_origins_v1.py": "65c93cfd4a97df11876c8b00fd2c0852f141e8f44959f016973e408be556d76a",
+    "tests/test_attention_relational_template_index_v1.py": "f1ca3e27c13f5a9ab90c0a070b5f06abf44268dc3a6dc9845a2264686c6fa75e"
+  },
+  "review_basis": "Numerical Stage3 of docs/ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md plus delegated exact-source, temporal, inventory and semantic-scope requirements.",
+  "reviewer": "independent_static_source_review_agent",
+  "schema": "attention_relational_template_property_pairs_v1_first_static_source_review",
+  "source_changed_during_review": false,
+  "source_path": "scripts/attention_relational_template_property_pairs_v1.py",
+  "source_sha256": "58ef1153b0ac4f4b2aa8a8ba4e42e5bc3a6ae6b87f8de269f867b48dc8aa2560",
+  "source_sha256_at_publication": "58ef1153b0ac4f4b2aa8a8ba4e42e5bc3a6ae6b87f8de269f867b48dc8aa2560",
+  "verdict": "blocked_pending_source_amendment_and_fictional_verification"
+}
