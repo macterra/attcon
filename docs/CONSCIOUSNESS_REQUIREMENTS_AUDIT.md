@@ -12,6 +12,13 @@ exposed root disposition. This does not establish feature absence or the
 qualia-source goal. The next development question concerns actual native content
 changes across allocation operations without relying on provenance labels.
 
+The [new command-content diagnostic](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_V1_RESULTS.md)
+retains all 552 positions and 19,008 command pairs. Of 1,008 newly decoded A
+conditional comparisons, 110 change peaks and 898 change only the underlying
+distribution. This identifies information lost by peak-only reporting, not a
+consciousness-related endpoint. Full-distribution/source-relation inspection is
+next; no new Reporter or confirmation is released.
+
 2026-10-19 publication/status correction: GitHub is current through
 [`10c8be81`](https://github.com/macterra/attcon/commit/10c8be81e9d3a089237f385f3706309c495a9d5f),
 verified with authenticated `gh`. The preprint's GitHub blob matches the local

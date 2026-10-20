@@ -20,8 +20,14 @@ across allocation operations without depending on origin labels for its meaning.
 The [bounded command-content diagnostic](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_V1.md)
 now fixes a complete archived-state census of conditional peak contents across
 commands, preserving all sources, nulls and inherited states. Its four bounded
-software checks pass; the first actual census is not yet executed at this checkpoint.
-It commissions no new Reporter, auditor or consciousness judgment.
+software checks pass, and the [first complete result](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_V1_RESULTS.md)
+now retains all 552 positions and 19,008 command pairs. Actual newly decoded A
+conditional contents yield 110 different-peak pairs and 898 equal-peak/raw-change
+nulls, among 1,008 repeated-view/variant comparisons. The next concrete task is to
+inspect full native distributions and their content relations before another
+reporting study: the argmax interface discards much of the command-dependent state.
+All nulls and alternative estimators remain. No new Reporter, auditor or
+consciousness judgment is commissioned by this diagnostic.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and

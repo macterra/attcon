@@ -915,6 +915,17 @@ the current-donor intervention changes the raw A distribution without moving
 this peak, and the literal clause correctly stays unchanged. This establishes
 accurate reporting of the selected A property and a genuine peak-property null,
 not a positive displacement or a consciousness-related source witness.
+A subsequent [bounded command-content census](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_V1_RESULTS.md)
+compares all three available processing-command alternatives at the same archived
+state and conditional time13. It retains all 552 positions and 19,008 command
+pairs, including inherited contents. Among 1,008 newly decoded A conditional
+comparisons, 110 change the complete peak set and 898 change raw distributions
+while retaining the peak. Ordinary yields 138/870, analytic 1,008/0. These are
+repeated views/variants of twelve development cases, not independent systems or
+a powered estimator comparison. Eleven of twelve fixed baseline red A traces
+have identical peaks across all commands. This exposes information lost by the
+argmax report interface, motivating full-distribution inspection; it supplies no
+new report correspondence, executed causal outcome or consciousness result.
 The [static readout-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
 also distinguishes learned map estimates and frozen H readouts from origin labels
 constructed by the exporter. Accurate content/provenance reporting does not
