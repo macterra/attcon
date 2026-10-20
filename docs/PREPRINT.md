@@ -875,7 +875,16 @@ not rescore target judgments or remove the fixed complete analysis. The
 retains every first outcome and requires actual feature and property witnesses.
 Its packet-preparation software is separately reviewed and checked on fictional
 inputs. The original V3 collection is now terminal and its first full reference
-result is preserved. The full template semantic review is running.
+result is preserved. All 46 template first contexts have now ended: 45 retain
+artifacts and one remains missing without replacement. The
+[complete first collection and binding inventory](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md)
+retain all 552 positions and 684 pairs. Independent accounting reconstructs all
+1,104 rows and every position/pair join with zero discrepancies. No original
+binding has all required recorded-support facts true in both first streams; this
+describes judgments, not semantic truth or feature absence. Eleven explicit binding
+disagreements await exposed post-first advice and root disposition. Semantic/source
+closure and predicate-level pair interpretation remain incomplete; no new system
+observation or theory confirmation follows from this accounting.
 One [template context ended without judgments](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
 after displaying metadata outside its assigned chunk. All 24 positions remain
 unestablished for that stream without replacement; its valid counterpart does

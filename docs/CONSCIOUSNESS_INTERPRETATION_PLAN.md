@@ -3,8 +3,14 @@
 The [complete first V3 result](ATTENTION_RELATIONAL_QUOTE_REFERENCE_V3_RESULTS.md)
 now retains all 1,104 outcomes, with 4/552 established narrator annotations and
 148/552 template annotations. Whole-prose narrator fidelity remains 0/552.
-Complete the fixed source reviews and all-pair property accounting before selecting
-another experiment; raw labels are not validated source meanings or qualia evidence.
+All 46 fixed template first contexts have ended, retaining 45 artifacts and one
+missing-review outcome. The [complete readout status](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md)
+records full collection and an independently checked inventory: zero original
+bindings have all required recorded-support facts true in both first streams.
+This is not feature absence or a qualia verdict. Eleven explicit binding
+disagreements are under one post-first advisory pass; explicit semantic/source
+closure and all-pair interpretation must finish before selecting another experiment.
+Raw labels are not validated source meanings or qualia evidence.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
@@ -42,7 +48,8 @@ is now preserved. Both narrator first reviews are terminal; the
 [first source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
 retains one valid chunk and one whole-chunk provenance-field failure, with no
 established source witness and all 684 report-pair correspondences unestablished.
-The complete template review is running. These software checks establish no source/report
+The complete template firsts are now retained; post-first semantic/source closure
+is pending. These software checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
 One [terminal template context](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
 ended without judgments after displaying metadata outside its assigned source

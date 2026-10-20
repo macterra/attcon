@@ -5,7 +5,9 @@
 part of the [existing attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md).
 It does not establish which properties warrant a consciousness-related report
 feature, an asserted predicate's tracking, or a quale-generating locus. The complete
-template semantic review is still running. These are repeated views of the same
+template first reviews are complete, with semantic/source closure still pending
+in the [complete readout](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md).
+These are repeated views of the same
 twelve development cases, with no new model fitting or Reporter calls.
 
 The [first summary](../audits/attention_relational_report_v1/template_attribution_v1/property_pairs/first_summary.json)
@@ -127,6 +129,6 @@ the archive and sidecar are tracked without rewriting earlier evidence or histor
 The [narrator source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
 still establishes no source witness or whole-prose fidelity. Numerical renderer
 tracking does not supply that missing conjunction, spontaneous report organization,
-qualified perceptual appearance or felt experience. Finish both fixed template
-streams and the corresponding complete semantic/property assessment before
+qualified perceptual appearance or felt experience. Both fixed template first
+streams are terminal; finish the complete semantic/property assessment before
 choosing another experiment. The ultimate source-of-qualia goal remains unachieved.
