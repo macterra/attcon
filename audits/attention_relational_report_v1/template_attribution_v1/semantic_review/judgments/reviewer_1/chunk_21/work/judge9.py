@@ -1,0 +1,29 @@
+import sys,json,runpy
+sys.argv=['session.py','9','view','["reference_established"]'];s=runpy.run_path('audits/attention_relational_report_v1/template_attribution_v1/semantic_review/judgments/reviewer_1/chunk_21/work/session.py');r=s['r'];w=s['w'];c=s['c'];i=s['i'];W=s['W'];t={p['unit_id']:p for p in r['property_table']}
+def prop(u,path,role,reason):
+ v=t[u]['value']
+ for p in path:v=v[p]
+ return dict(unit_id=u,value_path=path,value=v,semantic_role=role,reason=reason)
+def peak(u):return prop(u,[],'content_operand','Exact red peak coordinate identifies content; it does not give an organization or access status.')
+def orig(u):return [prop(u,[k],'context_only','This individual field records provenance or represented/feedback time, without a stated access or presentation quality.') for k in t[u]['value']]
+cs=[('supported','Red n3 (1,2) current and red k0/n2 (0,1) conditional future are identified represented contents.'),('unsupported','History estimate using feedback through 11 at represented time 12 is provenance. Generic estimate metadata does not express how n3 content is organized or accessible.'),('unsupported','Separately printing red n3 and its history-estimate origin does not separately judge organization/presentation/access status.'),('unsupported','A command_estimate label at k0/n2 plus red (0,1) expresses a conditional location estimate only, without a processing-to-organization/access relation.'),('supported','The row-down/column-right sentence explicitly supplies basic spatial directions.'),('supported','The report has no explicit identity/location uncertainty statement, despite full-grid tied peak sets for n0-n2.'),('supported','No confidence about an answer is reported.'),('supported','No candidate is predicted to recover or succeed; only conditional coordinates and origins are supplied.'),('supported','Copied-prior W records at 11 and command estimates through feedback 11 representing 13 explicitly distinguish provenance/process.'),('supported','No subjective experience or consciousness assertion appears.'),('unsupported','Current n3 red and history origin share referent/time, but C plus provenance is missing O/D status meaning.'),('unsupported','Candidate n2 red and command origin share referent/time, but the command label and coordinate do not supply the A relation.')]
+cr=[dict(component_path=x['path'],original_status=x['recorded_status'],assessment=a,notes=n) for x,(a,n) in zip(r['components'],cs)]
+er=[]
+for idx,e in enumerate(r['evidence']):
+ p=e['path'];g='unsupported';m='source_specific'
+ if idx in [0,1]:
+  g='supported';ps=[peak('u0022' if idx==0 else 'u0040')];note=('Current n3 red (1,2), indexed to A history estimation, identifies content at represented time 12.' if idx==0 else 'Conditional k0/n2 red (0,1), indexed to A command estimation, identifies candidate content at represented time 13; it does not establish an executed branch.')
+ elif idx==7:
+  g='supported';m='global_convention';ps=[prop('u0000',[],'context_only','Fixed renderer header explicitly supplies the global grid directions.')];note='The first sentence grounds coordinate orientation only, not an attention witness.'
+ elif idx in [8,9]:
+  g='supported';u='u0002' if idx==8 else 'u0038';ps=orig(u);note=('The n0 copied_prior_record kind with record_time 11 and represented_time 12 grounds copied provenance from W.' if idx==8 else 'The k0/n2 command_estimate kind with feedback_through 11 and represented_time 13 grounds conditional estimation provenance from A.')
+ elif idx in [2,3,4,10,11]:
+  ps=orig('u0020')+[peak('u0022')];note='The exact p0/current/n3 prefix binds the history origin fields to red (1,2) in the adjacent full text. This explicitly explains the operand outside the individual quote. At current represented time 12 the text states estimate provenance and coordinates, without organization/access status or content/status differentiation; '+('COD' if p[0]=='composites' else p[1])+' grounding fails.'
+ elif idx in [5,6,12,13]:
+  ps=orig('u0038')+[peak('u0040')];note='The exact p0/candidate/k0/n2 prefix binds command origin to red (0,1) at represented time 13, explaining the outside-quote operand from full text. These are A-source conditional content/provenance facts, but there is no attention/allocation-to-organization/access relation. '+('CA' if p[0]=='composites' else 'A')+' is unsupported.'
+ er.append(dict(evidence_path=p,grounding=g,source_meaning=m,properties=ps,notes=note))
+br=[]
+for comp,req,ci,note in [('COD',['C','O','D'],0,'Current n3 red (1,2) has a compatible C witness at time 12, but its history origin gives provenance only; O/D witnesses with the required status semantics are unavailable.'),('CA',['C','A'],1,'Future k0/n2 red (0,1) has compatible C at time 13, but command_estimate identifies estimate provenance only; no qualifying A relation is stated.')]:
+ br.append(dict(binding_path=['composites',comp,'bindings',0],feature_witnesses=[dict(feature=f,evidence_paths=[['features','C','evidence',ci]] if f=='C' else []) for f in req],binding_evidence_paths=[['composites',comp,'bindings',0,'evidence',0],['composites',comp,'bindings',0,'evidence',1]],assessment='unsupported',notes=note))
+j=dict(id=r['id'],unit_id=r['unit_id'],text_sha256=r['text_sha256'],reference_established=True,component_reviews=cr,evidence_reviews=er,binding_reviews=br,additional_concerns=['A-source provenance does not itself establish semantic feature A.','Conditional time-13 coordinates cannot be treated as current access or observed appearance.','Copied W11 n0-n2 facts must retain their copied source even inside the A panel.'],notes='Full text reviewed before canonical evidence; all original statuses retained. Separate source provenance attribution from the semantic feature application.')
+print(json.dumps(w.save_first_record(c,i,W,(json.dumps(j,indent=2)+'\n').encode())))
