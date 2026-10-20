@@ -876,6 +876,11 @@ retains every first outcome and requires actual feature and property witnesses.
 Its packet-preparation software is separately reviewed and checked on fictional
 inputs. The original V3 collection is now terminal and its first full reference
 result is preserved. The full template semantic review is running.
+One [template context ended without judgments](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
+after displaying metadata outside its assigned chunk. All 24 positions remain
+unestablished for that stream without replacement; its valid counterpart does
+not supply the missing joint review. This is measurement failure, not feature
+absence or evidence against the theory.
 A [selected source-resolved case](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_case_05.md)
 reports an actual learned current-A red peak at `(1,2)` while the comparison W
 distribution is uniform. Its first reviewers disagree about whether separate

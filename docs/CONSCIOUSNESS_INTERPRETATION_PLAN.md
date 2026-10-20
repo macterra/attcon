@@ -38,6 +38,12 @@ retains one valid chunk and one whole-chunk provenance-field failure, with no
 established source witness and all 684 report-pair correspondences unestablished.
 The complete template review is running. These software checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
+One [terminal template context](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
+ended without judgments after displaying metadata outside its assigned source
+chunk. Its 24 positions remain unestablished for that stream, without replacement
+or gap filling. The [retained pair check](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/completed_chunk_checks/first_pair_09.json)
+finds a valid counterpart and a missing first artifact; it does not salvage a
+joint semantic comparison or interpret missing measurements as feature absence.
 The independently reviewed narrator first-judgment collector also passes 104 first
 fictional checks, with terminal verification before reading the data-bearing
 manifest and exact time kinds retained. Its structural checks do not certify
