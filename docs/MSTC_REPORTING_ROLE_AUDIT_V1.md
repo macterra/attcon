@@ -28,6 +28,7 @@ Controller or treated as the proposed experiencing locus. Likewise, the names
 |---|---|---|
 | Visual encoder and addressed memory | Represent sensory categories/evidence and retain delivered samples | Neither implementation labels its contents as experienced presentation |
 | Older recurrent attention predictor | Learns allocation, recovery and command-effect forecasts from observations/history | Training-time errors and recurrence do not demonstrate use of reported bound contents as a Modeler-refinement medium |
+| Current learned content model | Uses addressed recurrent h, sensory V and a command to estimate current/conditional maps; queried candidate readouts select an operation | Faithful learned-content readout and operation selection do not by themselves identify the Modeler-schema's comparison/refinement representation |
 | BoundState | Joins addressed content to attention forecasts; its content policy selects commands | Selection using a binding is not temporal comparison and correction of the content constructor |
 | Grounded structured outcome model | Local sensory-to-success network and separate history-to-delivery network | Changing route history cannot transform its local sensory/risk representation through this forward path |
 | External physical decoder | Reads image-property information from hidden state | Recoverable stimulus statistics do not establish a native model of presentation |
@@ -42,6 +43,24 @@ The structured network computes `risk_hidden` from sensory memory and
 is composed from delivery, current and refresh forecasts. The joint comparator
 has a different input path, but joint input alone does not establish a temporal
 comparison/refinement role.
+
+2026-10-19 addendum: the [current source-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
+and its independent technical review cover
+[attention_content_model_v1.py](../scripts/attention_content_model_v1.py).
+`LearnedContentModel.update` changes addressed h from V, completed-W feedback and
+the executed command. A learned decoder supplies constituents of hybrid maps;
+the exporter separately supplies origin labels. This permits genuine A-content
+reporting, while leaving implicit comparison/status representations unestablished.
+Static inspection does not establish their absence. Operation selection,
+`NativeController` cell targeting and the external Reporter remain distinct stages.
+
+The primary paper assigns narrative access to focal information and appraisal
+signals, while reserving quale generation and comparison for the Modeler-schema
+([v5, pp. 10–11 and 13–16](https://arxiv.org/pdf/2512.01073v5)). That theoretical
+language role does not identify our external Reporter with our native Controller.
+The current reporting analysis tests its narrower source hypothesis; the stronger
+comparison/refinement architecture remains an optional extension. This addendum
+changes no frozen report criterion, first judgment, scope or binding.
 
 This audit relies on inspected code and preserved studies, not fresh model
 execution. The [consistency diagnostic](CONSISTENCY_DIAGNOSTIC_RESULTS.md) already
