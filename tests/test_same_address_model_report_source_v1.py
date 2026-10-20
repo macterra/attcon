@@ -117,6 +117,20 @@ def test_pre_reveal_source_current_and_inheritance_are_owned():
         pilot.predict_checked(ToySource(), obs, recipient, torch.zeros(4, dtype=torch.long))
 
 
+def test_current_identity_gathers_heterogeneous_actual_symbols_not_round_index():
+    obs, recipient, donor, address = toy()
+    actual_symbols = torch.tensor([0, 1, 1, 0], dtype=torch.long)
+    obs = ObservationBatch(obs.v, obs.last_revealed_w, 12, 11,
+                           CommandBatch(address.clone(), actual_symbols), obs.observed)
+    result = pilot.source_triplet(ToySource(), obs, recipient, donor, address)
+    for prediction in result.values():
+        pilot.verify_previous_symbol_identity(prediction, actual_symbols)
+        assert torch.equal(prediction.current[:, 3], prediction.next[torch.arange(4), actual_symbols, 3])
+        assert not torch.equal(prediction.current[:, 3], prediction.next[:, 2, 3])
+        with pytest.raises(ValueError, match='actual previous-symbol'):
+            pilot.verify_previous_symbol_identity(prediction, torch.full((4,), 2, dtype=torch.long))
+
+
 def test_full_context_other_candidates_keep_original_inheritance():
     obs, recipient, donor, address = toy(96)
     address[4:] = torch.arange(92) % 4
@@ -214,13 +228,14 @@ def test_complete_synthetic_source_export_retains72_rows84_pairs(monkeypatch):
     v = torch.randn(96, 4, 24, 4, 4, generator=generator)
     family = torch.randn(96, 4, 3, 24, 4, 4, generator=generator)
     w11 = v.clone()
-    w12 = w11.clone()
-    w12[:, 3] = family[:, 3, 2]
     addresses = torch.zeros(96, 15, dtype=torch.long)
     addresses[:, 11] = 3
     addresses[:, 12] = torch.arange(96) % 4
     symbols = torch.zeros_like(addresses)
     symbols[:, 11] = 2
+    symbols[:4, 11] = torch.tensor([0, 1, 1, 0])
+    w12 = w11.clone()
+    w12[:, 3] = family[torch.arange(96), 3, symbols[:, 11]]
     roles = torch.zeros_like(addresses)
     roles[:, 12] = torch.arange(96) % 2
     mappings = torch.tensor([1, 2, 4]).expand(96, 4, 3).clone()

@@ -20,7 +20,7 @@ SCOPE = 'frozen_same_address_source_inference_only'
 PLAN = 'docs/SAME_ADDRESS_MODEL_REPORT_PILOT_V1_PLAN.md'
 INVENTORY = BASE + '/design_inventory.json'
 ORIGINAL_INPUTS = 'audits/attention_relational_report_v1/registration/inputs.json'
-OUTPUT = BASE + '/source_run'
+OUTPUT = BASE + '/source_run_operational_correction_v1'
 ARTIFACT_PATHS = {
     'heldout': 'audits/attention_content_model_v1/run/heldout/states-1311.pt.gz',
     'fit': 'audits/attention_content_model_v1/run/fit/states-1311.pt.gz',
@@ -33,6 +33,7 @@ RECEIPT_PATHS = {
 REQUIRED_SOURCES = {
     'scripts/same_address_model_report_source_v1.py',
     'tests/test_same_address_model_report_source_v1.py',
+    'docs/SAME_ADDRESS_MODEL_REPORT_PILOT_V1_SOURCE_CORRECTION.md',
     'scripts/attention_relational_report_v1.py',
     'scripts/attention_content_model_v1_reference.py',
     'scripts/attention_content_model_v1.py',
@@ -215,6 +216,15 @@ def predict_checked(source, observation, state, candidate, partial=None):
                             fork_outcomes_visible=False)
 
 
+def verify_previous_symbol_identity(prediction, previous_symbols):
+    """The current issued symbol is per row, not its ordinal round number."""
+    import torch
+    rows = torch.arange(min(4, prediction.current.shape[0]))
+    actual_symbols = previous_symbols[:len(rows)]
+    require(torch.equal(prediction.next[rows, actual_symbols, 3], prediction.current[:len(rows), 3]),
+            'same-address actual previous-symbol conditional/current identity differs')
+
+
 def source_triplet(source, observation, recipient, donor, candidate, progress=None):
     from attention_content_model_v1 import snapshot_state, patch_addressed_state, restore_state
     import torch
@@ -334,8 +344,8 @@ def build_source_export(bundle, fit, native, inventory, progress=None):
     indices = torch.arange(4)
     require(torch.equal(episode['command_addresses'][:4, 11], torch.full((4,), 3, dtype=torch.long)),
             'previous address must be3')
-    require(torch.equal(episode['command_symbols'][:4, 11], torch.full((4,), 2, dtype=torch.long)),
-            'registered previous command must be c2')
+    require(torch.equal(episode['command_symbols'][:4, 11], torch.tensor([0, 1, 1, 0], dtype=torch.long)),
+            'registered actual previous symbols differ')
     roles = episode['query_roles'][:4, 12].clone()
     require(torch.equal(roles, torch.tensor([0, 1, 0, 1])), 'queried role differs')
     require(episode['V'].shape[0] == 96, 'original96 arithmetic context required')
@@ -393,7 +403,7 @@ def build_source_export(bundle, fit, native, inventory, progress=None):
             progress['native_readouts'][key + '/' + variant] = values
             archived_current = retained['selected_current_maps'][:, 11] if variant != 'source_donor' else ledger['selected_current_maps'][:, 0]
             archived_fields = retained['selected_current_fields'][:4, 11] if variant != 'source_donor' else ledger['selected_current_fields'][:4, 0]
-            require(torch.equal(prediction.next[:4, 2, 3], prediction.current[:4, 3]), 'same-address c2 conditional/current identity differs')
+            verify_previous_symbol_identity(prediction, observation.previous_command.symbol)
             require(torch.equal(prediction.current[:, 3], archived_current), 'archived current native map mismatch: ' + key + '/' + variant)
             require(torch.equal(values['current_fields'], archived_fields), 'archived current H mismatch: ' + key + '/' + variant)
             archived_next = retained['selected_next_maps'][3, 12] if variant != 'source_donor' else ledger['selected_next_maps'][3, 0]
