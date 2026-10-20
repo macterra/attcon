@@ -1,0 +1,35 @@
+import json
+from pathlib import Path
+p=Path(__file__).parent
+
+def ref(u,path,role,reason):return [u,path,role,reason]
+red=[ref('u0010',[],'content_operand','Copied W11 red peak at (0,2), explicitly identified by p0/current/n1.')]
+origin=[ref('u0008',['kind'],'context_only','copied_prior_record is the provenance class.'),ref('u0008',['record_time'],'context_only','The record is from time 11.'),ref('u0008',['represented_time'],'context_only','The copied record is presented as representing time 12.')]+[ref('u0010',[],'content_operand','Outside the quote, the identical p0/current/n1 prefix binds this red content to that origin.')]
+candidate=[ref('u0050',['kind'],'context_only','command_estimate labels an analytic conditional estimate.'),ref('u0050',['feedback_through'],'context_only','Only feedback through 11 is named.'),ref('u0050',['represented_time'],'context_only','The conditional estimate represents future time 13.'),ref('u0052',[],'content_operand','Outside the origin quote, the same p0/candidate/k1/n0 prefix attaches these red cells.'),ref('u0054',[],'content_operand','The full text gives blue at the same candidate node; it is another constituent, not an access-status claim.')]
+s={'components':[
+['supported','The current p0/n1 red entry names the red content and the singleton location (0,2), sufficient for C.'],
+['unsupported','copied_prior_record at p0/current/n1 and command_estimate at p0/candidate/k1/n0 describe source provenance and temporal indexing. They do not state how content is presented or accessed beyond candidate coordinates.'],
+['unsupported','Red (0,2) and its copied record provenance are separate data fields, but the report never separately attributes an organization/presentation/access status to that red content.'],
+['supported','The named k conditions and inherited records do not state an allocation or processing relation to content presentation. A absence is warranted.'],
+['supported','The grid orientation explicitly states increasing row and column directions.'],
+['unsupported','All 16 locations are co-listed for p0/current/n0, n2 and n3, contrasted with a singleton at n1. The report therefore leaves multiple location candidates, which makes the absence of location uncertainty unwarranted.'],
+['supported','There is no asserted answer-confidence value or verbal certainty in these location/provenance tables.'],
+['supported','Future conditional coordinate tables contain no recovery or success forecast.'],
+['supported','p0/current/n3 is explicitly a history_estimate through feedback 11, unlike copied_prior_record entries and future command_estimate entries. This supports source/process distinction at model provenance scope.'],
+['supported','The report has no experiential self-assertion or appearance claim.'],
+['unsupported','The single COD binding links red and copied origin at p0/current/n1 time 12, but neither O nor D is established by provenance alone.'],
+['supported','With no explicit content-processing-to-presentation relation, CA absence is warranted.']],
+'evidence':[
+['unsupported','source_specific',red,'The quote identifies red at (0,2), but its claimed model_access scope does not follow from copied W11 coordinates. C content identification itself is present.'],
+['unsupported','source_specific',origin,'The shared p0/current/n1 prefix binds copied provenance to red, but source age and represented time do not state access/presentation status; O is unsupported.'],
+['unsupported','source_specific',candidate,'The candidate origin is correctly future time 13, and both color lists attach by the same node prefix in the full report. command_estimate identifies a forecast source, not O access or organized representation beyond coordinate listing.'],
+['unsupported','source_specific',red,'A singleton red location is identified, with no separately expressed presentation status. The D evidence role is unsupported.'],
+['unsupported','source_specific',origin,'The copied record metadata belongs to the same red entry but distinguishes provenance, not content from presentation/access. It does not ground D.'],
+['supported','global_convention',[ref('u0000',[],'context_only','The renderer explicitly specifies rows down and columns right.')],'Grid orientation is explicit display convention and supports the auxiliary spatial relation.'],
+['supported','source_specific',[ref('u0020',['kind'],'context_only','history_estimate identifies an analytic estimate instead of a completed record.'),ref('u0020',['feedback_through'],'context_only','Its available feedback is through 11.'),ref('u0020',['represented_time'],'context_only','It represents current time 12.')],'The current history-estimate entry explicitly names the process/provenance distinction at p0/n3. It does not assert that the world is as estimated.'],
+['unsupported','source_specific',red,'The COD red entry supplies identified content but lacks O/D status meaning; coordinate identity is insufficient for COD.'],
+['unsupported','source_specific',origin,'The binding joins copied provenance to the same current red content by prefix and represented_time 12. That link is real, but neither record age nor provenance is an organization/access status.']],
+'bindings':[['unsupported',[['C',[0]],['O',[]],['D',[]]],'The binding red and origin entries agree on p0/current/n1 and represented time 12. C is identified, but O0/D1 only label a copied time-11 record. O1 concerns another node and future time 13 and also lacks O meaning. No compatible O/D witnesses establish COD.']],
+'concerns':['The explicit O/D/COD ratings substitute provenance-field separation for content/status differentiation.','The model_access scope is not warranted by the coordinate and origin assertions.','Multicell peak sets may be missed location uncertainty; the original absence remains unrepaired.'],
+'notes':'The complete 11,196-character report was read in two consecutive text pages. The C/COD operands are indexed copied_W11 despite the analytic panel label. The candidate O operand is source_conditional analytic, with no executed-branch claim.'}
+with (p/'spec_1.json').open('x') as f:json.dump(s,f)
