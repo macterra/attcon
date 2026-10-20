@@ -23,6 +23,14 @@ identical. Original narrator input was already full-distribution; this identifie
 a template omission, not a qualified report-correspondence result. No new Reporter
 or confirmation is released.
 
+The [bounded same-address reporting pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_PLAN.md)
+is now selected:72 short reports/84 pairs on one fixed encoder and four previously
+exposed heldout-native cases. It tests actual current-A and future content at the
+same node with matched sources, donor/restoration and W changes. This is a design,
+not an executed study or a new independent sample. Technical-only/unresolved or
+failed measurement ends this source/interface reporting route; optional stronger
+comparison/refinement development is distinct. No successor-auditor loop is released.
+
 2026-10-19 publication/status correction: GitHub is current through
 [`10c8be81`](https://github.com/macterra/attcon/commit/10c8be81e9d3a089237f385f3706309c495a9d5f),
 verified with authenticated `gh`. The preprint's GitHub blob matches the local

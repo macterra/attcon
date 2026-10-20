@@ -941,6 +941,14 @@ the published score rule's preference changes k2 to k0. Its donor margin is only
 from the template, not an observed executed action, appearance or missing narrator
 input. Reporter, processing-command score readout and native Controller targeting
 remain distinct. The fixed source/semantic interpretation stays unresolved.
+A subsequent [bounded same-address reporting design](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_PLAN.md)
+fixes72 short-report opportunities and84 pairs on encoder1311/worlds0–3 from the
+already exposed heldout-native archives. It will align current learned content
+and future alternatives to one addressed item, with ordinary/analytic/W comparisons,
+source donor/restoration and fixed-source W changes. No new source or report
+execution has occurred. Technical-only, unresolved or failed assessment outcomes
+close this reporting route for the current source/interface rather than triggering
+another reporter/auditor adjustment. This is development design, not confirmation.
 The [static readout-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
 also distinguishes learned map estimates and frozen H readouts from origin labels
 constructed by the exporter. Accurate content/provenance reporting does not

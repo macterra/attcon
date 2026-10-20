@@ -36,8 +36,15 @@ One underlying donor case in two views changes the reconstructed processing
 preference despite an identical literal template, with its small winning margin
 retained. This identifies control-relevant information omitted by the template,
 not missing narrator input, appearance or the full recurrent state. The fixed
-semantic result remains unresolved. Next choose a distinct same-content source
-report test; no new Reporter, auditor or consciousness judgment is released here.
+semantic result remains unresolved. The [one bounded same-address pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_PLAN.md)
+now fixes the next distinct question: current actual-A content and future processing
+effects on the same item. Its design retains72 short reports and84 pairs on one
+fixed encoder/four exposed cases, matched estimators/W and donor/restoration/W-change
+controls. Source implementation and full assessment bindings come before new
+inference/reports. If the pilot is technical-only, unresolved or fails assessment,
+close this reporting route for the present source/interface and consider the
+separate optional MSTC comparison/refinement study. Do not continue adjusting
+reporters/auditors to seek a pass. No new report or theory result is released here.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
