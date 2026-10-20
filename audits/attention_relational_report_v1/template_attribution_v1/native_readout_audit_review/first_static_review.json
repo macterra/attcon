@@ -1,0 +1,359 @@
+{
+  "schema": "attention_relational_native_readout_audit_independent_static_review_v1",
+  "recorded_at_utc": "2026-10-20T00:36:38.947724+00:00",
+  "reviewer": "native_readout_provenance_static_review_subagent",
+  "status": "complete_first_review_no_repair_loop",
+  "scope": "Independent technical review of named static path audit and inference limits; not a template first semantic review, target judgment, or new system observation. Frozen reference read solely for criterion preservation.",
+  "input_sha256": {
+    "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md": "7f789a9121402ecedfbd9b4341edd7ed328c7603d7aceb42131608e87369fcaf",
+    "audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_native_readout_provenance_audit.json": "ced2fee9399ace51c35a899e1ca4de00e6a8eeb8617eb4328575d166385dd71f",
+    "scripts/attention_content_model_v1.py": "a950a4228e5358a6896c73b729ac0e85e630cec8ae05b3944e03a6019221c0b8",
+    "scripts/attention_relational_report_v1.py": "501ad9c54d6c32b69df78021a8f4dbd91ce0eaa1f5d6ff3a9b815bbfe343e3c0",
+    "audits/attention_relational_report_v1/reference/reference.json": "6b1bd23576e95bae347213f36f6eed42982106386c6a4213704190c777d6cc53",
+    "scripts/attention_content_model_v1_experiment.py": "4f537c112c3660f0dbd60d72f751a806f83f00b05224d42e6e62699452db8b45",
+    "scripts/spatial_native_task_v1.py": "70be375e80612562d1d459d07beff79e04fac6606d767035c97138a2281e965d"
+  },
+  "conclusion": {
+    "disposition": "central_producer_separation_supported_with_technical_and_evidentiary_qualifications",
+    "summary": "Learned-content/exported-origin separation, composite assembly, candidate readout operation choice and retained-field reuse are supported statically. Qualify controller naming, aggregate diagram dependencies, bounded-prediction wording and unverified imported case/commit claims. The inspected audit adds no scoring requirement and does not exclude implicit representations.",
+    "material_qualification_ids": [
+      "F02",
+      "F03",
+      "F07"
+    ],
+    "target_or_qualia_verdict": null
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "assessment": "supported_with_scope_qualification",
+      "title": "Learned estimates are constituents of composite maps",
+      "statement": "The addressed recurrent state, shared decoder, current replacement and candidate replacement are accurately described. Full current/candidate maps are not wholly decoder outputs.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 9-14,19-22",
+          "evidence": "The prose and diagram distinguish decoder output from copied prior W."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 146-155,243-283",
+          "evidence": "SourceState has hidden and history/source fields; decode concatenates normalized selected V, hidden and one-hot symbol; predict selects addressed V/h."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 205-221",
+          "evidence": "current = observation.last_revealed_w.clone(); at nonzero decision_time replace command.address; each next_maps clones current and replaces candidate_address."
+        }
+      ],
+      "limitation": "The current replacement has a decision_time guard: at time 0 current is exactly V (ObservationBatch.validate lines 129-131). The exporter fixes decision_time=12, where the audit description applies. Architecture alone does not verify fitted weights, predictive accuracy or learned h contents."
+    },
+    {
+      "id": "F02",
+      "assessment": "technical_naming_imprecision_moderate",
+      "title": "Operation choice and NativeController targeting are distinct stages",
+      "statement": "The stated operation-selection algorithm is correct for NativePredictionReadout.choose. Calling it the native Controller is imprecise if read as the actual NativeController class: that class reads completed W and targets a grid cell. The diagram omits that later stage.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 13-14,23-24,43-44",
+          "evidence": "The native Controller is said to read candidate maps through H and choose an operation; the choice-function link points to NativePredictionReadout.choose."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 461-499",
+          "evidence": "NativePredictionReadout copies and freezes H; choose compares queried-role spatial maxima across three candidate symbols and calls choose_from_maxima."
+        },
+        {
+          "path": "scripts/attention_content_model_v1_experiment.py",
+          "location": "lines 585-586,709-713",
+          "evidence": "readout and controller are separately instantiated; readout.choose precedes execute_command and _native_action(controller,v,executed,...)."
+        },
+        {
+          "path": "scripts/attention_content_model_v1_experiment.py",
+          "location": "lines 401-413",
+          "evidence": "_native_action converts W into AddressedState and calls controller.consume then controller.target."
+        },
+        {
+          "path": "scripts/spatial_native_task_v1.py",
+          "location": "lines 278-310",
+          "evidence": "NativeController.consume reads actual_w through H; target chooses the first maximum cell for the queried role."
+        }
+      ],
+      "limitation": "This is a class/stage attribution and diagram-scope qualification, not a refutation of native use of predictions. An informal use of controller for the broader subsystem can accommodate the prose, but must not conflate it with the named class or treat the displayed route as the full action loop."
+    },
+    {
+      "id": "F03",
+      "assessment": "supported_with_diagram_dependency_qualification",
+      "title": "Inherited W is outside the selected candidate route for operation choice",
+      "statement": "The diagram aggregates full-map assembly/export correctly, but its copied-W -> maps -> H -> maxima -> choice route must not imply that inherited W constituents or current fields directly determine operation choice in the inspected caller. Only the overwritten queried candidate address is consumed.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 19-25,32-33,38",
+          "evidence": "The diagram merges current/candidate maps and copied W before H and labels itself computational dependencies; the table correctly specifies candidate fields feed choice."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 214-216,496-499",
+          "evidence": "Candidate assembly overwrites candidate_address; choose indexes prediction.next at address and compares maxima of the queried role."
+        },
+        {
+          "path": "scripts/attention_content_model_v1_experiment.py",
+          "location": "lines 618-621,709-711",
+          "evidence": "The same address is passed to prediction and readout.choose."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 280-283",
+          "evidence": "The candidate decoder receives selected V/h/symbol, not copied current maps."
+        }
+      ],
+      "limitation": "This is a direct dependency statement at fixed V/h; prior W can affect h through feedback (update lines 256-273). Generic choose accepts a separate address and does not enforce sameness; the inspected experiment caller does. Address/role inputs and tie-breaking are also omitted from the simplified diagram."
+    },
+    {
+      "id": "F04",
+      "assessment": "supported_static_producer_claim",
+      "title": "Origin producer is exporter; label accuracy depends on supplied context",
+      "statement": "_origin produces literal labels and fixed time fields from source/view/address roles and a W-counterfactual flag without receiving maps, h or weights. Correct label production does not itself validate the provenance of arbitrary supplied fields.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 40,44-47,51-54",
+          "evidence": "The table and prose attribute the literal labels to _origin, distinct from the described estimate."
+        },
+        {
+          "path": "scripts/attention_relational_report_v1.py",
+          "location": "lines 206-232",
+          "evidence": "_origin branches on source_key, view, node==previous, node==candidate and w_counterfactual; _public_nodes calls it beside independently supplied distributions."
+        },
+        {
+          "path": "scripts/attention_relational_report_v1.py",
+          "location": "lines 235-262,282-295",
+          "evidence": "Origins enter public content and deterministic_template prints their JSON beside peaks."
+        },
+        {
+          "path": "scripts/attention_relational_report_v1.py",
+          "location": "lines 627-640,670-701",
+          "evidence": "The specific builder fixes t=12 and reconstructs fields from prior W/retained arrays with separate donor/restoration gates."
+        }
+      ],
+      "limitation": "_origin does not inspect values, validate a history or establish representational/phenomenal status. Contextual provenance and native bookkeeping may still be informative; a separate literal-label producer does not exclude implicit h representations."
+    },
+    {
+      "id": "F05",
+      "assessment": "supported_static_export_and_readout_path",
+      "title": "Retained H fields and exact maxima are reused without a new H forward",
+      "statement": "The archive-reuse sentence and table match the static path: evaluation computes H-derived selected/actual fields; export assembles retained fields and derives all exact maxima instead of forwarding H again.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 25,33,35-40",
+          "evidence": "H feeds role grids; export reuses retained fields; complete peak sets come from exact-maxima calculation."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 468-486",
+          "evidence": "H is copied to eval mode with disabled gradients; consume standardizes raw maps and computes head logits then role_fields."
+        },
+        {
+          "path": "scripts/spatial_native_task_v1.py",
+          "location": "lines 227-239",
+          "evidence": "role_fields is spatial softmax of role/background logit contrasts with uniform values for identical scores, returned in original dtype."
+        },
+        {
+          "path": "scripts/attention_content_model_v1_experiment.py",
+          "location": "lines 591-592,645-670,788-796,853-854",
+          "evidence": "Evaluation retains actual-family/completed fields, selected_next_fields, selected_current_fields and donor policy fields."
+        },
+        {
+          "path": "scripts/attention_relational_report_v1.py",
+          "location": "lines 184-190,577-590,632-700",
+          "evidence": "Peaks use value==max(flat); _case_panels reassembles fields and checks restoration identities before reusing base H fields."
+        }
+      ],
+      "limitation": "These are readouts of map contents, not independently calibrated object-presence or phenomenal measures. Static code establishes intended producer/reuse paths, not actual archived execution or integrity. Exact peaks concern supplied float32 fields. No archives or runtime receipts were inspected."
+    },
+    {
+      "id": "F06",
+      "assessment": "minor_ambiguity_no_numerical_bound_established",
+      "title": "Bounded prediction must mean bounded scope rather than an error guarantee",
+      "statement": "The table calls the estimate a bounded prediction of map contents. A task-limited prediction is supported; a useful numerical output/error bound is not.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "line 37",
+          "evidence": "A bounded prediction of map contents."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 234-236,243-254",
+          "evidence": "The decoder ends in an unrestricted Linear layer, adds its residual to normalized V and denormalizes."
+        },
+        {
+          "path": "scripts/attention_content_model_v1.py",
+          "location": "lines 29-33,186-191",
+          "evidence": "Validation checks finite float32 shape, not accuracy relative to W or a prediction-error threshold."
+        }
+      ],
+      "limitation": "The phrase may merely mean limited scope, in which case no technical contradiction follows. Finite dtype/finite-value checks do not supply a learned error guarantee; no empirical error was measured."
+    },
+    {
+      "id": "F07",
+      "assessment": "not_independently_verified_in_this_scope",
+      "title": "Selected coordinate case and commit provenance are imported claims",
+      "statement": "The architecture can supply genuine learned report constituents, but the specific (1,2) peak, its difference from W and its prior verification are not independently established by this permitted static review. The asserted source commit was also not independently checked.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 5,42-54",
+          "evidence": "The document calls source committed, links a verified prior binding case and asserts a learned A peak at (1,2) different from comparison W."
+        },
+        {
+          "path": "audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_native_readout_provenance_audit.json",
+          "location": "/selected_verified_case",
+          "evidence": "literal_A_content_correspondence_supported=true; a_peak=[[1,2]]; native_learned_status_representation_established=false; full_COD_meaning=unresolved."
+        },
+        {
+          "path": "audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_native_readout_provenance_audit.json",
+          "location": "/source_commit",
+          "evidence": "657a1b74af388a231652e471d7f0d36c70a8e24a"
+        }
+      ],
+      "limitation": "All supplied hashes and all 12 exact AST excerpts match local bytes. Neither that nor source definitions verifies a particular saved output or commit. The cited binding case, first judgments, templates, archives and Git history were intentionally excluded. This is an unverified imported claim here, not evidence of falsehood."
+    },
+    {
+      "id": "F08",
+      "assessment": "inference_limits_and_no_new_scoring_requirement_supported",
+      "title": "Implicit representation and report criteria remain open",
+      "statement": "The audit allows derived readouts, rejects native-word requirements, does not exclude implicit h representations and leaves status/organization disputes unresolved. Its claim that a faithful conjunction alone does not demonstrate learned status representation or qualia is an inference limit, not an added scoring condition. No contradictory new criterion appears in the inspected text.",
+      "evidence": [
+        {
+          "path": "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md",
+          "location": "lines 32-33,52-64",
+          "evidence": "No experiencing subsystem is identified; status accuracy does not demonstrate learned access/appearance representation; native words are not required; implicit representations are not excluded; criteria/judgments are declared unchanged."
+        },
+        {
+          "path": "audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_native_readout_provenance_audit.json",
+          "location": "/findings/3",
+          "evidence": "The faithful conjunction does not by itself demonstrate learned organization/access status or qualia; absence of implicit representation is not established."
+        },
+        {
+          "path": "audits/attention_relational_report_v1/reference/reference.json",
+          "location": "lines 19-41,69-96,269-273",
+          "evidence": "O/D/COD concern expressed bound content/status structure; model/access/appearance scopes are distinct; fidelity is joined separately; no private-experience or task-necessity requirement."
+        }
+      ],
+      "limitation": "Using exporter provenance as an automatic O/D/COD disqualifier, or requiring a dedicated native status variable, vocabulary, task necessity or separate h-status evidence for report scoring would add requirements not established by the reference. This review assigns no feature/target judgment, cannot verify unchanged historical ratings without excluded evidence, and cannot settle actual implicit status representation or qualia."
+    }
+  ],
+  "exact_AST_excerpt_checks": [
+    {
+      "name": "SourceState",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "PredictionBatch",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "_assemble",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "LearnedContentModel.decode",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "LearnedContentModel.update",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "LearnedContentModel.predict",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "NativePredictionReadout.consume",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "NativePredictionReadout.choose",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "_origin",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "_public_nodes",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "localization_summary",
+      "exact_AST_source_match": true
+    },
+    {
+      "name": "deterministic_template",
+      "exact_AST_source_match": true
+    }
+  ],
+  "method": {
+    "local_text_hashes_and_stdlib_AST_only": true,
+    "torch_or_model_import": false,
+    "execution_or_fit": false,
+    "API_network_or_Git": false,
+    "archives_opened": false,
+    "agents_spawned": false,
+    "inputs_changed": false
+  },
+  "inspected_source_ranges": {
+    "docs/ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md": [
+      "1-64"
+    ],
+    "scripts/attention_content_model_v1.py": [
+      "1-305",
+      "415-499"
+    ],
+    "scripts/attention_relational_report_v1.py": [
+      "1-74",
+      "128-298",
+      "558-590",
+      "627-739"
+    ],
+    "scripts/attention_content_model_v1_experiment.py": [
+      "8-25",
+      "388-413",
+      "570-595",
+      "598-681",
+      "699-724",
+      "738-759",
+      "782-800",
+      "847-858"
+    ],
+    "scripts/spatial_native_task_v1.py": [
+      "170-216",
+      "227-239",
+      "242-315"
+    ],
+    "audits/attention_relational_report_v1/reference/reference.json": [
+      "1-100",
+      "264-277"
+    ]
+  },
+  "reference_access_note": "Keyword search of the frozen reference was used only for criterion checking; focused reads covered definitions/classification/scope, not a target scoring exercise.",
+  "limits": [
+    "No template chunks, first source judgments, peer grades, other project summaries or raw archives inspected.",
+    "No cited first binding case inspected; particular coordinate and W comparison not independently verified.",
+    "No Git/API/network; asserted commit not authenticated.",
+    "No model/torch import, execution, fit or new report; no new system observation.",
+    "No criteria, first judgments, scope, binding, eligibility, target score or source-of-qualia verdict changed.",
+    "The broad source search exposed only matching code lines; unrelated summaries and verifier bodies were not opened."
+  ],
+  "criterion_preservation": {
+    "reference_hash_verified": true,
+    "no_new_requirement_identified_in_audit": true,
+    "historical_rating_preservation_not_independently_verified": true,
+    "semantic_regrading": false
+  },
+  "preservation": "Dedicated directory existed at write time after another process created root_launch_observation.json; that file was not opened. No prior review artifact existed. Both first review artifacts are exclusively created once; no repair loop or revisions."
+}
