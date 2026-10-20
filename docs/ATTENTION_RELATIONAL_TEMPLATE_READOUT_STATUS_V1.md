@@ -49,8 +49,24 @@ This projection keeps each reviewer's selected witnesses and exact atomic source
 operands, including unmapped containers. The full collection retains additional
 evidence, concerns and diagnostics. Semantic predicate tracking, semantic nulls
 and semantic restoration remain unassessed; numerical property comparisons are
-separately retained. Independent accounting verification and explicit semantic/
-source closure remain necessary for the final readout.
+separately retained. Explicit semantic/source closure remains necessary for the
+final readout.
+
+The [independent accounting check](../audits/attention_relational_report_v1/template_attribution_v1/complete_readout_accounting_review/first_review.md)
+reconstructs all 1,104 rows, 552 positions and 684 joins with zero discrepancies.
+It confirms the recorded-support candidate counts without importing the production
+inventory module. Root verifies its unchanged artifacts and all 152 bound input
+files. This checks descriptive accounting, not reviewer meaning, semantic truth or
+independent methodology replication. The pre-target mistaken newline warning and
+its AST-based retraction are retained; the checker stayed unchanged and ran once.
+
+All [11 explicit binding disagreements](../audits/attention_relational_report_v1/template_attribution_v1/semantic_closure_v1/preparation/first_disagreements.json)
+are now collected for one post-first advisory pass and root disposition. The packet
+includes every binding with two valid first assessments that differ, rather than
+selecting favorable cases. Advisers may inspect both firsts and unchanged original
+evidence; they are exposed post-first advisers, not replacement first reviewers or
+new system observations. Missing firsts stay missing. Underdetermined meanings
+remain unresolved, and no new rubric, scope upgrade or binding repair is authorized.
 
 ## Readout implementation status
 
