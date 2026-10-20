@@ -1,0 +1,181 @@
+{
+  "schema": "attention_relational_native_readout_provenance_audit_v1",
+  "recorded_at_utc": "2026-10-20T00:28:50.160432+00:00",
+  "reviewer": "root_exposed_project_author",
+  "method": "Static source inspection and exact AST excerpts; no model import, archive reconstruction, inference, fitting or API calls.",
+  "source_commit": "657a1b74af388a231652e471d7f0d36c70a8e24a",
+  "input_sha256": {
+    "scripts/attention_content_model_v1.py": "a950a4228e5358a6896c73b729ac0e85e630cec8ae05b3944e03a6019221c0b8",
+    "scripts/attention_relational_report_v1.py": "501ad9c54d6c32b69df78021a8f4dbd91ce0eaa1f5d6ff3a9b815bbfe343e3c0",
+    "audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_case_05.json": "7029c0871adf403651ef1b23b689297a932a7ade9ec15e29a0bc8f01a10020ba"
+  },
+  "exact_source_excerpts": {
+    "SourceState": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "SourceState",
+      "start_line": 146,
+      "end_line": 155,
+      "exact_source": "class SourceState:\n    hidden: torch.Tensor\n    revealed_through: int\n    update_command_indices: tuple\n    source_key: str\n\n    def validate(self, batch_size):\n        _float(self.hidden, (batch_size, 4, 48), 'addressed h')\n        _history(self.revealed_through, self.update_command_indices)\n        _source_key(self.source_key)"
+    },
+    "PredictionBatch": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "PredictionBatch",
+      "start_line": 180,
+      "end_line": 191,
+      "exact_source": "class PredictionBatch:\n    current: torch.Tensor\n    next: torch.Tensor\n    decision_time: int\n    source_key: str\n\n    def validate(self):\n        batch_size = _maps(self.current, 'estimated current maps')\n        _float(self.next, (batch_size, 3, 4, 24, 4, 4), 'prospective maps')\n        _time(self.decision_time, 'decision_time')\n        _source_key(self.source_key)\n        return batch_size"
+    },
+    "_assemble": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "_assemble",
+      "start_line": 205,
+      "end_line": 221,
+      "exact_source": "def _assemble(observation, state, candidate_address, decoder, source_key):\n    batch_size = _prediction_permissions(observation, state, candidate_address, source_key)\n    rows = torch.arange(batch_size)\n    current = observation.last_revealed_w.clone()\n    if observation.decision_time:\n        command = observation.previous_command\n        current[rows, command.address] = decoder(command.address, command.symbol)\n    alternatives = []\n    for symbol in range(3):\n        next_maps = current.clone()\n        next_maps[rows, candidate_address] = decoder(\n            candidate_address, torch.full((batch_size,), symbol, dtype=torch.long))\n        alternatives.append(next_maps)\n    result = PredictionBatch(current, torch.stack(alternatives, 1),\n                             observation.decision_time, source_key)\n    result.validate()\n    return result"
+    },
+    "LearnedContentModel.decode": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "LearnedContentModel.decode",
+      "start_line": 243,
+      "end_line": 254,
+      "exact_source": "def decode(self, v_item, hidden, symbols):\n        if not isinstance(v_item, torch.Tensor) or v_item.ndim != 4:\n            raise ValueError('selected V must be [B,24,4,4]')\n        batch_size = v_item.shape[0]\n        _float(v_item, (batch_size, 24, 4, 4), 'selected V')\n        _float(hidden, (batch_size, 48), 'selected h')\n        _indices(symbols, batch_size, 3, 'decoder symbols')\n        normalized_v = self.normalizer.normalize(v_item)\n        features = torch.cat((normalized_v.flatten(1), hidden,\n                              F.one_hot(symbols, 3).to(torch.float32)), 1)\n        residual = self.decoder(features).reshape(batch_size, 24, 4, 4)\n        return self.normalizer.denormalize(normalized_v + residual)"
+    },
+    "LearnedContentModel.update": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "LearnedContentModel.update",
+      "start_line": 256,
+      "end_line": 273,
+      "exact_source": "def update(self, state, v, feedback):\n        batch_size = _maps(v, 'V')\n        if not isinstance(state, SourceState) or not isinstance(feedback, RevealedFeedback):\n            raise ValueError('source state and post-scoring feedback required')\n        state.validate(batch_size)\n        if state.source_key != self.source_key:\n            raise ValueError('feedback cannot cross prediction source identities')\n        feedback.validate(batch_size, state.revealed_through)\n        rows, addresses = torch.arange(batch_size), feedback.command.address\n        features = torch.cat((self.normalizer.normalize(v[rows, addresses]).flatten(1),\n                              self.normalizer.normalize(feedback.completed_w[rows, addresses]).flatten(1),\n                              F.one_hot(feedback.command.symbol, 3).to(torch.float32)), 1)\n        hidden = state.hidden.clone()\n        hidden[rows, addresses] = self.gru(features, state.hidden[rows, addresses])\n        result = SourceState(hidden, feedback.completed_at,\n                             state.update_command_indices + (feedback.command_index,), self.source_key)\n        result.validate(batch_size)\n        return result"
+    },
+    "LearnedContentModel.predict": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "LearnedContentModel.predict",
+      "start_line": 275,
+      "end_line": 283,
+      "exact_source": "def predict(self, observation, state, candidate_address):\n        if not isinstance(state, SourceState):\n            raise ValueError('learned addressed source state required')\n        _prediction_permissions(observation, state, candidate_address, self.source_key)\n        rows = torch.arange(observation.v.shape[0])\n        return _assemble(observation, state, candidate_address,\n                         lambda address, symbol: self.decode(\n                             observation.v[rows, address], state.hidden[rows, address], symbol),\n                         self.source_key)"
+    },
+    "NativePredictionReadout.consume": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "NativePredictionReadout.consume",
+      "start_line": 476,
+      "end_line": 487,
+      "exact_source": "def consume(self, raw_maps):\n        if not isinstance(raw_maps, torch.Tensor) or raw_maps.ndim < 3 or raw_maps.shape[-3:] != (24, 4, 4):\n            raise ValueError('predicted maps must end in [24,4,4]')\n        _float(raw_maps, raw_maps.shape, 'raw predicted maps')\n        flat = raw_maps.reshape(-1, 24, 4, 4)\n        if not flat.shape[0]:\n            raise ValueError('empty predicted map readout')\n        logits = torch.stack([self.head(self.standardizer.apply(item)) for item in flat])\n        fields = torch.stack([role_fields(item) for item in logits])\n        leading = raw_maps.shape[:-3]\n        return PredictedEvidence(logits.reshape(*leading, 3, 4, 4),\n                                 fields.reshape(*leading, 2, 4, 4))"
+    },
+    "NativePredictionReadout.choose": {
+      "path": "scripts/attention_content_model_v1.py",
+      "qualified_name": "NativePredictionReadout.choose",
+      "start_line": 489,
+      "end_line": 499,
+      "exact_source": "def choose(self, prediction, address, role):\n        if not isinstance(prediction, PredictionBatch):\n            raise ValueError('source PredictionBatch required; no actual-W argument')\n        batch_size = prediction.validate()\n        _indices(address, batch_size, 4, 'query address')\n        _indices(role, batch_size, 2, 'query role')\n        rows = torch.arange(batch_size)\n        candidate_maps = prediction.next[rows[:, None], torch.arange(3)[None, :], address[:, None]]\n        fields = self.consume(candidate_maps).role_fields\n        maxima = fields[rows[:, None], torch.arange(3)[None, :], role[:, None]].flatten(-2).max(-1).values\n        return SymbolChoice(choose_from_maxima(maxima), maxima, fields)"
+    },
+    "_origin": {
+      "path": "scripts/attention_relational_report_v1.py",
+      "qualified_name": "_origin",
+      "start_line": 206,
+      "end_line": 221,
+      "exact_source": "def _origin(source_key,node,view,previous,candidate,w_counterfactual=False):\n    if source_key=='sensor':\n        return dict(kind='fixed_observation_record',record_time=0,represented_time=0,shown_at=12)\n    if view=='current':\n        if source_key=='W':\n            if w_counterfactual:\n                return dict(kind='counterfactual_native_snapshot',record_status='counterfactual_native_snapshot',\n                    represented_time=12,archived_origin_time=13,executed_branch_claim=False)\n            return dict(kind='completed_record',record_time=12,represented_time=12)\n        return (dict(kind='history_estimate',represented_time=12,feedback_through=11)\n            if node==previous else dict(kind='copied_prior_record',record_time=11,represented_time=12))\n    if node==candidate:\n        return (dict(kind='native_conditional_record',represented_time=13,executed_branch_claim=False)\n            if source_key=='W' else dict(kind='command_estimate',represented_time=13,feedback_through=11))\n    return dict(kind='inherited_current',represented_time=13,\n        inherited_origin=_origin(source_key,node,'current',previous,candidate,w_counterfactual))"
+    },
+    "_public_nodes": {
+      "path": "scripts/attention_relational_report_v1.py",
+      "qualified_name": "_public_nodes",
+      "start_line": 224,
+      "end_line": 232,
+      "exact_source": "def _public_nodes(panel,fields,view,previous,candidate):\n    nodes=[]\n    for index,name in enumerate(NODES):\n        summaries={role:localization_summary(fields[index][j]) for j,role in enumerate(ROLES)}\n        nodes.append(dict(node=name,origin=_origin(panel.source_key,index,view,previous,candidate,\n            panel.source_key=='W' and panel.audit_metadata.get('variant')=='W_changed'),\n            distributions={role:deepcopy(fields[index][j]) for j,role in enumerate(ROLES)},\n            derived=summaries,red_blue_peak_relation=peak_relation(summaries['red']['peaks'],summaries['blue']['peaks'])))\n    return nodes"
+    },
+    "localization_summary": {
+      "path": "scripts/attention_relational_report_v1.py",
+      "qualified_name": "localization_summary",
+      "start_line": 184,
+      "end_line": 190,
+      "exact_source": "def localization_summary(grid):\n    flat=_numbers(grid,(4,4));peak=max(flat)\n    cells=[[index//4,index%4] for index,value in enumerate(flat) if value==peak]\n    return dict(peaks=cells,peak_probability=peak,\n        entropy_nats=-math.fsum(value*math.log(value) for value in flat if value>0.),\n        expected_row=math.fsum((index//4)*value for index,value in enumerate(flat)),\n        expected_column=math.fsum((index%4)*value for index,value in enumerate(flat)))"
+    },
+    "deterministic_template": {
+      "path": "scripts/attention_relational_report_v1.py",
+      "qualified_name": "deterministic_template",
+      "start_line": 282,
+      "end_line": 295,
+      "exact_source": "def deterministic_template(content):\n    \"\"\"Complete literal technical comparator, not ordinary free narration.\"\"\"\n    atoms=required_propositions(content)\n    tokens=['Rows increase down; columns right. Current and conditional candidate peaks follow.']\n    for panel,view,command,node in _contexts(content):\n        prefix='/'.join([panel,view]+([] if command is None else [command])+[node['node']])\n        # Origin JSON is literal metadata, a single whitespace-free token per node.\n        tokens.append(prefix+'/origin='+json_bytes(node['origin']).decode())\n        for role in ROLES:\n            cells=node['derived'][role]['peaks']\n            tokens.append(prefix+'/'+role+'={'+','.join('('+str(r)+','+str(c)+')' for r,c in cells)+'}')\n    text=' '.join(tokens)\n    require(len(text.split())<=WORD_LIMIT,'literal template exceeded registered word cap')\n    return dict(schema=REPORT_SCHEMA,text=text,propositions=atoms)"
+    }
+  },
+  "static_observations": {
+    "native_state_fields": [
+      "hidden",
+      "revealed_through",
+      "update_command_indices",
+      "source_key"
+    ],
+    "native_prediction_fields": [
+      "current",
+      "next",
+      "decision_time",
+      "source_key"
+    ],
+    "origin_constructor_arguments": [
+      "source_key",
+      "node",
+      "view",
+      "previous",
+      "candidate",
+      "w_counterfactual"
+    ],
+    "origin_constructor_nonargument_loaded_names": [
+      "_origin",
+      "dict"
+    ],
+    "origin_constructor_has_no_numeric_field_or_hidden_state_argument": true,
+    "origin_literal_kind_names_in_native_model_source": false,
+    "native_Controller_choice_uses": "prediction.next candidate maps at queried address -> frozen H role fields -> queried-role maxima -> symbol choice",
+    "learned_current_and_candidate_paths_share_decoder": true,
+    "current_map_assembly": "last revealed W copied; previous-command address replaced by learned decode",
+    "report_export": "Whitelisted archived role fields -> deterministic localization summaries and source-neutral packet, with separately constructed origin metadata"
+  },
+  "findings": [
+    {
+      "id": "content_readout",
+      "disposition": "supported_by_inspected_source",
+      "statement": "A numerical report can refer to a genuine learned map estimate. The frozen H and exact maxima are derived readouts of that estimate; a readout need not be a native word-valued variable."
+    },
+    {
+      "id": "origin_producer",
+      "disposition": "supported_by_inspected_source",
+      "statement": "history_estimate/copied_prior_record and their fixed-time fields are constructed by exporter _origin from source category, node/view roles and timeline. They are not outputs of the learned decoder. Source attribution describes the estimate that the metadata concerns, not the computational producer of the metadata labels."
+    },
+    {
+      "id": "control_report_separation",
+      "disposition": "supported_by_inspected_source",
+      "statement": "Native operation choice consumes candidate map readouts. External reporting consumes exported current/candidate fields and provenance; the Reporter is not the native Controller."
+    },
+    {
+      "id": "interpretation_limit",
+      "disposition": "inference_from_source_role_not_semantic_regrading",
+      "statement": "Even a faithful content/provenance conjunction does not by itself demonstrate that learned h represents organization/access status or generates qualia. Conversely this audit does not establish that h lacks implicit such representations."
+    },
+    {
+      "id": "scoring_unchanged",
+      "disposition": "no_change",
+      "statement": "No first semantic judgment, original label, scope, binding, eligibility rule or theory-success criterion is changed. Existing organization/status disagreements remain unresolved; derived readouts and accurately reported provenance remain legitimate instrumentation."
+    }
+  ],
+  "selected_verified_case": {
+    "id": "s1301_w02_t12_A_joined_baseline_template",
+    "literal_A_content_correspondence_supported": true,
+    "a_origin": {
+      "feedback_through": 11,
+      "kind": "history_estimate",
+      "represented_time": 12
+    },
+    "a_peak": [
+      [
+        1,
+        2
+      ]
+    ],
+    "native_learned_status_representation_established": false,
+    "full_COD_meaning": "unresolved"
+  },
+  "semantic_correctness_established_by_code": false,
+  "implicit_representation_absence_established": false,
+  "model_or_report_outputs_changed": false,
+  "feedback_to_unfinished_first_contexts": false,
+  "full_corpus_semantic_analysis_complete": false,
+  "new_independent_system_observations": false,
+  "qualia_source_conclusion_established": false
+}

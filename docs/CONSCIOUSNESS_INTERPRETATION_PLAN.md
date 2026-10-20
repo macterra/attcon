@@ -18,6 +18,12 @@ retains the peak's genuine null under a changed raw A distribution. This advance
 source identification without establishing a consciousness-related endpoint or
 closing the full fixed review.
 
+The [native readout audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md) now
+separates learned map estimates, frozen H readouts and exporter-constructed origin
+metadata. The supplied `history_estimate` label can accurately describe a model
+estimate without demonstrating that h represents an access/appearance status.
+This changes no frozen scoring rule and does not exclude implicit representations.
+
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
 now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target

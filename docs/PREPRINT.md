@@ -890,6 +890,13 @@ the current-donor intervention changes the raw A distribution without moving
 this peak, and the literal clause correctly stays unchanged. This establishes
 accurate reporting of the selected A property and a genuine peak-property null,
 not a positive displacement or a consciousness-related source witness.
+The [static readout-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
+also distinguishes learned map estimates and frozen H readouts from origin labels
+constructed by the exporter. Accurate content/provenance reporting does not
+itself demonstrate a learned access/appearance-status representation inside h;
+the audit neither excludes implicit representations nor changes the frozen
+semantic criteria. Native Controller choice and the external Reporter remain
+separate paths.
 The
 [first narrator/source review](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
 retains both terminal first contexts: one passes the source-field contract and one
