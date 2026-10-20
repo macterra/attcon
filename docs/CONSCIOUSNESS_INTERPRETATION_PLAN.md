@@ -17,6 +17,11 @@ unestablished alongside their verified numerical results. This is measurement
 yield, not feature absence or a qualia verdict. Raw labels are not validated
 source meanings. The next development contrast will test native content changes
 across allocation operations without depending on origin labels for its meaning.
+The [bounded command-content diagnostic](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_V1.md)
+now fixes a complete archived-state census of conditional peak contents across
+commands, preserving all sources, nulls and inherited states. Its four bounded
+software checks pass; the first actual census is not yet executed at this checkpoint.
+It commissions no new Reporter, auditor or consciousness judgment.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
