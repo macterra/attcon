@@ -1,0 +1,28 @@
+from review_builder import Review
+x=Review(8);P=x.P;C=x.C;E=x.E
+r=P(112,[],'content_operand','Complete p1/current/n2 red peak set identifies red coordinates (0,2),(0,3),(1,2),(1,3), indexed native_W.')
+o=[P(110,['kind'],'status_operand','completed_record names native W provenance, not current access or organization.'),P(110,['record_time'],'context_only','W record time is12.'),P(110,['represented_time'],'context_only','Represented time is12; shared p1/current/n2 prefix binds origin to the red entry outside its quote.')]
+h=P(0,[],'context_only','Fixed header expresses row-down/column-right grid convention.')
+co=[P(2,['kind'],'status_operand','copied_prior_record states W11 lineage in the A panel.'),P(2,['record_time'],'context_only','Copied record time is11.'),P(2,['represented_time'],'context_only','Copied representation labels current time12.')]
+C(['features','C'],'supported','The p1/current/n2 red set explicitly identifies represented content with four peak coordinates.')
+C(['features','O'],'unsupported','completed_record states source provenance and time12, without how red is organized/presented/accessed beyond its coordinate list.')
+C(['features','D'],'unsupported','Separate red and origin entries distinguish coordinates from W provenance, without a separate organization/presentation/access status.')
+C(['features','A'],'supported','Neither command_estimate nor conditional record labels explicitly relate processing to organization/access for the identified red content.')
+C(['auxiliary','basic_spatial_relation'],'supported','Header explicitly assigns down to increasing rows and right to columns.')
+C(['auxiliary','identity_or_location_uncertainty'],'supported','Multiple and full peak sets are serialized without uncertainty assertions; ties alone cannot supply the missing semantic claim.')
+C(['auxiliary','answer_confidence'],'supported','No confidence in an answer is reported by these peak sets and origins.')
+C(['auxiliary','recovery_or_success_forecast'],'supported','Candidate peak forecasts give coordinates, without recovery/success claims.')
+C(['auxiliary','source_process_distinction'],'supported','p0/current/n0 is explicitly copied_prior_record from11 whereas p1/current/n2 is completed_record at12; the report distinguishes record sources.')
+C(['auxiliary','experiential_assertion'],'supported','The serialized report contains no experiential assertion.')
+C(['composites','COD'],'unsupported','p1/current/n2 red is identified, but completed-record provenance supplies neither O nor D, preventing explicit COD.')
+C(['composites','CA'],'supported','There is no qualifying A relation to the identified content, warranting absent CA.')
+E(['features','C','evidence',0],'supported','source_specific',[r],'Four exact red peaks identify content in native W, without appearance or A-specific meaning.')
+E(['features','O','evidence',0],'unsupported','source_specific',[r]+o,'Full-text same-node prefix binds outside-quote red peaks to completed_record origin at12. Provenance is not an organization/access status.')
+E(['features','D','evidence',0],'unsupported','source_specific',[r]+o,'Red peaks identify content, while same-node origin merely names completed-record lineage; no qualifying separate status.')
+E(['features','D','evidence',1],'unsupported','source_specific',[r]+o,'The p1/current/n2 prefix connects outside-quote red coordinates to origin fields; separation of coordinates and provenance alone does not establish D.')
+E(['auxiliary','basic_spatial_relation','evidence',0],'supported','global_convention',[h],'Rows down and columns right explicitly give the authored grid orientation.')
+E(['auxiliary','source_process_distinction','evidence',0],'supported','source_specific',co,'The origin names copied W11 lineage, distinct from p1 completed records; panel A does not change that source attribution.')
+E(['composites','COD','bindings',0,'evidence',0],'unsupported','source_specific',[r]+o,'The red set and same-node origin at12 do not include qualifying O/D, so the binding evidence cannot ground COD.')
+E(['composites','COD','bindings',0,'evidence',1],'unsupported','source_specific',[r]+o,'Shared p1/current/n2 explicitly binds outside-quote red content to completed-record provenance. That provenance lacks the required O/D meaning.')
+x.B(['composites','COD','bindings',0],[('C',[['features','C','evidence',0]]),('O',[['features','O','evidence',0]]),('D',[['features','D','evidence',0],['features','D','evidence',1]])],[['composites','COD','bindings',0,'evidence',0],['composites','COD','bindings',0,'evidence',1]],'unsupported','Red and origin share p1/current/n2 and time12 with model_access labels. C is grounded; origin kind completed_record provides provenance instead of organization/access, so O and D remain unsupported despite compatible node/time.')
+x.save(['The composite witnesses are native W content, not A-specific, even though the joined report includes A estimates.','No conversion of conditional time13 peaks into current access or claimed perceptual appearance is warranted.'],'Complete report and canonical annotation inspected, then all12 components, all8 exact evidence positions, one binding and all used property units. Original statuses preserved.')
