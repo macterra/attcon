@@ -16,8 +16,12 @@ The [new command-content diagnostic](ATTENTION_MODEL_COMMAND_CONTENT_DIAGNOSTIC_
 retains all 552 positions and 19,008 command pairs. Of 1,008 newly decoded A
 conditional comparisons, 110 change peaks and 898 change only the underlying
 distribution. This identifies information lost by peak-only reporting, not a
-consciousness-related endpoint. Full-distribution/source-relation inspection is
-next; no new Reporter or confirmation is released.
+consciousness-related endpoint. The [complete geometry/score result](ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1_RESULTS.md)
+now independently verifies distribution magnitudes and native score reconstruction:
+one underlying donor case changes preference while its literal template stays
+identical. Original narrator input was already full-distribution; this identifies
+a template omission, not a qualified report-correspondence result. No new Reporter
+or confirmation is released.
 
 2026-10-19 publication/status correction: GitHub is current through
 [`10c8be81`](https://github.com/macterra/attcon/commit/10c8be81e9d3a089237f385f3706309c495a9d5f),

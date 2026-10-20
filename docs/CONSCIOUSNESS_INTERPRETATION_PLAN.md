@@ -30,10 +30,14 @@ All nulls and alternative estimators remain. Rechecking the original input
 confirms that the narrator already received full localization distributions;
 peak-only information loss concerns literal templates. The
 [distribution-geometry and score diagnostic](ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1.md)
-now specifies native-score and spatial measurements before execution. It will
-measure magnitude and reconstruct the processing-command score rule, not create
-an appearance measure or equate that readout with the full recurrent state.
-No new Reporter, auditor or consciousness judgment is commissioned.
+now [completes once with independent numerical verification](ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1_RESULTS.md).
+A's median cross-command TV is 0.0655; equal-peak comparisons have median 0.0273.
+One underlying donor case in two views changes the reconstructed processing
+preference despite an identical literal template, with its small winning margin
+retained. This identifies control-relevant information omitted by the template,
+not missing narrator input, appearance or the full recurrent state. The fixed
+semantic result remains unresolved. Next choose a distinct same-content source
+report test; no new Reporter, auditor or consciousness judgment is released here.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and

@@ -930,6 +930,17 @@ not identify missing narrator input or justify repeating it as an improvement.
 The fields are H readouts of predicted maps rather than the whole recurrent
 model state. The census supplies no new report correspondence, executed causal
 outcome or consciousness result.
+A subsequent [full-field geometry and processing-score diagnostic](ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1_RESULTS.md)
+completes once and passes independent numerical reconstruction across all 19,008
+command comparisons and 684 original pairs. For A's 1,008 newly decoded conditional
+comparisons, median normalized TV is 0.0655; the 898 equal-peak comparisons have
+median 0.0273 and maximum 0.6580. One underlying prospective-donor case in both
+source-only and joined views keeps the entire literal template identical while
+the published score rule's preference changes k2 to k0. Its donor margin is only
+0.0000463724. This establishes a concrete omission of control-relevant information
+from the template, not an observed executed action, appearance or missing narrator
+input. Reporter, processing-command score readout and native Controller targeting
+remain distinct. The fixed source/semantic interpretation stays unresolved.
 The [static readout-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
 also distinguishes learned map estimates and frozen H readouts from origin labels
 constructed by the exporter. Accurate content/provenance reporting does not
