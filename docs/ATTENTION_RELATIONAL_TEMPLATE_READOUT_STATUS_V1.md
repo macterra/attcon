@@ -61,12 +61,23 @@ independent methodology replication. The pre-target mistaken newline warning and
 its AST-based retraction are retained; the checker stayed unchanged and ran once.
 
 All [11 explicit binding disagreements](../audits/attention_relational_report_v1/template_attribution_v1/semantic_closure_v1/preparation/first_disagreements.json)
-are now collected for one post-first advisory pass and root disposition. The packet
-includes every binding with two valid first assessments that differ, rather than
-selecting favorable cases. Advisers may inspect both firsts and unchanged original
-evidence; they are exposed post-first advisers, not replacement first reviewers or
-new system observations. Missing firsts stay missing. Underdetermined meanings
-remain unresolved, and no new rubric, scope upgrade or binding repair is authorized.
+have now received their one exposed post-first advisory pass. Both advisers are
+terminal: [group 0](../audits/attention_relational_report_v1/template_attribution_v1/semantic_closure_v1/advice_group_0/first_advice.md)
+recommends a limited model-organization reading for four bindings and leaves two
+model-access bindings unresolved; [group 1](../audits/attention_relational_report_v1/template_attribution_v1/semantic_closure_v1/advice_group_1/first_advice.md)
+leaves its five bindings unresolved. Only one of the four positive recommendations
+requires actual learned A content; the others use W-derived content. One positive
+core-relation recommendation retains an unsupported extra own-evidence entry and
+therefore cannot establish an endpoint requiring all its own evidence.
+
+Root has verified both unchanged advice artifacts against their assigned packet,
+full original texts, canonical annotations, original scopes/times/bindings and
+retained first-stream snapshots. The two terminal bindings preserve that check.
+The packet includes every binding with two valid first assessments that differ.
+These are exposed post-first advisers, not replacement first reviewers or new
+system observations. Root disposition and the full semantic/pair readout remain
+outstanding at this checkpoint. Missing firsts stay missing; underdetermined
+meanings remain unresolved. No rubric, scope or binding is repaired.
 
 ## Readout implementation status
 
