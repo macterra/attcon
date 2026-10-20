@@ -875,7 +875,17 @@ not rescore target judgments or remove the fixed complete analysis. The
 retains every first outcome and requires actual feature and property witnesses.
 Its packet-preparation software is separately reviewed and checked on fictional
 inputs. The original V3 collection is now terminal and its first full reference
-result is preserved. The full template semantic review is running. The
+result is preserved. The full template semantic review is running.
+A [selected source-resolved case](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_case_05.md)
+reports an actual learned current-A red peak at `(1,2)` while the comparison W
+distribution is uniform. Its first reviewers disagree about whether separate
+estimation provenance supplies the required organization/distinction meaning;
+that dispute remains unresolved. Across its [nine original pairs](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_pairs_05.md),
+the current-donor intervention changes the raw A distribution without moving
+this peak, and the literal clause correctly stays unchanged. This establishes
+accurate reporting of the selected A property and a genuine peak-property null,
+not a positive displacement or a consciousness-related source witness.
+The
 [first narrator/source review](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
 retains both terminal first contexts: one passes the source-field contract and one
 fails it by naming origin containers rather than individual fields. Its whole

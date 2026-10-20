@@ -10,6 +10,14 @@ now retains all 552 template positions and 684 pairs with source/time comparabil
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
 asserted-predicate tracking to the complete fixed source reviews.
 
+A [selected source disposition](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_case_05.md)
+now verifies literal reporting of an actual learned current-A peak that differs
+from W. The required organization/distinction meaning remains disputed. Its
+[paired trace](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_pairs_05.md)
+retains the peak's genuine null under a changed raw A distribution. This advances
+source identification without establishing a consciousness-related endpoint or
+closing the full fixed review.
+
 The [tool-assisted V5 qualification](ATTENTION_RELATIONAL_AUDITOR_V5_QUALIFICATION_RESULTS.md)
 now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target

@@ -73,6 +73,17 @@ this implementation is informed development under the earlier fixed analysis,
 not a new output-unexposed experiment. Ordinary and analytic also estimate
 attention effects; their parity is not an attention-model-absence contrast.
 
+A [selected completed-review case](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_case_05.md)
+does report an actual learned current-A red peak at `(1,2)`, whereas its comparison
+W estimate has all 16 cells tied. This is a faithful A-property readout, not copied
+W attribution. The two first reviewers disagree about whether the accompanying
+estimation status meets the required organization/distinction meaning; that
+disagreement remains unresolved. Its [complete nine-pair diagnostic trace](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_pairs_05.md)
+finds that the current-donor distribution changes without moving this peak, and
+the clause correctly remains unchanged. This genuine peak-property null supplies
+no positive displacement of that constituent. It is a selected authored-template
+diagnostic, not a corpus-wide semantic endpoint or qualia finding.
+
 ## Checks, evidence and limits
 
 The first fictional run retains 11 passing checks and one failure concerning the
