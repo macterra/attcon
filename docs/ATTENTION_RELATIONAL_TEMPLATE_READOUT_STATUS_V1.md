@@ -16,6 +16,24 @@ this page preserves the relocated notes. No collector, manifest, judgment, crite
 scope or binding changes. A separately recorded operational collection retry will
 use the same first judgments after all pinned sources match.
 
+The [second collection execution](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/collection/second_collection_execution.json)
+now completes with exit zero using those unchanged inputs. The
+[root inventory](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/collection/first_collection_inventory.json)
+retains 46 contexts, 1,104 reviewer positions and all 684 pairs. Forty-five chunks
+pass the frozen mechanical contract; reviewer 1's chunk 09 remains missing in
+full. Reviewer 0 retains source judgments for all 148 established original
+annotations; reviewer 1 retains 142. The other 404 original template annotations
+remain unestablished, and the six established positions lacking the second review
+are not gap-filled. This is completeness accounting, not a semantic endpoint.
+
+The complete 51,322,429-byte collection has SHA-256
+`cfa555fb0c778c6f3f2ee3fd50434f87265edc4910db03a0385580ced7afcc79`.
+Its [verified lossless archive](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/collection/first_collection.json.archive.json)
+stores exactly those bytes in a 5,115,549-byte gzip. Restore the raw file using
+`scripts/preserve_large_evidence_v1.py --restore` with that sidecar before analysis.
+The source-aware binding inventory and semantic/property closure are next; the
+qualia-source goal remains unachieved.
+
 ## Readout implementation status
 
 The [binding-inventory utility](../scripts/attention_relational_template_binding_inventory_v1.py)
