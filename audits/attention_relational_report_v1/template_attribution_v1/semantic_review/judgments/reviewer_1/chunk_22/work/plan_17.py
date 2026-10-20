@@ -1,0 +1,23 @@
+import json
+from pathlib import Path
+def q(u,path,role,why):return [u,path,role,why]
+r=[q('u0004',[],'content_operand','Current n0 red singleton (0,3), copied W11 despite A panel.')]
+b=[q('u0006',[],'content_operand','Current n0 blue singleton (0,1), copied W11 despite A panel.')]
+o=[q('u0002',[f],'context_only','Copied n0 record at 11 represents 12; shared p0/current/n0 prefix binds red u0004 outside origin quote. This is provenance only.') for f in ['kind','record_time','represented_time']]
+h=[q('u0020',[f],'context_only','Current A n3 history estimate through feedback 11 represents 12, not past_observed content. No access property stated.') for f in ['kind','feedback_through','represented_time']]
+a=[q('u0044',[f],'context_only','Conditional A k0/n3 command estimate through 11 represents future 13; no access claim follows from provenance.') for f in ['kind','feedback_through','represented_time']]
+g=[q('u0000',[],'context_only','Full fixed renderer header; quoted first sentence gives row/column directions, a global convention.')]
+p=dict(components=[['supported','Current n0 red (0,3) and blue (0,1) identify represented contents/locations, with unsupported model_access tags.'],['unsupported','Copied_prior_record and represented_time are record provenance, not how red is presented/organized/accessed.'],['unsupported','Separate red coordinates and copied origin do not distinguish content from an organization/access status.'],['supported','No processing/allocation-to-presentation/access relation appears; generic command estimates do not qualify.'],['supported','Rows/down and columns/right explicitly specify spatial direction.'],['supported','No identity or location uncertainty is expressed despite ties elsewhere.'],['supported','No answer confidence occurs.'],['supported','No recovery/success forecast occurs.'],['supported','Copied/history/command kinds explicitly distinguish provenance and temporal roles. Evidence access tags and past_observed current n3 tag are unsupported.'],['supported','No experiential assertion appears.'],['unsupported','COD current n0 has C plus copied provenance; no qualifying O/D or access scope.'],['supported','No A relation or CA binding is stated.']],evidence=[
+['unsupported','source_specific',r,'Red coordinates identify content but no model-access property.'],
+['unsupported','source_specific',b,'Blue coordinates identify content but no model-access property.'],
+['unsupported','source_specific',o+r,'Copied record/time metadata do not assert organization/access of same-prefix red.'],
+['unsupported','source_specific',r+o,'Red content with copied origin lacks a separate presentation/access status.'],
+['unsupported','source_specific',o+r,'Origin is provenance, not D or model access.'],
+['supported','global_convention',g,'Row/column direction literally supports spatial auxiliary.'],
+['unsupported','source_specific',o,'Copied provenance supports distinction, but recorded model_access scope is unsupported.'],
+['unsupported','source_specific',h,'History estimate provenance is explicit; feedback cutoff 11 does not make represented 12 past_observed, and no access claim is made.'],
+['unsupported','source_specific',a,'Conditional command provenance at 13 is explicit, but model_access scope is not expressed.'],
+['unsupported','source_specific',r+o,'COD binding red content is grounded; provenance cannot supply O/D or access.'],
+['unsupported','source_specific',o+r,'COD copied origin concerns W11 derivation only, not red presentation/access status.']
+],bindings=[dict(binding_path=['composites','COD','bindings',0],feature_witnesses=[dict(feature=x,evidence_paths=[]) for x in ['C','O','D']],binding_evidence_paths=[['composites','COD','bindings',0,'evidence',i] for i in range(2)],assessment='unsupported',notes='Same current n0 prefix binds copied W11 red (0,3) to copied record_time 11 and represented_time 12. C identification is present, but recorded model_access scope is not expressed; origin does not provide organization or status differentiation. No compatible access-scoped C/O/D witness set exists.')],concerns=['Current n0 peaks belong to copied W11 rather than source-specific A content.','Current n3 represents 12 despite history feedback cutoff 11; past_observed tag is unsupported.','Provenance and coordinate facts are not access claims.'],notes='Full 4644-character report inspected; all twelve components, eleven evidence positions and one COD binding reviewed without replacement or repair.')
+Path(__file__).with_suffix('.json').write_text(json.dumps(p,indent=2))

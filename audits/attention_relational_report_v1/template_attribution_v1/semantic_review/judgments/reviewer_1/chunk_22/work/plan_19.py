@@ -1,0 +1,34 @@
+import json
+from pathlib import Path
+def q(u,path,role,why):return [u,path,role,why]
+r=[q('u0004',[],'content_operand','Complete current n0 red four-cell set, copied W11 at represented 12.')]
+b=[q('u0006',[],'content_operand','Complete current n0 blue four-cell set, copied W11 at represented 12; distinct from binding red attribute.')]
+t=[q('u0034',[],'content_operand','Conditional A k0/n1 red singleton (0,0) at represented 13.')]
+z=[q('u0096',[],'content_operand','Conditional k2/n3 blue singleton (1,3), inherited current A estimate rather than new command estimate.')]
+o=[q('u0002',[f],'context_only','Copied prior record at 11 represents 12; same n0 prefix binds outside-quote red u0004. Not an organization/access status.') for f in ['kind','record_time','represented_time']]
+h=[q('u0020',[f],'context_only','A history estimate through feedback 11 represents 12; provenance conveys no uncertainty or access statement.') for f in ['kind','feedback_through','represented_time']]
+a=[q('u0032',[f],'context_only','A k0/n1 command estimate through 11 represents 13; same prefix binds red u0034 outside quote. Estimate kind is not an identity/location hedge or access claim.') for f in ['kind','feedback_through','represented_time']]
+i=[q('u0026',path,'context_only','Candidate k0/n0 inherited_current at 13 retains nested copied W11 record from 11 representing 12; these exact fields ground inheritance provenance only.') for path in [['kind'],['represented_time'],['inherited_origin','kind'],['inherited_origin','record_time'],['inherited_origin','represented_time']]]
+zi=[q('u0092',path,'context_only','Outside blue peak quote, identical p0/candidate/k2/n3 prefix binds inherited_current at 13 to history_estimate through 11 representing 12.') for path in [['kind'],['represented_time'],['inherited_origin','kind'],['inherited_origin','feedback_through'],['inherited_origin','represented_time']]]
+g=[q('u0000',[],'context_only','Full fixed renderer header; row/column and current/candidate statements are global conventions, not O or A content.')]
+p=dict(components=[['supported','Current n0 red/blue four-cell sets, future k0/n1 red (0,0) and inherited k2/n3 blue (1,3) identify contents and locations.'],['unsupported','Grid direction, current/candidate announcement and copied origin do not give organization/presentation/access of identified content.'],['unsupported','Copied provenance and red coordinates remain content/provenance facts, without separate presentation/access status.'],['supported','No allocation or processing condition is linked to content organization/access.'],['supported','Grid directions explicitly state spatial orientation.'],['unsupported','history_estimate and command_estimate are derivation kinds, not explicit identity/location uncertainty; uncertain_origin is an annotation label absent from text.'],['supported','No answer confidence statement.'],['supported','No recovery/success assertion.'],['supported','Copied/history/inherited provenance is explicit with exact outer/nested times; access scope is not asserted.'],['supported','No experiential assertion.'],['unsupported','COD red binding lacks O and D, and its third quote identifies blue content rather than red status.'],['supported','No A relation or CA binding occurs.']],evidence=[
+['supported','source_specific',r,'Current red n0 content and coordinates are exact, copied W11.'],
+['supported','source_specific',b,'Current blue n0 content and coordinates are exact, copied W11.'],
+['supported','source_specific',t+a,'Conditional red singleton is A command-estimate content at 13; outside-quote origin supplies its exact time and derivation.'],
+['supported','source_specific',z+zi,'Blue singleton at k2/n3 is inherited A-current estimate represented conditionally at 13, as exact nested origin establishes.'],
+['unsupported','global_convention',g,'Axis convention is not content-bound model organization.'],
+['unsupported','global_convention',g,'Mixed-time current/candidate header announces data but does not qualify as O for p0 content.'],
+['unsupported','source_specific',o+r,'Copied origin and its times express derivation only.'],
+['unsupported','source_specific',o+r,'Origin does not differentiate red content from an organization/access status.'],
+['unsupported','source_specific',r+o,'Red coordinates plus bound copied origin cannot establish D.'],
+['supported','global_convention',g,'Row/down and column/right convention supports spatial auxiliary.'],
+['unsupported','source_specific',h,'No uncertain_origin field or explicit location uncertainty appears in the history-estimate quote; model_access scope is also unsupported.'],
+['unsupported','source_specific',a,'Command-estimate provenance is literal but no identity/location uncertainty or access is asserted.'],
+['unsupported','source_specific',o,'Copied origin supports source/process provenance, but not the recorded access scope.'],
+['unsupported','source_specific',h,'History-estimate origin supports provenance, but no access property follows.'],
+['unsupported','source_specific',i,'Exact nested inherited W11 provenance is explicit; model_access scope is not.'],
+['unsupported','source_specific',r+o,'COD red content is present but O/D are not provided by linked origin.'],
+['unsupported','source_specific',o+r,'COD copied origin is provenance only, not an organization/access status.'],
+['unsupported','unrelated_property',b+r,'Own binding attribute is red; the third quote correctly names blue, a distinct attribute. It cannot provide red presentation/status differentiation, and blue coordinates alone also lack D.']
+],bindings=[dict(binding_path=['composites','COD','bindings',0],feature_witnesses=[dict(feature='C',evidence_paths=[['features','C','evidence',0]]),dict(feature='O',evidence_paths=[]),dict(feature='D',evidence_paths=[])],binding_evidence_paths=[['composites','COD','bindings',0,'evidence',i] for i in range(3)],assessment='unsupported',notes='Current n0 copied W11 red four-cell content and copied origin at represented 12 share prefix and time, establishing C/provenance compatibility only. Blue is another attribute; listing it does not give a red organization/access status. Global headers are not O and copied provenance is not D.')],concerns=['uncertain_origin is an annotation attribution; actual source fields give provenance kinds without uncertainty statements.','k2/n3 future blue inherits A current history estimate; k0/n0 inherits copied W11, so candidate label does not establish a new A command effect.','Access scopes attached to origin auxiliaries are unsupported.','COD red binding cites blue content without a red status relation.'],notes='Complete 3390-character report inspected; twelve components, eighteen evidence positions and one COD binding reviewed; nested origin fields cited individually.')
+Path(__file__).with_suffix('.json').write_text(json.dumps(p,indent=2))
