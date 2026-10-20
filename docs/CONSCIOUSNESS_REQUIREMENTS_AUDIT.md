@@ -1,5 +1,22 @@
 # Requirements audit: source-of-qualia evidence remains incomplete
 
+2026-10-19 publication/status correction: GitHub is current through
+[`10c8be81`](https://github.com/macterra/attcon/commit/10c8be81e9d3a089237f385f3706309c495a9d5f),
+verified with authenticated `gh`. The preprint's GitHub blob matches the local
+file. The publication-blocked rows below have been corrected; those restrictions
+describe an earlier environment, not the current publishing state.
+
+At that checkpoint, 34 of the 46 fixed template-review contexts have actually
+terminated, including one without first judgments. The
+[complete-analysis plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md)
+still requires all first contexts and the full semantic/property readout. The
+[native readout audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md) now separates
+operation selection, Controller targeting, learned content and exporter-supplied
+origin labels. Its independent technical review supports that distinction with
+preserved corrections and inference limits. A selected report faithfully describes
+actual A content; its full organization/status meaning remains unresolved.
+Neither this progress nor successful publication establishes the qualia-source goal.
+
 The [revised qualitative design](QUALITATIVE_REPORT_CORRESPONDENCE_V1_DESIGN.md)
 now separates publication-grounded report structure from numerical human transfer.
 Three new separate-context reviews remove the blanket raw-trial prerequisite for
@@ -120,8 +137,8 @@ correspondence and the qualia-source interpretation remain unqualified.
 | Auxiliary grounded factual interface | [Source inventory](GROUNDED_REPORT_SOURCE_INVENTORY_V1.md), [source-export results](GROUNDED_NEUTRAL_REPORT_PILOT_V1_SOURCE_RESULTS.md) and independent reviews | Registered source-only export produces 624 packets. Exact disk replay and 100,349 independent JSON comparisons pass after a preserved checker correction. Native evidence, forecasts, external estimates and audit-only chronology remain distinct. [Factual qualification fails](GROUNDED_FACTUAL_AUDITOR_QUALIFICATION_V1_RESULTS.md): both 48/48 supportedness and 12/12 inventories, three label differences. No v1 prose or qualified strict presentation counterpart. | Source-only stage complete; qualification failure retained, full reporting release absent |
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
-| 6. Updated manuscript | `docs/PREPRINT.md` | Retains earlier failures and engineering studies; adds R-C1, draft 3, substantive AI/reference/factual/character reviews and analytical power sensitivity. No new consciousness confirmation. Latest local revision has not been pushed. | Current locally; publication pending |
-| Every attempt, source, raw response, score and milestone publication | Archives, manifests, historical GitHub history and isolated local milestone commits | Earlier studies are published. Review revision preserves R-C1, original blank form and v1 ZIPs; local commits are saved separately because repository metadata writes/network are restricted. Push is pending. Archival completeness is not scientific completion. | Historical component available; latest publication blocked |
+| 6. Updated manuscript | `docs/PREPRINT.md`; GitHub contents at the checkpoint above | Retains earlier failures, subsequent attention-content/relational findings and their interpretation limits. Authenticated `gh` verifies GitHub and local preprint blob `2e09744d8734a6c04f30f3001ce1a64681c14e30` match. No new consciousness confirmation. | Published at the verified checkpoint; final theory-facing results incomplete |
+| Every attempt, source, raw response, score and milestone publication | Archives, manifests, fixed-review launch/terminal records and verified GitHub main | Earlier publication restrictions are historical. Completed milestones are committed and pushed using authenticated `gh`; GitHub main matches local HEAD at the checkpoint above. First-review failures remain retained; unfinished contexts are still running. Large evidence uses verified lossless archives. Publication verification does not certify archival completeness or scientific completion. | Milestone publication working and verified; final review/assessment outstanding |
 
 ## What passing tests establish
 
