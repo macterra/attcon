@@ -145,3 +145,20 @@ a new-task/architecture replication remain future requirements. No new auditor
 version or repeated fiction challenge is commissioned by this plan. The ultimate
 goal remains credible evidence for the attention-control-model source-of-qualia
 theory, and is not achieved by construction provenance or this analysis.
+
+## Readout implementation status
+
+The [binding-inventory utility](../scripts/attention_relational_template_binding_inventory_v1.py)
+is prepared for the complete first collection. Its [ten fictional checks](../audits/attention_relational_report_v1/template_attribution_v1/binding_inventory_source_checks/first_retained_final_source_checks.json)
+pass; no actual target inventory has run. It joins original scopes, each first
+reviewer's chosen evidence, exact atomic property identities and the full pair
+inventory without changing first judgments. It retains missing whole chunks,
+mixed copied-W/learned-source operands and unresolved atomic mappings. Different
+compatible witness paths need not match between reviewers.
+
+Recorded support candidates still require semantic and source closure. The
+utility leaves semantic predicate tracking, semantic nulls and semantic
+restoration unassessed; the separately verified numerical bank supplies their
+lower-level property facts. This is preparation for the existing analysis,
+not completion of Stage 2 or Stage 3, a new semantic instrument, or evidence for
+the theory. All fixed first contexts must actually terminate before collection.
