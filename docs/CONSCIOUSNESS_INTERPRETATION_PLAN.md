@@ -7,10 +7,16 @@ All 46 fixed template first contexts have ended, retaining 45 artifacts and one
 missing-review outcome. The [complete readout status](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md)
 records full collection and an independently checked inventory: zero original
 bindings have all required recorded-support facts true in both first streams.
-This is not feature absence or a qualia verdict. Eleven explicit binding
-disagreements are under one post-first advisory pass; explicit semantic/source
-closure and all-pair interpretation must finish before selecting another experiment.
-Raw labels are not validated source meanings or qualia evidence.
+The [final fixed readout](ATTENTION_RELATIONAL_TEMPLATE_FINAL_READOUT_V1.md) now
+closes the analysis with all 552 positions and 684 pairs retained. Both post-first
+advisers are terminal; four limited organization readings remain plausible, but
+all eleven semantic boundaries remain unresolved in the exposed root disposition.
+The first streams retain four and five different recorded-support candidates,
+not a joint source endpoint. All 684 semantic pair measurements remain
+unestablished alongside their verified numerical results. This is measurement
+yield, not feature absence or a qualia verdict. Raw labels are not validated
+source meanings. The next development contrast will test native content changes
+across allocation operations without depending on origin labels for its meaning.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and
@@ -21,8 +27,8 @@ now verifies literal reporting of an actual learned current-A peak that differs
 from W. The required organization/distinction meaning remains disputed. Its
 [paired trace](../audits/attention_relational_report_v1/template_attribution_v1/semantic_review/root_adjudications/first_actual_A_binding_pairs_05.md)
 retains the peak's genuine null under a changed raw A distribution. This advances
-source identification without establishing a consciousness-related endpoint or
-closing the full fixed review.
+source identification without establishing a consciousness-related endpoint.
+The full fixed review now closes with that semantic disagreement retained.
 
 The [native readout audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md) now
 separates learned map estimates, frozen H readouts and exporter-constructed origin
@@ -35,8 +41,8 @@ now retains 56 first judgments: 50 pass mechanics, while six dense annotations
 omit a required source reference. The whole release gate fails; no V5 target
 audits or automatic successor are released. Both independent semantic reviews
 agree: short phases pass and long phases fail, with correct verdict meanings but
-incomplete required citations. Complete the frozen source reviews before choosing
-another experiment. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
+incomplete required citations. The frozen source analysis now closes with
+unestablished measurements; no successor auditor is commissioned. The [reviewed witness/source plan](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_PLAN.md)
 preserves missing whole-prose fidelity and distinguishes actual A content from
 copied W; it commissions no successor auditor or new Reporter run.
 
@@ -48,8 +54,8 @@ is now preserved. Both narrator first reviews are terminal; the
 [first source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RESULTS.md)
 retains one valid chunk and one whole-chunk provenance-field failure, with no
 established source witness and all 684 report-pair correspondences unestablished.
-The complete template firsts are now retained; post-first semantic/source closure
-is pending. These software checks establish no source/report
+The complete template firsts and post-first disposition are now retained; the
+fixed analysis closes without an established semantic/source endpoint. These software checks establish no source/report
 correspondence, whole-prose fidelity or consciousness-related finding.
 One [terminal template context](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
 ended without judgments after displaying metadata outside its assigned source

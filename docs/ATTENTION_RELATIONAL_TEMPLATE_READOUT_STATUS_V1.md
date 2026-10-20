@@ -75,8 +75,8 @@ full original texts, canonical annotations, original scopes/times/bindings and
 retained first-stream snapshots. The two terminal bindings preserve that check.
 The packet includes every binding with two valid first assessments that differ.
 These are exposed post-first advisers, not replacement first reviewers or new
-system observations. Root disposition and the full semantic/pair readout remain
-outstanding at this checkpoint. Missing firsts stay missing; underdetermined
+system observations. At this checkpoint root disposition and the full semantic/pair readout remained
+outstanding; the final completion below supersedes that status. Missing firsts stay missing; underdetermined
 meanings remain unresolved. No rubric, scope or binding is repaired.
 
 ## Readout implementation status
@@ -103,3 +103,16 @@ restoration unassessed; the separately verified numerical bank supplies their
 lower-level property facts. This is preparation for the existing analysis,
 not completion of Stage 2 or Stage 3, a new semantic instrument, or evidence for
 the theory. All fixed first contexts must actually terminate before collection.
+
+## Final fixed analysis
+
+The [final readout](ATTENTION_RELATIONAL_TEMPLATE_FINAL_READOUT_V1.md) now closes
+this finite analysis. The exposed root disposition retains all eleven semantic
+boundaries as unresolved, including the four positive alternative organization
+readings. It adds no established source endpoint and changes no first judgment.
+The complete summary retains all 552 positions, 684 pairs, each stream's four/five
+recorded-support candidates, unknown measurements and exact numerical results.
+All 684 semantic pair measurements remain unestablished; genuine numerical nulls
+and restorations remain results. No new system observation or theory confirmation
+is claimed. Next development concerns actual native content changes across
+allocation operations without relying on provenance labels for meaning.

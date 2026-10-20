@@ -3,9 +3,14 @@
 The [complete template first-review record](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md)
 now retains all 46 terminal contexts, 45 first artifacts, 1,104 reviewer positions
 and 684 pairs. Independent descriptive reconstruction finds zero discrepancies
-and confirms zero jointly recorded-support candidate bindings. Explicit binding
-disagreements and semantic/source closure remain pending. This does not establish
-feature absence or the qualia-source goal.
+and confirms zero jointly recorded-support candidate bindings. The
+[final fixed readout](ATTENTION_RELATIONAL_TEMPLATE_FINAL_READOUT_V1.md) closes all
+552 positions and 684 pairs with unestablished semantic/source measurements.
+Both advisers are terminal; four positive limited core readings are retained as
+alternatives, while all eleven semantic boundaries remain unresolved in the
+exposed root disposition. This does not establish feature absence or the
+qualia-source goal. The next development question concerns actual native content
+changes across allocation operations without relying on provenance labels.
 
 2026-10-19 publication/status correction: GitHub is current through
 [`10c8be81`](https://github.com/macterra/attcon/commit/10c8be81e9d3a089237f385f3706309c495a9d5f),
@@ -145,7 +150,7 @@ correspondence and the qualia-source interpretation remain unqualified.
 | 5. Interpretation, alternatives and retained negative results | Current results docs, preprint and archives | Label sensitivity, generic apparatus descriptions, semantic failures and ordinary causal-description alternatives are retained. | Component available |
 | Positive theory-facing replication with fresh systems and another task/architecture | Current plan/results | No independently characterized positive causal result to replicate; broader replication not performed. Earlier reporting replication establishes component fidelity/relations only. | Missing evidence |
 | 6. Updated manuscript | `docs/PREPRINT.md`; GitHub contents at the checkpoint above | Retains earlier failures, subsequent attention-content/relational findings and their interpretation limits. Authenticated `gh` verifies GitHub and local preprint blob `2e09744d8734a6c04f30f3001ce1a64681c14e30` match. No new consciousness confirmation. | Published at the verified checkpoint; final theory-facing results incomplete |
-| Every attempt, source, raw response, score and milestone publication | Archives, manifests, fixed-review launch/terminal records and verified GitHub main | Earlier publication restrictions are historical. Completed milestones are committed and pushed using authenticated `gh`; GitHub main matches local HEAD at the checkpoint above. Fixed template firsts are all terminal; their failures remain retained. Post-first advice and final semantic assessment are pending. Large evidence uses verified lossless archives. Publication verification does not certify archival completeness or scientific completion. | Milestone publication working and verified; final semantic assessment outstanding |
+| Every attempt, source, raw response, score and milestone publication | Archives, manifests, fixed-review launch/terminal records and verified GitHub main | Earlier publication restrictions are historical. Completed milestones are committed and pushed using authenticated `gh`; GitHub main matches local HEAD at the checkpoint above. Fixed template firsts are all terminal; their failures remain retained. Post-first advice and final fixed assessment are retained, with semantic measurements still unestablished. Large evidence uses verified lossless archives. Publication verification does not certify archival completeness or scientific completion. | Milestone publication working and verified; final semantic assessment outstanding |
 
 ## What passing tests establish
 

@@ -60,8 +60,12 @@ estimated location content/bookkeeping, but leaves manner unqualified. Those
 functional checks do not establish consciousness-report correspondence. A later
 complete quote-grounded reference assessment retains only 4/552 established
 narrator annotations and 148/552 template annotations; whole-prose narrator
-fidelity remains unestablished. Source-aware semantic review is pending, and the
-broader theory-facing interpretation remains unresolved.
+fidelity remains unestablished. The complete fixed source analysis retains all
+552 templates and 684 pairs: first reviewers support different candidate bindings,
+and post-first review retains unresolved organization/access meanings. A selected
+literal report accurately describes learned A content distinct from W. No
+source-attributed consciousness-related endpoint or theory confirmation is
+established; missing semantic measurement is not feature absence.
 
 ## 1. Question
 
@@ -881,10 +885,22 @@ artifacts and one remains missing without replacement. The
 retain all 552 positions and 684 pairs. Independent accounting reconstructs all
 1,104 rows and every position/pair join with zero discrepancies. No original
 binding has all required recorded-support facts true in both first streams; this
-describes judgments, not semantic truth or feature absence. Eleven explicit binding
-disagreements await exposed post-first advice and root disposition. Semantic/source
-closure and predicate-level pair interpretation remain incomplete; no new system
-observation or theory confirmation follows from this accounting.
+describes judgments, not semantic truth or feature absence. The
+[final fixed readout](ATTENTION_RELATIONAL_TEMPLATE_FINAL_READOUT_V1.md) now closes
+the finite analysis. Reviewer 0 retains four complete recorded-support candidates
+and reviewer 1 five, at nine different positions. Eight use W-derived content and
+one uses actual A content. No binding compatibility assessment is supported by
+both first streams. The full denominators remain 552 positions and 684 pairs.
+Both exposed post-first advisers have finished: four limited model-organization
+core readings are recommended as supported and seven remain unresolved. One
+positive core reading retains unsupported extra own evidence. Root retains all
+eleven semantic boundaries as unresolved, consistently across copied W, completed
+W and history-estimated A. Positive alternatives and opposing firsts remain
+visible; no judgment, scope or missing chunk is repaired. All 684 source-attributed
+semantic tracking/null/restoration measurements remain unestablished, separately
+from their verified numerical counterparts. No new system observation or theory
+confirmation follows. This closes an unresolved development analysis rather than
+qualifying a consciousness-report instrument.
 One [template context ended without judgments](../audits/attention_relational_report_v1/source_review_release_v1/terminal_observations/template_semantic_v1_s1_c09.json)
 after displaying metadata outside its assigned chunk. All 24 positions remain
 unestablished for that stream without replacement; its valid counterpart does

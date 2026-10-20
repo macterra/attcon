@@ -5,8 +5,10 @@
 part of the [existing attribution plan](ATTENTION_RELATIONAL_TEMPLATE_ATTRIBUTION_V1_PLAN.md).
 It does not establish which properties warrant a consciousness-related report
 feature, an asserted predicate's tracking, or a quale-generating locus. The complete
-template first reviews are complete, with semantic/source closure still pending
-in the [complete readout](ATTENTION_RELATIONAL_TEMPLATE_READOUT_STATUS_V1.md).
+template first reviews and post-first disposition are complete. The
+[final fixed readout](ATTENTION_RELATIONAL_TEMPLATE_FINAL_READOUT_V1.md) retains
+all 684 semantic pair measurements as unestablished, separately from the numerical
+results below.
 These are repeated views of the same
 twelve development cases, with no new model fitting or Reporter calls.
 
@@ -118,7 +120,8 @@ failure aborts it without releasing a partial bank. It does not implement the
 full Stage3 unavailable-measurement or semantic assessment. Such a failure must
 remain a retained execution with the full original opportunity inventory; it
 cannot become a null or silently disappear. This actual run passes the required
-construction checks, but the broader assessment remains unfinished.
+construction checks. The later final fixed assessment closes with its semantic
+measurements unestablished; this numerical utility supplies no missing meaning.
 
 The raw bank has SHA-256
 `c944d239cd52863fefa9331fc91800d048362d38d2fd7ee2659dc3b41d5706a5`.
@@ -130,5 +133,5 @@ The [narrator source result](ATTENTION_RELATIONAL_NARRATOR_SOURCE_CLOSURE_V1_RES
 still establishes no source witness or whole-prose fidelity. Numerical renderer
 tracking does not supply that missing conjunction, spontaneous report organization,
 qualified perceptual appearance or felt experience. Both fixed template first
-streams are terminal; finish the complete semantic/property assessment before
-choosing another experiment. The ultimate source-of-qualia goal remains unachieved.
+streams are terminal and the final fixed semantic/property assessment is retained
+with unresolved meaning. No regrading is commissioned to obtain a pass. The ultimate source-of-qualia goal remains unachieved.
