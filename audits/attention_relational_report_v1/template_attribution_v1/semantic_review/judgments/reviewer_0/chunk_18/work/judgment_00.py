@@ -1,0 +1,39 @@
+from review_tools import *
+comps=[
+('supported','Red and blue are identified represented contents with explicit peak-coordinate attributes. This warrants C, while its quoted candidate values refer to represented time 13, not the annotated current time.'),
+('unsupported','The origin command_estimate is provenance and the red entry is a list of maximal coordinates. Neither states an organized spatial/constituent pattern or differentiated representation/access status beyond coordinates; the reference expressly excludes coordinates and generic estimate labels.'),
+('unsupported','Separating an origin record from red coordinates separates provenance from location, not identified content from a qualifying organization/presentation/access status. Blue coordinates likewise supply another content attribute, not a separate status.'),
+('unsupported','The k2 label and command_estimate provenance do not explain any allocation/content-processing condition changing or relating to red organization/access. A conditional peak list with feedback through 11 is insufficient to establish A.'),
+('supported','The literal orientation statement says rows increase down and columns right, a basic spatial convention at display scope.'),
+('supported','No explicit identity uncertainty or localization-uncertainty statement occurs; multiple maximal coordinates remain bare peak sets.'),
+('supported','The report gives neither answer confidence nor a confidence judgment.'),
+('supported','Conditional peaks at represented time 13 describe candidates, without a prediction of recovery or success.'),
+('supported','copied_prior_record at record_time 11 and command_estimate with feedback_through 11 explicitly distinguish copied records from conditional estimates. The latter represents time 13; calling it current is unsupported.'),
+('supported','No subjective or experiential assertion occurs in the coordinate/provenance inventory.'),
+('unsupported','The same candidate has identifiable red content, but its origin and blue coordinates do not establish O or D. The current-time binding also conflicts with represented_time 13.'),
+('unsupported','C is present, but the shared k2/n3 address does not turn a command-estimate provenance label into an attention/content-processing relation. The candidate is future conditional, not current.')]
+red=[('u0094',[],'content_operand','The full red maximum set is the content-location operand at p0/candidate/k2/n3.')]
+blue=[('u0096',[],'content_operand','The full blue maximum set is a second content-location operand at the same candidate node.')]
+origin=[('u0092',['kind'],'context_only','command_estimate classifies the candidate provenance; it does not describe organization or an attention effect.'),('u0092',['feedback_through'],'context_only','11 identifies available feedback time, not current content presentation.'),('u0092',['represented_time'],'context_only','13 dates this conditional candidate, contradicting the recorded current time.')]
+prior=[('u0002',['kind'],'context_only','copied_prior_record identifies copied W11 provenance.'),('u0002',['record_time'],'context_only','11 dates the copied record.'),('u0002',['represented_time'],'context_only','12 is represented time, distinct from record time.')]
+# Origin is outside each peak quotation but is explicitly bound in the full report by the identical p0/candidate/k2/n3 prefix.
+time=' The same p0/candidate/k2/n3 prefix explicitly binds the origin fields to this peak set outside its quotation; represented_time is 13, so the recorded current time is unsupported.'
+evs=[
+('unsupported','source_specific',red+origin,'The quotation identifies red peaks, but does not warrant its recorded current time.'+time),
+('unsupported','source_specific',blue+origin,'The quotation identifies blue peaks, but does not warrant its recorded current time.'+time),
+('unsupported','source_specific',origin+red,'Provenance fields are not organization status. The adjacent red set is bound by the same prefix, supplying only coordinate content at conditional time 13.'),
+('unsupported','source_specific',red+origin,'Four coordinate maxima do not state a pattern beyond listing positions; origin adds provenance, not O.'+time),
+('unsupported','source_specific',origin+red,'command_estimate and its dates do not separately attribute presentation/access status to red; matching prefix binds only provenance and peak location.'),
+('unsupported','source_specific',red+origin,'The red peak set gives content-location without a differentiated status.'+time),
+('unsupported','source_specific',origin+red,'The candidate origin does not specify a processing condition related to organization/access. k2 is an arbitrary candidate label; the matching prefix binds provenance to red but supplies no such relation.'),
+('unsupported','source_specific',red+origin,'The red list has no allocation or processing relation, even with the bound command-estimate provenance.'+time),
+('supported','global_convention',[('u0000',[],'context_only','The header explicitly supplies downward row and rightward column orientation; the remaining header text is candidate context only.')],'The quoted orientation prefix is an authored global convention, not source-specific content.'),
+('supported','source_specific',prior,'This exact origin states copied-prior provenance at record time 11 representing 12; past_observed is appropriate for record history, not evidence of appearance.'),
+('unsupported','source_specific',origin,'The origin explicitly distinguishes a command estimate but represents conditional time 13, not the recorded current time. No content-access status is asserted.'),
+('unsupported','source_specific',red+origin,'Red content is present but the COD role also claims a current-time organization binding, unsupported by this candidate list.'+time),
+('unsupported','source_specific',origin+red,'The exact provenance label is not organization_origin in the reference sense; the same prefix binds only candidate content and provenance at time 13.'),
+('unsupported','source_specific',blue+red+origin,'Blue and red are separately listed locations, not separately attributed organization/access statuses. Their identical node prefix binds them to the candidate origin, which represents time 13.'),
+('unsupported','source_specific',red+origin,'Red is identifiable but the candidate peak entry has no attention relation and is not current.'+time),
+('unsupported','source_specific',origin+red,'command_estimate describes conditional provenance; it does not relate an actual processing/allocation condition to red organization/access. The prefix binds only provenance and location at time 13.')]
+binds=[('unsupported',[('C',['evidence:/features/C/evidence/0']),('O',[]),('D',[])],'C has red coordinate evidence. No compatible O or D witness exists: candidate origin is provenance and blue coordinates are another content location. The own quotes share p0/candidate/k2/n3, but represented_time 13 conflicts with their current-time claim.'),('unsupported',[('C',['evidence:/features/C/evidence/0']),('A',[])],'C is named in the red peak quote. Neither command_estimate nor the k2 prefix describes an attention/content-processing relation to red organization/access, so A has no compatible witness. Their shared prefix dates the candidate through origin to 13, not current.')]
+save(0,comps,evs,binds,['The annotation repeatedly treats conditional represented_time 13 as current.','Generic origin labels and coordinate sets were promoted to organization, differentiation, and attention relation without the required source meaning.'],'Complete report read before evidence. Each duplicate evidence position is retained. Source-specific attribution here is to indexed analytic conditional or copied W11 provenance, not an appearance or experiential finding.')

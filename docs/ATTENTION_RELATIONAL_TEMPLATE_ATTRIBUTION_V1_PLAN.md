@@ -156,6 +156,14 @@ inventory without changing first judgments. It retains missing whole chunks,
 mixed copied-W/learned-source operands and unresolved atomic mappings. Different
 compatible witness paths need not match between reviewers.
 
+The [independent static review](../audits/attention_relational_report_v1/template_attribution_v1/binding_inventory_static_review/first_review.md)
+finds no blocking defect under the trusted complete frozen-collector contract.
+Its ten fictional checks pass independently. This compact projection must remain
+linked to the full retained collection, which preserves unselected/auxiliary
+evidence, row concerns and whole-chunk diagnostics; it cannot replace that archive.
+The [root disposition](../audits/attention_relational_report_v1/template_attribution_v1/binding_inventory_static_review/root_disposition.json)
+accepts both output and interpretation limits without changing the reviewed code.
+
 Recorded support candidates still require semantic and source closure. The
 utility leaves semantic predicate tracking, semantic nulls and semantic
 restoration unassessed; the separately verified numerical bank supplies their
