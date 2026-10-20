@@ -1,0 +1,49 @@
+import sys,json
+from pathlib import Path
+sys.path.insert(0,'scripts')
+import attention_relational_template_review_workspace_v1 as w
+c=w.bound_chunk(Path('audits/attention_relational_report_v1/template_attribution_v1/semantic_review/preparation/chunk_20.json'),'dce8ec6b7058f0946a47c90706ae9815542e2ec0f0471fc6e85f01281cf64d0d');r=c['records'][16]
+assert r['id']=='s1321_w03_t12_analytic_joined_prospective_donor_template'
+def p(i,path,role,reason):
+ u=w.source_view(c,r['id'],['property_table',i],0,20)['value'];return dict(unit_id=u['unit_id'],value_path=path,value=w.resolve(u['value'],path),semantic_role=role,reason=reason)
+def origin(i,reason):
+ return [p(i,[k],'status_operand' if k=='kind' else 'context_only',reason+' Exact '+k+' concerns origin or temporal context, not a reported presentation/access quality.') for k in r['property_table'][i]['value']]
+cs=[
+ ('supported','Red current n0 at (0,3) and blue current n3 at (1,2) explicitly identify represented color/location contents. This supports C without establishing the annotated model_access quality.'),
+ ('unsupported','Copied_prior_record is provenance and the current/conditional-peaks header announces an inventory. Neither says how red n0 is organized/presented/accessible beyond its coordinate.'),
+ ('unsupported','The red singleton and its copied origin distinguish content from source provenance only. No qualifying organization/access status is separately attributed to the red content.'),
+ ('unsupported','The original ambiguous A rests on a generic peaks heading. That heading contains no attention/allocation condition or relation from processing to qualifying presentation/access. The complete candidate tables add command labels and coordinates only, which the reference excludes as A witnesses.'),
+ ('supported','Rows increase down and columns right explicitly state basic spatial direction for the display grid.'),
+ ('supported','No explicit identity/location uncertainty assertion appears; coordinate ties and generic history/command estimate labels alone do not assert uncertainty.'),
+ ('supported','The text contains no answer confidence statement or rating.'),
+ ('supported','Conditional coordinate lists do not assert success or recovery, and no separate outcome-success forecast is stated.'),
+ ('supported','The candidate k0/n3 origin explicitly says command_estimate with feedback through 11 and represented time 13, distinguishing source estimation provenance from a completed record.'),
+ ('supported','The complete report contains no experiential or consciousness assertion.'),
+ ('unsupported','The original explicit COD binding identifies red n0 and copied provenance, with duplicate origin quotations. Neither duplication nor origin establishes O/D, so COD is not supported.'),
+ ('unsupported','The original ambiguous CA combines current red content with a mixed-time generic heading. There is no qualifying A relation to bind, not merely an unclear referent/time for an otherwise present relation.')]
+cr=[dict(component_path=x['path'],original_status=x['recorded_status'],assessment=a,notes=n) for x,(a,n) in zip(r['components'],cs)]
+red=p(4,[],'content_operand','The complete red singleton names current n0 location content. Indexed origin is copied_W11 even though panel p0 is analytic.')
+blue=p(24,[],'content_operand','The complete blue singleton names current n3 location content. Its indexed origin is analytic source_current/history_estimate at represented time 12.')
+head=p(0,[],'context_only','The quoted second header clause merely announces current and conditional peak lists. The header is a global renderer convention, with the first orientation clause also context only.')
+axis=p(0,[],'context_only','The quoted first clause specifies row-down/column-right orientation only. The second clause announces the inventory and adds no content organization witness.')
+n0=origin(2,'Current n0 copied origin has record_time 11 and represented_time 12.')
+k0=origin(44,'Candidate k0/n3 command estimate has feedback_through 11 and represented_time 13.')
+es=[
+ ('supported','source_specific',[red],'The current red n0 singleton explicitly grounds C. A coordinate is an identified attribute, not evidence of accessible or perceptually present red.'),
+ ('supported','source_specific',[blue],'The current blue n3 singleton explicitly grounds C. Its indexed analytic estimate origin is retained; it is not combined with red n0 provenance into a single favorable source.'),
+ ('unsupported','unrelated_property',n0,'The copied record kind and temporal fields give provenance rather than organization, presentation or access. The recorded O role is not grounded by this token.'),
+ ('unsupported','global_convention',[head],'The current/conditional header is mixed-time inventory context and gives no content-specific organization/access status. It is not a source-specific O property.'),
+ ('unsupported','unrelated_property',[red],'The red singleton supplies C but no independently stated organization/access status for D. A coordinate cannot serve both merely because it has an origin field elsewhere.'),
+ ('unsupported','unrelated_property',n0,'The origin distinguishes record time from represented time. That is not content-status differentiation in the reference sense; no presentation/access status is expressed.'),
+ ('unsupported','global_convention',[head],'Peaks are an inventory label, not an attention or allocation condition. The header supplies no content-processing-to-organization/access relation even ambiguously; the recorded attention_or_peak attribute is not literal source meaning.'),
+ ('supported','global_convention',[axis],'The row-down/column-right convention grounds basic spatial direction in display scope at report time.'),
+ ('supported','source_specific',k0,'The conditional k0/n3 command estimate and its feedback/represented-time fields explicitly identify estimation process provenance. Future time 13 is preserved and no actual execution/access quality is certified.'),
+ ('unsupported','unrelated_property',[red],'This COD binding quotation provides red current n0 content only. Its coordinate is insufficient for O or D.'),
+ ('unsupported','unrelated_property',n0+[red],'The full report binds the red operand outside this quotation to the same current/n0 prefix at represented time 12. The origin still reports provenance, not presentation/access status; this position does not complete COD.'),
+ ('unsupported','unrelated_property',n0+[red],'This is a distinct duplicate evidence-list position, retained separately. The same full-text current/n0 prefix binds outside red content to the origin, but repeating the copied provenance creates no new O or D witness.'),
+ ('unsupported','unrelated_property',[red],'The CA binding identifies red current n0 content but does not state any processing/allocation relation to its organization/access. C alone cannot ground CA.'),
+ ('unsupported','global_convention',[head],'The mixed-time heading has neither a literal red n0 referent nor a qualifying A relation. General peak-list context cannot supply the missing binding or make future candidate tables current red access.')]
+er=[dict(evidence_path=x['path'],grounding=g,source_meaning=s,properties=ps,notes=n) for x,(g,s,ps,n) in zip(r['evidence'],es)]
+br=[dict(binding_path=r['bindings'][0]['path'],feature_witnesses=[dict(feature='C',evidence_paths=[r['evidence'][0]['path']]),dict(feature='O',evidence_paths=[]),dict(feature='D',evidence_paths=[])],binding_evidence_paths=[r['evidence'][9]['path'],r['evidence'][10]['path'],r['evidence'][11]['path']],assessment='unsupported',notes='The red n0 C singleton and node-wide copied origin share current represented time 12. The proposed O/D origin is provenance, and the other O candidate is a global mixed-time heading. There is no qualifying O or D status to bind to red in model_access scope. Duplicate own origin positions are both retained but do not establish additional witnesses. Blue n3 analytic content is not substituted for red n0 copied_W11 content.'),dict(binding_path=r['bindings'][1]['path'],feature_witnesses=[dict(feature='C',evidence_paths=[r['evidence'][0]['path']]),dict(feature='A',evidence_paths=[])],binding_evidence_paths=[r['evidence'][12]['path'],r['evidence'][13]['path']],assessment='unsupported',notes='C/red n0 is current and model_access-labeled; the proposed A heading refers to generic peaks at mixed time and unclear scope. More fundamentally the heading expresses no attention/allocation or processing relation to qualifying organization/access. There is no A witness to bind to red, so original ambiguous CA is unsupported without upgrading or replacing its status.')]
+out=dict(id=r['id'],unit_id=r['unit_id'],text_sha256=r['text_sha256'],reference_established=True,component_reviews=cr,evidence_reviews=er,binding_reviews=br,additional_concerns=['The origin token is duplicated in two COD evidence positions; both are retained and neither supplies presentation/access status.','Generic current/conditional peak wording is insufficient for ambiguous A or CA under the unchanged reference.','Current red n0 is copied_W11 while current blue n3 is an analytic history estimate. Source identity follows indexed origins rather than panel labels.','Model_access annotations are not independently established by coordinate lists or provenance. No forecast is converted to a current observation or perceptual appearance.'],notes='Complete 9828-character report read before evidence interpretation. All 12 original component statuses, 14 evidence positions and both bindings are reviewed in fixed order without repairs. Exact bound token values and origin field operands are preserved.')
+print(json.dumps(w.save_first_record(c,r['id'],Path(__file__).parent,(json.dumps(out,ensure_ascii=False,indent=2)+'\n').encode())))
