@@ -26,8 +26,14 @@ conditional contents yield 110 different-peak pairs and 898 equal-peak/raw-chang
 nulls, among 1,008 repeated-view/variant comparisons. The next concrete task is to
 inspect full native distributions and their content relations before another
 reporting study: the argmax interface discards much of the command-dependent state.
-All nulls and alternative estimators remain. No new Reporter, auditor or
-consciousness judgment is commissioned by this diagnostic.
+All nulls and alternative estimators remain. Rechecking the original input
+confirms that the narrator already received full localization distributions;
+peak-only information loss concerns literal templates. The
+[distribution-geometry and score diagnostic](ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1.md)
+now specifies native-score and spatial measurements before execution. It will
+measure magnitude and reconstruct the processing-command score rule, not create
+an appearance measure or equate that readout with the full recurrent state.
+No new Reporter, auditor or consciousness judgment is commissioned.
 The [first numerical property comparison](ATTENTION_RELATIONAL_TEMPLATE_PROPERTY_PAIRS_V1_RESULTS.md)
 now retains all 552 template positions and 684 pairs with source/time comparability,
 peak-set nulls and baseline restoration checks. It leaves semantic endpoint and

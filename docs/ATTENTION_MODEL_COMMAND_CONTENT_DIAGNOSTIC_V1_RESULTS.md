@@ -73,6 +73,13 @@ reference judgments or earlier first artifacts were changed.
 
 ## Next decision
 
+2026-10-20 input-scope clarification: the original narrator already received the
+complete localization distributions and optional scalar summaries. The information
+loss identified here belongs to literal peak-only templates. It is not evidence
+that the original prose narrator lacked the full fields, and repeating that input
+would not be an interface improvement. These H fields are also a readout of
+predicted native maps, not the entire recurrent attention-model state.
+
 Inspect full native distributions and their content relations before commissioning
 another reporting study. The argmax interface has discarded much of the available
 command-dependent state, so repeating peak descriptions is a weak test of reporting

@@ -1,0 +1,72 @@
+{
+  "contract_path": "docs/ATTENTION_MODEL_DISTRIBUTION_GEOMETRY_V1.md",
+  "contract_sha256": "bb507ffcee8c43711373ae38faa01239f0400c8d5b4d5bc79a53835ab2bda3dd",
+  "decision": "changes_required_before_target_execution",
+  "findings": [
+    {
+      "description": "Pair panel opportunities are the union of available query groups; panels unavailable on both sides disappear instead of receiving unavailable status.",
+      "id": "R1",
+      "requested_change": "Derive panel opportunities from complete retained panel inventories and emit explicit unavailable entries.",
+      "severity": "blocking",
+      "source_line": 191,
+      "synthetic_reproduced": true
+    },
+    {
+      "description": "score_rule is reconstructed unconditionally even when command identities differ in actual source or other non-command context. Later pair comparisons use only k0 common_identity, so this can also contaminate source-matched preference comparisons.",
+      "id": "R2",
+      "requested_change": "Require exact common identity across all commands for a native score rule, otherwise retain explicit unmatched status without a preference; gate pair-score comparisons on that status.",
+      "severity": "blocking",
+      "source_line": 180,
+      "synthetic_reproduced": true
+    },
+    {
+      "description": "Final inventory assertions cover positions, original pairs, and groups but omit panel count, unavailable panels, command comparison count and full node-role-command coverage.",
+      "id": "R3",
+      "requested_change": "Check the full fixed inventory and uniqueness, including 804 panels, 12 unavailable panels, 19008 command comparisons and complete both-role/three-command groups.",
+      "severity": "medium",
+      "source_line": 211
+    },
+    {
+      "description": "Signed centroid displacement is a vector and therefore excluded from all summary quantiles by the scalar-only type filter. Only its L1 magnitude is summarized.",
+      "id": "R4",
+      "requested_change": "Publish row and column displacement as separate scalar summary metrics or narrow the contract promise explicitly.",
+      "severity": "medium",
+      "source_line": 136
+    }
+  ],
+  "github_used": false,
+  "positive_assessment": "Geometry formulae, raw/normalized separation, units, linear-interpolation quantiles, and exact first-index ties are correct in reviewed code and bounded fixtures. Contract preserves narrator full-distribution access and limits phenomenal/semantic claims.",
+  "production_or_tests_edited": false,
+  "reviewer": "Separate reviewing agent; software/method review only, not an external scientific or semantic audit",
+  "schema": "attention_model_distribution_geometry_v1_preexecution_review",
+  "source_path": "scripts/attention_model_distribution_geometry_v1.py",
+  "source_sha256": "70f11b5ddb3a76f7eb65fedd1698282543f4c5b9490146a9276b3b8dbe6c09a3",
+  "synthetic_checks": [
+    {
+      "evidence": "TV=1, signed centroid displacement=[3,3], L1=6, entropy delta=0",
+      "name": "opposite_corner_point_masses",
+      "result": "pass"
+    },
+    {
+      "evidence": "mass=1, centroid=[1.5,1.5], variance trace=2.5, all 16 cells retained as peaks",
+      "name": "uniform_grid_geometry",
+      "result": "pass"
+    },
+    {
+      "evidence": "all three winners retained, first choice k0, margin=0",
+      "name": "exact_three_way_selector_tie",
+      "result": "pass"
+    },
+    {
+      "evidence": "Synthetic pair retains a sensor panel in both position inventories but candidate_query_panels=[]",
+      "name": "both_sides_unavailable_panel",
+      "result": "defect_reproduced"
+    },
+    {
+      "evidence": "Two command-pair states unmatched, while score_rule_reconstruction still claims k0 first-index choice",
+      "name": "cross_source_command_identity",
+      "result": "defect_reproduced"
+    }
+  ],
+  "target_inputs_or_results_inspected": false
+}

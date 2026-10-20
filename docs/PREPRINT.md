@@ -924,8 +924,12 @@ while retaining the peak. Ordinary yields 138/870, analytic 1,008/0. These are
 repeated views/variants of twelve development cases, not independent systems or
 a powered estimator comparison. Eleven of twelve fixed baseline red A traces
 have identical peaks across all commands. This exposes information lost by the
-argmax report interface, motivating full-distribution inspection; it supplies no
-new report correspondence, executed causal outcome or consciousness result.
+literal-template argmax interface, motivating full-distribution inspection.
+The original narrator already received those full localization fields; this does
+not identify missing narrator input or justify repeating it as an improvement.
+The fields are H readouts of predicted maps rather than the whole recurrent
+model state. The census supplies no new report correspondence, executed causal
+outcome or consciousness result.
 The [static readout-path audit](ATTENTION_RELATIONAL_NATIVE_READOUT_AUDIT_V1.md)
 also distinguishes learned map estimates and frozen H readouts from origin labels
 constructed by the exporter. Accurate content/provenance reporting does not
