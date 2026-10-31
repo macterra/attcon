@@ -9,7 +9,7 @@ The theory under test is that **the attention-control model is the source of
 qualia**. The proposed evidence is accurate reporting of that model's state with
 independently specified features of consciousness reports.
 
-**Current development:** the [same-address pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_SOURCE_RESULTS.md) has constructed all72 source views after a preserved command-symbol correction. Independent numerical reconstruction passes; reports and their assessment are pending. The qualia-source goal remains unestablished.
+**Current development:** the [same-address reporting pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_RESULTS.md) is complete. The current source/interface reporting route is closed after assessment failure: 54/72 reports were retained, 35 were supported by both factual streams, and no valid semantic annotations were established. Semantic correspondence is unmeasured; the qualia-source goal remains unestablished.
 
 **The registered object-content reporting demonstration passes.**
 The system reports the bound attention model’s contents and follows selective

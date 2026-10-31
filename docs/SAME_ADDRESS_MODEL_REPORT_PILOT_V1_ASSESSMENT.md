@@ -1,5 +1,7 @@
 # Same-address pilot: prospective development measurement
 
+**Later outcome (2026-10-31):** the [completed pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_RESULTS.md) closes this source/interface reporting route after assessment failure. The source-stage/prospective record below is retained as published.
+
 The [finite assessment package](../audits/attention_relational_report_v1/same_address_pilot_v1/protocol/README.md)
 prepares the [published pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_PLAN.md) without
 reports, ratings or source inference. It binds one neutral short-report prompt,

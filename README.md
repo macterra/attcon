@@ -4,6 +4,8 @@ Attcon tests the theory that **the attention-control model is the source of qual
 The proposed evidence combines accurate reports of that model's state with
 independently specified features of consciousness reports.
 
+**Current development:** the [same-address reporting pilot](docs/SAME_ADDRESS_MODEL_REPORT_PILOT_V1_RESULTS.md) is complete and the current source/interface reporting route is closed after assessment failure. It retained 54/72 reports and 35 reports supported by both factual streams, but no valid semantic annotations; semantic correspondence remains unmeasured. No fresh confirmation is released.
+
 **The registered object-content reporting demonstration now passes.**
 The system reports objects bound to its attention model and follows selective
 changes to that model while the physical scene stays fixed. A fresh confirmation

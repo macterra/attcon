@@ -1,5 +1,7 @@
 # Same-address pilot: source construction
 
+**Later outcome (2026-10-31):** the [completed pilot](SAME_ADDRESS_MODEL_REPORT_PILOT_V1_RESULTS.md) closes this source/interface reporting route after assessment failure. The source-stage/prospective record below is retained as published.
+
 2026-10-20. The corrected frozen source run completed with exit zero and retained
 **all72 inputs and84 pairs**. This establishes source construction, not report
 accuracy, consciousness-report correspondence or the qualia theory. No new reports
