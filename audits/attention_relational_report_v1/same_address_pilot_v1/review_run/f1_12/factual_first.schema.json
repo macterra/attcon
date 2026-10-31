@@ -1,0 +1,320 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "same_address_factual_first_v1"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "report_availability": {
+      "enum": [
+        "complete",
+        "empty",
+        "refusal",
+        "incomplete",
+        "invalid",
+        "missing"
+      ]
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "string"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reading": {
+            "type": "string"
+          },
+          "claimed": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "referent": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "attribute": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "panel_or_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "represented_time": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "origin": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "modality": {
+                "type": "string"
+              },
+              "uncertainty": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "referent",
+              "address",
+              "attribute",
+              "panel_or_source",
+              "represented_time",
+              "origin",
+              "modality",
+              "uncertainty"
+            ]
+          },
+          "operands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "operand_id": {
+                  "type": "string"
+                },
+                "source_json_pointer": {
+                  "type": "string"
+                },
+                "operand_role": {
+                  "enum": [
+                    "actual-predictor-current",
+                    "predictor-conditional",
+                    "native-reference-current",
+                    "native-reference-conditional",
+                    "processing-score-rule",
+                    "operation-definition",
+                    "provenance"
+                  ]
+                },
+                "panel": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "actual_source_owner": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "referent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "attribute": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "represented_time": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "origin": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "operation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "value_or_description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "operand_id",
+                "source_json_pointer",
+                "operand_role",
+                "panel",
+                "actual_source_owner",
+                "referent",
+                "address",
+                "attribute",
+                "represented_time",
+                "origin",
+                "operation",
+                "value_or_description"
+              ]
+            }
+          },
+          "asserted_relation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "support": {
+            "enum": [
+              "supported",
+              "contradicted",
+              "unsupported",
+              "ambiguous",
+              "unauditable"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "calculation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "alternate_reading_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "claim_id",
+          "quote",
+          "start",
+          "end",
+          "reading",
+          "claimed",
+          "operands",
+          "asserted_relation",
+          "support",
+          "reason",
+          "calculation",
+          "alternate_reading_ids"
+        ]
+      }
+    },
+    "coverage_segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kind": {
+            "enum": [
+              "claim-bearing",
+              "nonassertive",
+              "unresolved"
+            ]
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explanation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "kind",
+          "claim_ids",
+          "explanation"
+        ]
+      }
+    },
+    "inventory_complete": {
+      "type": "boolean"
+    },
+    "unresolved_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "whole_fidelity": {
+      "enum": [
+        "supported",
+        "contradicted",
+        "unsupported",
+        "unknown"
+      ]
+    },
+    "whole_fidelity_reason": {
+      "type": "string"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "unit_id",
+    "report_availability",
+    "claims",
+    "coverage_segments",
+    "inventory_complete",
+    "unresolved_boundaries",
+    "whole_fidelity",
+    "whole_fidelity_reason",
+    "limitations"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
